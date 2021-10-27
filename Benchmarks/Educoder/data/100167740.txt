@@ -1,0 +1,1205 @@
+import java.util.*;
+
+/**
+ * types of digits
+ */
+enum DigitsType {
+    /**
+     * integer
+     */
+    INT,
+    /**
+     * real number
+     */
+    REAL,
+    /**
+     * non digits
+     */
+    NONDIGITS;
+
+    public static String getType(DigitsType digitsType) {
+        switch (digitsType) {
+            case INT:
+                return "int";
+            case REAL:
+                return "realnum";
+            default:
+                return "";
+        }
+    }
+}
+
+/**
+ * types of action
+ */
+enum Action {
+    /**
+     * all the actions
+     */
+    DECLARATION,
+    ASSIGNMENT,
+    ADDITION,
+    SUBTRACTION,
+    MULTIPLICATION,
+    DIVISION,
+    COMPARISION,
+    CONDITIONING,
+    NO_ACTION
+}
+
+/**
+ * a simple lexical analyzer
+ */
+class LexicalAnalyzer {
+
+    private LexicalAnalyzer() {
+    }
+
+    /**
+     * take apart the input string into tokens
+     *
+     * @param inputString input string
+     * @return tokens
+     */
+    static Collection<? extends String> tokenize(String inputString) {
+        return Arrays.asList(inputString.split("\\s+"));
+    }
+}
+
+/**
+ * a production of a CFG G =(N，T，P，S) is defined as A -> alpha, where
+ * A is in the set of nonterminals, i.e. A belongs to N
+ * alpha belongs (N union T)*
+ */
+class Production {
+    /**
+     * left hand side of the production
+     */
+    private String lhs;
+
+    /**
+     * right hand side of the production
+     */
+    private ArrayList<String> rhs = new ArrayList<>();
+
+    private Action action = Action.NO_ACTION;
+
+    public Production() {
+    }
+
+    Production(String lhs, String rhs) {
+        this.lhs = lhs;
+        this.rhs.addAll(LexicalAnalyzer.tokenize(rhs));
+    }
+
+    public Production(String lhs, String rhs, Action action) {
+        this.lhs = lhs;
+        this.rhs.addAll(LexicalAnalyzer.tokenize(rhs));
+        this.action = action;
+    }
+
+    public String getLhs() {
+        return lhs;
+    }
+
+    public void setLhs(String lhs) {
+        this.lhs = lhs;
+    }
+
+    public ArrayList<String> getRhs() {
+        return rhs;
+    }
+
+    public void setRhs(ArrayList<String> rhs) {
+        this.rhs = rhs;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Production that = (Production) o;
+        return Objects.equals(getLhs(), that.getLhs()) &&
+                Objects.equals(getRhs(), that.getRhs()) &&
+                getAction() == that.getAction();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getLhs(), getRhs(), getAction());
+    }
+
+    @Override
+    public String toString() {
+        return "Production{" +
+                "lhs='" + lhs + '\'' +
+                ", rhs=" + rhs +
+                ", action=" + action +
+                '}';
+    }
+}
+
+/**
+ * a CFG defined as G =(N，T，P，S), where
+ * N: nonterminals
+ * T: terminals
+ * P: productions
+ * S: start symbol, which is an nonterminals
+ */
+class CFG {
+    /**
+     * nonterminals of CFG
+     */
+    protected ArrayList<String> nonterminals;
+
+    /**
+     * terminals of CFG
+     */
+    protected ArrayList<String> terminals;
+
+    /**
+     * productions of CFG
+     */
+    protected ArrayList<Production> productions;
+
+    /**
+     * start symbol of CFG
+     */
+    protected String startSymbol;
+
+    public CFG() {
+    }
+
+    public CFG(ArrayList<String> nonterminals, ArrayList<String> terminals, ArrayList<Production> productions, String startSymbol) {
+        this.nonterminals = nonterminals;
+        this.terminals = terminals;
+        this.productions = productions;
+        this.startSymbol = startSymbol;
+    }
+
+    public ArrayList<String> getNonterminals() {
+        return nonterminals;
+    }
+
+    public void setNonterminals(ArrayList<String> nonterminals) {
+        this.nonterminals = nonterminals;
+    }
+
+    public ArrayList<String> getTerminals() {
+        return terminals;
+    }
+
+    public void setTerminals(ArrayList<String> terminals) {
+        this.terminals = terminals;
+    }
+
+    public ArrayList<Production> getProductions() {
+        return productions;
+    }
+
+    public void setProductions(ArrayList<Production> productions) {
+        this.productions = productions;
+    }
+
+    public String getStartSymbol() {
+        return startSymbol;
+    }
+
+    public void setStartSymbol(String startSymbol) {
+        this.startSymbol = startSymbol;
+    }
+
+    public boolean isNonterminals(String str) {
+        return nonterminals.contains(str);
+    }
+
+    public boolean isTerminals(String str) {
+        return terminals.contains(str);
+    }
+
+    public boolean isProduction(Production production) {
+        return productions.contains(production);
+    }
+
+    public boolean isStartSymbol(String str) {
+        return startSymbol.equals(str);
+    }
+}
+
+/**
+ * node for parsing
+ */
+class Node {
+
+    private String token;
+
+    private DigitsType digitsType = DigitsType.NONDIGITS;
+
+    private Double value;
+
+    private String identifier;
+
+    public Node() {
+        token = "";
+    }
+
+    public Node(String token) {
+        this.token = token;
+    }
+
+    public Node(String token, DigitsType digitsType, Double value) {
+        this.token = token;
+        this.digitsType = digitsType;
+        this.value = value;
+    }
+
+    public Node(String token, DigitsType digitsType, Double value, String identifier) {
+        this.token = token;
+        this.digitsType = digitsType;
+        this.value = value;
+        this.identifier = identifier;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public DigitsType getDigitsType() {
+        return digitsType;
+    }
+
+    public void setDigitsType(DigitsType digitsType) {
+        this.digitsType = digitsType;
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    @Override
+    public String toString() {
+        return token;
+    }
+}
+
+/**
+ * Reverse Polish Expression
+ */
+class RPN {
+
+    // 运算符
+    private final static char[] OP = new char[]{'+', '-', '*', '/', '(', ')'};
+
+    /**
+     * 判断字符是否是运算符
+     *
+     * @param op 运算符
+     * @return 是运算符返回true，不是则返回false
+     */
+    public static boolean isOperator(char op) {
+        for (int i = 0; i < OP.length; ++i) {
+            if (op == OP[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取运算符优先等级
+     *
+     * @param op 运算符
+     * @return 根据OP数组中运算符的顺序计算出运算符的优先等级：+ -是0级，* /是1级，( )是2级
+     */
+    public static int getOperatorPriorityValue(char op) {
+        return (String.copyValueOf(OP).indexOf(op)) / 2;
+    }
+
+    /**
+     * 解析表达式字符串，将中缀表达式转换成后缀表达式(逆波兰表达式)
+     * 算法描述：
+     * 1、正序遍历表达式中的每一个字符c。
+     * 3、判断字符c是否为运算符。
+     * (1) 若运算符c之前有可保存的信息则将其作为一个整体保存至output链表。
+     * (2) 若运算符c为左括号"("，则直接存入运算符栈。
+     * (3) 若运算符c为右括号")"，则依次从运算符栈中弹出运算符并保存至output链表，直到遇到左括号为止。
+     * (4) 若运算符c为非括号运算符（即：四则运算符号）。
+     * (a) 若运算符栈为空则直接将c压栈至运算符栈。
+     * (b) 若运算符栈栈顶的运算符为左括号，则将c直接压栈至运算符栈。
+     * (c) 若运算符c的优先级高于运算符栈栈顶的运算符优先级，则将c压栈至运算符栈。
+     * (d) 若运算符c的优先级小于或等于运算符栈栈顶的运算符优先级，则依次从运算符栈中弹出运算符并保存至output链表，直到遇到左括号或c的优先级高于栈顶运算符优先级的为止。再将c压栈至运算符栈。
+     * 4、当表达式遍历完成后，将尚未保存的非运算符信息作为整体保存至output链表。若运算符栈中尚有运算符时，则依序弹出运算符到output链表。
+     *
+     * @param expression 表达式
+     * @return 后缀式链表
+     */
+    public static LinkedList<String> parse(String expression) {
+        // 结果输出栈
+        LinkedList<String> output = new LinkedList<String>();
+        // 运算符栈
+        Stack<Character> operators = new Stack<Character>();
+
+        // 字符串截取起始位置
+        int startPos = 0;
+        // 字符串截取末尾位置
+        int endPos = 0;
+
+        // 正序遍历表达式中的每一个字符c
+        for (char c : expression.toCharArray()) {
+
+            // 字符串截取的结束位置+1
+            ++endPos;
+
+            // 判断字符c是否为运算符。
+            if (isOperator(c)) {
+
+                // 若运算符c之前有可保存的信息则将其作为一个整体保存至output链表。
+                if (startPos < endPos - 1) {
+                    output.add(expression.substring(startPos, endPos - 1));
+                }
+
+                // 更新字符串截取的起始位置
+                startPos = endPos;
+
+                // 若运算符c为左括号"("，则直接存入运算符栈。
+                if (c == '(') {
+                    operators.push(c);
+
+                    // 若运算符c为右括号")"，则依次从运算符栈中弹出运算符并保存至output链表，直到遇到左括号为止。
+                } else if (c == ')') {
+                    char op;
+                    while (!operators.isEmpty() && (op = operators.pop()) != '(') {
+                        output.add(String.valueOf(op));
+                    }
+
+                    // 若运算符c为非括号运算符（即：四则运算符号）
+                } else {
+
+                    // 若运算符栈为空则直接将c压栈至运算符栈。
+                    if (operators.isEmpty()) {
+                        operators.push(c);
+
+                        // 若运算符栈栈顶的运算符为左括号，则将c直接压栈至运算符栈。
+                    } else if (operators.peek() == '(') {
+                        operators.push(c);
+
+                        // 若运算符c的优先级高于运算符栈栈顶的运算符优先级，则将c压栈至运算符栈。
+                    } else if (getOperatorPriorityValue(c) > getOperatorPriorityValue(operators.peek())) {
+                        operators.push(c);
+
+                        // 若运算符c的优先级小于或等于运算符栈栈顶的运算符优先级，则依次从运算符栈中弹出运算符并保存至output链表，直到遇到左括号或c的优先级高于栈顶运算符优先级的为止。再将c压栈至运算符栈。
+                    } else {
+                        while (!operators.isEmpty() && getOperatorPriorityValue(c) <= getOperatorPriorityValue(operators.peek()) && operators.peek() != '(') {
+                            output.add(String.valueOf(operators.pop()));
+                        }
+                        operators.push(c);
+                    }
+                }
+            }
+        }
+
+        // 当表达式遍历完成后，将尚未保存的非运算符信息作为整体保存至output链表。若运算符栈中尚有运算符时，则依序弹出运算符到output链表。
+        if (startPos < expression.length()) {
+            output.add(expression.substring(startPos));
+        }
+        while (!operators.isEmpty()) {
+            output.add(String.valueOf(operators.pop()));
+        }
+
+        return output;
+    }
+
+    /**
+     * 将泛型为String的列表转换为连续的String
+     *
+     * @param list 包含多个String片段的栈
+     * @return 连续的String对象
+     */
+    private static String list2String(List<String> list) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+}
+
+/**
+ * a calculator
+ */
+class Calculator {
+
+    /**
+     * 表达式补全
+     * 由于“+”、“-”可作为单目表达式使用（如：-3+2），因此通过预处理为表达式在不影响结果的前提下添加0，使其保证能有二元进行运算
+     * 示例：
+     * 8*-1.25+12 => 8*(0-1.25)+12
+     *
+     * @param expression 待处理的表达式
+     * @return 处理后的表达式
+     */
+    private static String expressionCompletion(String expression) {
+        StringBuilder sb = new StringBuilder(expression);
+        int len = sb.length();
+        boolean b = false;
+        for (int i = 0; i < len; ++i) {
+            char c = sb.charAt(i);
+            b = false;
+
+            if (c == '-' || c == '+') {
+                if (i == 0) {
+                    sb.insert(0, "(0");
+                    b = true;
+                } else {
+                    if (RPN.isOperator(sb.charAt(i - 1)) && sb.charAt(i - 1) != ')') {
+                        sb.insert(i, "(0");
+                        b = true;
+                    }
+                }
+                if (b) {
+                    len += 2;
+                    for (int j = i + 3; i < len; ++j) {
+                        if (RPN.isOperator(sb.charAt(j))) {
+                            sb.insert(j, ')');
+                            ++len;
+                            break;
+                        }
+                    }
+
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 表达式计算
+     * 先将中缀表达式转换为后缀表达式，再计算表达式的结果
+     *
+     * @param expression 表达式
+     * @return 运算结果
+     */
+    public static double calculate(String expression) {
+
+        // 将表达式补充完整
+        expression = expressionCompletion(expression);
+
+        // 使用逆波兰算法处理
+        LinkedList<String> rpnList = RPN.parse(expression);
+
+        // 保存每一步运算结果的操作数栈
+        Stack<Double> operands = new Stack<>();
+
+        // 若表达式第一位为运算符，则表达式无效
+        if (RPN.isOperator(rpnList.get(0).charAt(0))) {
+            return 0.0;
+        }
+
+        // 遍历逆波兰表达式中每一项元素
+        for (String elem : rpnList) {
+
+            // 若是运算符
+            if (RPN.isOperator(elem.charAt(0))) {
+
+                // 不满足二元运算抛出异常
+                if (operands.size() < 2) {
+                    return 0.0;
+                }
+
+                // 从操作数栈取出栈顶的两个操作数
+                double value2 = operands.pop();
+                double value1 = operands.pop();
+
+                // 获得运算结果
+                double result = binaryOperation(elem.charAt(0), value1, value2);
+
+                // 将计算结果压栈
+                operands.push(result);
+
+                // 如果是数值
+            } else {
+                operands.push(Double.parseDouble(elem));
+            }
+        }
+        // 如果操作数栈中元素个数不唯一则说明表达式不正确
+        if (operands.size() != 1) {
+            return 0.0;
+        }
+
+        // 返回操作数栈中唯一的元素
+        return operands.pop();
+    }
+
+    /**
+     * 二元运算
+     *
+     * @param operator 运算符
+     * @param value1   值1
+     * @param value2   值2
+     * @return 运算结果
+     */
+    private static double binaryOperation(char operator, double value1, double value2) {
+        switch (operator) {
+            case '+':
+                return value1 + value2;
+            case '-':
+                return value1 - value2;
+            case '*':
+                return value1 * value2;
+            case '/':
+                if (value2 == 0) {
+                    return 0.0;
+                }
+                return value1 / value2;
+            default:
+                return 0.0;
+        }
+    }
+}
+
+/**
+ * Java_TranslationSchemaAnalysis
+ *
+ * @author Felix
+ * @date 5/27/2019
+ */
+public class Java_TranslationSchemaAnalysis {
+    /**
+     * string buffer stores input program
+     */
+    private static StringBuffer inputBuffer = new StringBuffer();
+
+    /**
+     * CFG of the LL(1) parser
+     */
+    private static CFG cfg;
+
+    /**
+     * tokens of the input
+     */
+    private static ArrayList<String> tokens = new ArrayList<>();
+
+    /**
+     * parsing table of the LL(1) parser
+     */
+    private static HashMap<String, HashMap<String, Production>> parsingTable = new HashMap<>();
+
+    /**
+     * parsing stack of the LL(1) parser
+     */
+    private static Stack<Node> parsingStack = new Stack<>();
+
+    /**
+     * list of identifiers
+     */
+    private static ArrayList<Node> identifiers = new ArrayList<>();
+
+    /**
+     * if parsing is error
+     */
+    private static boolean isError = false;
+
+    /**
+     * initialize CFG with:
+     * program -> decls compoundstmt
+     * decls -> decl ; decls | E
+     * decl -> int ID = INTNUM | real ID = REALNUM
+     * stmt -> ifstmt | assgstmt | compoundstmt
+     * compoundstmt -> { stmts }
+     * stmts -> stmt stmts | E
+     * ifstmt -> if ( boolexpr ) then stmt else stmt
+     * assgstmt -> ID = arithexpr ;
+     * boolexpr -> arithexpr boolop arithexpr
+     * boolop -> < | > | <= | >= | ==
+     * arithexpr -> multexpr arithexprprime
+     * arithexprprime -> + multexpr arithexprprime | - multexpr arithexprprime | E
+     * multexpr -> simpleexpr multexprprime
+     * multexprprime -> * simpleexpr multexprprime | / simpleexpr multexprprime | E
+     * simpleexpr -> ID | INTNUM | REALNUM | ( arithexpr )
+     */
+    private static void initCFG() {
+        ArrayList<String> nonterminals = new ArrayList<>(Arrays.asList("program", "decls", "decl", "stmt", "compoundstmt",
+                "stmts", "ifstmt", "assgstmt", "boolexpr", "boolop", "arithexpr", "arithexprprime", "multexpr",
+                "multexprprime", "simpleexpr"
+        ));
+        ArrayList<String> terminals = new ArrayList<>(Arrays.asList(";", "int", "ID", "=", "INTNUM",
+                "real", "REALNUM", "{", "}", "if", "(", ")", "then", "else", "<", ">", "<=", ">=", "==", "+", "-", "*", "/"));
+        ArrayList<Production> productions = new ArrayList<>(Arrays.asList(
+                new Production("program", "decls compoundstmt"),
+                new Production("decls", "decl ; decls"),
+                new Production("decls", "E"),
+                new Production("decl", "int ID = INTNUM", Action.DECLARATION),
+                new Production("decl", "real ID = REALNUM", Action.DECLARATION),
+                new Production("stmt", "ifstmt"),
+                new Production("stmt", "assgstmt"),
+                new Production("stmt", "compoundstmt"),
+                new Production("compoundstmt", "{ stmts }"),
+                new Production("stmts", "stmt stmts"),
+                new Production("stmts", "E"),
+                new Production("ifstmt", "if ( boolexpr ) then stmt else stmt", Action.CONDITIONING),
+                new Production("assgstmt", "ID = arithexpr ;", Action.ASSIGNMENT),
+                new Production("boolexpr", "arithexpr boolop arithexpr", Action.COMPARISION),
+                new Production("boolop", "<"),
+                new Production("boolop", ">"),
+                new Production("boolop", "<="),
+                new Production("boolop", ">="),
+                new Production("boolop", "=="),
+                new Production("arithexpr", "multexpr arithexprprime"),
+                new Production("arithexprprime", "+ multexpr arithexprprime", Action.ADDITION),
+                new Production("arithexprprime", "- multexpr arithexprprime", Action.SUBTRACTION),
+                new Production("arithexprprime", "E"),
+                new Production("multexpr", "simpleexpr  multexprprime"),
+                new Production("multexprprime", "* simpleexpr multexprprime", Action.MULTIPLICATION),
+                new Production("multexprprime", "/ simpleexpr multexprprime", Action.DIVISION),
+                new Production("multexprprime", "E"),
+                new Production("simpleexpr", "ID"),
+                new Production("simpleexpr", "INTNUM"),
+                new Production("simpleexpr", "REALNUM"),
+                new Production("simpleexpr", "( arithexpr )")
+        ));
+        cfg = new CFG(nonterminals, terminals, productions, "program");
+    }
+
+    /**
+     * initialize the parsing table with:
+     * ./parsing_table.png
+     */
+    private static void initParsingTable() {
+        /*
+          construct an empty parsing table
+         */
+        for (String nonterminal : cfg.getNonterminals()) {
+            parsingTable.put(nonterminal, new HashMap<>());
+        }
+        /*
+          fill the parsing table
+         */
+        parsingTable.get("program").put("int", cfg.getProductions().get(0));
+        parsingTable.get("program").put("real", cfg.getProductions().get(0));
+        parsingTable.get("program").put("{", cfg.getProductions().get(0));
+        parsingTable.get("decls").put("int", cfg.getProductions().get(1));
+        parsingTable.get("decls").put("real", cfg.getProductions().get(1));
+        parsingTable.get("decls").put("{", cfg.getProductions().get(2));
+        parsingTable.get("decl").put("int", cfg.getProductions().get(3));
+        parsingTable.get("decl").put("real", cfg.getProductions().get(4));
+        parsingTable.get("stmt").put("ID", cfg.getProductions().get(6));
+        parsingTable.get("stmt").put("{", cfg.getProductions().get(7));
+        parsingTable.get("stmt").put("if", cfg.getProductions().get(5));
+        parsingTable.get("compoundstmt").put("{", cfg.getProductions().get(8));
+        parsingTable.get("stmts").put("ID", cfg.getProductions().get(9));
+        parsingTable.get("stmts").put("{", cfg.getProductions().get(9));
+        parsingTable.get("stmts").put("}", cfg.getProductions().get(10));
+        parsingTable.get("stmts").put("if", cfg.getProductions().get(9));
+        parsingTable.get("ifstmt").put("if", cfg.getProductions().get(11));
+        parsingTable.get("assgstmt").put("ID", cfg.getProductions().get(12));
+        parsingTable.get("boolexpr").put("ID", cfg.getProductions().get(13));
+        parsingTable.get("boolexpr").put("INTNUM", cfg.getProductions().get(13));
+        parsingTable.get("boolexpr").put("REALNUM", cfg.getProductions().get(13));
+        parsingTable.get("boolexpr").put("(", cfg.getProductions().get(13));
+        parsingTable.get("boolop").put("<", cfg.getProductions().get(14));
+        parsingTable.get("boolop").put(">", cfg.getProductions().get(15));
+        parsingTable.get("boolop").put("<=", cfg.getProductions().get(16));
+        parsingTable.get("boolop").put(">=", cfg.getProductions().get(17));
+        parsingTable.get("boolop").put("==", cfg.getProductions().get(18));
+        parsingTable.get("arithexpr").put("ID", cfg.getProductions().get(19));
+        parsingTable.get("arithexpr").put("INTNUM", cfg.getProductions().get(19));
+        parsingTable.get("arithexpr").put("REALNUM", cfg.getProductions().get(19));
+        parsingTable.get("arithexpr").put("(", cfg.getProductions().get(19));
+        parsingTable.get("arithexprprime").put(";", cfg.getProductions().get(22));
+        parsingTable.get("arithexprprime").put(")", cfg.getProductions().get(22));
+        parsingTable.get("arithexprprime").put("<", cfg.getProductions().get(22));
+        parsingTable.get("arithexprprime").put(">", cfg.getProductions().get(22));
+        parsingTable.get("arithexprprime").put("<=", cfg.getProductions().get(22));
+        parsingTable.get("arithexprprime").put(">=", cfg.getProductions().get(22));
+        parsingTable.get("arithexprprime").put("==", cfg.getProductions().get(22));
+        parsingTable.get("arithexprprime").put("+", cfg.getProductions().get(20));
+        parsingTable.get("arithexprprime").put("-", cfg.getProductions().get(21));
+        parsingTable.get("multexpr").put("ID", cfg.getProductions().get(23));
+        parsingTable.get("multexpr").put("INTNUM", cfg.getProductions().get(23));
+        parsingTable.get("multexpr").put("REALNUM", cfg.getProductions().get(23));
+        parsingTable.get("multexpr").put("(", cfg.getProductions().get(23));
+        parsingTable.get("multexprprime").put(";", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put(")", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put("<", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put(">", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put("<=", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put(">=", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put("==", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put("+", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put("-", cfg.getProductions().get(26));
+        parsingTable.get("multexprprime").put("*", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put("/", cfg.getProductions().get(25));
+        parsingTable.get("simpleexpr").put("ID", cfg.getProductions().get(27));
+        parsingTable.get("simpleexpr").put("INTNUM", cfg.getProductions().get(28));
+        parsingTable.get("simpleexpr").put("REALNUM", cfg.getProductions().get(29));
+        parsingTable.get("simpleexpr").put("(", cfg.getProductions().get(30));
+    }
+
+    /**
+     * initialize the stack
+     */
+    private static void initStack() {
+        parsingStack.push(new Node("$"));
+        parsingStack.push(new Node(cfg.getStartSymbol()));
+    }
+
+    /**
+     * initialize the LL(1) parser
+     */
+    private static void init() {
+        initCFG();
+        initParsingTable();
+        initStack();
+        /*
+          get tokens
+         */
+        tokens.addAll(LexicalAnalyzer.tokenize(inputBuffer.toString()));
+    }
+
+    /**
+     * check if an input string is identifier
+     *
+     * @param str input string
+     * @return is identifier
+     */
+    private static boolean isIdentifier(String str) {
+        if (str.isEmpty() || typeOfDigit(str) != DigitsType.NONDIGITS) {
+            return false;
+        } else {
+            return !cfg.isTerminals(str) && !cfg.isNonterminals(str);
+        }
+    }
+
+    /**
+     * get the digits type of an input string
+     *
+     * @param str input string
+     * @return DigitsType
+     */
+    private static DigitsType typeOfDigit(String str) {
+        if (str.isEmpty()) {
+            return DigitsType.NONDIGITS;
+        }
+        boolean decimalPoint = false;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '.') {
+                decimalPoint = true;
+                continue;
+            }
+            if (str.charAt(i) < '0' || str.charAt(i) > '9') {
+                return DigitsType.NONDIGITS;
+            }
+        }
+        if (decimalPoint) {
+            return DigitsType.REAL;
+        } else {
+            return DigitsType.INT;
+        }
+    }
+
+    /**
+     * check if an input string is in identifiers list
+     *
+     * @param token input string
+     * @return contains identifier
+     */
+    private static boolean containsIdentifier(String token) {
+        boolean flag = false;
+        for (Node node : identifiers) {
+            if (node.getIdentifier().equals(token)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * get index of an identifier in identifiers list
+     *
+     * @param token input string
+     * @return index identifier
+     */
+    private static int indexOfIdentifier(String token) {
+        boolean flag = false;
+        for (int i = 0; i < identifiers.size(); i++) {
+            Node node = identifiers.get(i);
+            if (node.getIdentifier().equals(token)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            /*
+              read the program into stringBuffer
+             */
+            inputBuffer.append(sc.nextLine()).append("\n");
+        }
+        /*
+          add $ to the end
+         */
+        inputBuffer.append("$");
+        sc.close();
+    }
+
+    private static boolean getConditioning(ArrayList<String> list) {
+        String op = list.get(1);
+        if (">".equals(op)) {
+            return Double.parseDouble(list.get(0)) > Double.parseDouble(list.get(2));
+        } else if ("<".equals(op)) {
+            return Double.parseDouble(list.get(0)) < Double.parseDouble(list.get(2));
+        } else if (">=".equals(op)) {
+            return Double.parseDouble(list.get(0)) >= Double.parseDouble(list.get(2));
+        } else if ("<=".equals(op)) {
+            return Double.parseDouble(list.get(0)) <= Double.parseDouble(list.get(2));
+        } else if ("==".equals(op)) {
+            return Double.parseDouble(list.get(0)) == Double.parseDouble(list.get(2));
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * parse the tokens
+     */
+    private static void parse() {
+        int index = 0;
+        int branchCount = 0;
+        boolean calculating = false;
+        boolean isConditioningTrue = true;
+        boolean isConditioning = false;
+        boolean executable = true;
+        ArrayList<String> condition = new ArrayList<>();
+        StringBuffer polishNotation = new StringBuffer();
+        String previousParsed = null;
+        Node lhsIdentifier = null;
+        Action currentAction = Action.NO_ACTION;
+        Node x = parsingStack.peek();
+        while (!"$".equals(x.getToken())) {
+            String current = tokens.get(index);
+            if ("E".equals(x.getToken())) {
+                parsingStack.pop();
+            } else if (x.getToken().equals(current)) {
+                if (";".equals(current)) {
+                    switch (currentAction) {
+                        case DECLARATION:
+                            currentAction = Action.NO_ACTION;
+                            lhsIdentifier = null;
+                            break;
+                        case ASSIGNMENT:
+                            double result = Calculator.calculate(polishNotation.toString());
+                            if (executable) {
+                                lhsIdentifier.setValue(result);
+                            }
+                            lhsIdentifier = null;
+                            calculating = false;
+                            currentAction = Action.NO_ACTION;
+                            polishNotation.setLength(0);
+                            break;
+                        default:
+                            break;
+                    }
+                    if (isConditioning) {
+                        branchCount--;
+                    }
+                    if (branchCount == 0) {
+                        isConditioning = false;
+                        executable = true;
+                        condition.clear();
+                    }
+                } else if ("real".equals(current) && currentAction == Action.DECLARATION) {
+                    lhsIdentifier = new Node();
+                    lhsIdentifier.setDigitsType(DigitsType.REAL);
+                } else if ("int".equals(current) && currentAction == Action.DECLARATION) {
+                    lhsIdentifier = new Node();
+                    lhsIdentifier.setDigitsType(DigitsType.INT);
+                } else if (("+".equals(current) ||
+                        "-".equals(current) ||
+                        "*".equals(current) ||
+                        "/".equals(current)) &&
+                        calculating &&
+                        currentAction == Action.ASSIGNMENT) {
+                    polishNotation.append(current + " ");
+                } else if (isConditioning && ")".equals(current)) {
+                    isConditioningTrue = getConditioning(condition);
+                    currentAction = Action.NO_ACTION;
+                } else if (isConditioningTrue && "then".equals(current) && isConditioning) {
+                    executable = true;
+                } else if (!isConditioningTrue && "then".equals(current) && isConditioning) {
+                    executable = false;
+                } else if (isConditioningTrue && "else".equals(current) && isConditioning) {
+                    executable = false;
+                } else if (!isConditioningTrue && "else".equals(current) && isConditioning) {
+                    executable = true;
+                } else if (currentAction == Action.COMPARISION && isConditioning &&
+                        (">".equals(current) || "<".equals(current) || ">=".equals(current) || "<=".equals(current) || "==".equals(current))) {
+                    condition.add(current);
+                }
+                previousParsed = parsingStack.pop().getToken();
+                index++;
+            } else if ("ID".equals(x.getToken()) ||
+                    "REALNUM".equals(x.getToken()) ||
+                    "INTNUM".equals(x.getToken())) {
+                if (typeOfDigit(current) == DigitsType.INT) {
+                    int value = Integer.parseInt(current);
+                    /*
+                      divide by zero
+                     */
+                    if (value == 0 && "/".equals(previousParsed)) {
+                        error(index, current);
+                    }
+                    if (currentAction == Action.DECLARATION) {
+                        lhsIdentifier = identifiers.get(indexOfIdentifier(lhsIdentifier.getIdentifier()));
+                        if (lhsIdentifier.getDigitsType() != DigitsType.INT) {
+                            error(index, current, DigitsType.INT, DigitsType.REAL);
+                        }
+                        lhsIdentifier.setValue(Double.parseDouble(String.valueOf(value)));
+                    }
+                    if (currentAction == Action.ASSIGNMENT && calculating) {
+                        polishNotation.append(current + " ");
+                    }
+                    if (currentAction == Action.COMPARISION && isConditioning) {
+                        condition.add(current);
+                    }
+                    previousParsed = parsingStack.pop().getToken();
+                    index++;
+                } else if (typeOfDigit(current) == DigitsType.REAL) {
+                    double value = Double.parseDouble(current);
+                    /*
+                      divide by zero
+                     */
+                    if (value == 0.0 && "/".equals(previousParsed)) {
+                        error(index, current);
+                    }
+                    if (currentAction == Action.DECLARATION) {
+                        lhsIdentifier = identifiers.get(indexOfIdentifier(lhsIdentifier.getIdentifier()));
+                        if (lhsIdentifier.getDigitsType() != DigitsType.REAL) {
+                            error(index, current, DigitsType.REAL, DigitsType.INT);
+                        }
+                        lhsIdentifier.setValue(value);
+                    }
+                    if (currentAction == Action.ASSIGNMENT && calculating) {
+                        polishNotation.append(current + " ");
+                    }
+                    if (currentAction == Action.COMPARISION && isConditioning) {
+                        condition.add(current);
+                    }
+                    previousParsed = parsingStack.pop().getToken();
+                    index++;
+                } else {
+                    if (!isIdentifier(current)) {
+                        error();
+                        break;
+                    }
+                    if (currentAction == Action.DECLARATION) {
+                        lhsIdentifier.setIdentifier(current);
+                        identifiers.add(lhsIdentifier);
+                    }
+                    if (currentAction == Action.ASSIGNMENT) {
+                        if (!calculating) {
+                            lhsIdentifier = identifiers.get(indexOfIdentifier(current));
+                            calculating = true;
+                        } else {
+                            Node identifier = identifiers.get(indexOfIdentifier(current));
+//                            if (identifier.getDigitsType() != lhsIdentifier.getDigitsType()) {
+//                                error(index, current, identifier.getDigitsType(), lhsIdentifier.getDigitsType());
+//                            } else {
+                                polishNotation.append(identifier.getValue() + " ");
+//                            }
+                        }
+                    }
+                    if (currentAction == Action.COMPARISION && isConditioning) {
+                        Node identifier = identifiers.get(indexOfIdentifier(current));
+                        condition.add(identifier.getValue().toString());
+                    }
+                    previousParsed = parsingStack.pop().getToken();
+                    index++;
+                }
+            } else if (cfg.isTerminals(x.getToken())) {
+                error();
+            } else if ((parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey(current)) ||
+                    (typeOfDigit(current) == DigitsType.NONDIGITS && parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey("ID")) ||
+                    (typeOfDigit(current) == DigitsType.INT && parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey("INTNUM")) ||
+                    (typeOfDigit(current) == DigitsType.REAL && parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey("REALNUM"))) {
+                Production production = null;
+                if ((parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey(current))) {
+                    production = parsingTable.get(x.getToken()).get(current);
+                } else if (typeOfDigit(current) == DigitsType.NONDIGITS && parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey("ID")) {
+                    production = parsingTable.get(x.getToken()).get("ID");
+                } else if (typeOfDigit(current) == DigitsType.INT && parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey("INTNUM")) {
+                    production = parsingTable.get(x.getToken()).get("INTNUM");
+                } else if (typeOfDigit(current) == DigitsType.REAL && parsingTable.containsKey(x.getToken()) && parsingTable.get(x.getToken()).containsKey("REALNUM")) {
+                    production = parsingTable.get(x.getToken()).get("REALNUM");
+                }
+                parsingStack.pop();
+                if (currentAction == Action.NO_ACTION) {
+                    switch (production.getAction()) {
+                        case DECLARATION:
+                            currentAction = Action.DECLARATION;
+                            break;
+                        case ASSIGNMENT:
+                            currentAction = Action.ASSIGNMENT;
+                            break;
+                        case COMPARISION:
+                            currentAction = Action.COMPARISION;
+                            break;
+                        case CONDITIONING:
+                            isConditioning = true;
+                            branchCount = 2;
+                        default:
+                            currentAction = Action.NO_ACTION;
+                            break;
+                    }
+                }
+                /*
+                  push rhs into stack reversely
+                */
+                Stack<Node> tempStack = new Stack<>();
+                for (String token : production.getRhs()) {
+                    tempStack.push(new Node(token));
+                }
+                while (!tempStack.empty()) {
+                    parsingStack.push(tempStack.peek());
+                    tempStack.pop();
+                }
+            } else {
+                error();
+            }
+            x = parsingStack.peek();
+        }
+    }
+
+    /**
+     * get error's position (line)
+     *
+     * @param index position
+     * @param token error token
+     */
+    private static int getErrorLine(int index, String token) {
+        /*
+          get line count by token index
+         */
+        int line = 1;
+        int count = 0;
+        for (int i = 0; i < inputBuffer.toString().length() && count < index; i++) {
+            if (inputBuffer.charAt(i) == tokens.get(count).charAt(0)) {
+                int j = 1;
+                while (j < tokens.get(count).length() && inputBuffer.charAt(i) == tokens.get(count).charAt(j)) {
+                    i++;
+                    j++;
+                }
+                count++;
+            } else if (inputBuffer.charAt(i) == '\n') {
+                line++;
+            }
+        }
+        return line;
+    }
+
+    /**
+     * print error
+     */
+    private static void error() {
+        isError = true;
+        System.out.println("syntax error");
+    }
+
+    /**
+     * print error with its position (line)
+     *
+     * @param index position
+     * @param token error token
+     * @param from  convert type from
+     * @param to    convert type to
+     */
+    private static void error(int index, String token, DigitsType from, DigitsType to) {
+        isError = true;
+        /*
+          print error
+         */
+        System.out.println("error message:line " + getErrorLine(index, token) + "," + DigitsType.getType(from) + " can not be translated into " + DigitsType.getType(to) + " type");
+    }
+
+    /**
+     * print error with its position (line)
+     *
+     * @param index position
+     * @param token error token
+     */
+    private static void error(int index, String token) {
+        isError = true;
+        /*
+          print error
+         */
+        System.out.print("error message:line " + getErrorLine(index, token) + ",division by zero");
+    }
+
+    /**
+     *
+     */
+    private static void print() {
+        for (int i = 0; i < identifiers.size(); i++) {
+            Node id = identifiers.get(i);
+            System.out.print(id.getIdentifier() + ": " + ((id.getDigitsType() == DigitsType.INT) ? String.format("%.0f", id.getValue()) : id.getValue()));
+            if (i < identifiers.size() - 1) {
+                System.out.println();
+            }
+        }
+    }
+
+    /**
+     * lexical analysis
+     */
+    private static void analysis() {
+        read();
+        init();
+        parse();
+        if (!isError) {
+            print();
+        }
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

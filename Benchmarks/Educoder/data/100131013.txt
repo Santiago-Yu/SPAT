@@ -1,0 +1,28 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int[] arr = new int[Math.abs(num1 - num2)+1];
+		int sum = 0;
+        for(int i = 0; i < arr.length; i++){
+        	if(i == 0){
+            	arr[i] = num1;
+                int h = arr[i] / 100;
+                int t =(arr[i] % 100) / 10;
+            	int d = arr[i] % 10;
+                sum = sum + h + t + d;
+            }else{
+                arr[i] = arr[i - 1] + 1;
+                int h = arr[i] / 100;
+                int t =(arr[i] % 100) / 10;
+            	int d = arr[i] % 10;
+                sum = sum + h + t + d;
+            }
+        }
+		return sum;    
+		/********** END **********/
+	}
+}

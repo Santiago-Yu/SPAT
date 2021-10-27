@@ -1,0 +1,37 @@
+package step1;
+import java.util.HashSet;
+import java.util.Arrays;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        HashSet<Integer> all = new HashSet<>();
+        for (int i = 1; i <= 10000 ; i++)
+        {
+            all.add(i);
+        }
+        for(int i=0;i<nums.length;++i)
+        {
+            if(all.contains(nums[i]))
+            {
+                all.remove(nums[i]);
+            }
+        }
+        Integer[] lost = all.toArray(new Integer[0]);
+        Arrays.sort(lost);
+        String res = "";
+        for (Integer i : lost)
+        {
+            res+=String.valueOf(i);
+        }
+        long result = Long.parseLong(res);
+        int r = (int) (result%11);
+        return r;
+
+    
+	
+	}
+
+	/********* End *********/
+}

@@ -1,0 +1,32 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	public void showDirStructure(File dir)	{
+		
+		showFile(dir, "");
+		
+	}
+	
+	public void showFile(File f, String pre) {
+		if(!f.exists()) {
+			return ;
+		}
+		//jpg，png，bmp
+		if(!f.isDirectory()) {
+			String name = f.getName();
+			if(name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith(".bmp"))
+				System.out.println(pre + "--" + name);
+			return ;
+		}
+		System.out.println(pre + "+--" + f.getName());
+		pre = pre + "  ";
+		//是目录
+		File [] list = f.listFiles();
+		for(int i=0; i<list.length; i++) {
+			showFile(list[i], pre);
+		}
+	}
+}

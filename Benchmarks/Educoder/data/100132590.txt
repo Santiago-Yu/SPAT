@@ -1,0 +1,30 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int sum = length * width;
+		int j = (int)Math.sqrt(sum);
+		int count = 0;
+		int s = 0;
+		int a = 0;
+		int b = 0;
+		
+		for(;j >= 1;j--){
+			s = j * j;
+			count = (int)sum/s;
+			a = (int)length/j;
+			b = (int)width/j;
+			if((sum-count*s) == 0&&(length-a*j) == 0&&(width-b*j) == 0)break;
+		}
+		
+		System.out.println(j);
+		System.out.println(count);
+		/********** END **********/
+	}
+}

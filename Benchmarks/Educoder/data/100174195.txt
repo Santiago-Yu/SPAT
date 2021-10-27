@@ -1,0 +1,44 @@
+package step4;
+
+import java.util.Scanner;
+
+public class ForPractice4 {
+	public static void main(String[] args) {
+		/*****start*****/
+		int m =1000;
+		Scanner input = new Scanner(System.in);
+		System.out.println("欢迎使用中国人民银行ATM取款机");//修改，字也没打对
+		while(true){//新增
+			System.out.println("输入取款金额：");
+			int i = input.nextInt();//没有newInt方法
+			if(i<=m){//修改
+				m -= i; //新增 
+			    System.out.println("剩余金额："+m+"，是否继续（'1'：结束，'2'：继续）：");//修改，字和代码都有问题
+		    	int j = input.nextInt();//新增
+				switch(j){//修改
+	        		case 2:
+			    		//  System.out.println("输入取款金额：");
+		        		//  int i = input.nextInt();
+		        		//  if(i<=(m-i)){
+		        		//       System.out.println("剩余金额："+(m-i)+"是否继续('1'：结束，'2'：继续"));
+						//  }
+						//这样写是写不完的，通过外面的while循环进行重复
+						continue;//新增,直接进入下一次while循环
+					case 1:
+	        		    System.out.println("取款结束！");
+	        		    break;//跳出switch
+				}
+				break;//跳出while
+			}else{
+				System.out.println("目前余额："+m+"无法满足您的取款需求！");//修改
+			}
+		}
+		/*****end*****/
+	}
+}
+
+	
+
+		
+		
+	

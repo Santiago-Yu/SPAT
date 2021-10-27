@@ -1,0 +1,20 @@
+package step4;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        StringBuffer a = new StringBuffer();
+        int i=0;
+        String []qie = data.split(" ");
+        for(i=0;i<qie.length;i++){
+            a.append(qie[i]);
+            a.reverse();
+            ans.append(a);
+            ans.append(" ");
+            a.delete(0,a.length());
+        }
+        /********** End *********/
+        return ans;
+    }
+}

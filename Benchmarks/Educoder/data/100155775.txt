@@ -1,0 +1,28 @@
+package net.educoder.box.task6;
+
+public class ScaleBox extends Box {
+
+    //TODO 定义私有变量unit
+    private String unit;
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public ScaleBox(int boxType) {
+        super(boxType);
+    }
+
+    // getUnit、setUnit方法
+
+    public void printVolumn() {
+        // 调用父类的方法，计算体积
+        double volumn = this.volume();
+        System.out.println( "the volumn is:" + volumn + this.getUnit() );
+    }
+
+}

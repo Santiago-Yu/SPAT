@@ -1,0 +1,36 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+vector<int> split(string ab)
+{
+	vector<int> vec;
+	string tmp;
+	for (int i = 0; i < ab.length(); ++i)
+	{
+		if (ab[i] == ' ')
+		{
+			vec.push_back(atoi(tmp.c_str()));
+			tmp = "";
+		}
+		else tmp += ab[i];
+	}
+	vec.push_back(atoi(tmp.c_str()));
+	return vec;
+}
+int main()
+{
+	string ab;
+	getline(cin, ab);
+	vector<int> a = split(ab);
+	int n;
+	cin >> n;
+	int cnt = 0;
+	for (int i = 0; i < a.size(); ++i)
+		for (int j = i + 1; j < a.size(); ++j)
+			for (int k = j + 1; k < a.size(); ++k)
+				if (a[i] + a[j] + a[k] < n)
+					++cnt;
+	cout << cnt;
+	return 0;
+}

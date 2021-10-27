@@ -1,0 +1,40 @@
+package Pid_101;
+
+import java.util.*;
+public class Main {
+	 public static void main(String[] args) {
+		int max=0;
+	
+		// TODO Auto-generated constructor stub
+		
+		Scanner in = new Scanner(System.in);
+		String str1 = in.nextLine();
+		String str2 = in.nextLine();
+		//int max = Math.max(str1.length(), str2.length());
+		int j =0;
+		for(int i=0;i<str1.length();i++){
+			for(int k=0;k<str2.length();k++){
+				if(str1.charAt(i)==str2.charAt(k)){
+					j++;
+					for(int i1=i+1,k1=k+1;i1<str1.length()&&k1<str2.length();i1++,k1++){
+						if(str1.charAt(i1)==str2.charAt(k1))
+							j++;
+						else
+							break;
+					}
+					
+				}
+				if(j>max){
+					max=j;
+					j=0;
+				}
+				j=0;
+			}
+			
+			j=0;
+		}
+		
+		System.out.print(max);
+	}
+
+}

@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int a,b,c;
+        int sum=0;
+        
+        for(;num1<=num2;num1++){
+            if(num1<=99){
+        	a=num1/10;//十位
+          	b=num1%10;//个位
+            sum+=a+b;
+            }
+            else{
+            	c=num1/100;//百位
+          		
+                a=(num1-c*100)/10;//十位
+                b=num1-c*100-a*10;//个位
+                sum+=a+b+c;
+            }
+            
+        }
+		return sum;
+		/********** END **********/
+	}
+}

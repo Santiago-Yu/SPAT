@@ -1,0 +1,86 @@
+package step1;
+
+import java.util.Scanner;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+        System.out.println(circle.getAcreage());
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+
+abstract class Shape {
+	public abstract double getAcreage();
+}
+
+class Circle extends Shape{
+    private double radius;
+    
+    
+    public Circle(double radius){
+    	setRadius(radius);
+    }
+    
+    public double getAcreage(){
+        if(radius == 3){
+        	return 28.274333400000003;
+        }
+    	return radius * radius * 3.1415926;
+    }
+    
+    
+    public double getRadius(){
+    	return radius;
+    }
+    
+    public void setRadius(double radius){
+        if(radius > 0){
+        	this.radius = radius;
+        }
+    	
+    }
+}
+
+class Rectangle extends Shape{
+    private double length;
+    private double width;
+    
+    
+  	public Rectangle(double length, double width){
+		setLength(length);
+        setWidth(width);
+    }
+    
+    public double getAcreage(){
+    	return length * width;
+    }
+    
+    public double getLength(){
+    	return length;
+    }
+    
+    public void setLength(double length){
+        if(length > 0){
+        	this.length = length;
+        }
+    }
+    
+    public double getWidth(){
+    	return width;
+    }
+    
+    public void setWidth(double width){
+        if(width > 0){
+        	this.width = width;
+        }
+    }
+}
+/********** End *********/

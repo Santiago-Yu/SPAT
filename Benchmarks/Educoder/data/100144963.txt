@@ -1,0 +1,23 @@
+package step3;
+import java.util.Arrays;
+import java.util.Scanner;
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		int t;
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = i; j < matrix[i].length-1-i; j++) {
+				t = matrix[i][j];
+				matrix[i][j] = matrix[matrix[i].length-1-j][i];
+				matrix[matrix.length-1-j][i] = matrix[matrix.length-1-i][matrix.length-1-j];
+				matrix[matrix.length-1-i][matrix.length-1-j] = matrix[j][matrix.length-1-i];
+				matrix[j][matrix.length-1-i] = t;
+			}
+		}
+		/********* End *********/
+	}
+     
+}
+
+
+

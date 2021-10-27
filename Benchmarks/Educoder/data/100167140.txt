@@ -1,0 +1,200 @@
+
+import java.io.*;
+import java.util.*;
+
+
+public class Java_LexAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();//源程序
+    private static List<lexemeclass> tokentable = new ArrayList<lexemeclass>();//生成有序符号表
+    private static Map<String, Integer> c_keys;
+    
+    
+    //读取c_keys文件，简化关键符号的读取
+    private static void initial() throws Exception {
+    	c_keys = new HashMap<String, Integer>();
+    	FileReader fr = new FileReader("c_keys.txt");
+    	BufferedReader br = new BufferedReader(fr);
+    	for(int i=1;i<=81;i++)
+    	{
+    		String temp = br.readLine();
+    		int split = temp.indexOf("    ");
+    		c_keys.put(temp.substring(0, split), i);
+    	}
+    	c_keys.put("//", 82);
+    	c_keys.put("/*", 83);
+    }
+   
+    
+    /**
+     *  this method is to read the standard input
+     * @throws FileNotFoundException 
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+        sc.close();
+    }
+
+    
+    // add your method here!!
+    //感觉用String的方法有点大才小用了，为了加快分析的速度，决定还是用字符数组来处理，但是提取词素还是用String方法
+    private static void process()
+    {
+    	int lexemeBegin = 0;
+    	int forward = 0;
+    	
+    	String token = new String();//分离词素
+    	char[] progchars = prog.toString().toCharArray();
+    	int flag = 0;//字符串检测
+    	boolean decimal = false;//检测是否为小数
+    	
+    	while(lexemeBegin != prog.length())
+    	{
+    		int begin = progchars[lexemeBegin];
+    		//判断是不是字母或下划线，如果是就要区分是标识符还是保留字
+    		if((begin>=65&&begin<=90)||(begin>=97&&begin<=122)||begin==95)
+    		{
+    			int end = progchars[forward];    			
+    			while((end>=65&&end<=90)||(end>=97&&end<=122)||end==95||(end>=48&&end<=57))
+    			{
+    				forward++;
+    				end = progchars[forward];
+    			}
+    			token = prog.substring(lexemeBegin, forward);
+    			if(!isReserved(token))
+    			{
+    				tokentable.add(new lexemeclass(token, 81));
+    			}
+    			
+    		}
+    		
+    		//判断是不是数字
+    		else if(progchars[lexemeBegin]>='0'&&progchars[lexemeBegin]<='9')
+    		{
+    			while(progchars[forward]>='0'&&progchars[forward]<='9'||progchars[forward]=='.')
+    			{
+    				if(progchars[forward]=='.'&&decimal==false)
+    					decimal=true;
+    				else if(progchars[forward]=='.'&&decimal==true)
+    					break;
+    				forward++;
+    			}
+    			token = prog.substring(lexemeBegin, forward);
+    			tokentable.add(new lexemeclass(token, 80));
+    		}
+    		//判断是不是其他符号
+    		else if(lexemeBegin<prog.length()&&c_keys.containsKey(prog.substring(lexemeBegin, forward)))
+    		{
+    			while(forward+1<prog.length()&&c_keys.containsKey(prog.substring(lexemeBegin, forward+1)))
+    			{
+    				forward++;
+    				
+    			}
+    			token = prog.substring(lexemeBegin, forward);
+    			if(token.equals("//"))//编译器其实是不管注释的，不明白为什么还要加注释
+    			{
+    				while(prog.charAt(forward)!='\t')
+    				{
+    					forward++;
+    				}
+    				token = prog.substring(lexemeBegin, forward);
+    				tokentable.add(new lexemeclass(token, 79));
+    			}
+    			else if(token.equals("/*"))
+    			{
+    				while(!prog.subSequence(forward-2, forward).equals("*/"))
+    				{
+    					forward++;
+    				}
+    				token = prog.substring(lexemeBegin, forward);
+    				tokentable.add(new lexemeclass(token, 79));
+    			}
+    			else
+    				tokentable.add(new lexemeclass(token, c_keys.get(token)));
+    			if(token.equals("\"")&& flag == 0)//表示字符串的开始
+    			{
+    				lexemeBegin = forward;
+    				String temp;
+    				while(prog.charAt(forward)!='\"')
+    				{	
+    					forward++;
+    				}
+    				token = prog.substring(lexemeBegin,forward);
+    				tokentable.add(new lexemeclass(token, 81));
+    				flag = 1;
+    			}
+    			else if(token.equals("\"") && flag ==1)//字符串结束
+    			{
+    				flag = 0;
+    			}
+    			
+    		}
+    		
+    		lexemeBegin = forward;
+    		forward++;
+    	}
+    }
+    public static boolean isReserved(String token)
+    {
+    	if(c_keys.containsKey(token))
+    	{
+    		tokentable.add(new lexemeclass(token, c_keys.get(token)));
+    		return true;
+    	}
+    	return false;
+    }
+    /**
+     *  you should add some code in this method to achieve this lab
+     * @throws FileNotFoundException 
+     */
+    private static void analysis() throws Exception
+    {
+        read_prog();
+        initial();
+        process();
+        
+        Iterator<lexemeclass> it = tokentable.iterator();
+        int i =1;
+    	while(it.hasNext())
+    	{
+    		lexemeclass entry = (lexemeclass) it.next();
+            if(i!=tokentable.size())
+    			System.out.println(i+": "+"<"+entry.getLexeme()+","+entry.getInflact()+">");
+            else
+                System.out.print(i+": "+"<"+entry.getLexeme()+","+entry.getInflact()+">");
+            i++;
+    	}
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     * @throws FileNotFoundException 
+     */
+    public static void main(String[] args) throws Exception {
+        analysis();
+    }
+}
+class lexemeclass
+{
+	String lexeme;
+	int inflact;
+	public lexemeclass(String str, int num)
+	{
+		lexeme = str;
+		inflact = num;
+	}
+	public String getLexeme()
+	{
+		return lexeme;
+	}
+	public int getInflact()
+	{
+		return inflact;
+	}
+}

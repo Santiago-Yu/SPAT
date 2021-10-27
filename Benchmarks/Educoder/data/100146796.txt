@@ -1,0 +1,36 @@
+package step1;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class GetScores {
+    public static int getLostScores(int[] nums){
+    	//请在此补全你的代码
+    	String str = "";
+    	List<Integer> list = new ArrayList<>();		//记录要拼接的三个数
+    	Arrays.sort(nums);							//排序
+    	if(nums[0] == 4) {
+    		return 6;
+    	}else if(nums[0] == 3) {
+    		list.add(1);
+    		list.add(2);
+    	}else if(nums[0] == 2) {
+    		list.add(1);
+    	}
+    	for(int i = 1; i < nums.length; i++) {
+    		if(nums[i] - nums[i-1] > 1) {
+    			for(int j = nums[i-1] + 1; j < nums[i]; j++) {
+    				list.add(j);
+    			}
+    		}
+    	}
+    	
+    	for(Integer i : list) {
+            str += i;
+    	}
+    	BigInteger bi = new BigInteger(str);
+    	return bi.mod(new BigInteger("11")).intValue();
+    }
+}

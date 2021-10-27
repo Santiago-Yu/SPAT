@@ -1,0 +1,44 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/        
+        if (area == null || area.length == 0 || area[0].length == 0)            
+            return 0 ;                           
+        int count = 0;         
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (area[i][j] == 'o'){
+                    count ++;                    
+                    combine(area,i,j);                
+                }            
+            }        
+        }        
+        return count;    
+    }        
+    public static void combine(char[][] area, int x, int y){
+        area[x][y] = '2';        
+        if (x > area.length-1 && y > area[0].length-1 ) {
+            return;        
+        }        
+        if (x < area.length-1 && area[x+1][y] == 'o') {
+            //向下            
+            combine(area,x+1,y);        
+        }        
+        if (y < area[0].length-1 && area[x][y+1] == 'o'){
+            //向右            
+            combine(area,x,y+1);        
+        }        
+        if (x > 0 && area[x-1][y] == 'o' ){
+            //向上            
+            combine(area,x-1,y);        
+        }        
+        if (y > 0 && area[x][y-1] == 'o') {
+            //向左            
+            combine(area,x,y-1);        
+        }    
+    } 
+
+	}
+

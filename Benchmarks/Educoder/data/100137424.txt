@@ -1,0 +1,55 @@
+package case4;
+
+//密码的自动生成器：密码由大写字母/小写字母/数字组成，生成六位随机密码
+import java.util.Random;
+import java.util.Scanner;
+
+public class RandomTest {
+	public static void main(String[] args) {
+		// 定义一个字符型数组
+		char[] pardStore = new char[62];
+		// 把所有的大写字母放进去 把所有的小写字母放进去 把0到9放进去
+		/********* Begin *********/
+        int i = 0 ;
+        for(char ch='A'; ch<='Z'; ch++) {
+            pardStore[i] = ch ;
+            i++ ;
+        }
+        for(char ch='a'; ch<='z'; ch++) {
+            pardStore[i] = ch ;
+            i++ ;
+        }
+        for(char j='0'; j<'9'; j++ ) {
+            pardStore[i] = j ;
+            i++ ;
+        }
+        
+        
+        /********* End *********/
+		// 分别以1、2、3作为种子数 生成6位随机密码
+		Scanner sc = new Scanner(System.in);
+		int seed = sc.nextInt();
+		/********* Begin *********/
+     Random random=new Random(seed);
+       int a=0;
+        int b=0;
+        int c=0;
+        int d=0;
+        int e=0;
+        int f=0;
+         a=random.nextInt(62);
+         b=random.nextInt(62);
+         c=random.nextInt(62);
+         d=random.nextInt(62);
+         e=random.nextInt(62);
+         f=random.nextInt(62);
+        System.out.print(pardStore[a]);
+        System.out.print(pardStore[b]);
+        System.out.print(pardStore[c]);
+        System.out.print(pardStore[d]);
+        System.out.print(pardStore[e]);
+        System.out.print(pardStore[f]);
+       // System.out.println(pardStore[a]+pardStore[b]+pardStore[c]+pardStore[d]+pardStore[e]+pardStore[f]);
+		/********* End *********/
+	}
+}

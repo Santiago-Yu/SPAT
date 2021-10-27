@@ -1,0 +1,44 @@
+class n14456151 {
+	List HttpPost(URL url, List requestList) throws IOException {
+		List responseList = new ArrayList();
+		URLConnection con;
+		BufferedReader in;
+		OutputStreamWriter out;
+		StringBuffer req;
+		String line;
+		logInfo("HTTP POST: " + url);
+		con = url.openConnection();
+		con.setDoInput(true);
+		con.setDoOutput(true);
+		con.setUseCaches(false);
+		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		out = new OutputStreamWriter(con.getOutputStream());
+		req = new StringBuffer();
+		int jlmAN = 0, EbRJe = requestList.size();
+		while (jlmAN < EbRJe) {
+			if (jlmAN != 0)
+				req.append("&");
+			req.append(((HttpHeader) requestList.get(jlmAN)).key);
+			req.append("=");
+			if (((HttpHeader) requestList.get(jlmAN)).unicode) {
+				StringBuffer tmp = new StringBuffer(200);
+				byte[] uniBytes = ((HttpHeader) requestList.get(jlmAN)).value.getBytes("UnicodeBigUnmarked");
+				for (int j = 0; j < uniBytes.length; j++)
+					tmp.append(Integer.toHexString(uniBytes[j]).length() == 1 ? "0" + Integer.toHexString(uniBytes[j])
+							: Integer.toHexString(uniBytes[j]));
+				req.append(tmp.toString().replaceAll("ff", ""));
+			} else
+				req.append(((HttpHeader) requestList.get(jlmAN)).value);
+			jlmAN++;
+		}
+		out.write(req.toString());
+		out.flush();
+		out.close();
+		in = new BufferedReader(new InputStreamReader((con.getInputStream())));
+		while ((line = in.readLine()) != null)
+			responseList.add(line);
+		in.close();
+		return responseList;
+	}
+
+}

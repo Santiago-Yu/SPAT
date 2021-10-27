@@ -1,0 +1,24 @@
+package step1;
+
+import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+
+
+public class TimeTable {
+    public static void main(String[] args) throws IOException {
+        /********** Begin *********/
+
+       	File file = new File("src/step1/Time_Table.txt");//文件路径及名称
+	    Reader r=new FileReader(file);//读文件
+	    BufferedReader br=new BufferedReader(r);//缓冲机制
+	    String str="";
+	        while((str=br.readLine())!=null){//(str=br.readLine())很重要，不能写在上面，否则死循环
+	    System.out.println(str);//打印输出
+	    }
+	    br.close();//关闭流
+	    r.close();//关闭流
+        
+        /********** End *********/
+    }
+}

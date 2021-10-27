@@ -1,0 +1,33 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        
+        if(length < 0 || width < 0){
+        	return;
+        }
+		int area = length* width;
+		int min = (length > width) ? width : length;
+		int maxSide = 0;
+		int maxNum = 0;
+		int sideTest = 1;
+		for( ; sideTest <= min; ++sideTest) {
+			int areaTest = sideTest* sideTest;
+			if((area % areaTest) == 0 && (length % sideTest) == 0 && (width % sideTest) == 0 ) {
+				maxSide = sideTest;
+				maxNum = area / areaTest;
+			}
+		}
+        System.out.println(maxSide);
+        System.out.println(maxNum);
+		
+		
+		/********** END **********/
+	}
+}

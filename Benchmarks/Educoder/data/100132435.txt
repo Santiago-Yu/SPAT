@@ -1,0 +1,23 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int length = sc.nextInt();	//长
+        int width = sc.nextInt();	//宽
+        /********** BEGIN **********/
+
+        for (int j = width; j >= 1; j--)
+        {
+            if ( width % j == 0 && length % j == 0)
+            {
+                System.out.println(j + "\n" + ( length * width ) / (j * j) );
+                break;
+            }
+        }
+
+        /********** END **********/
+    }
+}

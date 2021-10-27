@@ -1,0 +1,31 @@
+package step2;
+
+
+public class FindZhiShu {
+
+
+	public static void main(String[] args) {
+		   /*
+		     打印输出质数的时候务必按照如下格式：System.out.print(质数+" ")；
+		     使用print进行打印同时被打印输出的质数后加上一个空格，
+		     以便于与平台提供的结果格式保持一致！
+            */
+
+		   /**********begin**********/
+        boolean is_pri[];
+        is_pri = new boolean[1005];            
+        for(int i = 1; i <= 1000; i ++)                
+        is_pri[i] = true;            
+        is_pri[1] = false;            
+        for(int i = 2; i <= 1000; i ++)               
+         if(is_pri[i])                    
+         for(int j = i*i; j <= 1000; j +=i)                       
+          is_pri[j] = false;            
+          for(int i = 1; i <= 1000; i ++)               
+           if(is_pri[i])                
+             System.out.print(i+" ");
+
+
+           /**********end**********/	
+	}
+}

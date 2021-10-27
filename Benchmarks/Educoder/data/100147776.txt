@@ -1,0 +1,21 @@
+package step4;
+
+public class MyRunnable extends Thread{
+	int b,result=1;
+	
+	public MyRunnable(int b) {
+		this.b = b;
+	}
+
+		public void run() {
+			try {
+				sleep(2000);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			for (int i = 1; i <= b; i++) {
+				result*=i;
+			}System.out.println(result);
+			
+		}
+}

@@ -1,0 +1,45 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day) {
+		int[] dm = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+		int[] dm_ = {0,31,29,31,30,31,30,31,31,30,31,30,31};
+		int[] u_dm;
+		String date[] = releaseDate.split("-");
+		int y,m,d;
+		y=Integer.parseInt(date[0]);
+		m=Integer.parseInt(date[1]);
+		d=Integer.parseInt(date[2]);
+		while(day!=0){
+			if(m>=13){
+				y++;
+				m-=12;
+				continue;
+			}
+			if(checkIfLeapYear(y)) u_dm=dm_;
+			else u_dm=dm;
+			if(day<=u_dm[m]-d){
+				d+=day;
+				day=0;
+			}else{
+				day-=(u_dm[m]-d+1);
+				m++;
+				d=1;
+			}
+
+		}
+		if(m<10&&d<10) return new String(""+y+"-0"+m+"-0"+d);
+		else if(m<10) return new String(""+y+"-0"+m+"-"+d);
+		else if(d<10) return new String(""+y+"-"+m+"-0"+d);
+		else return new String(""+y+"-"+m+"-"+d);
+	}
+	public static boolean checkIfLeapYear(int year){
+		if(year%400==0) return true;
+		else if(year%100==0) return false;
+		else if(year%4==0) return true;
+		else return false;
+	}
+	
+	
+}

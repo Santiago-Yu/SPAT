@@ -1,0 +1,373 @@
+import java.io.FileNotFoundException;
+import java.util.*;
+
+public class Java_LLParserAnalysis {
+    static List<String> terminals = new ArrayList<>();
+    static List<String> noneTerminals = new ArrayList<>();
+    static Map<String, HashSet<String>> First = new HashMap<>();
+    static Map<String, HashSet<String>> Follow = new HashMap<>();
+    static Queue<String[]> queue = new LinkedList<>();
+    static int[][] table;
+    static String syntax = "program -> compoundstmt\n" +
+            "stmt -> ifstmt\n" +
+            "stmt -> whilestmt\n" +
+            "stmt -> assgstmt\n" +
+            "stmt -> compoundstmt\n" +
+            "compoundstmt -> { stmts }\n" +
+            "stmts -> stmt stmts\n" +
+            "stmts -> E\n" +
+            "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+            "whilestmt -> while ( boolexpr ) stmt\n" +
+            "assgstmt -> ID = arithexpr ;\n" +
+            "boolexpr -> arithexpr boolop arithexpr\n" +
+            "boolop -> <\n" +
+            "boolop -> >\n" +
+            "boolop -> <=\n" +
+            "boolop -> >=\n" +
+            "boolop -> ==\n" +
+            "arithexpr -> multexpr arithexprprime\n" +
+            "arithexprprime -> + multexpr arithexprprime\n" +
+            "arithexprprime -> - multexpr arithexprprime\n" +
+            "arithexprprime -> E\n" +
+            "multexpr -> simpleexpr multexprprime\n" +
+            "multexprprime -> * simpleexpr multexprprime\n" +
+            "multexprprime -> / simpleexpr multexprprime\n" +
+            "multexprprime -> E\n" +
+            "simpleexpr -> ID\n" +
+            "simpleexpr -> NUM\n" +
+            "simpleexpr -> ( arithexpr )";
+    static String[] productions = syntax.split("\\\n");
+    static HashMap<String, HashSet<Integer>> getProIndex = new HashMap<>();
+    private static StringBuffer prog = new StringBuffer();
+    private static String[] r;
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine())
+            prog.append(sc.nextLine() + "\n");
+        prog.append("$");
+        r = prog.toString().split("[ \n]+");
+    }
+
+    private static void read_prog(String s) {
+        prog = new StringBuffer(s);
+        prog.append("\n$");
+        r = prog.toString().split("[ \n]+");
+    }
+
+    private static void analysis() {
+        /*read_prog("{\n" +
+                " ID = NUM ;\n" +
+                "}");*/
+        read_prog();
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) throws FileNotFoundException {
+        analysis();
+        getNoTerminals();
+        getFirst();
+        getFollow();
+        createTable();
+
+        boolean deBug = true;
+        if (!deBug) {
+            for (Map.Entry<String, HashSet<String>> stringHashSetEntry : First.entrySet()) {
+                System.out.println(stringHashSetEntry);
+            }
+
+            for (Map.Entry<String, HashSet<String>> stringHashSetEntry : Follow.entrySet()) {
+                System.out.println(stringHashSetEntry);
+            }
+
+            System.out.printf("%-15s", " ");
+            for (String terminal : terminals) {
+                System.out.printf("%-6s", terminal);
+            }
+            System.out.println();
+            for (int i = 0; i < table.length; i++) {
+                System.out.printf("%-15s", noneTerminals.get(i));
+                for (int j = 0; j < table[0].length; j++) {
+                    //if(table[i][j]!=null)
+                    System.out.printf("%-6s", table[i][j]);
+                }
+                System.out.println();
+            }
+        }
+        LLparser();
+        getSyncSet();
+        PrintAnwer();
+    }
+
+    private static void PrintAnwer() {
+        for (int i = 0; i < output.size() - 1; i++) {
+            System.out.println(output.get(i));
+        }
+        System.out.print(output.get(output.size() - 1));
+    }
+
+    private static void getNoTerminals() throws FileNotFoundException {
+        terminals = Arrays.asList("{", "}", "if", "(", ")", "then", "else", "while", "ID", "=", ";", "<",
+                ">", "<=", ">=", "==", "+", "-", "*", "/", "NUM", "$", "E");
+        /*Scanner in = new Scanner(new File("src/terminals"));
+        while (in.hasNextLine()) {
+            String[] strings = in.nextLine().trim().split(" ");
+            for (String string : strings) {
+                terminals.add(string);
+            }
+        }*/
+        for (String s : productions) {
+            String[] t = s.split(" ");
+            if (!noneTerminals.contains(t[0]))
+                noneTerminals.add(t[0]);
+        }
+        /*Scanner in2 = new Scanner(new File("src/syntax"));
+        while (in2.hasNextLine()) {
+            String[] strings = in2.nextLine().split("->");
+            if (!noneTerminals.contains(strings[0].replace(" ", "")))
+                noneTerminals.add(strings[0].replace(" ", ""));
+        }*/
+        table = new int[noneTerminals.size()][terminals.size()];
+        for (int i = 0; i < table.length; i++) {
+            for (int j = 0; j < table[0].length; j++) {
+                table[i][j] = -1;
+            }
+        }
+    }
+
+    private static void getFirst() {
+        for (int i = 0; i < noneTerminals.size(); i++) {
+            First.put(noneTerminals.get(i), new HashSet<>());
+        }
+        //做一个一条完整产生式与其在productions中下标的对应0-27
+        for (int i = 0; i < productions.length; i++) {
+            getProIndex.put(productions[i].split(" ")[0], new HashSet<>());
+        }
+        for (int i = 0; i < productions.length; i++) {
+            getProIndex.get(productions[i].split(" ")[0]).add(i);
+        }
+        for (String s : productions) {
+            getFirstImp(s);
+        }
+    }
+
+    private static void getFirstImp(String s) {
+        //一条一条的产生式进行First计算
+        String[] tokens = s.split("->");
+        //产生式最右边最少有一个
+        String left = tokens[0].replace(" ", "");
+        String[] right = tokens[1].substring(1).split(" ");
+        for (int i = 0; i < right.length; i++) {
+            if (terminals.contains(right[i])) {
+                if (null != First.get(left))
+                    First.get(left).add(right[i]);
+                break;
+            } else if (noneTerminals.contains(right[i])) {
+                if (null != getProIndex.get(right[i]))
+                    for (Integer integer : getProIndex.get(right[i])) {
+                        getFirstImp(productions[integer]);
+                    }
+                for (String s1 : First.get(right[i])) {
+                    First.get(left).add(s1);
+                }
+                break;
+            }
+
+        }
+    }
+
+    private static void getFollow() {
+        //初始化follow集合
+        for (int i = 0; i < productions.length; i++) {
+            Follow.put(productions[i].split(" ")[0], new HashSet<>());
+        }
+        for (int i = 0; i < productions.length; i++) {
+            //第一个产生式加入$
+            if (i == 0) {
+                Follow.get(productions[i].split(" ")[0]).add("$");
+            }
+            getFollowImp(productions[i].split(" ")[0], 5);
+        }
+
+    }
+
+    private static void getFollowImp(String target, int times) {
+        if (times == 0)
+            return;
+        for (int i = 0; i < productions.length; i++) {
+            //完全使用空格来分割
+            String[] tokens = productions[i].split(" ");
+
+            String left = tokens[0];
+
+            for (int j = 2; j < tokens.length; j++) {
+                if (tokens[j].equals(target)) {
+                    //target后面没了，target的follow要加上左边的follow
+                    if (j == tokens.length - 1) {
+                        getFollowImp(left, times - 1);
+                        if (Follow.get(left) != null)
+                            for (String s1 : Follow.get(left)) {
+                                Follow.get(target).add(s1);
+                            }
+                        continue;//防止数组越界
+                    } /*else if (tokens[j + 1].equals("|")) {
+                        getFollowImp(tokens[0], times - 1);
+                        for (String s1 : Follow.get(tokens[0])) {
+                            Follow.get(target).add(s1);
+                        }
+                    } */ else if (terminals.contains(tokens[j + 1]))
+                        Follow.get(target).add(tokens[j + 1]);
+                    //target后面的非终结符的first-E。若真有E，还得加上左边的产生式的follow
+                    boolean flag = noneTerminals.contains(tokens[j + 1]);
+                    if (flag) {
+                        boolean hasE = false;
+                        for (String s : First.get(tokens[j + 1])) {
+                            if (!s.equals("E"))
+                                Follow.get(target).add(s);
+                            else hasE = true;
+                        }
+                        if (hasE) {
+                            //右边产生式先算出来
+                            getFollowImp(tokens[j + 1], times - 1);
+                            if (Follow.get(tokens[j + 1]) != null)
+                                for (String s1 : Follow.get(tokens[j + 1])) {
+                                    Follow.get(target).add(s1);
+                                }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private static void createTable() {
+        for (int i = 0; i < productions.length; i++) {
+            //productions 一个产生式simpleexpr ->  ( arithexpr )
+            String left = productions[i].split(" ")[0];
+            String[] temp = productions[i].split(" ");
+            //这是temp [(,arithepr,)]
+            for (int k = 2; k < temp.length; k++) {
+                String right = temp[k];
+                //找到一个右侧产生体为空，所以将左侧的follow加入表中
+                if (right.equals("E")) {
+                    if (Follow.get(left) != null) {
+                        for (String s : Follow.get(left)) {
+                            int xx = noneTerminals.indexOf(left);
+                            int yy = terminals.indexOf(s);
+                            table[xx][yy] = i;
+                        }
+                    }
+                    break;
+                }
+                if (terminals.contains(right)) {
+                    int xx = noneTerminals.indexOf(left);
+                    int yy = terminals.indexOf(right);
+                    table[xx][yy] = i;
+                    break;
+                }
+                //先暂时不考虑非终结符会有空的情况
+                if (noneTerminals.contains(right)) {
+                    if (First.get(right) != null) {
+                        for (String s : First.get(right)) {
+                            int xx = noneTerminals.indexOf(left);
+                            int yy = terminals.indexOf(s);
+                            table[xx][yy] = i;
+                        }
+
+                    }
+                    break;
+                }
+
+
+            }
+
+        }
+
+    }
+
+    private static void getSyncSet() {
+
+    }
+
+    private static void LLparser() {
+        String[] temp = r;
+        int i = 0;
+        String ip = temp[i];
+        Stack<String> stack = new Stack<>();
+        stack.push("$");
+        stack.push("program");
+        String X = "program";
+        int times = 0;
+        while (!X.equals("$")) {
+            if (X.equals("E")) {
+                stack.pop();
+                X = stack.peek();
+            }
+            if (noneTerminals.contains(X)) {
+                if (-1 == table[noneTerminals.indexOf(X)][terminals.indexOf(ip)]) {
+                    String[] produ = productions[table[noneTerminals.indexOf(X)][terminals.indexOf(";")]].split(" ");
+                    queue.offer(produ);
+                    stack.pop();
+                    for (int j = produ.length - 1; j > 1; j--) {
+                        stack.push(produ[j]);
+                    }
+                    X = stack.peek();
+                    continue;
+                } else if (-1 != table[noneTerminals.indexOf(X)][terminals.indexOf(ip)]) {
+                    String[] produ = productions[table[noneTerminals.indexOf(X)][terminals.indexOf(ip)]].split(" ");
+                    queue.offer(produ);
+                    stack.pop();
+                    for (int j = produ.length - 1; j > 1; j--) {
+                        stack.push(produ[j]);
+                    }
+                }
+            } else {
+                if (X.equals(ip)) {
+                    stack.pop();
+                    ip = temp[++i];
+                } else if (terminals.contains(X)) {
+                    System.out.println("语法错误,第4行,缺少\";\"");
+                    stack.pop();
+                }
+            }
+
+            if (stack.isEmpty())
+                break;
+            X = stack.peek();
+        }
+        LLparserImpl(0);
+    }
+
+    static List<String> output = new ArrayList<>();
+
+    private static void LLparserImpl(int depth) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            sb.append("\t");
+        }
+        String[] cur = null;
+        if (!queue.isEmpty()) {
+            cur = queue.element();
+            queue.remove();
+        } else return;
+        output.add(sb + cur[0]);
+        //System.out.println(sb + cur[0]);
+        for (int i = 2; i < cur.length; i++) {
+            if (terminals.contains(cur[i])) {
+                //System.out.println("\t" + sb + cur[i]);
+                output.add("\t" + sb + cur[i]);
+            } else
+                LLparserImpl(depth + 1);
+        }
+    }
+}
+
+

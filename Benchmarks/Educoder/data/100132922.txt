@@ -1,0 +1,96 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;    
+import java.util.HashMap;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+public class Task{
+    /**
+    同现标签数据：src/step1/tag_cooccurrence.csv
+    开发者标签数据：src/step1/user_tag.csv
+    推荐结果文件：src/step1/user_recommand.csv
+    **/
+        public static void main (String []args)throws IOException {
+        int id = 1;
+        String userPath = "src/step1/user_tag.csv";               //
+        String tgtTagsPath = "src/step1/tag_cooccurrence.csv";   //同现标签路径
+        String recommandPath = "src/step1/user_recommand.csv";    //存放推荐标签的文件
+        String [] strings = {"id","recommand_tags"};
+        CsvWriter recommandWrite = new CsvWriter(recommandPath,',',Charset.forName("UTF-8"));
+        recommandWrite.writeRecord(strings);
+
+        CsvReader userReader = new  CsvReader(userPath,',', Charset.forName("UTF-8"));   //使用者标签的CsvReader构造
+        CsvReader tgtTagReader = new CsvReader(tgtTagsPath,',',Charset.forName("UTF-8")); //同现标签的标签的CsvReader构造
+        tgtTagReader.readHeaders();
+        userReader.readHeaders();
+        List<String []>tgtList = new ArrayList<String[]>();   //存放同现标签
+        List<String []> recommond = new ArrayList<String[]>();    //存放推荐标签
+        while(tgtTagReader.readRecord()){
+            String []tgtTag = tgtTagReader.getValues()[1].split(",");  //分割同现标签
+            tgtList.add(tgtTag);
+        }
+
+
+        while (userReader.readRecord()) {
+            String[] userString = userReader.getValues();   //存放使用者标签中的全部内容
+            Map<String, String> tagAndImportant = new HashMap<String, String>();          //存放使用者的标签和其对相应的权重
+            String[] userTag = userString[1].split(",");
+            String[] important = userString[2].split("]|,|\\[");
+
+            for (int temp = 0; temp < userTag.length; temp++) {              //将使用者标签和权重导入键值对
+                tagAndImportant.put(userTag[temp], important[temp + 1]);
+            }
+            float tempImportant = 0;
+            List<Integer> positionOfTgtTag = new ArrayList<Integer>();
+            //进行标签的相似度扫描
+            for (int k = 0; k < tgtList.size(); k++) {
+                float impor = 0;   //每一个同现标签与使用者标签对应的权重数
+                for (int temp = 0; temp < tgtList.get(k).length; temp++) {
+                    if (tagAndImportant.containsKey(tgtList.get(k)[temp])) {   // 查看键值对中是否含有同现标签
+                        impor = impor + Float.parseFloat(tagAndImportant.get(tgtList.get(k)[temp]));
+                    }
+                }
+                if (impor >= tempImportant) {
+                    tempImportant = impor;
+                    positionOfTgtTag.add(k);
+                }
+            }
+            //存放推荐者标签
+            int number = 0;  //记录同现标签的数目以便于去控制推荐标签数目
+            int size = 5;//允许推荐的最大推荐标签数目
+            StringBuffer recommmandBuffer = new StringBuffer();
+            for (int i = positionOfTgtTag.size()-1;number<size; i--){
+                for (int k = 0; (k < tgtList.get(positionOfTgtTag.get(i)).length) && number < size; k++) {
+                    if (!(tagAndImportant.containsKey(tgtList.get(positionOfTgtTag.get(i))[k]))) {
+                        tagAndImportant.put(tgtList.get(positionOfTgtTag.get(i))[k],tgtList.get(positionOfTgtTag.get(i))[k]);
+                        recommmandBuffer.append(tgtList.get(positionOfTgtTag.get(i))[k]);
+                        if(number!=size-1){
+                            recommmandBuffer.append(',');
+                        }
+                        number++;
+                    }
+                }
+            }
+            String recommandString [] = {String.valueOf(id++),recommmandBuffer.toString()};
+            recommandWrite.writeRecord(recommandString);    //写出推荐标签
+        }
+
+
+
+        //关闭所有IO流
+        tgtTagReader.close();
+        userReader.close();
+        recommandWrite.close();
+    }
+}

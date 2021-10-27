@@ -1,0 +1,52 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		if(file.exists()) {
+			int parentFilecount = 0;
+			//System.out.println(file.getParent());
+			String parentFileName = file.getParent();
+			for(int i = 0; i < parentFileName.length(); i++) {
+				if(parentFileName.charAt(i) == '/'){
+				   parentFilecount++;
+			    }
+			}
+			parentFilecount--;
+			//System.out.println(parentFilecount);
+			//String myDirName ="+--" + file.getName();
+			char[] tabs = new char[parentFilecount * 2];
+			for(int i = 0; i < tabs.length; i++) {
+				tabs[i] = ' ';
+			}
+			String tabsString = new String(tabs);
+			if(file.isDirectory()) {
+				String myDirName = tabsString + "+--" + file.getName();
+				System.out.println(myDirName);
+			    File[] files = file.listFiles();
+			    for (File childFile : files) {
+			    	
+			    	showDirStructure(childFile);
+				}
+			}else {
+				if(file.getName().endsWith("jpg") || file.getName().endsWith("png")
+						|| file.getName().endsWith("bmp")) {
+					String myFileName =tabsString + "--" + file.getName();
+					System.out.println(myFileName);
+				}
+			}
+		}
+
+
+
+
+
+
+	}
+	
+
+	/********** END **********/
+}

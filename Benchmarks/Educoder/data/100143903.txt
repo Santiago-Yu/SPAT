@@ -1,0 +1,40 @@
+package step2;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+
+public class Task {
+	public static void main(String[] args)throws IOException {
+		/********* Begin *********/
+		//在src/下创建文件夹test2文件夹；
+        File file1 = new File("src/test2");
+        file1.mkdir();
+        
+        //删除src/output/下的test2.txt文件；
+        File file2 = new File("src/output/test2.txt");
+        file2.delete();
+        
+        //在src/test2/目录下创建helloworld.txt文件和step2.txt文件；
+        File file3 = new File("src/test2/helloworld.txt");
+        File file4 = new File("src/test2/step2.txt");
+        file3.createNewFile();
+        file4.createNewFile();
+        
+        //列出src/output/目录和src/test2/目录下所有文件的文件名。
+        File dir2 = new File("src/output");
+
+
+        File[] output = dir2.listFiles();
+        System.out.println("output目录结构为：");
+        for(File file: output){
+            System.out.println(file.getName());
+        }
+        File[] test2 = file1.listFiles();
+        System.out.println("test2目录结构为：");
+        for(File file : test2){
+            System.out.println(file.getName());
+        }
+/********* End *********/
+	}
+}

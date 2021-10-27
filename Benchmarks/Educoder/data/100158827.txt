@@ -1,0 +1,46 @@
+package Q202;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner in = new Scanner(System.in);
+		int x = in.nextInt();
+		int i = 9;
+		int len = 1;
+		int array[] = new int[32];
+		boolean judge = true;
+		while(i != 1){
+			array[0] = x;
+			for(i = 9;i >= 2;i--){
+				if(array[0]%i == 0 && array[0] > 9){
+					x = x/i;
+					array[len] = i;
+					len++;
+					break;
+				}
+			}
+			if(i == 1 & x > 9)
+				judge = false;
+		}
+		if(judge == true)
+			sort(array,len);
+		else 
+			System.out.print("0");
+		in.close();
+	}
+	public static void sort(int arr[],int leng){
+		int i,j,temp;
+		for(i = 0;i < leng-1;i++){
+			for(j = 0;j < leng-i-1;j++){
+				if(arr[j] > arr[j+1]){
+					temp = arr[j];
+					arr[j] = arr[j+1];
+					arr[j+1] = temp;
+				}
+			}
+		}
+		for(i = 0;i < leng;i++)
+			System.out.print(arr[i]);
+	}
+}

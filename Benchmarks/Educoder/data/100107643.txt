@@ -1,0 +1,129 @@
+package step4;
+
+/**
+ * Created by sykus on 2018/1/15.
+ */
+public class MyDoubleLinkedList {
+
+    private Node head;//头结点
+    private Node tail;//指向链表的尾结点
+    private int size;
+
+    public MyDoubleLinkedList() {
+        head = new Node(null, Integer.MIN_VALUE, null);
+        head.next = head.prev = head;
+        tail = head;
+        size = 0;
+    }
+
+    /**
+     * 添加元素到表尾
+     *
+     * @param item
+     */
+    public void add(int item) {
+        Node newNode = new Node(null, item, null);
+        tail.next = newNode;
+        newNode.prev = tail;
+        newNode.next = head;
+        head.prev = newNode;
+        tail = newNode;
+        ++size;
+    }
+
+    /**
+     * 删除指定位置index出的结点，并返回其值
+     *
+     * @param index
+     * @return
+     */
+    public int remove(int index) {
+        checkPosIndex(index);//
+
+        /********** Begin *********/
+        int x=0;
+        if(index==0)
+        {
+            x=(head.next).item;
+            Node cur=head.next;
+            head.next=cur.next;
+            (cur.next).prev=head;
+            size--;
+            return x;
+        }
+        else
+        {
+            Node cur=head;
+            int y=0;
+            while(cur.next!=head&&y<=index)
+            {
+                cur=cur.next;
+                y++;
+            }
+            x=cur.item;
+            if(index==size-1){
+                Node pre=cur.prev;
+            pre.next=head;
+            head.prev=pre;
+            tail=pre;
+        }
+        else
+        {
+            Node pre=cur.prev;
+            Node next=cur.next;
+            pre.next=next;
+            next.prev=pre;
+        }
+        size--;
+        return x;
+    }
+      
+
+        
+
+        /********** End *********/
+    }
+
+    /**
+     * 打印双向链表
+     *
+     * @param flag true从左向右顺序打印, false从右向左顺序打印
+     */
+    public void printList(boolean flag) {
+        Node f = head;
+        if (flag) {//向右
+            while (f.next != head) {
+                f = f.next;
+                System.out.print(f.item + " ");
+            }
+        } else {//向左
+            while (f.prev != head) {
+                f = f.prev;
+                System.out.print(f.item + " ");
+            }
+        }
+    }
+
+    public int size() {
+        return size;
+    }
+
+    private void checkPosIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+    }
+
+    //结点内部类
+    private static class Node {
+        int item;
+        Node next;//直接后继引用
+        Node prev;//直接前驱引用
+
+        Node(Node prev, int item, Node next) {
+            this.prev = prev;
+            this.item = item;
+            this.next = next;
+        }
+    }
+}

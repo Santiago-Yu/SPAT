@@ -1,0 +1,31 @@
+package Q202;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner sc=new Scanner(System.in);
+		int n,sum=0;
+		int num[]=new int[32];
+		n=sc.nextInt();
+		for(int i=9;i>1;i--)
+		{
+			while(n%i==0&&sum<32)
+			{
+				n/=i;
+				num[sum]=i;
+				sum++;
+			}
+		}
+		if(n!=1)
+		System.out.print("0");
+		else
+		{
+			for(int j=sum-1;j>=0;j--)
+			{
+				System.out.print(num[j]);
+			}
+		}
+	}
+
+}

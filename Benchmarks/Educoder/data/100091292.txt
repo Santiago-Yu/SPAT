@@ -1,0 +1,24 @@
+package step2;
+import java.lang.*;
+public class TriangleJudge{
+
+    // 判断三条边能否构成一个三角形
+    public boolean TriangleJudge(int a, int b, int c) {
+        // 请在此添加实现代码
+        if(a+b<=c)
+            return false;
+        else if(a+c<=b)
+            return false;
+        else if(b+c<=a)
+            return false;
+        else if(Math.abs(a-b)>=c)
+            return false;
+        else if(Math.abs(a-c)>=b)
+            return false;
+        else if(Math.abs(c-b)>=a)
+            return false;
+        else
+            return true;
+            
+    }
+}

@@ -1,0 +1,62 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        int counta=0,countb=0;
+		if(length % width == 0) {
+			int chang1 = 0 ;
+			chang1 = width;
+			System.out.println(chang1);
+			System.out.println( (length*width) / (chang1*chang1));
+		}else {
+			
+			for(int i=1;i<=length;i++) {
+				if(length%i==0)
+					counta++;
+			}
+			int a[]=new int [counta];
+			for(int c=1, j=0;c<=length;c++) {
+				if(length%c==0)
+					{
+					a[j]=c;
+					j++;
+					}
+			}
+
+			for(int i1=1;i1<=width;i1++) {
+				if(width%i1==0)
+					countb++;
+			}
+			int b[]=new int [countb];
+			for(int d=1, j1=0;d<=width;d++) {
+				if(width%d==0)
+					{
+					b[j1]=d;
+					j1++;
+					}
+			}
+					
+			int chang=1;
+
+			out: for(int k = counta-1 ; k >= 0 ; k--) {
+				for(int m = 0 ; m < countb ; m++) {
+					if(a[k] == b[m]) {
+						chang =a[k];
+						break out;
+					}
+				}
+			}
+	
+			System.out.println(chang);
+			System.out.println( (length*width) / (chang*chang));
+		}
+
+		/********** END **********/
+	}
+}

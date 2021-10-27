@@ -1,0 +1,28 @@
+class n11591514 {
+	public HashCash(String cash) throws NoSuchAlgorithmException {
+        myToken = cash;
+        String[] parts = cash.split(":");
+        myVersion = Integer.parseInt(parts[0]);
+        if (myVersion < 0 || myVersion > 1) throw new IllegalArgumentException("Only supported versions are 0 and 1");
+        if ((myVersion == 0 && parts.length != 6) || (myVersion == 1 && parts.length != 7)) throw new IllegalArgumentException("Improperly formed HashCash");
+        try {
+            int index = 1;
+            myValue = (myVersion == 1) ? Integer.parseInt(parts[index++]) : 0;
+            SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatString);
+            Calendar tempCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+            tempCal.setTime(dateFormat.parse(parts[index++]));
+            myResource = parts[index++];
+            myExtensions = deserializeExtensions(parts[index++]);
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+            md.update(cash.getBytes());
+            byte[] tempBytes = md.digest();
+            int tempValue = numberOfLeadingZeros(tempBytes);
+            if (myVersion == 0) myValue = tempValue;
+			else
+				myValue = (myVersion == 1) ? (tempValue > myValue ? myValue : tempValue) : myValue;
+        } catch (java.text.ParseException ex) {
+            throw new IllegalArgumentException("Improperly formed HashCash", ex);
+        }
+    }
+
+}

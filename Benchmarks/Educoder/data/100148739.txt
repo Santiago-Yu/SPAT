@@ -1,0 +1,60 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+       boolean exchange=false;
+		int n=arr.length;
+		int z=1,t,i=1,sum=0;
+		for(int k=0;k<n-1;k++)
+		{
+			if(arr[k]<arr[k+1])
+				sum++;
+		}
+		if(sum==n-1) {
+			for(int k=0;k<arr.length;k++)
+			{
+				System.out.print(arr[k]+" ");
+			}
+			System.out.println();
+			return;
+		}
+		for(i=1;i<n;i++) {
+		for(int j=0;j<n-i;j++) {
+			exchange=false;
+			if(arr[j]>arr[j+1]) {
+				t=arr[j];
+				arr[j]=arr[j+1];
+				arr[j+1]=t;
+				exchange=true;
+			}
+			if(exchange) {
+				for(int k=0;k<arr.length;k++)
+				{
+					System.out.print(arr[k]+" ");
+				}
+				System.out.println();
+			}
+		}
+		for(int j=n-i;j>0;j--) {
+			exchange=false;
+			if(arr[j]<arr[j-1]) {
+				t=arr[j-1];
+				arr[j-1]=arr[j];
+				arr[j]=t;
+				exchange=true;
+			}
+			if(exchange) {
+				for(int k=0;k<arr.length;k++)
+				{
+					System.out.print(arr[k]+" ");
+				}
+				System.out.println();
+			}
+		}
+		}
+		
+		/********* End *********/
+	}
+}

@@ -1,0 +1,51 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+	String fpath=file.getAbsolutePath();
+		System.out.println("+--"+file.getName());
+		File files[]=file.listFiles();
+		String kongge="  ";
+		
+		for(int i=0;i<files.length;i++){
+			File f=files[i];
+			
+			if(f.isFile()){
+				getFileString(f,kongge);
+			}else{
+				getFileJiaString(f,kongge,fpath);
+				
+			}
+		}
+
+	}
+	public void getFileString(File f,String kg){
+		String fname=kg+"--"+f.getName();
+		String hz=fname.substring(fname.length()-3);
+		if("jpg".equals(hz)||"png".equals(hz)||"bmp".equals(hz))
+		System.out.println(fname);
+	}
+	public void getFileJiaString(File f,String kg,String fpath){
+		String fname=kg+"+--"+f.getName();
+		System.out.println(fname);
+		fpath=fpath+"/"+f.getName();
+		File zf=new File(fpath);
+		File zfs[]=zf.listFiles();
+		for(int j=0;j<zfs.length;j++){
+			if(zfs[j].isFile()){
+				getFileString(zfs[j],kg+"  ");
+			}else{
+				getFileJiaString(zfs[j],kg+"  ",fpath);
+				
+			}
+		}
+	}
+	
+
+
+	/********** END **********/
+}

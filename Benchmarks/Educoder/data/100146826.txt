@@ -1,0 +1,25 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+		boolean[] holes = new boolean[10000];
+		for(int i=0; i<nums.length; i++) {
+			holes[nums[i]-1] = true;
+		}
+		
+		StringBuffer c = new StringBuffer();
+		for(int i=0;i<holes.length;i++){
+			if(!holes[i]) {
+				c.append(i+1);
+			}
+		}
+		int f = (int)(Long.parseLong(c.toString())%11);
+		return f;
+	
+	}
+
+	/********* End *********/
+}

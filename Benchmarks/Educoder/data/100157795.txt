@@ -1,0 +1,22 @@
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        int n;
+        Scanner scan=new Scanner(System.in);
+        n=scan.nextInt();
+        int a=cal(n);
+        System.out.print(a);
+	}
+static int cal(int n){
+    	if(n==0||n==1){
+    		return 1;
+    	}
+    	else
+		{
+    	return cal(n-1)+cal(n-2);
+		}
+}
+}

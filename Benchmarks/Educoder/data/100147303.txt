@@ -1,0 +1,106 @@
+package task1;
+
+import java.util.*;
+
+public class Task1 {
+	public static void main(String[] args) {
+		int day = 0;
+		int month = 0;
+		int year = 0;
+		int sum = 0;
+		int leap;
+		Scanner input = new Scanner(System.in);
+		year = input.nextInt();
+		month = input.nextInt();
+		day = input.nextInt();
+		int k;
+        if(year%4==0&&year%100!=0||year%400==0){
+        k=1;
+        }
+        else{
+        k=0;
+        }
+ 
+        switch(month){
+            case 12:sum=sum+day;
+            case 11:if(month==11){
+                sum=sum+day;
+            }
+                else{
+                 sum=sum+30;   
+                    
+                };
+            case 10:if(month==10){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+31;
+                };
+                 case 9:if(month==9){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+30;
+                };
+                 case 8:if(month==8){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+31;
+                };
+                 case 7:if(month==7){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+31;
+                };
+                 case 6:if(month==6){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+30;
+                };
+                
+                 case 5:if(month==5){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+31;
+                };
+                
+             
+                 case 4:if(month==4){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+30;
+                };
+                 case 3:if(month==3){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+31;
+                };
+  case 2:if(month==2){
+             sum=sum+day;   
+            }
+                else{
+                    if(k==1){
+sum=sum+29;
+                    }
+                    else
+                    {
+                        sum=sum+28;
+                    }
+                };
+               
+          case 1:if(month==1){
+             sum=sum+day;   
+            }
+                else{
+sum=sum+31;
+                }; break;
+        }
+        System.out.println(year+"年"+month+"月"+day+"日"+"是这一年的第"+sum+"天");	
+	}
+}

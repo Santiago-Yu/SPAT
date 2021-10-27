@@ -1,0 +1,23 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		int length=temperatures.length;
+		int[] temp=new int[length];
+		int firstBig=0;//第一个比该数大的位置
+		for(int i=0;i<length;i++) {
+			for(int j=i+1;j<length;j++){
+				if(temperatures[j]>temperatures[i]) {
+					firstBig=j;
+					break;
+				}
+			}
+			int result=firstBig-i;//计算结果:最大数的位置减去当前数的位置
+			if(result<0) result=0;
+			temp[i]=result;
+		}
+		return temp;
+		/********** END **********/
+	}
+}

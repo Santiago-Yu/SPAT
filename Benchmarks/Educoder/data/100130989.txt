@@ -1,0 +1,73 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int max,min;
+        int sum=0;
+        if(num1>=num2){
+            max=num1;
+            min=num2;
+        }else{
+            max=num2;
+            min=num1;
+        }
+        int count=max-min+1;
+        //都是個位
+        if(max<10){
+        for(int i=min;i<=max;i++){
+        sum=sum+i;
+         }
+        }
+        //都是十位
+        else if(min>9&&max<100){
+        for(int i=min;i<=max;i++){
+            sum=sum+(i/10+i%10);
+        }
+            
+        }
+        //都是百位
+        else if(min>99){
+         for(int i=min;i<=max;i++){
+            sum=sum+(i/100+(i%100)/10+(i%100)%10);
+        }
+        }
+        //個十
+        else if(min<10&&max>=10&&max<100){
+        for(int i=min;i<=9;i++){
+            sum=sum+i;
+        }
+         for(int i=10;i<=max;i++){
+            sum=sum+(i/10+i%10);
+        }   
+        }
+        //個百
+        else if(min<10&&max>=100){
+          for(int i=min;i<=9;i++){
+            sum=sum+i;
+        }
+          for(int i=10;i<=99;i++){
+            sum=sum+(i/10+i%10);
+        } 
+          for(int i=100;i<=max;i++){
+            sum=sum+(i/100+(i%100)/10+(i%100)%10);
+        }
+        }
+        //十百
+        else if(min>9&&min<=99&&max>99){
+            for(int i=min;i<=99;i++){
+            sum=sum+(i/10+i%10);
+        } 
+          for(int i=100;i<=max;i++){
+            sum=sum+(i/100+(i%100)/10+(i%100)%10);
+        }
+        }
+        else ;
+        return sum;
+		
+		
+		/********** END **********/
+	}
+}

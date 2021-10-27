@@ -1,0 +1,54 @@
+package step2;
+import java.util.ArrayList;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+	int[][] areas=new int[area.length][area[0].length];
+		for (int i = 0; i < area.length; i++) {
+			for (int j = 0; j < area[i].length; j++) {
+				if (area[i][j]=='o') {
+					areas[i][j]=1;
+				}
+			}
+		}
+		int[][] temp=areas.clone();
+		
+		int[] dx= new int[]{-1,0,1,0};
+		int[] dy= new int[]{0,1,0,-1};
+		int num=0;
+		ArrayList<int[]> queue=new ArrayList<>();
+		for (int i = 0; i < temp.length; i++) {
+			for (int j = 0; j < temp[i].length; j++) {
+				if (temp[i][j]==1) {
+					num++;
+					queue.add(new int[] {i,j});
+					while (!queue.isEmpty()) {
+						int[] pos=queue.get(queue.size()-1);
+						queue.remove(queue.size()-1);
+						temp[pos[0]][pos[1]]=0;
+						for (int k = 0; k < 4; k++) {
+							int nextX=pos[0]+dx[k];
+							int nextY=pos[1]+dy[k];
+							
+							if (nextX>=0&&
+								nextX<temp.length&&
+								nextY>=0&&
+								nextY<temp[0].length
+								) {
+								if (temp[nextX][nextY]!=0) {
+									queue.add(new int[] {nextX,nextY});
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return num;
+		
+		/********* End *********/	
+	}
+}

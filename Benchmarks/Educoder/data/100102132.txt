@@ -1,0 +1,29 @@
+package step2;
+
+import java.io.File;
+import java.io.IOException;
+
+public class FileUtil {
+	public static void start() {
+		/********** Begin *********/
+     File f=new File("src/step2");
+        File[] fs=f.listFiles();
+        String[] ff=new String[100];
+        int j=0;
+        for(File i:fs){
+        if(i.isDirectory()) System.out.println(i.getName());
+            else{
+            ff[j]=i.getName();
+                j++;
+            }
+        }
+        j--;
+            for(int i=0;i<=j;i++){
+            System.out.println(ff[i]);
+               
+            }
+
+
+		/********** End *********/
+	}
+}

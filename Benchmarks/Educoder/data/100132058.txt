@@ -1,0 +1,139 @@
+import java.io.*;
+import java.util.*;
+
+
+public class BackPack {
+    static class Cube {
+        int weight, volume;
+
+        public Cube(int volume, int weight) {
+            this.weight = weight;
+            this.volume = volume;
+        }
+    }
+
+    static Map<String, Integer> countMap = new HashMap<>();
+
+    public static void count(String name, int num) {
+        if (countMap.containsKey(name)) {
+            countMap.put(name, countMap.get(name) + num);
+        } else {
+            countMap.put(name, num);
+        }
+    }
+
+//    public static boolean check() {
+//        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+//            if (!entry.getValue().equals(mapCopy.get(entry.getKey()))) {
+//                System.out.println(entry.getKey() + " " + entry.getValue() + " " + mapCopy.get(entry.getKey()));
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+
+    public static List<String> putThings(int vol, int wei, Map<String, Integer> resMap) {
+        Map<String,Integer> resMapNew=new HashMap<>(resMap);
+        List<String> putResult = new ArrayList<>();
+        Map<String, Cube> map = new HashMap<>();
+        map.put("type1", new Cube(2, 2));
+        map.put("type2", new Cube(2, 8));
+        map.put("type3", new Cube(4, 16));
+        map.put("type4", new Cube(8, 32));
+        map.put("type5", new Cube(16, 16));
+        map.put("type6", new Cube(16, 32));
+        map.put("type7", new Cube(16, 64));
+
+        while (!resMapNew.isEmpty()) {
+//            System.out.println("-----------------------------------------");
+            /********** BEGIN **********/
+            boolean can[][] = new boolean[vol + 1][wei + 1];
+            String select[][] = new String[vol + 1][wei + 1];
+            int num[][] = new int[vol + 1][wei + 1];
+            for (int i = 0; i < vol + 1; i++) {
+                for (int j = 0; j < wei + 1; j++) {
+                    can[i][j] = false;
+                    select[i][j] = "";
+                    num[i][j] = 0;
+                }
+            }
+            can[0][0] = true;
+            for (Map.Entry<String, Integer> rsEntry : resMapNew.entrySet()) {
+                String name = rsEntry.getKey();
+                int val = rsEntry.getValue();
+                Cube cube = map.get(name);
+//                if("type3".equals(name)){
+//                    System.out.println(val);
+//                }
+                for (int i = vol - 1; i >= cube.volume; i--) {
+                    for (int j = wei - 1; j >= cube.weight; j--) {
+                        for (int k = val; k > 0; k--) {
+                            if (!can[i][j] && i - k * cube.volume >= 0 &&
+                                    j - k * cube.weight >= 0 &&
+                                    can[i - k * cube.volume][j - k * cube.weight]) {
+                                can[i][j] = true;
+                                select[i][j] = name;
+                                num[i][j] = k;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            double mx = 0;
+            int mxv = 0, mxw = 0;
+            for (int i = vol; i >= 0; i--) {
+                for (int j = wei; j >= 0; j--) {
+                    if (can[i][j] && (Double.valueOf(i) / vol + Double.valueOf(j) / wei) > mx) {
+                        mx = (Double.valueOf(i) / vol + Double.valueOf(j) / wei);
+                        mxv = i;
+                        mxw = j;
+                    }
+                }
+            }
+//        System.out.println(mxv+" "+mxw);
+                    Map<String, Integer> ans = new HashMap<>();
+        while (mxv > 0 && mxw > 0) {
+        String name = select[mxv][mxw];
+        ans.put(name, num[mxv][mxw]);
+        int x = num[mxv][mxw];
+        Cube c = map.get(name);
+        mxv -= x * c.volume;
+        mxw -= x * c.weight;
+//                System.out.println("before:"+name+" "+mxv+" "+mxw);
+//                System.out.println(name+" "+x);
+        Integer have = resMapNew.get(name);
+//                if("type3".equals(name)){
+//                    System.out.println("type3 have:"+have+" "+x+" "+mxv+" "+mxw);
+//                }
+        count(name, x);
+//                System.out.println("after:"+name);
+        if ((have - x) <= 0) {
+//                    if(have-x<0){
+//                        System.out.println("error"+have+" "+x);
+//                    }
+//                    System.out.println(resMap);
+//                    System.out.println(name);
+        resMapNew.remove(name);
+        } else {
+        resMapNew.put(name, have - x);
+        }
+        }
+        Iterator<Map.Entry<String, Integer>> iterator = ans.entrySet().iterator();
+        StringBuilder stringBuilder = new StringBuilder();
+        while (iterator.hasNext()) {
+        Map.Entry<String, Integer> entry = iterator.next();
+        if (entry.getValue() == 0) continue;
+        stringBuilder.append(entry.getKey() + " " + entry.getValue());
+        if (iterator.hasNext()) {
+        stringBuilder.append(" ");
+        }
+        }
+        putResult.add(stringBuilder.toString());
+        }
+        /*********** END ***********/
+        return putResult;
+        }
+
+
+}

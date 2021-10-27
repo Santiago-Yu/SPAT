@@ -1,0 +1,39 @@
+package step2;
+
+public class Task {
+    	public void prArea(int n,int m,char[][] area,boolean[][] flag,int x,int y) {
+		int px[]=new int[] {0,0,1,-1};
+		int py[]=new int[] {1,-1,0,0};
+		for(int i=0;i<4;++i) {
+			int tx=x+px[i];
+			int ty=y+py[i];
+			if(tx>-1&&ty>-1&&tx<m&&ty<n&&area[ty][tx]=='o'&&flag[ty][tx]) {
+				flag[ty][tx]=false;
+				prArea(n, m, area, flag, tx, ty);
+			}
+		}
+	}
+    
+public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		boolean[][] flag=new boolean[n][m];
+		for(int i=0;i<n;++i) {
+			for(int j=0;j<m;++j) {
+				flag[i][j]=true;
+			}
+		}
+		int result=0;
+		for(int i=0;i<n;++i) {
+			for(int j=0;j<m;++j) {
+				if(flag[i][j]&&area[i][j]=='o') {
+					result+=1;
+					prArea(n, m, area, flag, j, i);
+				}
+			}
+		}
+		return result;
+		/********* End *********/	
+	}
+
+
+}

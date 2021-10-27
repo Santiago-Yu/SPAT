@@ -1,0 +1,29 @@
+package step4;
+import java.util.Date;
+import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			Date date = sdf.parse(releaseDate);
+			Calendar ca = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+			ca.setTime(date);
+			ca.add(Calendar.DAY_OF_MONTH, day);
+			date = ca.getTime();
+			return sdf.format(date);
+		} catch (ParseException e) {
+			
+			e.printStackTrace();
+		}
+		return null;
+        /********* End *********/
+	}
+	
+	
+}

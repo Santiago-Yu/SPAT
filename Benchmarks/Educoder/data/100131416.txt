@@ -1,0 +1,83 @@
+package step2;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Scanner;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		System.out.print(file.isDirectory()? "+--":"--");
+		System.out.println(file.getName());
+		travasal_file(file, 0);
+		
+
+
+	}
+	
+	
+	
+	public void travasal_file(File file,int level){
+		
+		
+		//System.out.print(file.isDirectory()? "+--":"--");
+		//System.out.println(file.getName());
+		
+		
+		File[] all_file=file.listFiles();
+		Arrays.sort(all_file, new FileComparator());
+		
+		for(File temp_file:all_file){
+			
+			for(int i=0;i<level+1;i++){
+				System.out.print("  ");
+			}
+			System.out.print(temp_file.isDirectory()? "+--":"--");
+			System.out.println(temp_file.getName());
+			if(temp_file.isDirectory()){
+				travasal_file(temp_file, level+1);
+			}
+			
+			
+		}
+		
+		
+	}
+	
+	
+
+	
+	
+	class FileComparator implements Comparator{
+
+		@Override
+		public int compare(Object arg0, Object arg1) {
+			// TODO Auto-generated method stub
+			String s0=((File)arg0).getName();
+			String s1=((File)arg0).getName();
+			
+			return s0.compareTo(s1);
+			
+			
+			
+		}
+		
+	}
+	
+
+
+
+	/********** END **********/
+}

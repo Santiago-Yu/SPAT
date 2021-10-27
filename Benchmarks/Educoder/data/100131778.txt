@@ -1,0 +1,65 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    
+    String jpg = "jpg";
+    String png = "png";
+    String bmp = "bmp";
+	public void showDirStructure(File file)	{
+        if(file.isDirectory()){
+          System.out.print("+--"+file.getName()+"\n");  
+          new Task().printFile(file,2);
+        }else{
+            //文件
+            System.out.print("--"+file.getName()+"\n");
+        }
+        
+        
+	}
+    public void printFile(File file,int lever){
+        String strNspace="";
+        for(int j=0;j<lever;j++){
+            strNspace=strNspace+" ";
+        }
+        
+        
+        File []fileList = file.listFiles();
+        
+        
+          for(int i = 0;i<file.listFiles().length;i++){
+            if(fileList[i].isDirectory()){
+                //文件夹
+                System.out.print(strNspace+"+--"+fileList[i].getName()+"\n");
+                printFile(fileList[i], lever+2);
+            }else{ 
+                if(Task.judge(fileList[i].getName(),"png")||Task.judge(fileList[i].getName(),"bmp")|| 
+                  Task.judge(fileList[i].getName(),"jpg")){
+                    System.out.print(strNspace+"--"+fileList[i].getName()+"\n");
+                    
+                }
+        
+            }
+          }
+        
+        
+    }
+	 public static boolean judge(String string01,String string02){
+        char []StringChars = new char[3];
+        for(int i = 3;i>0;i--){
+            StringChars[3-i] = string01.charAt(string01.length()-i);
+        }
+        if(string02.equals(String.valueOf(StringChars))){
+            return true;
+        }else {
+            return false;
+        }
+
+    }
+
+
+	/********** END **********/
+}

@@ -1,0 +1,30 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		 long fmax[][] = new long[numbers][selectedNum];
+        long fmin[][] = new long[numbers][selectedNum];
+ 
+        for (int i = 0; i < numbers; i++) {
+            fmax[i][0] = abilities[i+1];
+            fmin[i][0] = abilities[i+1];
+            for(int k=1; k<selectedNum; k++){
+                for(int j=i-1; j>=0 && i-j<=distance; j--){
+                    fmax[i][k] = Math.max(fmax[i][k], Math.max(fmax[j][k-1]*abilities[i+1], fmin[j][k-1]*abilities[i+1]));
+                    fmin[i][k] = Math.min(fmin[i][k], Math.min(fmax[j][k-1]*abilities[i+1], fmin[j][k-1]*abilities[i+1]));
+                }
+            }
+        }
+ 
+        long max = fmax[0][selectedNum-1];
+        for (int i = 1; i < numbers; i++) {
+            max = Math.max(max, fmax[i][selectedNum-1]);
+        }
+        return max;
+    }
+
+	/********* End *********/
+}

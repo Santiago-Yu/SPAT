@@ -1,0 +1,62 @@
+package case5;
+
+
+public class abstractTest {
+	public static void main(String[] args) {
+		// 实例化一个Student类的对象s，为Student对象s中的school赋值，打印输出信息
+		/********* begin *********/
+		Student s = new Student("张三", 20);
+		Worker a = new Worker("李四", 30);
+		s.talk();
+		a.talk();
+		/********* end *********/
+	}
+}
+
+class Person {
+	/********* begin *********/
+	protected String name;
+	protected int age;
+	protected String occupation;
+	
+	public Person(String name,int age) {
+		this.name =name;
+		this.age = age;
+	}
+	public String getName( ) {
+		return name;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void talk() {
+		System.out.println("姓名："+name+"，年龄："+age+"，职业：无！");
+	}
+	/********* end *********/
+}
+
+class Student extends Person {
+	/********* begin *********/
+	public Student(String name,int age) {
+		super(name, age);
+	}
+	@Override
+	public void talk(){
+		System.out.println("学生——>姓名："+name+"，年龄："+age+"，职业：学生！");
+	}
+	/********* end *********/
+}
+
+class Worker extends Person {
+	/********* begin *********/
+	
+	public Worker(String name,int age) {
+		super(name, age);
+	}
+	@Override
+	public void talk(){
+		System.out.println("工人——>姓名："+name+"，年龄："+age+"，职业：工人！");
+	}
+	/********* end *********/
+
+}

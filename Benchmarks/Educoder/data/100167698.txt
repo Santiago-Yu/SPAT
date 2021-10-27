@@ -1,0 +1,300 @@
+import java.util.*;
+
+public class Java_LRParserAnalysis {
+
+    private static HashMap<String,Integer> hm = new HashMap<String, Integer>();
+    private static ArrayList<String> word = new ArrayList<String>();
+    private static ArrayList<Expression> ex = new ArrayList<Expression>();
+    private static int[][] table = new int[60][60];
+    private static ArrayList<Node> action = new ArrayList<Node>();
+    private static ArrayList<Integer> row = new ArrayList<Integer>();
+    private static ArrayList<String> token = new ArrayList<String>();
+    private static ArrayList<String> ans = new ArrayList<String>();
+    private static ArrayList<Item> error = new ArrayList<Item>();
+    private static Stack<Integer> state = new Stack<Integer>();
+    private static Stack<String> expression = new Stack<String>();
+
+    public static void main(String[] args) {
+        getTable();
+        getExpression();
+        input();
+        doLR();
+        output();
+    }
+
+    public static void output(){
+        for(int i = 0 ; i < error.size() ; i++){
+            System.out.println("语法错误，第" + error.get(i).a + "行，缺少\"" + error.get(i).sign + "\"");
+        }
+        for(int i = ans.size() - 1 ; i >= 0 ; i--){
+            System.out.println(ans.get(i));
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0 ; i < token.size() - 1 ; i++){
+            stringBuilder.append(token.get(i) + " ");
+        }
+        System.out.print(stringBuilder.toString());
+    }
+
+    public static void doLR(){
+        state.push(0);
+        expression.push("$");
+        int num = 0;
+        //System.out.println(token);
+        while(true){
+            int a = state.peek();
+            String s = token.get(num);
+            //System.out.println("s : " + s);
+            int col = hm.get(s);
+            int pos = table[a][col];
+            if(pos == -1){
+                for(int i = 0 ; i < ans.size() ; i++){
+                    String s3 = ans.get(i);
+                    int t = token.size() - 1 - num;
+                    String s4 = s3.substring(0,s3.length() - 1 - (t+1)*2);
+                    String s5 = s3.substring(s3.length() - 1 - (t+1)*2);
+                    ans.remove(i);
+                    ans.add(i,s4 + "; " + s5);
+                }
+                token.add(num,";");
+                error.add(new Item(";",row.get(num - 1)));
+                row.add(num,row.get(num - 1));
+                continue;
+            }
+            Node n = action.get(pos);
+            if(n.next == 0){
+                state.push(n.to);
+                expression.push(s);
+                num++;
+            }else if(n.next == 1){
+                int exp_num = n.to;
+                if(exp_num == 7 || exp_num == 24 | exp_num == 20){
+                    String change = ex.get(exp_num).first;
+                    int c = hm.get(change);
+                    expression.push(change);
+                    int x = table[a][c];
+                    Node nn = action.get(x);
+                    int st = nn.to;
+                    state.push(st);
+                }else{
+                    String change = ex.get(exp_num).first;
+                    String express = ex.get(exp_num).second;
+                   // System.out.println("express ; " + express);
+                    String sb = new String();
+                    while(!expression.empty()){
+                        sb = expression.peek() + " " + sb;
+                        //System.out.println("sb : " + sb);
+                        expression.pop();
+                        state.pop();
+                        if(sb.trim().equals(express)){
+                            break;
+                        }
+                    }
+                    a = state.peek();
+                    int c = hm.get(change);
+                    expression.push(change);
+                    int x = table[a][c];
+                    Node nn = action.get(x);
+                    int st = nn.to;
+                    state.push(st);
+                }
+                StringBuilder stringBuilder = new StringBuilder();
+                for(String s1 : expression){
+                    stringBuilder.append(s1 + " ");
+                }
+                //System.out.println("1 : " + stringBuilder);
+                //System.out.println("s : " + s);
+                for(int i = num ; i < token.size() - 1 ; i++){
+                    stringBuilder.append(token.get(i) + " ");
+                }
+                stringBuilder.append("=> ");
+                ans.add(stringBuilder.substring(2));
+                //System.out.println("2 : " + stringBuilder);
+            }else if(n.next == 3){
+                ans.add("program => ");
+                break;
+            }
+        }
+    }
+    public static void input() {
+        Scanner sc = new Scanner(System.in);
+        int j = 1;
+        while(sc.hasNextLine()){
+            String string = sc.nextLine().trim();
+            String[] str = string.split("\\s+");
+            if(string.equals("")){
+                break;
+            }
+            for(int i = 0 ; i < str.length ; i++){
+                token.add(str[i]);
+                row.add(j);
+            }
+            j++;
+        }
+        token.add("$");
+        row.add(-1);
+    }
+
+    public static void getExpression(){
+        String sign = "program -> compoundstmt\n" +
+                "stmt -> ifstmt\n" +
+                "stmt -> whilestmt\n" +
+                "stmt -> assgstmt\n" +
+                "stmt -> compoundstmt\n" +
+                "compoundstmt -> { stmts }\n" +
+                "stmts -> stmt stmts\n" +
+                "stmts -> ''\n" +
+                "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+                "whilestmt -> while ( boolexpr ) stmt\n" +
+                "assgstmt -> ID = arithexpr ;\n" +
+                "boolexpr -> arithexpr boolop arithexpr\n" +
+                "boolop -> <\n" +
+                "boolop -> >\n" +
+                "boolop -> <=\n" +
+                "boolop -> >=\n" +
+                "boolop -> ==\n" +
+                "arithexpr -> multexpr arithexprprime\n" +
+                "arithexprprime -> + multexpr arithexprprime\n" +
+                "arithexprprime -> - multexpr arithexprprime\n" +
+                "arithexprprime -> ''\n" +
+                "multexpr -> simpleexpr multexprprime\n" +
+                "multexprprime -> * simpleexpr multexprprime\n" +
+                "multexprprime -> / simpleexpr multexprprime\n" +
+                "multexprprime -> ''\n" +
+                "simpleexpr -> ID\n" +
+                "simpleexpr -> NUM\n" +
+                "simpleexpr -> ( arithexpr )";
+        String[] sin_sign = sign.split("\n");
+        for(int i = 0 ; i < sin_sign.length ; i++){
+            String[] s1 = sin_sign[i].split(" -> ");
+            ex.add(new Expression(s1[0],s1[1]));
+        }
+    }
+    public static void getTable(){
+        String sign = "{\t}\tif\t(\t)\tthen\telse\twhile\tID\t=\t;\t<\t>\t<=\t>=\t==\t+\t-\t*\t/\tNUM\t$\tprogram\tstmt\tcompoundstmt\tstmts\tifstmt\twhilestmt\tassgstmt\tboolexpr\tboolop\tarithexpr\tarithexprprime\tmultexpr\tmultexprprime\tsimpleexpr";
+        String[] sin_sign = sign.split("\t");
+        for(int i = 0 ; i < 22 ; i++){
+            hm.put(sin_sign[i],i);
+            word.add(sin_sign[i]);
+        }
+        for(int i = 22 ; i < sin_sign.length ; i++){
+            hm.put(sin_sign[i],i);
+        }
+        String table_con = "0\ts2\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t1\t \t \t \t \t \t \t \t \t \t \t \n" +
+                "1\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "2\ts2\tr7\ts9\t \t \t \t \ts10\ts11\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t4\t8\t3\t5\t6\t7\t \t \t \t \t \t \t \n" +
+                "3\t \ts12\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "4\ts2\tr7\ts9\t \t \t \t \ts10\ts11\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t4\t8\t13\t5\t6\t7\t \t \t \t \t \t \t \n" +
+                "5\tr1\tr1\tr1\t \t \t \tr1\tr1\tr1\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "6\tr2\tr2\tr2\t \t \t \tr2\tr2\tr2\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "7\tr3\tr3\tr3\t \t \t \tr3\tr3\tr3\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "8\tr4\tr4\tr4\t \t \t \tr4\tr4\tr4\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "9\t \t \t \ts14\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "10\t \t \t \ts15\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "11\t \t \t \t \t \t \t \t \t \ts16\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "12\tr5\tr5\tr5\t \t \t \tr5\tr5\tr5\t \t \t \t \t \t \t \t \t \t \t \t \tr5\t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "13\t \tr6\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "14\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t17\t \t18\t \t19\t \t20\n" +
+                "15\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t24\t \t18\t \t19\t \t20\n" +
+                "16\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t \t \t25\t \t19\t \t20\n" +
+                "17\t \t \t \t \ts26\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "18\t \t \t \t \t \t \t \t \t \t \t \ts28\ts29\ts30\ts31\ts32\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t27\t \t \t \t \t \n" +
+                "19\t \t \t \t \tr20\t \t \t \t \t \tr20\tr20\tr20\tr20\tr20\tr20\ts34\ts35\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t33\t \t \t \n" +
+                "20\t \t \t \t \tr24\t \t \t \t \t \tr24\tr24\tr24\tr24\tr24\tr24\tr24\tr24\ts37\ts38\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t36\t \n" +
+                "21\t \t \t \t \tr25\t \t \t \t \t \tr25\tr25\tr25\tr25\tr25\tr25\tr25\tr25\tr25\tr25\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "22\t \t \t \t \tr26\t \t \t \t \t \tr26\tr26\tr26\tr26\tr26\tr26\tr26\tr26\tr26\tr26\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "23\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t \t \t39\t \t19\t \t20\n" +
+                "24\t \t \t \t \ts40\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "25\t \t \t \t \t \t \t \t \t \t \ts41\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "26\t \t \t \t \t \ts42\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "27\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t \t \t43\t \t19\t \t20\n" +
+                "28\t \t \t \tr12\t \t \t \t \tr12\t \t \t \t \t \t \t \t \t \t \t \tr12\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "29\t \t \t \tr13\t \t \t \t \tr13\t \t \t \t \t \t \t \t \t \t \t \tr13\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "30\t \t \t \tr14\t \t \t \t \tr14\t \t \t \t \t \t \t \t \t \t \t \tr14\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "31\t \t \t \tr15\t \t \t \t \tr15\t \t \t \t \t \t \t \t \t \t \t \tr15\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "32\t \t \t \tr16\t \t \t \t \tr16\t \t \t \t \t \t \t \t \t \t \t \tr16\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "33\t \t \t \t \tr17\t \t \t \t \t \tr17\tr17\tr17\tr17\tr17\tr17\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "34\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t \t \t \t \t44\t \t20\n" +
+                "35\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t \t \t \t \t45\t \t20\n" +
+                "36\t \t \t \t \tr21\t \t \t \t \t \tr21\tr21\tr21\tr21\tr21\tr21\tr21\tr21\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "37\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t46\n" +
+                "38\t \t \t \ts23\t \t \t \t \ts21\t \t \t \t \t \t \t \t \t \t \t \ts22\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t47\n" +
+                "39\t \t \t \t \ts48\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "40\ts2\t \ts9\t \t \t \t \ts10\ts11\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t49\t8\t \t5\t6\t7\t \t \t \t \t \t \t \n" +
+                "41\tr10\tr10\tr10\t \t \t \tr10\tr10\tr10\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "42\ts2\t \ts9\t \t \t \t \ts10\ts11\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t50\t8\t \t5\t6\t7\t \t \t \t \t \t \t \n" +
+                "43\t \t \t \t \tr11\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "44\t \t \t \t \tr20\t \t \t \t \t \tr20\tr20\tr20\tr20\tr20\tr20\ts34\ts35\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t51\t \t \t \n" +
+                "45\t \t \t \t \tr20\t \t \t \t \t \tr20\tr20\tr20\tr20\tr20\tr20\ts34\ts35\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t52\t \t \t \n" +
+                "46\t \t \t \t \tr24\t \t \t \t \t \tr24\tr24\tr24\tr24\tr24\tr24\tr24\tr24\ts37\ts38\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t53\t \n" +
+                "47\t \t \t \t \tr24\t \t \t \t \t \tr24\tr24\tr24\tr24\tr24\tr24\tr24\tr24\ts37\ts38\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t54\t \n" +
+                "48\t \t \t \t \tr27\t \t \t \t \t \tr27\tr27\tr27\tr27\tr27\tr27\tr27\tr27\tr27\tr27\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "49\tr9\tr9\tr9\t \t \t \tr9\tr9\tr9\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "50\t \t \t \t \t \t \ts55\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "51\t \t \t \t \tr18\t \t \t \t \t \tr18\tr18\tr18\tr18\tr18\tr18\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "52\t \t \t \t \tr19\t \t \t \t \t \tr19\tr19\tr19\tr19\tr19\tr19\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "53\t \t \t \t \tr22\t \t \t \t \t \tr22\tr22\tr22\tr22\tr22\tr22\tr22\tr22\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "54\t \t \t \t \tr23\t \t \t \t \t \tr23\tr23\tr23\tr23\tr23\tr23\tr23\tr23\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \n" +
+                "55\ts2\t \ts9\t \t \t \t \ts10\ts11\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t56\t8\t \t5\t6\t7\t \t \t \t \t \t \t \n" +
+                "56\tr8\tr8\tr8\t \t \t \tr8\tr8\tr8\t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t ";
+        String[] line = table_con.split("\n");
+        int num = 0;
+        for(int i = 0 ; i < line.length ; i++){
+            String[] col = line[i].split("\t");
+            for(int j = 1 ; j <= 22  ; j++){
+                if(col[j].equals(" ")){
+                    table[i][j - 1] = -1;
+                }else{
+                    char first = col[j].charAt(0);
+                    String s1 = col[j].substring(1);
+                    if(first == 's'){
+                        action.add(new Node(Integer.parseInt(s1),0));
+                    }else{
+                        action.add(new Node(Integer.parseInt(s1),1));
+                    }
+                    table[i][j - 1] = num++;
+                }
+            }
+            for(int j = 23 ; j < col.length ; j++){
+                if(col[j].equals(" ")){
+                    table[i][j - 1] = -1;
+                }else{
+                    table[i][j - 1] = num++;
+                    action.add(new Node(Integer.parseInt(col[j]),2));
+                }
+            }
+        }
+        table[1][21] = num;
+        action.add(new Node(-1,3));
+    }
+}
+
+class Node{
+    public int to;
+    public int next;
+
+    public Node(int to, int next) {
+        this.to = to;
+        this.next = next;
+    }
+}
+
+class Item{
+    public String sign;
+    public int a;
+
+    public Item(String sign, int a) {
+        this.sign = sign;
+        this.a = a;
+    }
+}
+
+class Expression{
+    public String first;
+    public String second;
+
+    public Expression(String first, String second) {
+        this.first = first;
+        this.second = second;
+    }
+}

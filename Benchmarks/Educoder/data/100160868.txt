@@ -1,0 +1,63 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        Document doc =Jsoup.parse(new File(filePath),"UTF-8");
+
+		return doc;
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+
+        Elements pinyin_filter_elements = doc.getElementsByClass("pinyin_filter_detail layoutfix");
+        Element pinyin_filter = pinyin_filter_elements.first();
+        //所有dd的Elements
+        Elements hotelsLinks = pinyin_filter.getElementsByTag("dd");
+        Elements ids = pinyin_filter.getElementsByTag("dt");
+        List<HotelCity> cities = new ArrayList<HotelCity>();
+        for (int i = 0; i < hotelsLinks.size(); i++) {
+        //当前dd
+            Element head_hotelsLink = hotelsLinks.get(i);
+            Element idid = ids.get(i);
+            
+       //当前dd下的所有孩子也就是a标签
+            Elements links = head_hotelsLink.children();
+           String id = idid.attr("id");
+        for (Element link : links) {
+             HotelCity city = new HotelCity();
+             
+             city.setCityName(link.html());
+             StringUtil number = new StringUtil();
+             String herf =link.attr("href");
+             String num = number.getNumbers(herf);
+             city.setCityId(num);
+             String py = link.attr("href").substring(herf.lastIndexOf("/")+1,herf.length()-num.length());
+             city.setPinyin(py);
+            
+             city.setHeadPinyin(id);
+            
+             cities.add(city);
+            }
+         }
+        
+		return cities;
+		/**********   End   **********/
+	}
+}

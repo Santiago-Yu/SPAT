@@ -1,0 +1,107 @@
+package step3;
+    
+public class MyThread  {   
+	    
+    public static void main(String[] args) throws Exception {   
+        new PA().start();
+        new PB().start();
+        new PC().start();
+    }   
+}
+
+class Print
+{
+	private static int flag = 1;
+    private static Object object = new Object();
+    public  void PrintA()
+    {
+		for(int i=0; i<5; i++)
+		{
+			synchronized(object){
+    	while(flag!=1)
+        {   try{
+            object.wait();
+        	}
+        	catch(Exception e){}
+        }
+        System.out.print("E");
+        flag = 2;
+        object.notifyAll();
+		}
+	}
+    }
+    
+    public  void PrintB()
+    {
+		for(int i=0; i<5; i++)
+		{
+			synchronized(object){
+    	while(flag!=2)
+        {
+        	try{
+                object.wait();
+            }
+            catch(Exception e){}
+        }
+        System.out.print("D");
+        flag = 3;
+        object.notifyAll();
+		}
+		}
+    }
+    
+    public  void PrintC()
+    {
+		for(int i=0; i<5; i++){
+		synchronized(object){
+    	while(flag!=3)
+        {
+        	try{
+                object.wait();
+            }
+            catch(Exception e)
+            {}
+        }
+        System.out.print("U");
+        flag = 1;
+        object.notifyAll();
+    }
+	}
+	}
+}
+
+class PA extends Thread
+{
+	Print A = new Print();
+	public void run()
+    {
+    	//for(int i=0; i<5; i++)
+       // {
+        	A.PrintA();
+       // }
+    }
+}
+
+class PB extends Thread
+{
+	Print B = new Print();
+    public void run()
+    {
+    	
+        	B.PrintB();
+        
+    }
+}
+
+class PC extends Thread
+{
+	Print C = new Print();
+    public void run()
+    {
+    	//for(int i=0; i<5; i++)
+        //{
+        	C.PrintC();
+       // }
+    }
+    
+}

@@ -1,0 +1,35 @@
+package step1;
+import java.util.*;
+//输入一个整数，在一个长度为10的整型数组中进行查找，如果找到，则输出“已找到！在数组的第×个位置”；如果未找到，则输出“未找到！”
+public class Search {
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc=new Scanner(System.in);
+		int n=0,i;
+		int[] num={23,45,-67,-3,56,54,58,90,-43,55};
+		System.out.println("请输入一个整数：");
+		int in=sc.nextInt();
+		/**********Start**********/
+		//此处，查找in在数组num中的位置
+		for(i=1;i<=num.length;i++)
+        {
+           if(num[i-1]!=in)
+           {
+             ++n;
+               
+           }else
+           {
+           break;
+           }
+        }
+        if(n==num.length)
+        {
+          System.out.println("未找到！");
+        }else
+        {
+		System.out.println("已找到！在数组的第"+(n+1)+"个位置");
+        }
+		
+		/**********End**********/
+	}
+}

@@ -1,0 +1,83 @@
+package step1;
+import java.util.List;
+import java.util.*;
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        char []d=s.toCharArray();
+        Vector<Character>data=new Vector<Character>();
+        data.clear();
+        for(int i=0;i<d.length;i++) {
+        	data.add(d[i]);
+        }
+        for(int i=0;i<ops.size();i++)
+        {
+            Operation a=ops.get(i);
+            switch (a.t) 
+            {
+				case "I":{
+					char[]insert=a.s.toCharArray();
+					for(int j=0;j<a.s.length();j++) 
+					{
+						data.insertElementAt(insert[j], p++);
+					}
+//					p+=insert.length;
+					break;
+				}
+				case "B":{
+					int time=0;
+					while(time!=a.l) {
+						if(p>0) {
+							data.remove(--p);
+							time++;
+						}
+						else {
+							p=0;
+							break;
+						}
+					}
+					break;
+				}
+				case "D":{
+					int time=0;
+					while(time!=a.l) {
+						if(p<data.size()) {
+							data.remove(p);
+							time++;
+						}
+						else {
+							p=data.size();
+							break;
+						}
+					}
+					break;
+				}
+				case "L":{
+					p-=a.l;
+					if(p<0)p=0;
+					break;
+				}
+				case "R":{
+					p+=a.l;
+					if(p>=data.size())p=data.size();
+					break;
+				}
+            }
+        }
+        int size=data.size();
+        char[] ends = new char[data.size()];
+        for(int i=0;i<data.size();i++) {
+        	ends[i]=data.get(i);
+        }
+        s=new String(ends);
+        return s;	
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

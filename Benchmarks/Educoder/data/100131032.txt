@@ -1,0 +1,37 @@
+package step1;
+
+public class Task {
+   public int sum2(int ss){
+        int x,y,z,total;
+        x=ss/100;y=ss%100/10;z=ss%10;
+        total = x*z + y*z + sum(z-1) + z 
+            + x*y*10 + sum(9)*y + sum(y-1)*10 + y
+            + sum(9)*20*x + sum(x-1)*100 +x;
+        return total;
+    }
+    public int sum(int x){
+        int result = 0;
+        if(x<=0) return 0;
+        for(int i=0;i<=x;i++){result += i;}
+        return result;
+    }
+
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int sumResult = 0;
+        sumResult = sum2(num2) - sum2(num1) + num1/100 + num1%100/10 + num1%10;
+//        for(int i=num1;i<=num2;i++){
+//            int x,y,z;
+//       	x=i/100;y=i%100/10;z=i%10;
+//            sumResult += x+y+z;
+//        }
+		return sumResult;
+
+		/********** END **********/
+	}
+    
+
+			
+}

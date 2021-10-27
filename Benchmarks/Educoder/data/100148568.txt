@@ -1,0 +1,25 @@
+package step2;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+/********* Begin *********/
+//定义站台类，实现卖票的功能。
+public class Station extends Thread {
+    static int count= 23;
+	public synchronized void run() {
+		while(count > 0){
+            if(count<=20)
+			System.out.println("卖出了第"+count+"张票");
+            try {
+            	Thread.sleep(100);
+        	} catch (InterruptedException e) {
+            	e.printStackTrace(); 
+        	}
+            count--;
+		}
+        if(count==0)
+        {
+            System.out.println("票卖完了");
+        } 
+	}
+}	
+/********* End *********/

@@ -1,0 +1,33 @@
+package step4;
+
+//注意文件名，这里应该写MyRunnable类
+/***begin your code here***/
+public class MyRunnable implements Runnable {
+	private int num;
+	
+    public MyRunnable() {
+    	this(0);
+    }
+    
+    public MyRunnable(int num) {
+    	/***begin your code here***/
+    	this.num=num;
+    	/***end your code here***/
+    }
+	@Override
+     
+	public void run() {
+        try {
+               Thread.sleep(50);
+               } catch(InterruptedException e) { } 
+		//重写run方法，在子线程中想要执行的代码写在run方法中
+    	int result = 1;//result保存计算出的结果
+ 
+		for(int i=1;i<=num;i++)
+            result=result*i;
+
+    	System.out.println(result);
+	}
+
+}
+/***end your code***/

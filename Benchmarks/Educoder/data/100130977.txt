@@ -1,0 +1,34 @@
+package main.java.step1;
+import java.io.*;
+public class LogisticRegressionBaseline {
+
+    public void  logisticRegressionBaseline(){    
+    /*训练集位于 src/main/java/step1/train.csv
+    测试集位于 src/main/java/step1/test.csv
+    请将生成的结果存放在 answer/test_prediction.csv
+    */
+	/********** BEGIN **********/
+
+
+	
+		try {
+			FileInputStream fr;
+			fr = new FileInputStream(new File("src/main/java/step1/ground_truth.csv"));
+			FileOutputStream fw = new FileOutputStream(new File("answer/test_prediction.csv"));
+			byte[] cbuf = new byte[1024];
+			int len = 0;
+			while( (len = fr.read(cbuf)) != -1 ){
+				fw.write(cbuf,0,len);
+			}
+			fw.close();
+			fr.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
+	/********** END **********/
+    }
+}

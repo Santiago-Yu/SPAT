@@ -1,0 +1,38 @@
+package step3;
+import java.util.Scanner;
+public class GcdAndGcm {
+	public static void main(String[] args) {
+		/********** Begin *********/
+		//键盘输入数据
+		//do—while循环，辗转相除法
+		//关掉输入流
+        Scanner sc=new Scanner(System.in);
+		int num1=sc.nextInt();
+		int num2=sc.nextInt();
+		System.out.println("最大公约数："+maxCommonDivisor(num1,num2));
+		System.out.println("最小公倍数："+minCommonDivisor(num1,num2));
+	}
+
+	
+
+	private static int maxCommonDivisor(int m, int n) {
+		// TODO 自动生成的方法存根
+		if(m<n) {
+			int temp=m;
+			m=n;
+			n=temp;
+		}
+		while(m%n!=0) {
+			int temp=m%n;
+			m=n;
+			n=temp;
+		}
+		return n;
+	}
+	private static int minCommonDivisor(int m, int n) {
+		// TODO 自动生成的方法存根
+		return m*n/maxCommonDivisor(m,n);
+	}
+        /********** End *********/
+		
+}

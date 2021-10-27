@@ -1,0 +1,34 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc=new Scanner(System.in);
+	String nums[]=sc.nextLine().split("");
+	String arr[]=sc.nextLine().split("");
+	int temp=0;
+	for(int i=0;i<nums.length;i++){
+		for(int k=0;k<arr.length;k++){
+			if(nums[i].equals(arr[k])){
+				 int max=1;
+				for(int m=i+1,n=k+1;m<nums.length&&n<arr.length;m++,n++){
+					if(nums[m].equals(arr[n])){
+						max=max+1;
+					}
+					else
+					{
+					break;
+					}
+				}
+				if(max>temp){
+					temp=max;
+				}
+
+			}
+		}
+	}
+
+System.out.print(temp);
+    }
+}

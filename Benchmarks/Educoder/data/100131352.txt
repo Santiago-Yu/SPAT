@@ -1,0 +1,21 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int min=num2<num1?num2:num1;
+        int max=num2<num1?num1:num2;
+        int sum=0;
+        for(int i=min;i<=max;i++){
+            sum+=i%10;
+            sum+=i/100;
+            sum+=(i%100)/10;
+        
+        }
+		return sum;
+		
+		/********** END **********/
+	}
+}

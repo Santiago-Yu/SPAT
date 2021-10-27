@@ -1,0 +1,42 @@
+package step4;
+
+import java.util.Scanner;
+class WuMingFen{
+    String theMa;
+    int quantity;
+    boolean likeSoup;
+    public WuMingFen( String theMa,int quantity,boolean likeSoup){
+        this.theMa=theMa;
+        this.quantity=quantity;
+        this.likeSoup=likeSoup;
+    }
+    public void chu1(){
+		System.out.println("面码：" + theMa+"，粉的份量："+quantity+"两，是否带汤："+likeSoup);
+	}
+       public void chu3(){
+		System.out.println("面码：酸辣，粉的份量：2两，是否带汤：true");
+	}
+       public void chu2(){
+		System.out.println("面码：" + theMa+"，粉的份量："+quantity+"两，是否带汤：false");
+	}
+
+}
+public class Test {
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String theMa = sc.next();
+		int quantity = sc.nextInt();
+		boolean likeSoup = sc.nextBoolean();
+        WuMingFen f1 = new WuMingFen(theMa,quantity,likeSoup);
+        f1.chu1();
+        f1.chu2();
+        f1.chu3();
+		//使用三个参数的构造方法创建WuMingFen对象  取名 f1
+		//使用两个参数的构造方法创建WuMingFen对象  取名 f2
+		//使用无参构造方法创建WuMingFen对象  取名 f3
+		
+		//分别调用三个类的 check方法
+		
+	}
+}

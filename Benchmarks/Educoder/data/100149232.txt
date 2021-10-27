@@ -1,0 +1,27 @@
+package step2;
+public class Task {
+	
+	    public int virusArea(int n,int m,char[][]area) {
+	        int count = 0;
+	        for(int i=0; i<area.length; i++) {
+	            for(int j=0; j<area[0].length; j++) {
+	                if(area[i][j]=='o') {
+	                    search(area, i, j);
+	                    ++count;
+	                }
+	            }
+	        }
+	        return count;
+	    }
+	    
+	    private void search(char[][] grid, int x, int y) {
+	        if(x<0 || x>=grid.length || y<0 || y>=grid[0].length || grid[x][y]!='o') return;
+	        grid[x][y] = 'x';
+	        search(grid, x-1, y);
+	        search(grid, x+1, y);
+	        search(grid, x, y-1);
+	        search(grid, x, y+1);
+	    }
+
+
+}

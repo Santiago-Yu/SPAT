@@ -1,0 +1,30 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+    public void showDirStructure(File file){
+        if(file.isDirectory()){
+            System.out.println("+--"+file.getName());
+            showAllFile(file,"");
+        }
+        else
+            System.out.println("--"+file.getName());
+    }
+	public void showAllFile(File file,String pout){
+        File[] files=file.listFiles();
+        for(File file1:files){
+            if(file1.isDirectory()){
+                System.out.println(pout+"  +--"+file1.getName());
+                showAllFile(file1,pout+"  ");
+            }
+            if(file1.isFile()){
+                System.out.println(pout+"  --"+file1.getName());
+            }
+                
+        }
+    }
+
+
+	/********** END **********/
+}

@@ -1,0 +1,630 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Java_TranslationSchemaAnalysis {
+
+    private List<String> errs = new ArrayList<>();
+
+    private static class Token {
+        String value;
+        String type;
+        int lineNum;
+
+        private Token(String type, String value, int lineNum) {
+            this.type = type;
+            this.value = value;
+            this.lineNum = lineNum;
+        }
+
+        @Override
+        public String toString() {
+            return "<" + type + ", " + value + ">";
+        }
+
+        private String toJSON() {
+            return "\"" + value + "\"";
+        }
+
+        static Token createToken(String value, int lineNum) {
+            final List<String> KEYWORDS = Arrays.asList("if", "then", "else", "while", "int", "real");
+            String type = value;
+            if (value.equals("0")) {
+                return new Token("INTNUM", "0", lineNum);
+            }
+            if (value.matches("^[-+]?[0-9]*\\.[0-9]+$")) {
+                type = "REALNUM";
+            } else if (value.matches("^-?[1-9]\\d*$")) {
+                type = "INTNUM";
+            } else if (value.matches("[a-z]+") && !KEYWORDS.contains(value)) {
+                type = "ID";
+            }
+            return new Token(type, value, lineNum);
+        }
+    }
+
+    private static class Action {
+        String type;
+        int target;
+
+        Action(String type, int target) {
+            this.type = type;
+            this.target = target;
+        }
+
+        private boolean isError() {
+            return type.equals("error");
+        }
+
+        private boolean isShift() {
+            return type.equals("shift");
+        }
+
+        private boolean isReduce() {
+            return type.equals("reduce");
+        }
+
+        private boolean isAccept() {
+            return type.equals("accept");
+        }
+
+        static Action createAction(String input) {
+            String content = input.substring(1);
+            String type = "";
+            switch (input.substring(0, 1)) {
+                case "s":
+                    type = "shift";
+                    break;
+                case "r":
+                    type = "reduce";
+                    break;
+                case "a":
+                    type = "accept";
+                    break;
+                case "e":
+                    type = "error";
+                    break;
+            }
+            if (type.equals("accept")) return new Action(type, 0);
+            return new Action(type, Integer.valueOf(content));
+        }
+    }
+
+    private static class Production {
+        String from;
+        List<String> to;
+
+        private Production(String _from, String... strings) {
+            from = _from;
+            to = Arrays.asList(strings);
+        }
+
+        @Override
+        public String toString() {
+            return from + " -> " + String.join(" ", to);
+        }
+    }
+
+    private static class Node {
+        String title;
+        List<Node> children;
+        List<String> tos;
+        List<Token> tokens;
+        Object payload;
+
+        Node(String title, List<Node> children, List<String> tos) {
+            this.title = title;
+            this.children = children;
+            this.tos = tos;
+            tokens = new ArrayList<>();
+        }
+
+        @Override
+        public String toString() {
+            return "{" +
+                "title:'" + title + '\'' +
+                ", children:" + children +
+                ", tos: \"" + String.join(" ", tos) + "\"" +
+                ", tokens: [" + tokens.stream().map(Token::toJSON).collect(Collectors.joining(", ")) +
+                "]}";
+        }
+    }
+
+    private static class Symbol {
+        String key;
+        boolean isInt;
+        Number value;
+
+        Symbol(String key, boolean isInt, Number value) {
+            this.key = key;
+            this.isInt = isInt;
+            this.value = value;
+        }
+    }
+
+    private List<Production> productions = new ArrayList<>();
+
+    private List<Map<String, Action>> actionTable = new ArrayList<>();
+
+    private List<Map<String, Integer>> gotoTable = new ArrayList<>();
+
+    private List<Token> tokens;
+
+    private int T_SIZE = 24;
+    String[] IDS = new String[]{";", "int", "ID", "=", "INTNUM", "real", "REALNUM", "{", "}", "if",
+        "(", ")", "then", "else", "<", ">", "<=", ">=", "==", "+", "-", "*", "/", "$", "program'",
+        "program", "decls", "decl", "stmt", "compoundstmt", "stmts", "ifstmt", "assgstmt", "boolexpr",
+        "boolop", "arithexpr", "arithexprprime", "multexpr", "multexprprime", "simpleexpr"};
+
+    {
+        String tableData =
+            "_ s4 _ _ _ s5 _ r3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 2 3 _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ac _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ s7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 6 _ _ _ _ _ _ _ _ _ _\n" +
+                "s8 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s9 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s10 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ r1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 r11 s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 12 15 11 13 14 _ _ _ _ _ _ _\n" +
+                "_ s4 _ _ _ s5 _ r3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 18 3 _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s19 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s20 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ s21 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 r11 s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 12 15 22 13 14 _ _ _ _ _ _ _\n" +
+                "_ _ r6 _ _ _ _ r6 r6 r6 _ _ _ r6 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r7 _ _ _ _ r7 r7 r7 _ _ _ r7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r8 _ _ _ _ r8 r8 r8 _ _ _ r8 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s24 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ r2 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ s25 _ e1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ s26 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r9 _ _ _ _ r9 r9 r9 _ _ _ r9 _ _ _ _ _ _ _ _ _ r9 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ r10 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 27 _ 28 _ 29 _ 30\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 35 _ 29 _ 30\n" +
+                "r4 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r5 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ s38 s39 s40 s41 s42 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 37 _ _ _ _ _\n" +
+                "r23 _ _ _ _ _ _ _ _ _ _ r23 _ _ r23 r23 r23 r23 r23 s44 s45 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 43 _ _ _\n" +
+                "r27 _ _ _ _ _ _ _ _ _ _ r27 _ _ r27 r27 r27 r27 r27 r27 r27 s47 s48 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 46 _\n" +
+                "r28 _ _ _ _ _ _ _ _ _ _ r28 _ _ r28 r28 r28 r28 r28 r28 r28 r28 r28 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r29 _ _ _ _ _ _ _ _ _ _ r29 _ _ r29 r29 r29 r29 r29 r29 r29 r29 r29 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r30 _ _ _ _ _ _ _ _ _ _ r30 _ _ r30 r30 r30 r30 r30 r30 r30 r30 r30 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 49 _ 29 _ 30\n" +
+                "s50 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ s51 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 52 _ 29 _ 30\n" +
+                "_ _ r15 _ r15 _ r15 _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r16 _ r16 _ r16 _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r17 _ r17 _ r17 _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r18 _ r18 _ r18 _ _ _ r18 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r19 _ r19 _ r19 _ _ _ r19 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r20 _ _ _ _ _ _ _ _ _ _ r20 _ _ r20 r20 r20 r20 r20 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 53 _ 30\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 54 _ 30\n" +
+                "r24 _ _ _ _ _ _ _ _ _ _ r24 _ _ r24 r24 r24 r24 r24 r24 r24 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 55\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 56\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ s57 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r13 _ _ _ _ r13 r13 r13 _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 _ s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 58 15 _ 13 14 _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r23 _ _ _ _ _ _ _ _ _ _ r23 _ _ r23 r23 r23 r23 r23 s44 s45 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 59 _ _ _\n" +
+                "r23 _ _ _ _ _ _ _ _ _ _ r23 _ _ r23 r23 r23 r23 r23 s44 s45 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 60 _ _ _\n" +
+                "r27 _ _ _ _ _ _ _ _ _ _ r27 _ _ r27 r27 r27 r27 r27 r27 r27 s47 s48 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 61 _\n" +
+                "r27 _ _ _ _ _ _ _ _ _ _ r27 _ _ r27 r27 r27 r27 r27 r27 r27 s47 s48 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 62 _\n" +
+                "r31 _ _ _ _ _ _ _ _ _ _ r31 _ _ r31 r31 r31 r31 r31 r31 r31 r31 r31 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ s63 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r21 _ _ _ _ _ _ _ _ _ _ r21 _ _ r21 r21 r21 r21 r21 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r22 _ _ _ _ _ _ _ _ _ _ r22 _ _ r22 r22 r22 r22 r22 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r25 _ _ _ _ _ _ _ _ _ _ r25 _ _ r25 r25 r25 r25 r25 r25 r25 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r26 _ _ _ _ _ _ _ _ _ _ r26 _ _ r26 r26 r26 r26 r26 r26 r26 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 _ s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 64 15 _ 13 14 _ _ _ _ _ _ _\n" +
+                "_ _ r12 _ _ _ _ r12 r12 r12 _ _ _ r12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
+
+        String productionData = "program' -> program\n" +
+            "program -> decls compoundstmt\n" +
+            "decls -> decl ; decls\n" +
+            "decls -> ''\n" +
+            "decl -> int ID = INTNUM\n" +
+            "decl -> real ID = REALNUM\n" +
+            "stmt -> ifstmt\n" +
+            "stmt -> assgstmt\n" +
+            "stmt -> compoundstmt\n" +
+            "compoundstmt -> { stmts }\n" +
+            "stmts -> stmt stmts\n" +
+            "stmts -> ''\n" +
+            "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+            "assgstmt -> ID = arithexpr ;\n" +
+            "boolexpr -> arithexpr boolop arithexpr\n" +
+            "boolop -> <\n" +
+            "boolop -> >\n" +
+            "boolop -> <=\n" +
+            "boolop -> >=\n" +
+            "boolop -> ==\n" +
+            "arithexpr -> multexpr arithexprprime\n" +
+            "arithexprprime -> + multexpr arithexprprime\n" +
+            "arithexprprime -> - multexpr arithexprprime\n" +
+            "arithexprprime -> ''\n" +
+            "multexpr -> simpleexpr multexprprime\n" +
+            "multexprprime -> * simpleexpr multexprprime\n" +
+            "multexprprime -> / simpleexpr multexprprime\n" +
+            "multexprprime -> ''\n" +
+            "simpleexpr -> ID\n" +
+            "simpleexpr -> INTNUM\n" +
+            "simpleexpr -> REALNUM\n" +
+            "simpleexpr -> ( arithexpr )";
+
+        for (String line : tableData.split("\n")) {
+            Map<String, Action> actionLine = new HashMap<>();
+            Map<String, Integer> gotoLine = new HashMap<>();
+            String[] items = line.split(" ");
+            for (int i = 0; i < IDS.length; i++) {
+                if (items[i].equals("_")) continue;
+                if (i < T_SIZE)
+                    actionLine.put(IDS[i], Action.createAction(items[i]));
+                else
+                    gotoLine.put(IDS[i], Integer.valueOf(items[i]));
+            }
+            actionTable.add(actionLine);
+            gotoTable.add(gotoLine);
+        }
+        for (String line : productionData.split("\n")) {
+            String from = line.split(" +-> +")[0];
+            String[] to = line.split(" +-> +")[1].split(" ");
+            if (to.length == 1 && to[0].equals("''")) {
+                productions.add(new Production(from));
+            } else {
+                productions.add(new Production(from, to));
+            }
+        }
+    }
+
+    private boolean isNonTerminate(String s) {
+        for (int i = T_SIZE; i < IDS.length; i++)
+            if (s.equals(IDS[i]))
+                return true;
+        return false;
+    }
+
+    private List<Symbol> symbolList = new ArrayList<>();
+
+    private void output(String code) {
+        tokens = tokenize(code);
+        List<Production> productions = parse(tokens);
+        Node tree = parseTree(productions);
+        buildSymbolTable(tree);
+        if (errs.size() != 0) {
+            System.out.print(String.join("\n", errs));
+            return;
+        }
+        List<String> output = new ArrayList<>();
+        for (Symbol symbol : symbolList) {
+            if (symbol.isInt) {
+                output.add(symbol.key + ": " + symbol.value.intValue());
+            } else {
+                output.add(symbol.key + ": " + symbol.value.doubleValue());
+            }
+        }
+        System.out.print(String.join("\n", output));
+    }
+
+    private void handleError(Action action, Stack<Token> tokens) {
+        if (action.target == 1) {
+            Token wrong = tokens.pop();
+            errs.add("error message:line " + (wrong.lineNum) + ",realnum can not be translated into int type");
+            tokens.push(new Token("INTNUM", Double.valueOf(wrong.value).intValue() + "", wrong.lineNum));
+        }
+    }
+
+    private List<Production> parse(List<Token> temp) {
+        List<Production> result = new ArrayList<>();
+        Stack<Token> tokens = new Stack<>();
+        tokens.add(new Token("$", "$", -1));
+        Collections.reverse(temp);
+        tokens.addAll(temp);
+
+        Stack<String> stack = new Stack<>();
+        stack.add("0");
+        while (true) {
+            int curState = Integer.valueOf(stack.peek());
+            Token a = tokens.peek();
+            Action action = actionTable.get(curState).get(a.type);
+            if (action == null) {
+                System.out.println("err: type = " + a + ", state = " + curState);
+                break;
+            }
+            if (action.isShift()) {
+                // 状态改变、移入下一个符号
+                stack.push(tokens.pop().value);
+                stack.push(Integer.toString(action.target));
+            } else if (action.isReduce()) {
+                // 规约、并输出产生式
+                Production production = productions.get(action.target);
+
+                for (int i = 0; i < production.to.size() * 2; i++) {
+                    stack.pop();
+                }
+                curState = Integer.valueOf(stack.peek());
+                stack.push(production.from);
+                stack.push(Integer.toString(gotoTable.get(curState).get(production.from)));
+                result.add(production);
+            } else if (action.isAccept()) {
+                // 接受
+                break;
+            } else if (action.isError()) {
+                // 短语级错误恢复
+                handleError(action, tokens);
+            } else {
+                System.out.println("err");
+            }
+        }
+        return result;
+    }
+
+    private List<Token> tokenize(String code) {
+        int lineNum = 0;
+        List<Token> tokens = new ArrayList<>();
+        for (String line : code.split("\n")) {
+            lineNum++;
+            if (line.trim().length() == 0) continue;
+            for (String value : line.split("[ \t]+")) {
+                if (value.trim().length() == 0) continue;
+                tokens.add(Token.createToken(value.trim(), lineNum));
+            }
+        }
+        return tokens;
+    }
+
+    private Node parseTree(List<Production> productions) {
+        List<Production> ps = new ArrayList<>(productions);
+        Collections.reverse(ps);
+        Queue<Production> q = new LinkedList<>(ps);
+        Queue<Token> tokenQueue = tokens.stream().filter(cur -> cur.type.equals("ID") || cur.type.equals("INTNUM") || cur.type.equals("REALNUM")).collect(Collectors.toCollection(LinkedList::new));
+        return buildTreeRecursively(q, tokenQueue);
+    }
+
+    private Symbol findSymbol(String key) {
+        for (Symbol symbol : symbolList) {
+            if (symbol.key.equals(key)) {
+                return symbol;
+            }
+        }
+        return new Symbol("", true, 0);
+    }
+
+    private boolean isInt(Object n) {
+        return n instanceof Integer;
+    }
+
+    private boolean isDouble(Object n) {
+        return n instanceof Double;
+    }
+
+    private Double castToDouble(Object object) {
+        return ((Number) object).doubleValue();
+    }
+
+    private Integer castToInteger(Object object) {
+        return ((Number) object).intValue();
+    }
+
+    private void buildSymbolTable(Node root) {
+        dfs(root, new Stack<>());
+    }
+
+    private void dfs(Node cur, Stack<Object> stack) {
+        // 按照节点的title进行遍历
+        switch (cur.title) {
+            case "program":
+                // program -> decls compoundstmt
+                dfs(cur.children.get(0), stack);
+                dfs(cur.children.get(1), stack);
+                break;
+            case "decls":
+            case "stmts":
+                // stmts -> stmt stmts
+                // stmts -> ''
+                // decls -> decl ; decls
+                // decls -> ''
+                if (cur.tos.size() != 0) {
+                    dfs(cur.children.get(0), stack);
+                    dfs(cur.children.get(1), stack);
+                }
+                break;
+            case "decl":
+                // decl -> int ID = INTNUM
+                // decl -> real ID = REALNUM
+                if (cur.tokens.get(1).type.equals("INTNUM")) {
+                    symbolList.add(new Symbol(cur.tokens.get(0).value, true, Integer.valueOf(cur.tokens.get(1).value)));
+                } else {
+                    symbolList.add(new Symbol(cur.tokens.get(0).value, false, Double.valueOf(cur.tokens.get(1).value)));
+                }
+                break;
+            case "stmt":
+            case "compoundstmt":
+                // compoundstmt -> { stmts }
+                // stmt -> ifstmt
+                // stmt -> assgstmt
+                // stmt -> compoundstmt
+                dfs(cur.children.get(0), stack);
+                break;
+            case "ifstmt":
+                // ifstmt -> if ( boolexpr ) then stmt else stmt
+                dfs(cur.children.get(0), stack);
+                if ((Boolean) cur.children.get(0).payload) {
+                    dfs(cur.children.get(1), stack);
+                } else {
+                    dfs(cur.children.get(2), stack);
+                }
+                break;
+            case "assgstmt":
+                // assgstmt -> ID = arithexpr ;
+                dfs(cur.children.get(0), stack);
+                Symbol symbol = findSymbol(cur.tokens.get(0).value);
+                symbol.value = (Number) cur.children.get(0).payload;
+                break;
+            case "boolexpr":
+                // boolexpr -> arithexpr boolop arithexpr
+                dfs(cur.children.get(0), stack);
+                dfs(cur.children.get(1), stack);
+                dfs(cur.children.get(2), stack);
+                Double v1 = ((Number) cur.children.get(0).payload).doubleValue();
+                Double v2 = ((Number) cur.children.get(2).payload).doubleValue();
+                switch ((String) cur.children.get(1).payload) {
+                    case "<":
+                        cur.payload = v1 < v2;
+                        break;
+                    case ">":
+                        cur.payload = v1 > v2;
+                        break;
+                    case "<=":
+                        cur.payload = v1 <= v2;
+                        break;
+                    case ">=":
+                        cur.payload = v1 >= v2;
+                        break;
+                    case "==":
+                        cur.payload = v1.equals(v2);
+                        break;
+                }
+                break;
+            case "boolop":
+                // boolop -> <
+                // boolop -> >
+                // boolop -> <=
+                // boolop -> >=
+                // boolop -> ==
+                cur.payload = cur.tos.get(0);
+                break;
+            case "arithexpr":
+            case "multexpr":
+                // arithexpr -> multexpr arithexprprime
+                // multexpr -> simpleexpr multexprprime
+                dfs(cur.children.get(0), stack);
+                stack.push(cur.children.get(0).payload);
+                dfs(cur.children.get(1), stack);
+                cur.payload = stack.pop();
+                break;
+            case "arithexprprime":
+                // arithexprprime -> + multexpr arithexprprime
+                // arithexprprime -> - multexpr arithexprprime
+                // arithexprprime -> ''
+                if (cur.tos.size() != 0) {
+                    dfs(cur.children.get(0), stack);
+                    Object tempValue = stack.pop();
+                    Object nextValue = cur.children.get(0).payload;
+                    if (cur.tos.get(0).equals("+")) {
+                        if (isInt(tempValue) && isInt(nextValue)) {
+                            stack.push(castToInteger(tempValue) + castToInteger(nextValue));
+                        } else {
+                            stack.push(castToDouble(tempValue) + castToDouble(nextValue));
+                        }
+                    } else {
+                        if (isInt(tempValue) && isInt(nextValue)) {
+                            stack.push(castToInteger(tempValue) - castToInteger(nextValue));
+                        } else {
+                            stack.push(castToDouble(tempValue) - castToDouble(nextValue));
+                        }
+                    }
+                    dfs(cur.children.get(1), stack);
+                }
+                break;
+            case "multexprprime":
+                // multexprprime -> ''
+                // multexprprime -> * simpleexpr multexprprime
+                // multexprprime -> / simpleexpr multexprprime
+                if (cur.tos.size() != 0) {
+                    dfs(cur.children.get(0), stack);
+                    Object tempValue = stack.pop();
+                    Object nextValue = cur.children.get(0).payload;
+                    if (cur.tos.get(0).equals("*")) {
+                        if (isInt(tempValue) && isInt(nextValue)) {
+                            stack.push(castToInteger(tempValue) * castToInteger(nextValue));
+                        } else {
+                            stack.push(castToDouble(tempValue) * castToDouble(nextValue));
+                        }
+                    } else {
+                        if (castToDouble(nextValue) < 1) {
+                            errs.add("error message:line " + cur.children.get(0).tokens.get(0).lineNum +",division by zero");
+                        }
+                        if (isInt(tempValue) && isInt(nextValue)) {
+                            stack.push(castToInteger(tempValue) / castToInteger(nextValue));
+                        } else {
+                            stack.push(castToDouble(tempValue) / castToDouble(nextValue));
+                        }
+                    }
+                    dfs(cur.children.get(1), stack);
+                }
+                break;
+            case "simpleexpr":
+                if (cur.tokens.size() == 0) {
+                    // simpleexpr -> ( arithexpr )
+                    dfs(cur.children.get(0), stack);
+                    cur.payload = cur.children.get(0).payload;
+                    break;
+                } else if (cur.tokens.get(0).type.equals("ID")) {
+                    // simpleexpr -> ID
+                    Symbol s = findSymbol(cur.tokens.get(0).value);
+                    cur.payload = s.value;
+                } else {
+                    // simpleexpr -> INTNUM
+                    // simpleexpr -> REALNUM
+                    boolean isInt = cur.tokens.get(0).type.equals("INTNUM");
+                    cur.payload = (isInt ? Integer.valueOf(cur.tokens.get(0).value) : Double.valueOf(cur.tokens.get(0).value));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private Node buildTreeRecursively(Queue<Production> queue, Queue<Token> tokenQueue) {
+        List<Node> children = new ArrayList<>();
+        Production production = queue.poll();
+        if (production == null) return null;
+        Node node = new Node(production.from, children, production.to);
+
+        List<String> tos = production.to;
+        for (int i = tos.size() - 1; i >= 0; i--) {
+            String cur = tos.get(i);
+            if (isNonTerminate(cur)) {
+                children.add(0, buildTreeRecursively(queue, tokenQueue));
+            } else if (cur.equals("ID") || cur.equals("INTNUM") || cur.equals("REALNUM")) {
+                node.tokens.add(0, tokenQueue.poll());
+            }
+        }
+        return node;
+    }
+
+    public static void main(String[] args) {
+//        String code = "int a = 1 ;\n" +
+//            "int b = 2 ;\n" +
+//            "real c = 3.0 ;\n" +
+//            "{ \n" +
+//            "\ta = a + 1 ;\n" +
+//            "\tb = b * a ;\n" +
+//            "\tif ( a < b )\n" +
+//            "\tthen c = c / 2 ;\n" +
+//            "\telse c = c / 4 ;\n" +
+//            "}";
+//
+//        String code2 =
+//            "int a = 3 ; int b = 5.73 ; real c = 3.0 ;\n" +
+//                "{\n" +
+//                "a = a + 1 ;\n" +
+//                "b = b + a ;\n" +
+//                "if ( a < b ) then c = c / 0 ; else c = c / 4 ;\n" +
+//                "}";
+//        String code3 = "int a = 3 ; real b = 4.3 ; { a = 1 + 2 * ( a - 1 ) ; }";
+        Scanner sc = new Scanner(System.in);
+        StringBuilder codeBuilder = new StringBuilder();
+        while (sc.hasNextLine()) {
+            codeBuilder.append(sc.nextLine()).append("\n");
+        }
+        Java_TranslationSchemaAnalysis solver = new Java_TranslationSchemaAnalysis();
+        solver.output(codeBuilder.toString());
+    }
+
+}

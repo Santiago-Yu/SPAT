@@ -1,0 +1,272 @@
+import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+	static boolean ifprint=true;
+    static boolean first=true;
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+         Map<String,Double> map=new HashMap<>();
+        Scanner in =new Scanner(System.in);
+        int line=1;
+        while (in.hasNextLine())
+        {
+            String s=in.nextLine();
+            String[] strs=s.split(" ");
+            int strs_len=strs.length;
+            for(int i = 0; i < strs_len; i++)
+            {
+                switch (strs[i])
+                {
+                    case "int":
+                    {
+                        ++i;
+                        if (strs[i + 2].contains("."))
+                        {
+                            if(first)
+                            	System.out.print("error message:line " + line + ",realnum can not be translated into int type");
+                            else
+                            {
+                                System.out.println();
+                                System.out.print("error message:line " + line + ",realnum can not be translated into int type");
+                       
+                            }
+                            first=false;
+                            ifprint=false;
+                        }
+                        map.put(strs[i], Double.valueOf(strs[i + 2]));
+                        i+=3;
+                        break;
+                    }
+                    case "real":
+                    {
+                        ++i;
+                        map.put(strs[i],Double.valueOf(strs[i+2]));
+                        i+=3;
+                        break;
+                    }
+                    case "{": case "}": case ";": break;
+                    case "if":
+                    {
+                        double v1=map.get(strs[i+2]),v2=map.get(strs[i+4]);
+                        switch (strs[i+3])
+                        {
+                            case "<":
+                            {
+                                if(v1<v2)
+                                    dealexpression(strs,map,7,line);
+                                else
+                                {
+                                    if(strs.length>13)
+                                    {
+                                        dealexpression(strs,map,14,line);
+                                    }
+                                }
+                                break;
+                            }
+                            case ">":
+                            {
+                                if(v1>v2)
+                                    dealexpression(strs,map,7,line);
+                                else
+                                {
+                                    if(strs.length>13)
+                                    {
+                                        dealexpression(strs,map,14,line);
+                                    }
+                                }
+                                break;
+                            }
+                            case "<=":
+                            {
+                                if(v1<=v2)
+                                    dealexpression(strs,map,7,line);
+                                else
+                                {
+                                    if(strs.length>13)
+                                    {
+                                        dealexpression(strs,map,14,line);
+                                    }
+                                }
+                                break;
+                            }
+                            case ">=":
+                            {
+                                if(v1>=v2)
+                                    dealexpression(strs,map,7,line);
+                                else
+                                {
+                                    if(strs.length>13)
+                                    {
+                                        dealexpression(strs,map,14,line);
+                                    }
+                                }
+                                break;
+                            }
+                            case "==":
+                            {
+                                if(v1==v2)
+                                    dealexpression(strs,map,7,line);
+                                else
+                                {
+                                    if(strs.length>13)
+                                    {
+                                        dealexpression(strs,map,14,line);
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        i=strs_len;
+                        break;
+                    }
+                    default:
+                    {
+                        dealexpression(strs,map,0,line);
+                        i=strs_len;
+                    }
+                }
+            }
+            ++line;
+        }
+        if(ifprint)
+        {
+            int size=map.size();
+            int loop=1;
+            for(Map.Entry<String,Double> entry: map.entrySet())
+            {
+                if (entry.getValue() == Math.round(entry.getValue()))
+                    System.out.print(entry.getKey() + ": " + Math.round(entry.getValue()));
+                else
+                    System.out.print(entry.getKey() + ": " + entry.getValue());
+                if(loop!=size)
+                    System.out.println();
+                ++loop;
+            }
+        }
+    }
+
+    
+    public static void dealexpression(String[] strs,Map<String,Double> map,int i,int line)
+    {
+        char type1=String.valueOf(map.get(strs[i])).contains(".")? 'd': 'i';
+        i+=2;
+        char type2=String.valueOf(map.get(strs[i])).contains(".")? 'd': 'i';
+        double v2=map.get(strs[i]);
+        if( type1>type2 )
+        {
+            ifprint=false;
+            if(first)
+              System.out.print("error message:line "+line+",realnum can not be translated into int type");
+            else
+            {
+                System.out.println();
+                System.out.print("error message:line " + line + ",realnum can not be translated into int type");
+                
+            }
+            first=false;
+        }
+        double v3;
+        if(Character.isDigit(strs[i+2].charAt(0)))
+        {
+            v3=Double.valueOf(strs[i+2]);
+            if(v3==0)
+            {
+                if(first)
+                	System.out.print("error message:line "+line+",division by zero");
+               else
+               {
+                   System.out.println();
+                   System.out.print("error message:line "+line+",division by zero");
+                   
+               }
+                first=false;
+                return;
+            }
+        }
+        else
+            v3=map.get(strs[i+2]);
+        switch (strs[i+1])
+        {
+            case "+":
+            {
+                map.put(strs[i-2],v2+v3);
+                break;
+            }
+            case "-":
+            {
+                map.put(strs[i-2],v2-v3);
+                break;
+            }
+            case "*":
+            {
+                map.put(strs[i-2],v2*v3);
+                break;
+            }
+            case "/":
+            {
+                map.put(strs[i-2],v2/v3);
+                break;
+            }
+        }
+        if(!strs[i+3].equals(";"))
+        {
+            v2=map.get(strs[i-2]);v3=Double.valueOf(strs[i+4]);
+            switch (strs[i+3])
+            {
+                case "+":
+                {
+                    map.put(strs[i - 2], v2 + v3);
+                    break;
+                }
+                case "-":
+                {
+                    map.put(strs[i - 2], v2 - v3);
+                    break;
+                }
+                case "*":
+                {
+                    map.put(strs[i - 2], v2 * v3);
+                    break;
+                }
+                case "/":
+                {
+                    map.put(strs[i - 2], v2 / v3);
+                    break;
+                }
+            }
+        }
+    }
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

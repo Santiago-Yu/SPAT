@@ -1,0 +1,29 @@
+#include <stdio.h>
+int main()
+{
+    int a[100000];
+    int n=0,rt=0;
+    int i,j,k;
+    int T,t;
+    char y;
+    do{
+        scanf("%d",&a[n]);
+        n++;
+    }while( (y=getchar())!='\n' );
+    
+	scanf("%d",&T);
+    n--;
+    for(i=0;i<=n-2;i++)
+    {
+        for(j=i+1;j<=n-1;j++)
+        {
+            for(k=j+1;k<=n;k++)
+            {
+                t=a[i]+a[j]+a[k];
+                if(t<T) rt++;
+            }
+        }
+    }
+    printf("%d",rt);
+    
+}

@@ -1,0 +1,42 @@
+package step2;
+
+public class Task {
+       private void dfsSearch(char[][] grid, int i, int j, int rows, int cols) {
+        if (i < 0 || i >= rows || j < 0 || j >= cols) {
+            return;
+        }
+        if (grid[i][j] != 'o') {
+            return;
+        }
+        grid[i][j] = 'x';
+        dfsSearch(grid, i + 1, j, rows, cols);
+        dfsSearch(grid, i - 1, j, rows, cols);
+        dfsSearch(grid, i, j + 1, rows, cols);
+        dfsSearch(grid, i, j - 1, rows, cols);
+    }
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+
+		 if (area == null || area.length == 0 || area[0].length == 0) {
+            return 0;
+        }
+        int rows = area.length;
+        int cols = area[0].length;
+        int count = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (area[i][j] == 'o') {
+
+                    count++;
+
+                    dfsSearch(area, i, j, rows, cols);
+
+                }
+            }
+
+        }
+        return count++;
+
+		/********* End *********/	
+	}
+}

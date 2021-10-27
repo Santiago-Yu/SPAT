@@ -1,0 +1,25 @@
+#include<stdio.h>
+int main(){
+	int arr[20],t,n,i,m,j;
+	int max;
+	max=0;
+	n=0;
+	for(i=0;i<20;i++){
+		scanf("%d",arr+i);
+		n++;
+		if(getchar()=='\n') break;
+	}
+	scanf("%d",&t);
+	
+	for(i=0;i<n-2;i++){
+		for(m=i+1;m<n-1;m++){
+			for(j=m+1;j<n;j++){
+				if(arr[i]+arr[m]+arr[j]<t) {
+				max=max+1;}
+			}
+		}
+	}
+	printf("%d",max);
+
+return 0;
+}

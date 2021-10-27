@@ -1,0 +1,66 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        /********* Begin *********/
+		int flag = 1;
+		int no_change = 1;
+		while(true){
+			
+			for (int i = 0; i < arr.length-1; i++) { //从左边到右边交换
+				for( int j = i; j <= i+1; j++){
+					if(arr[i]>arr[j]){
+					//排序就置0
+						flag = 0;
+						no_change = 0;
+						int temp = arr[i];
+						arr[i] = arr[j];
+						arr[j] = temp;
+					//如果有交换就打印出来
+						for(int k = 0; k < arr.length; k++){
+							System.out.print(arr[k]+" ");
+							}
+						System.out.println("");
+						}
+					}
+				}              //从左边到右边交换
+			for(int last = arr.length-1; last>0; last--){ //从右边到左边交换
+				for(int t = last; t >= last-1; t--){
+					if(arr[last]<arr[t]){
+						//排序就置0
+						flag = 0;
+						no_change = 0;
+						int tem = arr[last];
+						arr[last] = arr[t];
+						arr[t] = tem;
+					//如果有交换就打印出来
+						for(int c = 0; c < arr.length; c++){
+							System.out.print(arr[c]+" ");
+							}
+						System.out.println("");
+						}
+					}
+				}            //从右边到左边交换
+			
+			//打印已经拍好的数组
+			if(flag == 1 && no_change == 1){
+				for(int x = 0; x < arr.length; x++){
+					System.out.print(arr[x]+" ");
+					}
+				System.out.println("");
+				}
+			
+			if(flag == 1)
+				break;
+			flag = 1;
+			}   //while循环结束
+		}
+
+		
+		/********* End *********/
+		
+		/********* End *********/
+	
+}

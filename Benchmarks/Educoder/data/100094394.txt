@@ -1,0 +1,27 @@
+package step1;
+import java.util.*;
+public class DecomposeFactor {
+	public void decompose(int score) {
+		/********** Begin *********/
+        double num;
+        if (90 <= score && score <= 100) {
+        	num = 4.0;
+        } else if (80 <= score && score < 90) {
+        	num = 3.5;
+        } else if (70 <= score && score < 80) {
+        	num = 3.0;
+        } else if (60 <= score && score < 70) {
+        	num = 2.5;
+        } else {
+        	num = 0;
+        }
+        System.out.print(num);
+		/********** End *********/
+	}
+    public static void main(String[] args) {
+        DecomposeFactor decomposeFactor = new DecomposeFactor();
+        Scanner scanner = new Scanner(System.in);
+        int randomScore = scanner.nextInt();
+        decomposeFactor.decompose(randomScore);
+    }
+}

@@ -1,0 +1,45 @@
+package Q201;
+import java.util.Scanner;
+import java.util.HashSet;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in=new Scanner(System.in);
+        int x=in.nextInt();
+        if(isHappy(x)) System.out.print("YES");
+        else System.out.print("NO");
+            
+        
+	}
+public static boolean isHappy(int n) {
+		// 首先要取得当前数字n的每一位数字	
+		//也可能是无限循环但始终变不到 1
+		//哈希表的作用是判断是否出现了循环！
+		HashSet<Integer> hashSet = new HashSet<Integer>();
+		while (n != 1) {
+			n = getbow(n);
+			//System.out.println(n);
+			//每次获取下一个值以后，就把它放进哈希表里面，判断是否出现了循环
+			if(hashSet.contains(n)){
+				return false;
+			}
+			hashSet.add(n);
+		}
+		if (n == 1) {
+			return true;
+		} else
+			return false;
+	}
+ 
+	static int getbow(int n) {
+		int num = 0;
+		while (n != 0) {
+			// 每次循环取得末尾数字，并且将整个数字往右平移一位
+			// System.out.println(n % 10);
+			num += Math.pow((n % 10), 2);
+			n /= 10;
+		}
+		return num;
+	}
+}

@@ -1,0 +1,54 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+        if(file.isDirectory()){
+            System.out.println("+--"+file.getName());
+            File[] files=file.listFiles();
+            for(File filenum:files){
+                if(filenum.isDirectory()){
+                   System.out.println("  +--"+filenum.getName());
+            	   File[] files1=filenum.listFiles();
+                   for(File filenum1:files1){
+                       if(filenum1.isDirectory()){
+                       System.out.println("    +--"+filenum1.getName());
+            	       File[] files2=filenum1.listFiles();
+                       for(File filenum2:files2){
+                           if(filenum2.isDirectory()){
+                           System.out.println("      +--"+filenum2.getName());
+                            File[] files3=filenum2.listFiles();
+                            for(File filenum3:files3){
+                                if(filenum3.isDirectory()){
+                           System.out.println("        +--"+filenum3.getName());
+                            File[] files4=filenum3.listFiles();
+                                    for(File filenum4:files4)
+                                    System.out.println("          --"+filenum4.getName());
+                                }
+                                else{System.out.println("        --"+filenum3.getName());}
+                            }
+                           }
+                           else{
+                           System.out.println("      --"+filenum2.getName());}
+                       }
+                       }
+                       else if(filenum1.isFile()){
+                            System.out.println("    --"+filenum1.getName());
+                       }
+                   }
+                }
+                else if(filenum.isFile()){
+                      System.out.println("  --"+filenum.getName());
+                }
+            }    
+        }
+        else if(file.isFile()){
+            System.out.println("--"+file.getName());
+        }
+        
+
+	}
+	/********** End **********/
+}

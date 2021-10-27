@@ -1,0 +1,35 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+        double d=(double) Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));   //圆心距
+        double area=0;
+        double PI=Math.PI;
+        double max,min;        
+         if(r1>=r2){
+            max=r1;
+            min=r2;
+        }
+        else{
+            max=r2;
+            min=r1;
+        }
+        if(d>=r1+r2){
+            area=PI*r1*r1+PI*r2*r2;
+        }    //两圆相离、外切，那么所求面积面积之和
+        else if(d<=max-min){
+            area=PI*max*max;
+        }   //两圆内含
+        else{
+            double s1=Math.acos(((r1*r1+d*d-r2*r2)/(2*r1*d)));
+            double s2=Math.acos(((r2*r2+d*d-r1*r1)/(2*r2*d)));
+            area=PI*r1*r1+PI*r2*r2-(s1*r1*r1 + s2*r2*r2 - r1*d*Math.sin(s1));
+        }                
+      return area;
+    
+		  /********* End *********/
+	  }
+}

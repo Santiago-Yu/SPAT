@@ -1,0 +1,59 @@
+package step1;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+	    MyThread ts1=new MyThread("AA");
+		MyThread ts2=new MyThread("BB");
+		MyThread ts3=new MyThread("CC");
+		ts1.start();
+		ts2.start();
+		ts3.start();
+
+
+		
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	public static int cnt=0;
+    public static final int COUNT=9;
+	
+	String threadName;
+    final Lock lock=new ReentrantLock();
+	
+	public MyThread(String threadName){
+		this.threadName=threadName;
+	}
+
+	public void run() {
+        while(true){
+            lock.lock();
+            if(cnt>=COUNT){
+                lock.unlock();
+                return;
+            }
+            if(cnt%3==0){
+                System.out.println("Java Thread"+"AA");
+                cnt++;
+            }
+            if(cnt%3==1){
+                System.out.println("Java Thread"+"BB");
+                cnt++;
+            }
+            if(cnt%3==2){
+                System.out.println("Java Thread"+"CC");
+                cnt++;
+            }
+            lock.unlock();
+        }
+    }
+
+	/********* End *********/
+}

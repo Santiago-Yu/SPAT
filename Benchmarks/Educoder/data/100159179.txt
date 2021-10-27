@@ -1,0 +1,56 @@
+package step3;
+
+public class CatAndDog {
+    public static void main(String[] args) {
+        /********** Begin *********/
+        Animal cat =new Cat();
+        Animal dog =new Dog("吃骨头","看家");
+        /********** End *********/
+        cat.eat();
+        cat.work();
+        dog.eat();
+        dog.work();
+    }
+}
+
+abstract class Animal {
+    abstract void eat();
+    abstract void work();
+}
+
+/********** Begin *********/
+class Cat extends Animal {
+    private String r;
+    private String s; 
+    Cat(){}                                  //Circle类构造方法
+    Cat(String r,String s){
+        this.r="吃鱼";
+        this.s="抓老鼠";
+     
+    }
+public void eat(){
+    System.out.println("吃鱼");
+}
+    public void work(){
+    System.out.println("抓老鼠");
+}
+}
+
+class Dog extends Animal {
+     private String r;
+    private String s;
+    Dog(){}                                  //Circle类构造方法
+    Dog(String r,String s){
+        this.r=r;
+       this.s=s;
+     
+    }
+public void eat(){
+    System.out.println(r);
+}
+    public void work(){
+    System.out.println(s);
+}
+
+}
+/********** End *********/

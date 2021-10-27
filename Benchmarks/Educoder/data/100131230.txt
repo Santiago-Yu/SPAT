@@ -1,0 +1,25 @@
+package step1;
+import java.util.ArrayList;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int result = 0;
+		ArrayList<Integer> temp = new ArrayList<Integer>();
+        for(int i=num1;i<=num2;i++){
+            temp.add(i);
+        }
+        for(int j=0;j<temp.size();j++) {
+        	int cur = temp.get(j) ;
+        	while(cur!=0) {
+        		result+=cur%10;
+        		cur=cur/10;
+        	}
+        }
+        return result;
+		
+		/********** END **********/
+	}
+}

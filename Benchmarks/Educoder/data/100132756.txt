@@ -1,0 +1,44 @@
+package step3;
+
+public class Task {
+
+	public int countOfShips(char[][] ferry) {
+		/************** BEGIN ************/
+		int height = ferry.length;
+		int width;
+		try {
+			width = ferry[0].length;
+		} catch (Exception e) {
+			width = 0;
+		}
+		int count = 0;
+		int c = 0;
+
+				for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				if (ferry[i][j] == '+') {
+					//判断本列占没占船位，如果占了就将这一列的下面填为o
+					for (int k = i + 1; k < height; k++) {
+						if (ferry[k][j] == 'o') {
+							break;
+						}else {
+							ferry[k][j]='o';
+						}
+					}
+					//遍历本行
+					int k2;
+					for (k2 = j + 1; k2 < width; k2++) {
+						if (ferry[i][k2] == 'o') {
+							break;
+						}
+					}
+					count++;
+					j = k2 - 1;
+				}
+			}
+		}
+
+		return count;
+		/*********** END ***************/
+	}
+}

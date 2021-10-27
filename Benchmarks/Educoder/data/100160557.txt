@@ -1,0 +1,32 @@
+package step1;
+import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+public class Task {
+	/**
+	 * @param url	网址http://www.ctrip.com/
+	 * @return
+	 * @throws IOException
+	 */
+	public Document getHtml1(String url) throws IOException{
+        File input = new File("./backups/www.ctrip.com.txt"); 
+Document doc = Jsoup.parse(input,"UTF-8",url);
+        
+		return doc;
+	} 
+	/**
+	 * 
+	 * @param url	网址http://hotels.ctrip.com/domestic-city-hotel.html
+	 * @return
+	 * @throws IOException
+	 */
+	public Document getHtml2(String url) throws IOException{
+        File input = new File("./backups/hotels.ctrip.com_domestic-city-hotel.txt"); 
+Document doc = Jsoup.parse(input,"UTF-8",url);
+        
+        
+		return doc;
+	} 
+    
+}

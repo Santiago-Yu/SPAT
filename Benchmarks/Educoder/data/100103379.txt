@@ -1,0 +1,46 @@
+package step3;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+//本题因为有另一个Java文件中有main函数，所有输出都是在main函数中，所以在以下代码中不需要出现输出
+public class DeleteFiles {
+    public static void start() throws IOException {
+        StringBuilder data = new StringBuilder("");
+        /********** Begin *********/
+        
+        //读取readme.txt文件
+		File file=new File("src/step3/readme.txt");
+        FileReader fileReader=new FileReader(file);
+        int read=fileReader.read();
+        while(read!=-1){
+            
+            data.append((char)read);
+            read=fileReader.read();
+        
+        }
+        fileReader.close();
+
+        //写入readmeCopy.txt文件
+		File file1 = new File("src/step3/readmeCopy.txt");
+        if(!file1.exists()){
+           file1.createNewFile();
+        
+		FileWriter fileWriter = new FileWriter(file1, true);
+		String LINE_SEPARATOR = System.getProperty("line.separator");   //定义LINE_SEPARATOR常量，表示换行符
+		String string =  data.toString();
+        
+		fileWriter.write(string/* + LINE_SEPARATOR*/);
+        
+		fileWriter.close();
+}
+        //删除readme.txt文件
+		File file2 = new File("src/step3/readme.txt");
+        if(file2.exists()){
+            file2.delete();
+        }
+		//file2.close();
+        /********** End *********/
+    }
+}

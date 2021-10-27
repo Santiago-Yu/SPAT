@@ -1,0 +1,319 @@
+import java.util.*;
+
+public class Java_LLParserAnalysis {
+
+    private static StringBuffer prog = new StringBuffer();
+    private static Stack<String> stack = new Stack<>();
+    private static String[] reservedWord = new String[]{"$","if","while","{","}","(",")","ID","NUM","+","-","*","/",";","then","else","=","==","<",">","<=",">=","==","E"};
+    private static String currentOutput = new String("");
+    private static HashMap<String,String> parserTable = new HashMap<>();
+    private static List<String[]> outputList = new ArrayList<>();
+    private static int count = 0;
+    private static int[] tabCount = new int[100];
+    private static List<String> stackPeek = new ArrayList<>();
+    private static boolean onRecover = false;
+    private static int countLine = 0;
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append('\n');
+            countLine++;
+        }
+        prog.append("$");
+    }
+
+    private static void init(){
+
+        stack.push("$");
+        stack.push("program");
+
+        parserTable.put("program,{","compoundstmt");
+        parserTable.put("stmt,{","compoundstmt");
+        parserTable.put("stmt,if","ifstmt");
+        parserTable.put("stmt,while","whilestmt");
+        parserTable.put("stmt,ID","assgstmt");
+        parserTable.put("compoundstmt,{","{ stmts }");
+        parserTable.put("stmts,{","stmt stmts");
+        parserTable.put("stmts,}","");
+        parserTable.put("stmts,if","stmt stmts");
+        parserTable.put("stmts,while","stmt stmts");
+        parserTable.put("stmts,ID","stmt stmts");
+        parserTable.put("ifstmt,if","if ( boolexpr ) then stmt else stmt");
+        parserTable.put("whilestmt,while","while ( boolexpr ) stmt");
+        parserTable.put("assgstmt,ID","ID = arithexpr ;");
+        parserTable.put("boolexpr,(","arithexpr boolop arithexpr");
+        parserTable.put("boolexpr,ID","arithexpr boolop arithexpr");
+        parserTable.put("boolexpr,NUM","arithexpr boolop arithexpr");
+        parserTable.put("boolop,<","<");
+        parserTable.put("boolop,>",">");
+        parserTable.put("boolop,<=","<=");
+        parserTable.put("boolop,>=",">=");
+        parserTable.put("boolop,==","==");
+        parserTable.put("arithexpr,(","multexpr arithexprprime");
+        parserTable.put("arithexpr,ID","multexpr arithexprprime");
+        parserTable.put("arithexpr,NUM","multexpr arithexprprime");
+        parserTable.put("arithexprprime,)","");
+        parserTable.put("arithexprprime,;","");
+        parserTable.put("arithexprprime,<","");
+        parserTable.put("arithexprprime,>","");
+        parserTable.put("arithexprprime,<=","");
+        parserTable.put("arithexprprime,>=","");
+        parserTable.put("arithexprprime,==","");
+        parserTable.put("arithexprprime,+","+ multexpr arithexprprime");
+        parserTable.put("arithexprprime,-","- multexpr arithexprprime");
+        parserTable.put("multexpr,(","simpleexpr multexprprime");
+        parserTable.put("multexpr,ID","simpleexpr multexprprime");
+        parserTable.put("multexpr,NUM","simpleexpr multexprprime");
+        parserTable.put("multexprprime,)","");
+        parserTable.put("multexprprime,;","");
+        parserTable.put("multexprprime,<","");
+        parserTable.put("multexprprime,>","");
+        parserTable.put("multexprprime,<=","");
+        parserTable.put("multexprprime,>=","");
+        parserTable.put("multexprprime,==","");
+        parserTable.put("multexprprime,+","");
+        parserTable.put("multexprprime,-","");
+        parserTable.put("multexprprime,*","* simpleexpr multexprprime");
+        parserTable.put("multexprprime,/","/ simpleexpr multexprprime");
+        parserTable.put("simpleexpr,(","( arithexpr )");
+        parserTable.put("simpleexpr,ID","ID");
+        parserTable.put("simpleexpr,NUM","NUM");
+    }
+
+    private static void grammarAnalysis() {
+
+        String firstToken = getFirstToken(prog);           //计算Input的首个token
+        while (prog.length()!=0){
+
+            String currentKey = new String(stack.peek()+","+firstToken);       //计算HashMap的key
+            currentOutput = parserTable.get(currentKey);      //根据预测分析表获取当前产生式
+
+            if (currentOutput==null){                      //错误处理
+                onRecover = true;
+                String firstTerminal = new String();
+                Stack<String> stack1 = new Stack<>();
+                int remainedLine = 0;
+
+                while (!stack.empty()){
+                    if (isReservedWord(stack.peek())){
+                        firstTerminal = stack.peek();
+                        break;
+                    }else {
+                        stack1.push(stack.peek());
+                        stack.pop();
+                    }
+                }
+                while (!stack1.empty()){
+                    stack.push(stack1.peek());
+                    stack1.pop();
+                }
+                if (!firstTerminal.equals(firstToken)){
+                    firstToken = firstTerminal;
+                    for (int k=0;k<prog.length();k++){
+                        if (prog.charAt(k)=='\n'){
+                            remainedLine++;
+                        }
+                    }
+
+                    System.out.println("语法错误,第"+(countLine-remainedLine+1)+"行,缺少\""+firstTerminal+"\"");
+                    prog = prog.insert(0,firstTerminal);
+                    currentKey = new String(stack.peek()+","+firstToken);
+                    currentOutput = parserTable.get(currentKey);
+                    if (currentOutput!=""){
+                        outputList.add(new String[]{stack.peek(),currentOutput});
+                    }else{
+                        outputList.add(new String[]{stack.peek(),"E"});
+                    }
+                }
+
+            }
+
+            if (currentOutput!=""){
+                outputList.add(new String[]{stack.peek(),currentOutput});    //存放所有的output产生式
+            }else{
+                outputList.add(new String[]{stack.peek(),"E"});
+            }
+
+
+            stackPeek.add(stack.peek());             //在字符串数组stackPeek中存放待输出的栈顶
+            tabCount[count] = computeTab(count,stack.peek());     //存放每个待输出栈顶对应的tab的个数
+            count++;                                 //计算待输出栈顶的个数
+            stack.pop();
+
+
+            if (currentOutput!=""){
+                String[] output = new String[]{};
+                output = currentOutput.split(" ");        //将产生式右边按空格分割
+
+                for (int j = output.length-1 ;j >= 0;j--){            //将产生式右边加入栈中
+                    stack.push(output[j]);
+                }
+            }else {
+                stackPeek.add("E");             //在字符串数组stackPeek中存放待输出的栈顶
+                tabCount[count] = computeTab(count,"E");     //存放每个待输出栈顶对应的tab的个数
+                count++;                                 //计算待输出栈顶的个数
+            }
+
+            while (!stack.empty()&&stack.peek().equals(firstToken)){       //判断栈顶元素和input的首个终结符是否匹配
+                if (firstToken.equals("$")){
+                }
+                while (prog.charAt(0)==' '||prog.charAt(0)=='\t'||prog.charAt(0)=='\n'){
+                    prog.delete(0,1);
+                }
+                prog.delete(0,stack.peek().length());
+                if (stack.peek()!="$"){
+                    stackPeek.add(stack.peek());             //在字符串数组stackPeek中存放待输出的栈顶
+                    tabCount[count] = computeTab(count,stack.peek());     //存放每个待输出栈顶对应的tab的个数
+                    count++;                                 //计算待输出栈顶的个数
+                }
+
+                stack.pop();                                //若匹配，弹出栈顶，在input中删去匹配的终结符
+                firstToken = getFirstToken(prog);           //重新计算当前input的首个语素
+            }
+
+        }
+
+    }
+
+    private static String getFirstToken(StringBuffer p){
+
+        StringBuffer token = new StringBuffer();
+        int index = 0;
+
+        while (index<p.length()){
+            while (p.charAt(index)==' '||p.charAt(index)=='\t'||p.charAt(index)=='\n'){
+                index++;
+            }
+            token.append(p.charAt(index));
+            index++;
+            for (int i = 0; i<reservedWord.length;i++){
+                if (token.toString().equals(reservedWord[i])){
+                    if (index<p.length()-1&&(p.charAt(index-1)=='='||p.charAt(index-1)=='<'||p.charAt(index-1)=='>')&&p.charAt(index)=='='){
+                        token.append(p.charAt(index));
+                        index++;
+                    }
+                    else {
+                        return token.toString();
+                    }
+                }
+            }
+        }
+
+        return "(Error:"+token.toString()+")";
+    }
+
+    private static int computeTab(int index,String str){
+
+        if (index>0) {
+            for (int i=outputList.size()-1;i>=0;i--){
+                String[] outputRightside = new String[]{};
+                outputRightside = outputList.get(i)[1].split(" ");
+                for (int j=0;j<outputRightside.length;j++){
+                    if (str.equals(outputRightside[j])&&str!=outputList.get(i)[0]){
+                        int result = 0;
+                        String father = new String();
+                        int fatherResult = 0;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                        outputRightside[j]="";              //找到父亲之后，就把已经找到父亲的儿子删除
+                        String newItem = new String();
+                        for (int r=0;r<outputRightside.length-1;r++){
+                            if (!outputRightside[r].equals("")){
+                                newItem = newItem + outputRightside[r];
+                                newItem = newItem + " ";
+                            }
+                        }
+                        if (!outputRightside[outputRightside.length-1].equals("")){
+                            newItem = newItem + outputRightside[outputRightside.length-1];
+                        }
+
+                        //System.out.println("------------------------------------------------------");
+                        //System.out.println("找到父亲："+outputList.get(i)[0]+"  其儿子有: "+outputList.get(i)[1]);
+                        if (!newItem.equals("")){
+                            outputList.add(i,new String[]{outputList.get(i)[0],newItem});
+                            outputList.remove(i+1);
+                            //System.out.println("删除过后，其儿子有: "+outputList.get(i)[1]);
+                        }else if (newItem.equals("")&&!outputList.get(i)[1].contains(" ")){
+                            outputList.add(i,new String[]{outputList.get(i)[0],""});
+                            outputList.remove(i+1);
+                            //System.out.println("删除过后，其儿子有: "+outputList.get(i)[1]);
+                        }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+                        father = outputList.get(i)[0];
+                        int r = 0;
+                        for (r=stackPeek.size()-2;r>=0;r--){
+                            if (stackPeek.get(r).equals(father)){
+                                fatherResult = tabCount[r];
+                                break;
+                            }
+                        }
+
+                        result = fatherResult+1;
+                        return result;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static boolean isReservedWord(String s){
+        for (int i=0;i<reservedWord.length;i++){
+            if (s.equals(reservedWord[i])){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void print(){
+        int sum = count;
+        for (int k=0; k<sum-1; k++){
+            if (onRecover == true){
+                tabCount[sum-3] = 3;
+                tabCount[sum-2] = 4;
+            }
+            for (int m=0; m<tabCount[k]; m++){
+                System.out.print("\t");
+            }
+            System.out.println(stackPeek.get(k));
+
+        }
+        if (onRecover == true){
+            tabCount[sum-1] = 2;
+        }
+        for (int m=0; m<tabCount[sum-1]; m++){
+            System.out.print("\t");
+
+        }
+        System.out.print(stackPeek.get(sum-1));
+    }
+
+    private static void analysis()
+    {
+        read_prog();
+        grammarAnalysis();
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        init();
+        analysis();
+        print();
+    }
+}
+

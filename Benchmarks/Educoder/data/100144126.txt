@@ -1,0 +1,38 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+		if(file.isDirectory())
+        {System.out.println("+--"+file.getName());
+         int a=2;   b(file,a);
+        }
+    }
+        
+  public void  b(File file,int a)
+  {File[] files=file.listFiles();
+for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory()) {
+         for (int k = 0; k < a; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("+--" + files[i].getName());
+				b(files[i], a+2);//通过迭代不断调用文件,用blank控制前面的空格数
+			} else {
+				for (int k = 0; k < a; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("--" + files[i].getName());
+			}
+
+
+  }
+	}
+	
+
+
+	/********** End **********/
+}

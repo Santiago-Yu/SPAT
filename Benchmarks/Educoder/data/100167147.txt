@@ -1,0 +1,275 @@
+import java.util.Scanner;
+
+public class Java_LexAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+            
+        }
+        sc.close();
+    }
+
+
+    // add your method here!
+
+    static String[] str = {"auto","break","case","char","const","continue","default","do","double","else",		//1-10
+    		"enum","extern","float","for","goto","if","int","long","register","return",							//11-20
+    		"short","signed","sizeof","static","struct","switch","typedef","union","unsinged","void",			//21-30
+    		"volatile","while",																					//31-32
+    		"-","--","-=","->","!","!=","%","%=",																//33-40
+    		"&","&&","&=","(",")","*","*=",",",".","/",															//41-50
+    		"/=",":",";","?","[","]","^","^=","{","|",															//51-60
+    		"||","|=","}","~","+","++","+=","<","<<","<<=",														//61-70
+    		"<=","=","==",">",">=",">>",">>=","\""};															//71-78
+    public static int isKey(String s) {
+    	for(int i = 0; i < 32; i++) {
+    		if(s.equals(str[i]))
+    			return i+1;
+    	}
+    	return 0;
+    }
+    
+    public static int isSymbol(String s) {
+    	for(int i = 32; i < 78; i++) {
+    		if(s.equals(str[i]))
+    			return i+1;
+    	}
+    	return 0;
+    }
+    
+    public static boolean isLetter(char c) {
+    	return (c>='a'&&c<='z') || (c>='A'&&c<='Z');
+    }
+    
+    public static boolean isDigit(char c) {
+    	return (c>='0'&&c<='9');
+    }
+    
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //System.out.print(prog);
+        StringBuilder res = new StringBuilder();
+        int num = 1;
+        int index = 0;
+        while(index < prog.length()) {
+        	char cur = prog.charAt(index);
+        	if(isLetter(cur)) {		// 关键字或者标识符
+        		boolean biaoshifu = false;
+        		String s = "" + cur;
+        		index++;
+        		while(index < prog.length()) {
+        			cur = prog.charAt(index);
+        			if(isDigit(cur)) {
+        				biaoshifu = true;
+        				s += cur;
+        			}
+        			else if(isLetter(cur))
+        				s += cur;
+        			else
+        				break;
+        			index++;
+        		}
+        		
+        		if(biaoshifu) {			// 标识符
+        			String str = num + ": <" + s + "," + 81 + ">\n";
+        			res.append(str);
+        		}
+        		else {
+        			int ret = isKey(s);
+        			if(ret == 0) {		// 标识符
+        				String str = num + ": <" + s + "," + 81 + ">\n";
+        				res.append(str);
+        			}
+        			else {		// 关键字
+        				String str = num + ": <" + s + "," + ret + ">\n";
+        				res.append(str);
+        			}
+        		}
+        		num++;
+        	}
+        	else if(isDigit(cur)) {		// 常数
+        		index++;
+        		String s = "" + cur;
+        		while(index < prog.length()) {
+        			cur = prog.charAt(index);
+        			if(isDigit(cur))
+        				s += cur;
+        			else
+        				break;
+        			index++;
+        		}
+        		String str = num + ": <" + s + ",80>\n";
+        		res.append(str);
+        		num++;
+        	}
+        	else if(cur == ' ' || cur == '\r' || cur == '\n' || cur == '\t') {	// 空格\换行
+        		index++;
+        		continue;
+        	}
+        	else {		 // 符号
+        		if(cur == '/') {
+        			index++;
+        			cur = prog.charAt(index);
+        			if(cur == '/') {		// 注释	//
+        				String s = "//";
+        				index++;
+        				while(index < prog.length()) {
+        					cur = prog.charAt(index);
+        					if(cur == '\n') {
+        						index++;
+        						break;
+        					}
+        					else
+        						s += cur;
+        					index++;
+        				}
+        				String str = num + ": <" + s + ",79>\n";
+                		res.append(str);
+                		num++;
+        			}
+        			else if(cur == '*') {	// 注释 /**/
+        				String s = "/*";
+        				index++;
+        				while(index < prog.length()) {
+        					cur = prog.charAt(index);
+        					if(cur == '\n') {
+        						index++;
+        						continue;
+        					}
+        					if(cur == '/' && prog.charAt(index-1) == '*') {
+        						index++;
+        						s += cur;
+        						break;
+        					}
+        					else
+        						s += cur;
+        					index++;
+        				}
+        				String str = num + ": <" + s + ",79>\n";
+                		res.append(str);
+                		num++;
+        			}
+        			else if(cur == '=') {		// /=
+        				String str = num + ": </=,51>\n";
+                		res.append(str);
+                		num++;
+                		index++;
+        			}
+        			else {		// /
+        				String str = num + ": </,50>\n";
+                		res.append(str);
+                		num++;
+        			}
+        		}
+        		else if(cur == '(') {
+        			String str = num + ": <(,44>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else if(cur == ')') {
+        			String str = num + ": <),45>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else if(cur == '[') {
+        			String str = num + ": <[,55>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else if(cur == ']') {
+        			String str = num + ": <],56>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else if(cur == '{') {
+        			String str = num + ": <{,59>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else if(cur == '}') {
+        			String str = num + ": <},63>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else if(cur == '\"') {
+        			String str = num + ": <\",78>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+            		
+            		String s = "";
+            		while(index < prog.length()) {
+            			cur = prog.charAt(index);
+            			if(cur == '\"' && prog.charAt(index-1) != '\\')
+            				break;
+            			else
+            				s += cur;
+            			index++;
+            		}
+            		str = num + ": <" + s + ",81>\n";
+            		res.append(str);
+            		num++;
+            		
+            		str = num + ": <\",78>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else if(cur == ';') {
+        			String str = num + ": <;,53>\n";
+            		res.append(str);
+            		num++;
+            		index++;
+        		}
+        		else {		// 运算符
+        			String s = "" + cur;
+        			index++;
+        			while(index < prog.length()) {
+        				cur = prog.charAt(index);
+        				if(isLetter(cur) || isDigit(cur) || cur == ' ' || cur == ';' || cur == ',' || cur == '\r' || cur == '\t' || cur == '\n' ||
+        						cur == '(' || cur == ')' || cur == '{' || cur == '}' || cur == '[' || cur == ']' || cur == '\"')
+        					break;
+        				else
+        					s += cur;
+        				index++;
+        			}
+        			String str = num + ": <" + s + "," + isSymbol(s) + ">\n";
+    				res.append(str);
+    				num++;
+        		}
+
+        	}
+        }
+        res.deleteCharAt(res.length()-1);
+        System.out.print(res);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+

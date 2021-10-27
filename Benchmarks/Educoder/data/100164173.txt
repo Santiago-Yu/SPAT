@@ -1,0 +1,30 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+		public static void main(String[] args) {
+			Scanner scan1=new Scanner(System.in);
+            int a;
+            int i;
+            int gen;
+            a=scan1.nextInt();
+			/******Begin******/
+		if(a%2==0)
+        System.out.print("偶数");
+           else
+           {
+           gen=(int)Math.sqrt(a);///gen=a的开平方根
+          	for( i=3;i<=gen;i+=2)
+            {
+                if(a%i==0) 
+              break;
+            }
+        	 if(i>gen) 
+              System.out.print("素数");
+         	 else 
+             System.out.print("奇数");
+            
+           }
+			/******End******/
+		}
+}

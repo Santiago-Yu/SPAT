@@ -1,0 +1,44 @@
+package step3;
+
+/**
+ * Created by sykus on 2018/3/20.
+ */
+public class MergeSort {
+
+    /**
+     * lo, hi都是指下标
+     */
+    public static void sort(int arr[], int lo, int hi) {
+        if (lo < hi) {
+            int mid = (lo + hi) / 2;
+            sort(arr, lo, mid);
+            sort(arr, mid + 1, hi);
+            merge(arr, lo, mid, hi);
+            print(arr);
+        }
+    }
+
+    private static void merge(int arr[], int p, int q, int r) {
+        /********** Begin *********/
+        int num=0;
+       	for(int i=p;i<=r;i++){
+        	for(int j=i;j<=r;j++){
+            	if(arr[j]<arr[i]){
+                	num=arr[i];
+                    arr[i]=arr[j];
+                    arr[j]=num;
+                }
+            }
+        }
+
+        
+        /********** End *********/
+    }
+
+    private static void print(int arr[]) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+}

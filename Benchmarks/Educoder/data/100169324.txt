@@ -1,0 +1,140 @@
+package step2;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Task {
+    public static final int MAXN = 100005;
+	int[] head = new int[MAXN];
+	int sum, time, top;
+	int[] dfn= new int[MAXN];
+	int[] low= new int[MAXN];
+	int[] stack= new int[MAXN];
+	int[] belong= new int[MAXN];//Belong数组的值是1~cnt;
+	int[] num= new int[MAXN]; //各个强连通分量包含点的个数，数组编号1~cnt
+	int cnt;// 强连通分离的个数
+	int[] val = new int[MAXN];
+	int[] degree = new int[MAXN];
+	boolean[] instack = new boolean[MAXN];
+	class Node{
+		int en,len,next;
+		Node(int en, int next, int len){
+			this.en = en;
+			this.len = len;
+			this.next = next;
+		}
+	}
+	Node[] e = new Node[2 * MAXN];
+	void init() {
+		for (int i = 0; i < MAXN; i++) {
+			head[i] = -1;
+		}
+		sum = 0;
+	}
+	void add(int st, int en, int len) {
+		e[sum] = new Node(en, head[st], len);
+		head[st] = sum;
+		sum++;
+	}
+
+    void tarjan(int u ) {
+		int v,i;
+	    low[u]=dfn[u]= ++time;
+	    stack[top++]=u;
+	    instack[u]= true;
+	    for(i=head[u];i!=-1;i=e[i].next)
+	    {
+	        v=e[i].en;
+	        if(dfn[v]==0)
+	        {
+	            tarjan(v);
+	            if(low[u]>low[v])
+	            low[u]=low[v];
+	        }
+	        else if(instack[v])//注意对父亲节点没要求
+	        {
+	            low[u]=Math.min(low[u],dfn[v]);
+	        }
+	    }
+	    if(low[u]==dfn[u])//在每次dfs完后，这里要注意
+	    {
+	        cnt++;
+	        do{
+	            v=stack[--top];
+	            instack[v]=false;
+	            belong[v]=cnt;
+	            num[cnt]++;
+	        } while(u!=v);//出栈直到u （u也要出栈）
+	    }
+	}
+
+
+    public int solver(int n , List<Edge> edges) {
+        /**********   Begin   **********/
+        init();
+       for (Edge ed : edges) {
+    	   add(ed.u,ed.v,ed.w);
+       }
+       for (int i = 0; i < MAXN; i++) {
+    	   dfn[i] = 0;
+    	   instack[i] = false;
+    	   num[i] = 0;
+       }
+       cnt = time = top = 0;
+       for(int i=1;i<=n;i++)
+       {
+           if(dfn[i]==0)//给你的图有可能不是连通的
+           {
+               tarjan(i);
+           }
+       }
+
+        init();
+        int ans = 0;
+        for (int i = 1; i <= cnt; i++) {
+        	val[i] = 0;
+        	degree[i] = 0;
+        }
+        LinkedList<Integer> que = new LinkedList<Integer>();
+        for (Edge ed : edges) {
+        	int u = ed.u;
+        	int v = ed.v;
+        	if (belong[u] == belong[v]) {
+        		continue;
+        	}
+        	add(belong[u],belong[v], ed.w);
+        	degree[belong[v]]++;
+        }
+        for (int i = 1; i <= cnt; i++) {
+        	if (degree[i] == 0) {
+        		que.add(i);
+        	}
+        }
+        while (!que.isEmpty()) {
+        	int u = que.poll();
+//        	ans = Math.max(ans, val[u]);
+        	for(int i=head[u]; i!=-1; i=e[i].next)
+            {
+                int v=e[i].en;
+                int len = e[i].len;
+                val[v] = Math.max(val[v], val[u] + len);
+                ans = Math.max(ans, val[v]);
+                if (--degree[v] == 0) {
+                	que.push(v);
+                }
+            }
+        }
+        
+        
+       
+        return ans;
+        /**********   End   **********/
+    }
+    static class Edge {
+        int u;
+        int v;
+        int w;
+    }
+}
+

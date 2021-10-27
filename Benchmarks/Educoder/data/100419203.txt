@@ -1,0 +1,15 @@
+    public void actionPerformed(ActionEvent e) 
+    {
+        fileChooser = new JFileChooser("c:\\winnt");
+        fileChooser.addChoosableFileFilter(new JAVAFileFilter("class"));
+        fileChooser.addChoosableFileFilter(new JAVAFileFilter("java"));
+        fileChooser.setFileView(new FileIcon());
+        int result = fileChooser.showOpenDialog(f);
+        if(result == JFileChooser.APPROVE_OPTION)
+        {
+            File file = fileChooser.getSelectedFile();
+            label.setText("鎮ㄩ�夋嫨浜嗭細"+file.getName()+"鏂囦欢");
+        }else if (result == fileChooser.CANCEL_OPTION){
+            label.setText("鎮ㄦ病鏈夐�夋嫨浠讳綍鏂囦欢");
+        }
+    }

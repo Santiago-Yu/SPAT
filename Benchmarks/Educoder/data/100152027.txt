@@ -1,0 +1,43 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double r=Math.sqrt((y2-y1)*(y2-y1)+(x2-x1)*(x2-x1));
+		double S=0,S1,S2;
+		S1=Math.PI*r1*r1;
+		S2=Math.PI*r2*r2;
+		if((r1+r2)<=r)
+			S=S1+S2;
+		else if(Math.abs(r1-r2)>=r) {
+			S=Math.max(S1, S2);
+		}
+		else {
+			S=S1+S2;
+			double ex1,ex2,theta1,theta2,pro1,pro2;
+			double yuanpan1,yuanpan2,sanjiao1,sanjiao2;
+			theta1=(double)(r1*r1+r*r-r2*r2)/(2*r1*r);
+			pro1=Math.acos(theta1);
+			theta1=2*pro1;
+			yuanpan1=0.5*r1*r1*theta1;
+			sanjiao1=0.5*r1*r1*Math.sin(theta1);
+			ex1=yuanpan1-sanjiao1;
+			
+			theta2=(double)(r2*r2+r*r-r1*r1)/(2*r*r2);
+			pro2=Math.acos(theta2);
+			theta2=2*pro2;
+			yuanpan2=0.5*r2*r2*theta2;
+			sanjiao2=0.5*r2*r2*Math.sin(theta2);
+			ex2=yuanpan2-sanjiao2;
+			S=S-ex1-ex2;
+		}
+			
+		
+		return S;
+		  
+		  
+		  /********* End *********/
+	  }
+}

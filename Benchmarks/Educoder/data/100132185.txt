@@ -1,0 +1,36 @@
+package step1;
+import java.util.Arrays;
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		int count=0,j,i,length=temperatures.length;
+        int[] intArray = new int[length];
+		for(i=0;i<length;i++)
+		{
+			for(j=i+1;j<length;j++)
+			{
+				if(temperatures[i]>=temperatures[j]) {
+					count++;
+				}
+				else {
+					count++;
+					temperatures[i]=count;
+					break;
+				}
+				if(j==(length-1)&&temperatures[i]>=temperatures[j]) {
+					temperatures[i]=0;
+				}
+			}
+			count=0;
+		}
+		temperatures[i-1]=0;
+		//System.out.println(Arrays.toString(temperatures));
+		for(i=0; i <length; i ++)
+		{
+		    intArray[i] =temperatures[i];
+		}
+
+		return intArray;
+		/********** END **********/
+	}
+}

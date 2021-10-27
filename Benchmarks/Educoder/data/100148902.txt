@@ -1,0 +1,56 @@
+package step1;
+import java.util.*;
+
+public class Task {
+   public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		String[] nums = null; 
+		nums = in.nextLine().split(" "); 
+		Integer num[]=new Integer[nums.length];
+		for(int i=0;i<num.length;i++){
+			num[i]=Integer.valueOf(nums[i]);
+		}
+        Task sc=new Task();
+        sc.sort(num);
+        in.close();
+	}
+	
+	public  void sort(Integer[] arr){
+		/********* Begin *********/
+        int flag=1;
+    for(int i=1;i<arr.length;i++){
+        if(i%2==1){
+            for(int j=0;j<arr.length-1;j++) {
+					if(arr[j]>arr[j+1]) {
+                        flag=-1;
+						int temp=arr[j];
+						arr[j]=arr[j+1];
+						arr[j+1]=temp;
+                        for(int k=0;k<arr.length;k++)
+						    System.out.print(arr[k]+" ");
+					    System.out.println();
+					}
+				}	
+        }else if(i%2==0){
+            for(int j=arr.length-2;j>=0;j--) {
+					if(arr[j]>arr[j+1]) {
+                        flag=-1;
+						int temp=arr[j+1];
+						arr[j+1]=arr[j];
+						arr[j]=temp;
+                        for(int k=0;k<arr.length;k++)
+						    System.out.print(arr[k]+" ");
+					    System.out.println();
+					}
+				}	
+        }
+    }
+				
+        if(flag==1) {
+			for(int k=0;k<arr.length;k++)
+				System.out.print(arr[k]+" ");
+            System.out.println();
+		}
+		/********* End *********/
+	}
+}

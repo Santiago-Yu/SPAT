@@ -1,0 +1,30 @@
+package step2;
+import java.util.Scanner;
+
+public class TestJava11_3 {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        System.out.println("请输入三角形的第一条边：");
+        int a=sc.nextInt();
+        System.out.println("请输入三角形的第二条边：");
+        int b=sc.nextInt();
+        System.out.println("请输入三角形的第三条边：");
+        int c=sc.nextInt();
+        
+       		if ((a==b&&b!=c)||(b==c&&a!=c)||(a==c&&c!=b)) {
+            System.out.println("输入的三条边构成等腰三角形！");
+            }
+         	else	if (a==b&&b==c) {
+            System.out.println("输入的三条边构成等边三角形！");
+        }
+        	else	if (a+b<c) {
+            System.out.println("输入的三条边不构成三角形！");
+        }
+            else if (a+b>c&&b+c>a&&c+a>b) {
+            System.out.println("输入的三条边能构成三角形");
+        }
+		/******End******/	
+	}
+
+}

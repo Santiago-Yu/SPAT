@@ -1,0 +1,17 @@
+package Q103;
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		int d[]=new int[1000];
+		d[0]=1;d[1]=1;
+		Scanner in=new Scanner(System.in);
+		int n=in.nextInt();
+		for(int i=2;i<=n;i++)
+		d[i]=d[i-1]+d[i-2];
+		System.out.print(d[n]);
+	}
+
+}

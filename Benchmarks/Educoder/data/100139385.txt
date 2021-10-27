@@ -1,0 +1,52 @@
+package step3;
+
+public class MyThread implements Runnable {   
+    private String name;
+    private Object i;
+    private Object j;
+    private Object k;
+    private MyThread (String name,Object i,Object j){
+        this.name=name;
+        this.i=i;
+        this.j=j;
+       
+    }
+    public void run(){
+        int count =5;
+        while(count>0){
+            synchronized(i){
+                synchronized(j){
+                    
+                        System.out.print(name);
+                        count--;
+                       j.notify();
+                    }
+                    try{
+                        i.wait();
+                    } catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+               
+            }
+        
+        System.exit(0);
+    }
+	    
+    public static void main(String[] args) throws Exception {   
+        Object i=new Object ();
+        Object j=new Object ();
+        Object k=new Object ();
+        MyThread ti= new MyThread("E",k,i);
+        MyThread tj= new MyThread("D",i,j);
+        MyThread tk=new MyThread("U",j,k);
+        new Thread(ti).start();
+        Thread.sleep(100);
+        new Thread(tj).start();
+        Thread.sleep(100);
+        new Thread(tk).start();
+        Thread.sleep(100);
+        
+        
+    }   
+}

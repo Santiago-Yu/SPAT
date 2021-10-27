@@ -1,0 +1,70 @@
+package step1;
+
+/**
+ * Created by sykus on 2018/1/15.
+ */
+public class MyCircleLinkedList {
+    private Node head;//ͷ���, ��������
+    private Node tail;//β���, ָ����������һ���ڵ�
+    private int size;
+
+    public MyCircleLinkedList() {
+        head = new Node(Integer.MIN_VALUE, null);
+        head.next = head;
+        tail = head;
+        size = 0;
+    }
+
+    /**
+     * ��ӵ�����β��
+     *
+     * @param item
+     */
+    public void add(int item) {
+        /********** Begin *********/
+    	Node cur = new Node(item, tail);
+		Node entry = head;
+		while(entry.next!=head){
+			entry = entry.next;
+		}
+		cur.next = entry.next;
+		entry.next = cur;
+
+
+        /********** End *********/
+    }
+
+    /**
+     * ������������Ԫ��
+     */
+    public void output() {
+        /********** Begin *********/
+    	Node cur = this.head;
+		while(cur.next!=head){
+			cur =cur.next;
+			System.out.println(cur.item);
+		}
+
+
+        /********** End *********/
+    }
+
+    public boolean isEmpty() {
+        return head.next == head;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    //����ڲ���
+    private static class Node {
+        int item;
+        Node next;
+
+        Node(int item, Node next) {
+            this.item = item;
+            this.next = next;
+        }
+    }
+}

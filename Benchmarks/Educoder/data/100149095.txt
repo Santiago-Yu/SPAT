@@ -1,0 +1,110 @@
+package step2;
+import java.util.ArrayList;
+
+
+public class Task {
+    
+	//共享成员变量,存储索引对象One类型的ArraList
+    static	ArrayList<One> list = new ArrayList<One>();
+    //共享成员变量,矩阵
+    static char[][] rect=null;
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+
+                // 生成指定随机矩阵int[i][j],并展示在控制台;将元素值为1的元素存入List,并展示在控制台
+        rect =area;
+
+        for (int i = 0; i < rect.length; i++) {
+            for (int j = 0; j < rect[i].length; j++) {
+
+                // 将数值为1的元素的对象加入到ArrayList
+                if (rect[i][j] == 'o') {
+                    list.add(new One(i, j));
+                }
+            }
+        }
+
+        // 定义count用于统计块数
+        int count = 0;
+        // 循环,每排除一块循环一次
+        while (list.size() != 0) {
+            // list只剩一个元素时无需再进行判断
+            if (list.size() == 1) {
+                count++;
+                break;
+            }
+            One o = list.get(0);
+            // 调用方法,将同一个块中的所有对象从list中删除
+            delete(o);
+            count++;
+        }
+		return count;
+		/********* End *********/	
+	}
+   private static void delete(One o) {
+        // 分别判断o坐标对应的数组元素的上下左右的邻元素是否是1(避开索引越界),如果是1就将该邻元素的坐标对象删除,递归;
+        int i = o.i;
+        int j = o.j;
+        // 修改o坐标对应的数组元素的值(避免递归时反复判断相邻元素)
+        rect[i][j] = 'w';
+        // 先将o移除,使得后续的递归在移除元素时更快(元素越少越快)
+        list.remove(o);
+        if (i < rect.length - 1 && rect[i + 1][j] == 'o') {
+            One oD = new One(i + 1, j);
+            delete(oD);
+        }
+        if (i > 0 && rect[i - 1][j] == 'o') {
+            One oU = new One(i - 1, j);
+            delete(oU);
+        }
+        if (j < rect[i].length - 1 && rect[i][j + 1] == 'o') {
+            One oR = new One(i, j + 1);
+            delete(oR);
+        }
+        if (j > 0 && rect[i][j - 1] == 'o') {
+            One oL = new One(i, j - 1);
+            delete(oL);
+        }
+    }
+}
+class One {
+    // 横坐标
+    int i;
+    // 纵坐标
+    int j;
+
+    public One(int i, int j) {
+        super();
+        this.i = i;
+        this.j = j;
+    }
+
+    public String toString() {
+        return "(" + this.i + "," + this.j + ")";
+    }
+
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + i;
+        result = prime * result + j;
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        One other = (One) obj;
+        if (i != other.i)
+            return false;
+        if (j != other.j)
+            return false;
+        return true;
+    }
+
+}

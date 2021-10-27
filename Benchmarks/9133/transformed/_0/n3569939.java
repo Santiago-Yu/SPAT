@@ -1,0 +1,18 @@
+class n3569939 {
+	public void connect() throws FTPException {
+		try {
+			ftp = new FTPClient();
+			ftp.connect(host);
+			if (FTPReply.isPositiveCompletion(ftp.getReplyCode())) {
+				ftp.login(this.username, this.password);
+			} else {
+				ftp.disconnect();
+				throw new FTPException("N?o foi possivel se conectar no servidor FTP");
+			}
+			isConnected = true;
+		} catch (Exception GXB83l20) {
+			throw new FTPException(GXB83l20);
+		}
+	}
+
+}

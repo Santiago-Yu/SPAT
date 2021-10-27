@@ -1,0 +1,43 @@
+package step1;
+
+public class Rectangle{
+	private double width;
+	private double length;
+	
+	/*********begin*********/
+	public Rectangle(){
+    	this.width = 5;
+        this.length = 6;
+    } 
+    public Rectangle(double width, double length){
+    	this.width = width;
+        this.length = length;
+    }
+    public double C(){
+    	double c = 2 * (this.width + this.length);
+        return c;
+    }
+    public double S(){
+    	double s = this.width * this.length;
+        return s;
+    }
+	/*********end*********/
+
+
+	public static void main(String[] args) {
+		/*********begin*********/
+		Rectangle r1 = new Rectangle();
+        double c1 = r1.C();
+        double s1 = r1.S();
+        Rectangle r2 = new Rectangle(10, 20);
+        double c2 = r2.C();
+        double s2 = r2.S();
+        System.out.println("r1的周长：" + c1);
+        System.out.println("r1的面积：" + s1);
+        System.out.println("r2的周长：" + c2);
+        System.out.println("r2的面积：" + s2);
+
+		/*********end*********/
+	}
+
+}

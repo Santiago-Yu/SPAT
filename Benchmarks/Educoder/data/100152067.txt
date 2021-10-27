@@ -1,0 +1,48 @@
+package step1;
+
+
+class point{
+	public double x;
+	public double y;
+	public static double pi=Math.acos(-1.0);
+}
+
+public class Task {
+
+public double AREA(point a, double r1, point b, double r2)
+{
+	double d = Math.sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+	if (d >= r1+r2)
+		return 0;
+	if (r1>r2)
+	{
+		double tmp = r1;
+		r1 = r2;
+		r2 = tmp;
+	}
+	if(r2 - r1 >= d)
+		return point.pi*r1*r1;
+	double ang1=Math.acos((r1*r1+d*d-r2*r2)/(2*r1*d));
+	double ang2=Math.acos((r2*r2+d*d-r1*r1)/(2*r2*d));
+	return ang1*r1*r1 + ang2*r2*r2 - r1*d*Math.sin(ang1);
+}
+
+	
+	 public double solve(double x1, double y1, double r1,double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  point a = new point();
+		  a.x = x1;
+		  a.y = y1;
+		  
+		  point b = new point();
+		  b.x = x2;
+		  b.y = y2;
+		  
+		  double v = AREA(a,r1,b,r2);
+		  double s1 = point.pi*r1*r1;
+		  double s2 = point.pi*r2*r2;
+		  
+		   return s1+s2-v;
+		  /********* End *********/
+	  }
+}

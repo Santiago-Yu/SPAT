@@ -1,0 +1,27 @@
+#include<stdio.h>
+int main()
+{
+	int a[10000];
+	int b=0;//存数组a的长度 
+	int i,j,k;
+	int sum=0;
+	while(scanf("%d",&a[b])!=EOF)
+	{
+		b++;
+	}
+	for(i=0;i<b-3;i++)
+	{
+		for(j=i+1;j<b-2;j++)
+		{
+			for(k=j+1;k<b-1;k++)
+			{
+				if(a[i]+a[j]+a[k]<a[b-1])
+				{
+					sum++;
+				}
+			}
+		}
+		
+	}
+	printf("%d",sum);
+}

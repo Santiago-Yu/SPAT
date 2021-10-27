@@ -1,0 +1,212 @@
+import java.io.File;
+import java.util.*;
+
+public class Java_LexAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<String,Integer> C_keyMap = new HashMap<>();
+    private static ArrayList<String> tokenArray = new ArrayList<>();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine().trim()+"\n");
+        }
+    }
+
+
+    // add your method here!!
+    private static void get_keymap(String filepath){
+        File file  = new File(filepath);
+        if(file.isFile()&&file.exists()){
+            try {
+                Scanner sc = new Scanner(file);
+                while(sc.hasNext()){
+                    String key = sc.next();
+                    int value = sc.nextInt();
+                    C_keyMap.put(key,value);
+                }
+            }catch (Exception e){
+            }
+        }
+    }
+    private static boolean isArithsymbol(char achar){
+        char[] chars = {'-','!','%','&','*','/','^','|','~','+','<','=','>'};
+        for(int i = 0;i<chars.length;i++){
+            if(achar == chars[i])
+                return true;
+        }
+        return false;
+    }
+    private static boolean isOthersymbol(char achar){
+        char[] chars = {'(',')',',',':',';','?','[',']','{','}','"'};   //no '.'
+        for(int i = 0;i<chars.length;i++){
+            if(achar == chars[i])
+                return true;
+        }
+        return false;
+    }
+    private static void get_token(String str){
+
+        StringBuilder sb = new StringBuilder();
+        int annotation = 0;
+        char temp;
+
+        int i=0;
+        while(i<str.length()){
+            temp = str.charAt(i);
+            if(annotation == 0){
+                if(temp == ' '||temp =='\n'){
+                    if (sb.length() > 0) {
+                        tokenArray.add(sb.toString());
+                        sb.delete(0, sb.length());
+                    }
+                    i++;
+                    continue;
+                }
+                if(temp == '/'&&str.charAt(i+1) == '/'){
+                    if (sb.length() > 0) {
+                        tokenArray.add(sb.toString());
+                        sb.delete(0, sb.length());
+                    }
+                    sb.append(temp);
+                    annotation = 1;
+                    i++;
+                    continue;
+                }
+                if(temp == '/'&&str.charAt(i+1) == '*'){
+                    if (sb.length() > 0) {
+                        tokenArray.add(sb.toString());
+                        sb.delete(0, sb.length());
+                    }
+                    sb.append(temp);
+                    annotation = 2;
+                    i++;
+                    continue;
+                }
+                if(temp == '.'){
+                    if(str.charAt(i+1)>='0'&&str.charAt(i+1)<='9'){
+                        sb.append(temp);
+                    }else{
+                        if (sb.length() > 0) {
+                            tokenArray.add(sb.toString());
+                            sb.delete(0, sb.length());
+                        }
+                        tokenArray.add(String.valueOf(temp));
+                    }
+                    i++;
+                    continue;
+                }
+                if(isArithsymbol(temp)){
+                    if (sb.length() > 0) {
+                        tokenArray.add(sb.toString());
+                        sb.delete(0, sb.length());
+                    }
+                    sb.append(temp);
+                    i++;
+                    if(isArithsymbol(str.charAt(i))&&str.charAt(i) !='!'){
+                        sb.append(str.charAt(i));
+                        i++;
+                    }
+                    if(str.charAt(i) == '='){
+                        sb.append(str.charAt(i));
+                        i++;
+                    }
+                    tokenArray.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    continue;
+                }
+                if(isOthersymbol(temp)){
+                    if (sb.length() > 0) {
+                        tokenArray.add(sb.toString());
+                        sb.delete(0, sb.length());
+                    }
+                    tokenArray.add(String.valueOf(temp));
+                    if(temp == '"'){
+                        i++;
+                        while (str.charAt(i) != '"'){
+                            sb.append(str.charAt(i));
+                            i++;
+                        }
+                        if (sb.length() > 0) {
+                            tokenArray.add(sb.toString());
+                            sb.delete(0, sb.length());
+                        }
+                        tokenArray.add(String.valueOf(str.charAt(i)));
+                    }
+                    i++;
+                    continue;
+                }
+                sb.append(temp);
+            }else if(annotation == 1){  //the first annotation "//"
+                if(temp == '\n'){
+                    tokenArray.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    annotation = 0;
+                }else{
+                    sb.append(temp);
+                }
+            }else if(annotation == 2){  //the second annotation "/* */"
+                if (temp == '/' && str.charAt(i-1) == '*') {
+                    sb.append(temp);
+                    tokenArray.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    annotation = 0;
+                } else {
+                    if(temp != '\n'){
+                        sb.append(temp);
+                    }
+                }
+            }
+            i++;
+        }
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        get_keymap("c_keys.txt");
+        get_token(prog.toString());
+
+        int i = 1;
+        boolean quote = false;
+        for(String token : tokenArray){
+            int value;
+            if(C_keyMap.containsKey(token)&&!quote){
+                value = C_keyMap.get(token);
+            }else if(token.charAt(0)=='/'&&!quote){
+                value = 79;
+            }else if(token.charAt(0)>='0'&&token.charAt(0)<='9'&&!quote){
+                value = 80;
+            }else{
+                value = 81;
+            }
+            if(token.equals("\"")){
+                quote = !quote;
+                value = 78;
+            }
+            System.out.print(i + ": " + "<"+token+","+value+">");
+            i++;
+            if(i<=tokenArray.size()){
+                System.out.println();
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

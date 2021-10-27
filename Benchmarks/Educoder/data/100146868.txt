@@ -1,0 +1,40 @@
+package step1;
+public class GetScores {
+	/********* Begin *********/
+    public int getLostScores(int[] cpr){
+       //请在此补全你的代码
+		int []src = new int[10000];
+	for(int n=0;n<src.length;n++) {
+		src[n]=n+1;
+	}
+	int []temp= new int[10000];
+	String resultList="";
+
+	for(int x=0;x<src.length;x++) {
+		for(int y=0;y<cpr.length;y++) {
+			if(src[x]==cpr[y]) {
+				temp[x]=1;
+			}
+		}
+	}
+	int index=0;
+	int flag=0;
+	int []sortArray=new int[3];
+	for(int p=0;p<temp.length;p++) {
+		if(temp[p]==0) {
+			sortArray[flag]=src[p];
+			flag++;
+		}
+	}
+	String rsData="";
+	for(int i=0;i<sortArray.length;i++) {
+		rsData+=sortArray[i];
+	}
+	long finalData=Long.valueOf(rsData);
+	finalData=finalData%11;
+	return(int)finalData;
+	}
+	
+
+	/********* End *********/
+}

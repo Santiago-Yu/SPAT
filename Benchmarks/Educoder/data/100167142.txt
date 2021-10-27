@@ -1,0 +1,184 @@
+import java.util.Scanner;
+
+public class Java_LexAnalysis
+{
+    public static char achar;
+    public static int index=0;
+    public static int num=1;
+    private static StringBuffer prog = new StringBuffer();
+    private static String keyword[]={"auto","break","case","char","const","continue","default","do","double","else","enum","extern","float","for","goto","if",
+            "int", "long","register","return","short","signed","sizeof","static","struct","switch","typedef","union","unsigned","void","volatile","while"};
+
+    private static String operatoranddelimiter[]={"-","--","-=","->","!","!=","%","%=","&","&&","&=","(",")","*","*=",",",".","/","/=",":",";","?","[","]","^",
+            "^=", "{", "|","||","|=","}","~","+","++","+=","<","<<","<<=","<=","=","==",">",">=",">>",">>=","\" "};
+
+
+    /*  this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+    }
+
+    public static boolean isdigit(char ch){
+        if(ch>='0'&&ch<='9'){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isletter(char ch){
+        if((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z')){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isoperator(char ch){
+
+        if(ch=='='||ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^'||ch=='!'||ch=='%'||ch=='&'||ch=='|'||ch=='>'||ch=='?'||ch=='~'||ch=='<')
+                return true;
+        else
+                return false;
+    }
+
+    public static boolean isdelimiter(char ch) {
+        if (ch == '{' || ch == '}' || ch == '(' || ch == ')' || ch == '.' || ch == ',' || ch == ':' || ch == ';' || ch == '[' || ch == ']'||ch=='\"')
+            return true;
+        else
+            return false;
+    }
+
+    public static int getworldnum(String s1){
+        int i=0;
+        for(i=0;i<32;i++){
+            if(s1.equals(keyword[i])){
+                return i+1;
+            }
+        }
+        return 81;
+    }
+
+    public static int getdelimiternum(String s2){
+        int i=0;
+        for(i=0;i<46;i++){
+            if(s2.equals(operatoranddelimiter[i])){
+                return i+33;
+            }
+        }
+        return 78;
+    }
+
+    public static int getoperatornum(String s3){
+        int i=0;
+        for(i=0;i<46;i++){
+            if(s3.equals(operatoranddelimiter[i])){
+                return i+33;
+            }
+        }
+        return 0;
+    }
+
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        for(index=0;index<prog.length();index++){
+            achar=prog.charAt(index);
+            if(achar==' '||achar=='\n'||achar=='\t'||achar=='\r'){
+                continue;
+            }
+           else if(isdigit(achar)){
+                String digit=""+achar;
+                int temp=index;
+                for(;temp<(prog.length()-1)&&isdigit(prog.charAt(++temp));){
+                    digit=digit+prog.charAt(temp);
+                }
+                index=temp-1;
+                System.out.println(num+": <"+digit+",80>");
+                num++;
+                continue;
+            }
+            else if(isletter(achar)){
+                String word=""+achar;
+                int temp=index;
+                for(;temp<(prog.length()-1)&&isletter(prog.charAt(++temp));){
+                    word=word+prog.charAt(temp);
+                }
+                index=temp-1;
+                System.out.println(num+": <"+word+","+getworldnum(word)+">");
+                num++;
+                continue;
+            }
+            else if(isdelimiter(achar)){
+                String delimiter=""+achar;
+                if(index<prog.length()-1)
+                    System.out.println(num+": <"+delimiter+","+getdelimiternum(delimiter)+">");
+                else
+                    System.out.print(num+": <"+delimiter+","+getdelimiternum(delimiter)+">");
+                num++;
+                continue;
+            }
+           else if(isoperator(achar)){
+               String opearator=""+achar;
+                int temp=index;
+                for(;temp<(prog.length()-1)&&isoperator(prog.charAt(++temp));){
+                    opearator=opearator+prog.charAt(temp);
+                }
+                index=temp-1;
+                if(opearator.equals("%")&&isletter(prog.charAt(index+1))){
+                    opearator=opearator+prog.charAt(++index);
+                    System.out.println(num+": <"+opearator+",81>");
+                    num++;
+                }
+               else if(opearator.length()>=2&&(opearator.substring(0,2)).equals("//")){
+                    int temp1=index;
+                    for(;temp1<(prog.length()-1)&&!(prog.charAt(++temp1)=='\r')&&!(prog.charAt(temp1)=='\n')&&!(prog.charAt(temp1)=='\t');){
+                        opearator=opearator+prog.charAt(temp1);
+                    }
+                    index=temp1;
+                    System.out.println(num+": <"+opearator+","+"79"+">");
+                    num++;
+                    continue;
+                }
+                else if(opearator.length()>=2&&(opearator.substring(0,2)).equals("/*")){
+                    int temp2=index;
+                    for(;temp2<(prog.length()-1)&&!(prog.charAt(++temp2)=='/'&&prog.charAt(temp2-1)=='*');){
+                        opearator=opearator+prog.charAt(temp2);
+                    }
+                    index=temp2;
+                    System.out.println(num+": <"+opearator+"/,"+"79"+">");
+                    num++;
+                    continue;
+                }
+                else{
+                    System.out.println(num+": <"+opearator+","+getoperatornum(opearator)+">");
+                    num++;
+                    continue;
+                }
+            }
+        }
+       // System.out.print(prog);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        analysis();
+    }
+}

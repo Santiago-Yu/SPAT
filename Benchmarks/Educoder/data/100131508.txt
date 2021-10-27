@@ -1,0 +1,43 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public boolean flag=true;
+    public int count1=0;
+    public  void showDirStructure(File file) {
+        if(flag){
+            String path = file.getAbsolutePath();
+            System.out.println("+--" + file.getName());
+            for (int i = 0; i < path.length(); i++) {
+                if(path.charAt(i)=='/'){
+                    count1++;
+                }
+            }
+            flag=false;
+        }
+
+        File[] files = file.listFiles();
+        for (File f: files){
+            int count2=0;
+            String path2 = f.getAbsolutePath();
+            for (int i = 0; i < path2.length(); i++) {
+                if(path2.charAt(i)=='/'){
+                    count2++;
+                }
+            }
+            for (int i = 1; i <=(count2-count1)*2; i++) {
+                System.out.print(" ");
+            }
+            if(f.isDirectory()){
+                System.out.println("+--"+ f.getName());
+                showDirStructure(f);
+            }else{
+                System.out.println("--"+ f.getName());
+            }
+        }
+    }
+	/********** END **********/
+}

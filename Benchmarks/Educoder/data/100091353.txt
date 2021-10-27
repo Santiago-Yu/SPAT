@@ -1,0 +1,25 @@
+package step3;
+import java.util.Scanner;
+import java.lang.Math;
+public class NarcissisticNumber {
+ public static void main(String[] args) {
+        
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        NarcissisticNumber number = new NarcissisticNumber();
+        System.out.println(number.NarcissisticNumber(n));
+    }
+    //判断一个三位数是否是水仙花数
+    public boolean NarcissisticNumber(int n){
+        double sum=0;
+        int m = n;
+        for(int i=1; i<=3; i++){
+        	sum = Math.pow(m%10,3)+sum;
+            m=m/10;
+        }// 请在此添加实现代码
+        if(sum==n)
+            return true;
+        else
+            return false;
+    }
+}

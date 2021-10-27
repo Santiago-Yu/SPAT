@@ -1,0 +1,17 @@
+package step1;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import java.net.URL;
+import org.jsoup.nodes.Document;
+public class Task {
+	/**
+     *获取网页资源
+     *@param	url		携程网址
+     *@return
+     */
+	public Document getHtmls(String url)  throws IOException {
+		Document root_document =  Jsoup.parse(new URL(url), 5000);
+		return root_document;
+    } 
+    
+}

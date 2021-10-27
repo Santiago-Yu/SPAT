@@ -1,0 +1,30 @@
+package step1;
+
+public class ThreadClassTwo  implements Runnable
+{
+      private Thread t2;
+           public void run()
+     {
+              for(int i=0;i<=10;i++)
+              {  
+                  if(i%2==0)
+                     System.out.print(i+" ");
+              }          
+         
+     }
+     
+           public void start()
+        {
+              if(t2==null)
+              t2=new Thread();
+                t2.start();
+         }  
+         public static void main(String[] args)
+            {
+              ThreadClassTwo t2= new ThreadClassTwo();
+                t2.start();
+            }
+         
+
+
+}

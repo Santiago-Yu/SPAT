@@ -1,0 +1,468 @@
+import java.io.*;
+import java.util.*;
+
+/**
+ * types of token
+ */
+enum Type {
+    /**
+     * 32 reserved words
+     */
+    RESERVED_WORD,
+    DELIMITER,
+    IDENTIFIER,
+    NUMBER,
+    OPERATOR,
+    STRING,
+    COMMENT,
+    UNKNOWN
+}
+
+/**
+ * types of comments
+ */
+enum CommentType{
+    /**
+     * no comment
+     */
+    NOCOMMENT,
+    /**
+     * i.e. /* *\/
+     */
+    SLASHSTAR,
+    /**
+     * i.e. //
+     */
+    DOUBLESLASH
+}
+
+/**
+ * token
+ */
+class Token {
+    private Type type;
+    private String string;
+    private int no;
+
+    public int getNo() {
+        return no;
+    }
+
+    public void setNo(int no) {
+        this.no = no;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getString() {
+        return string;
+    }
+
+    public void setString(String string) {
+        this.string = string;
+    }
+
+    public Token(Type type , String string, int no) {
+        this.type = type;
+        this.string = string;
+        this.no = no;
+    }
+
+    public Token(String string, int no) {
+        this.type = Type.UNKNOWN;
+        this.string = string;
+        this.no = no;
+    }
+
+    @Override
+    public String toString() {
+        return "<" + string + "," + no + ">";
+    }
+}
+
+/**
+ * Java_LexAnalysis
+ *
+ * @author Felix
+ * @date 5/19/2019
+ */
+public class Java_LexAnalysis {
+
+    /**
+     * string buffer stores input program
+     */
+    private static StringBuffer inputBuffer = new StringBuffer();
+
+    /**
+     * hashmap stores c key words
+     */
+    public static HashMap<String, Integer> keyWordsHashMap = new HashMap();
+
+    /**
+     * list stores tokens
+     */
+    private static ArrayList<Token> tokens = new ArrayList<>();
+
+    /**
+     * output result
+     */
+    private static StringBuffer resultBuffer = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            /*
+              read the program into stringBuffer
+             */
+            inputBuffer.append(sc.nextLine() + "\n");
+        }
+        /*
+          remove extra \n
+         */
+        inputBuffer.deleteCharAt(inputBuffer.length() - 1);
+        sc.close();
+    }
+
+    /**
+     * initialize keyWordsHashMap from txt file
+     */
+    private static void init() {
+        String filePath = "c_keys.txt";
+        FileReader fileReader = null;
+        BufferedReader bufferedReader = null;
+        try {
+            fileReader = new FileReader(filePath);
+            bufferedReader = new BufferedReader(fileReader);
+            String newLine;
+            while ((newLine = bufferedReader.readLine()) != null) {
+                String[] stringList = newLine.split("\\t| ");
+                keyWordsHashMap.put(stringList[0], Integer.valueOf(stringList[stringList.length - 1]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                bufferedReader.close();
+                fileReader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * check if an input char is operator
+     * @param c input char
+     * @return is operator
+     */
+    private static boolean isOperater(char c) {
+        ArrayList<Character> operators = new ArrayList<>(Arrays.asList('+', '-', '*', '/', '%', '^', '&', '|', '~', '!', '<', '=','>'));
+        return operators.contains(c);
+    }
+
+    /**
+     * check if an input char is delimiter
+     * @param c input char
+     * @return is delimiter
+     */
+    private static boolean isDelimiter(char c) {
+        ArrayList<Character> delimiters = new ArrayList<>(Arrays.asList('(', ')', '{', '}', '[', ']', ',', ':', ';', '?', '"', '\'', '.'));
+        return delimiters.contains(c);
+    }
+
+    /**
+     * check if an input string is digit
+     * @param str input string
+     * @return is digit
+     */
+    private static boolean isDigit(String str) {
+        if (str.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '.') {
+                continue;
+            }
+            if (str.charAt(i) < '0' || str.charAt(i) > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * take apart the inputBuffer into tokens
+     */
+    private static void tokenize() {
+        CommentType commentType = CommentType.NOCOMMENT;
+        StringBuffer tokenString = new StringBuffer();
+
+        for (int i = 0; i < inputBuffer.length(); i++) {
+            /*
+             * get current character
+             */
+            char current = inputBuffer.charAt(i);
+            /*
+              comment for //
+             */
+           if(commentType == CommentType.DOUBLESLASH) {
+                if (current == '\n') {
+                    tokens.add(new Token(Type.COMMENT, tokenString.toString(), 79));
+                    commentType = CommentType.NOCOMMENT;
+                    tokenString.setLength(0);
+                }
+                else {
+                    tokenString.append(current);
+                }
+            }
+            /*
+              comment for /* *\/
+             */
+            else if (commentType == CommentType.SLASHSTAR) {
+                if (i > 0 && inputBuffer.charAt(i - 1) == '*' && current == '/') {
+                    tokenString.append(current);
+                    tokens.add(new Token(Type.COMMENT, tokenString.toString(), 79));
+                    commentType = CommentType.NOCOMMENT;
+                    tokenString.setLength(0);
+                }
+                else {
+                    tokenString.append(current);
+                }
+            }
+            /*
+              no comment
+             */
+            else {
+                /*
+                  case for spaces
+                 */
+                if (current == ' ' || current == '\n' || current == '\r' || current == '\t') {
+                    /*
+                      add to tokens if tokenString is not null
+                      and ignore spaces
+                     */
+                    if (tokenString.length() != 0) {
+                        matchToken(tokenString);
+                    }
+                }
+                /*
+                  case for comment
+                 */
+                else if (i < inputBuffer.length() - 1 && current == '/'){
+                    /*
+                     * comment for //
+                     */
+                    if (inputBuffer.charAt(i + 1) == '/') {
+                        commentType = CommentType.DOUBLESLASH;
+                        tokenString.append(current);
+                        tokenString.append(inputBuffer.charAt(i + 1));
+                        i++;
+                    }
+                    /*
+                     * comment for /* *\/
+                     */
+                    if (inputBuffer.charAt(i + 1) == '*') {
+                        commentType = CommentType.SLASHSTAR;
+                        tokenString.append(current);
+                        tokenString.append(inputBuffer.charAt(i + 1));
+                        i++;
+                    }
+                }
+                /*
+                  case for operator
+                 */
+                else if (isOperater(current)) {
+                    /*
+                      add to tokens if tokenString is not null
+                     */
+                    if (tokenString.length() != 0) {
+                        matchToken(tokenString);
+                    }
+                    /*
+                      add operators to tokenString
+                     */
+                    tokenString.append(current);
+                    /*
+                       an operator follows
+                     */
+                    if (isOperater(inputBuffer.charAt(i + 1)) && (inputBuffer.charAt(i + 1) != '!' || inputBuffer.charAt(i + 1) != '-')) {
+                        tokenString.append(inputBuffer.charAt(i + 1));
+                        i++;
+                    }
+                    /*
+                      case for three operators, like: >>=
+                     */
+                    if (inputBuffer.charAt(i + 1) == '=') {
+                        tokenString.append(inputBuffer.charAt(i + 1));
+                        i++;
+                    }
+                    matchToken(tokenString);
+                }
+                /*
+                  case for delimiter
+                 */
+                else if (isDelimiter(current)) {
+                    /*
+                      add to tokens if tokenString is not null and is not part of a string
+                     */
+                    if (tokenString.length() != 0) {
+                        matchToken(tokenString);
+                    }
+                    /*
+                      add delimiter to tokenString
+                     */
+                    if (current == '"') {
+                        /*
+                          add '"' to tokens
+                         */
+                        tokenString.append(current);
+                        matchToken(tokenString);
+                        i++;
+                        /*
+                          add the string to token
+                         */
+                        while (i < inputBuffer.length() &&
+                                (inputBuffer.charAt(i) != '"' || (inputBuffer.charAt(i) == '"' && inputBuffer.charAt(i - 1) == '\\'))) {
+                            tokenString.append(inputBuffer.charAt(i));
+                            i++;
+                        }
+                        /*
+                          add the content of the string to tokens
+                         */
+                        matchToken(tokenString);
+                        /*
+                          add the ending '"' to tokens
+                         */
+                        tokenString.append(inputBuffer.charAt(i));
+                        matchToken(tokenString);
+                    }
+                    else if (current == '\'') {
+                        /*
+                          add '\'' to tokens
+                         */
+                        tokenString.append(current);
+                        matchToken(tokenString);
+                        i++;
+                        /*
+                          add the character to token
+                         */
+                        while (i < inputBuffer.length() &&
+                                (inputBuffer.charAt(i) != '\'' || (inputBuffer.charAt(i) == '\'' && inputBuffer.charAt(i - 1) == '\\'))) {
+                            tokenString.append(current);
+                            i++;
+                        }
+                        /*
+                          add the content of the character to tokens
+                         */
+                        matchToken(tokenString);
+                        /*
+                          add the ending '\'' to tokens
+                         */
+                        tokenString.append(inputBuffer.charAt(i));
+                        matchToken(tokenString);
+                    }
+                    else if (current == '.') {
+                        /*
+                          tokenString is digit
+                         */
+                        if (isDigit(tokenString.toString())) {
+                            /*
+                              add '.' to tokenString as a decimal point
+                             */
+                            tokenString.append(inputBuffer.charAt(i));
+                        }
+                        else {
+                            /*
+                              add '.' as delimiter
+                             */
+                            tokenString.append(current);
+                            matchToken(tokenString);
+                        }
+                    }
+                    else {
+                        tokenString.append(current);
+                        matchToken(tokenString);
+                    }
+                }
+                /*
+                  normal case for alphabet or digit
+                 */
+                else {
+                    tokenString.append(current);
+                }
+            }
+        }
+    }
+
+    /**
+     * match tokenString into c key words
+     * @param tokenString token string
+     */
+    private static void matchToken(StringBuffer tokenString) {
+        /*
+          match c key words
+        */
+        if (keyWordsHashMap.containsKey(tokenString.toString())) {
+            tokens.add(new Token(tokenString.toString(), keyWordsHashMap.get(tokenString.toString())));
+        }
+        /*
+          tokenString is an identifier
+         */
+        else if (isDigit(tokenString.toString())) {
+            tokens.add(new Token(tokenString.toString(), 80));
+        }
+        else {
+            tokens.add(new Token(tokenString.toString(), 81));
+        }
+        /*
+          clear tokenString
+         */
+        tokenString.setLength(0);
+    }
+
+    /**
+     * print tokens
+     */
+    private static void print() {
+        for (int i = 1; i <= tokens.size(); i++) {
+            resultBuffer.append(i + ": " + tokens.get(i - 1).toString() + '\n');
+        }
+        /*
+          remove extra \n
+         */
+        resultBuffer.deleteCharAt(resultBuffer.length() - 1);
+        System.out.print(resultBuffer);
+    }
+
+    /**
+     * lexical analysis
+     */
+    private static void analysis()
+    {
+        init();
+        read();
+        tokenize();
+        print();
+    }
+
+    /**
+     * this is the main method
+     * @param args args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+
+}

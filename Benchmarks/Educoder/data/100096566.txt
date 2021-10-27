@@ -1,0 +1,47 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+        for(int j=0;j<10;j++)
+        {
+            record[j]=scanner.nextInt();
+        }
+        int t=0;
+        for(int i = 0; i < record.length; i++){  
+            //声明一个标记，并每次重置  
+            boolean isTrue = true;  
+            //内层循环将原数组的元素逐个对比  
+            for(int k=i+1;k<record.length;k++){  
+                //如果发现有重复元素，改变标记状态并结束当次内层循环  
+                if(record[i]==record[k]){  
+                    isTrue = false;  
+                    break;  
+                }  
+            }  
+            //判断标记是否被改变，如果没被改变就是没有重复元素  
+            if(isTrue){  
+                //没有元素就将原数组的元素赋给临时数组  
+                recordRecovery[t] = record[i];  
+                //走到这里证明当前元素没有重复，那么记录自增  
+                t++;  
+            }  
+        }
+
+         Arrays.sort(recordRecovery);
+        
+        /********** End *********/
+        for (int i = 0; i < recordRecovery.length-1; i++) {
+            if(recordRecovery[i]!='\0')
+            System.out.print(recordRecovery[i]+" ");
+            
+        }
+        System.out.print(recordRecovery[recordRecovery.length-1]);
+    }
+}

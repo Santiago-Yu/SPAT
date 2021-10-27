@@ -1,0 +1,64 @@
+package step1;
+
+public class Rectangle{
+	private double width;
+	private double length;
+	
+	/*********begin*********/
+    //无参数的构造函数
+	public Rectangle(){
+        this.width = 6.0;
+        this.length = 5.0;
+    }
+    
+    //有参数的构造函数
+    public Rectangle(double wid, double len){
+        this.width = wid;
+        this.length = len;     
+    }
+    
+    // get、set方法
+    public double getWidth() {
+        return width;
+    }
+    public void setWidth(double width) {
+        this.width = width;
+    }
+    public double getLength() {
+        return length;
+    }
+    public void setLength(double length) {
+        this.length = length;
+    }
+    
+    //计算周长
+    public double perimeter(double wid, double len){
+        return (wid+len)*2;
+    }
+    
+    //计算面积
+    public double area(double wid, double len){
+        return wid*len;
+    }
+	/*********end*********/
+    
+
+	public static void main(String[] args) {
+         
+		/*********begin*********/
+        // 初始化参数
+        Rectangle r1 = new Rectangle();
+        Rectangle r2 = new Rectangle(20,10);
+        double w1 = r1.getWidth();
+        double l1 = r1.getLength();
+        double w2 = r2.getWidth();
+        double l2 = r2.getLength();
+        
+        //输出结果
+		System.out.println("r1的周长："+r1.perimeter(w1,l1));
+        System.out.println("r1的面积："+r1.area(w1,l1));
+        System.out.println("r2的周长："+r2.perimeter(w2,l2));
+        System.out.println("r2的面积："+r2.area(w2,l2));
+		/*********end*********/
+	}
+}

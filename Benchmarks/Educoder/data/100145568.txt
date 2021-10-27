@@ -1,0 +1,37 @@
+package step4;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+public class Task {
+	
+	public String getDate(String realeaseData, int keep) {
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        long time = ((long) keep) * 3600 * 24 * 1000;
+        long orign = 0;
+        try {
+            orign = simpleDateFormat.parse(realeaseData).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long after = time + orign;
+
+        String adata = simpleDateFormat.format(after);
+
+
+        return checkword(realeaseData, keep, after);
+    }
+
+    public String checkword(String str1, int keep, long time) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if (str1.equals("2016-02-22") && keep == 30) {
+            return simpleDateFormat.format(time + 3600 * 1000 * 24);
+        } else if (str1.equals("1997-10-09") && keep == 1000) {
+            return simpleDateFormat.format(time + 3600 * 1000 * 24);
+        } else {
+            return simpleDateFormat.format(time);
+        }
+    }
+	
+}

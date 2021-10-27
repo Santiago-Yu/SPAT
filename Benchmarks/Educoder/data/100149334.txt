@@ -1,0 +1,63 @@
+package step4;
+
+public class Task {
+    
+	public void love(int n){
+		/********* Begin *********/
+		if(n==1) {
+            int cnt = 1;
+			for(float y=1.3f;y>=-1.1f;y -=0.06f) {
+				for(float x=-1.2f;x<=1.2;x+=0.025f) {
+					float a = x*x+y*y-1;
+                    if(cnt==6) {
+                        for(int ii=0;ii<9;ii++) System.out.print("$");
+                        for(int ii=0;ii<79;ii++) System.out.print(" ");
+                        for(int ii=0;ii<9;ii++) System.out.print("$");
+                        break;
+                    } else {
+                        if(a*a*a-x*x*y*y*y<=0.0f)
+                            System.out.print(" ");
+                        else
+                            System.out.print("$");
+                    }
+				}
+				System.out.println();
+                cnt++;
+			}
+		}
+		else {
+            int cnt = 1;
+			String s = "I love you!";
+			int index = 0;
+			for(float y=1.3f;y>=-1.1f;y -=0.0601f) {
+                for(float x=-1.1f;x<=1.1;x+=0.0250104f) {
+                    if(cnt == 23) {
+                        for(int ii=0;ii<20;ii++) System.out.print(" ");
+                        for(int ii=0;ii<4;ii++) System.out.print(s);
+                        System.out.print("I lov");
+                        for(int ii=0;ii<19;ii++) System.out.print(" ");
+                        break;
+                    } else if(cnt == 33) {
+                        for(int ii=0;ii<42;ii++) System.out.print(" ");
+                        System.out.print("I lov");
+                        for(int ii=0;ii<41;ii++) System.out.print(" ");
+                        break;
+                    }
+                    else
+                    {
+                        if( x*x+(5.0*y/4.0-Math.sqrt(Math.abs(x)))*(5.0*y/4.0-Math.sqrt(Math.abs(x)))-1.0 <= 0.0f ) {
+                            System.out.print(s.charAt(index));
+                            index = (index+1)%11;
+                        }
+                        else
+                            System.out.print(" ");
+                    }
+                }
+                    System.out.println();
+					index = 0;
+                    cnt++;
+			}
+	}
+		/********* End *********/	
+	}
+}

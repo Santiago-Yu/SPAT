@@ -1,0 +1,34 @@
+package step1;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class Task {
+	
+	public void solution()            {
+		/********* Begin *********/
+        
+        try{
+			File file1 = new File("src/output/test.txt");
+            if(!file1.exists()){
+            	file1.createNewFile();
+            }
+        }catch(IOException e){
+            System.out.println("test.txt文件创建成功");
+        }
+		
+		try{
+			File file = new File("src/output/hello.txt");
+            if(!file.exists()){
+            	file.createNewFile();
+            }
+        }catch(IOException e){
+            System.out.println("hello.txt文件创建成功");
+        }
+		
+		
+		/********* End *********/
+	}
+}

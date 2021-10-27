@@ -1,0 +1,39 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int c=0;
+        if((year%4==0&&year%100!=0)||(year%400==0))
+        {switch(month)
+               { case 1:c=day;break;
+                 case 2:c=31+day;break;
+                 case 3:c=31+29+day;break;
+                 case 4:c=31+29+31+day;break;
+                 case 5:c=31+29+31+30+day;break;
+                 case 6:c=31+29+31+30+31+day;break;
+                 case 7:c=31+29+31+30+31+30+day;break;
+                 case 8:c=31+29+31+30+31+30+31+day;break;
+                 case 9:c=31+29+31+30+31+30+31+31+day;break;
+                 case 10:c=31+29+31+30+31+30+31+31+30+day;break;
+                 case 11:c=31+29+31+30+31+30+31+31+30+31+day;break;
+                 case 12:c=31+29+31+30+31+30+31+31+30+31+30+day;break;            
+	}}
+        else {switch(month)
+               { case 1:c=day;break;
+                 case 2:c=31+day;break;
+                 case 3:c=31+28+day;break;
+                 case 4:c=31+28+31+day;break;
+                 case 5:c=31+28+31+30+day;break;
+                 case 6:c=31+28+31+30+31+day;break;
+                 case 7:c=31+28+31+30+31+30+day;break;
+                 case 8:c=31+28+31+30+31+30+31+day;break;
+                 case 9:c=31+28+31+30+31+30+31+31+day;break;
+                 case 10:c=31+28+31+30+31+30+31+31+30+day;break;
+                 case 11:c=31+28+31+30+31+30+31+31+30+31+day;break;
+                 case 12:c=31+28+31+30+31+30+31+31+30+31+30+day;break;         
+	}}
+    System.out.print(c);
+		/********** End *********/
+	}
+}

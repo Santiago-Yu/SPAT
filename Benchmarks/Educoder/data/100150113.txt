@@ -1,0 +1,27 @@
+package step2;
+
+import java.util.Scanner;
+import java.text.*;  
+public class AreaOfCircle {
+private static final  float  PI = 3.14f; 
+public static void main(String[] args) {
+		/******Begin******/
+	double radius;
+    double area;	
+    Scanner input=new Scanner(System.in);
+    System.out.println("请输入半径r的值：");
+    radius=input.nextDouble();
+    area=AreaOfCircle (radius);
+    DecimalFormat df=new DecimalFormat(".00");
+    String st=df.format(area);
+    System.out.println("圆的面积是：" +st);
+}
+		/******End******/
+
+public static double AreaOfCircle(double radius)
+{
+ float area=(float)(PI * radius * radius)
+;
+return area;
+}
+}

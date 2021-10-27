@@ -1,0 +1,93 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+start(arr);
+		
+		/********* End *********/
+	}
+    static void start(Integer get[]) {
+		Integer k = 0;
+		Integer temp[] = new Integer[get.length];
+		System.arraycopy(get, 0, temp, 0, get.length);
+		Integer tempk;
+		for (Integer i = 0; i < temp.length; i++) {
+			for (Integer j = i + 1; j < temp.length; j++) {
+				if (temp[i] > temp[j]) {
+					tempk = temp[i];
+					temp[i] = temp[j];
+					temp[j] = tempk;
+				}
+			}
+		}
+
+		while (true) {
+			if (isSort(get, temp) && k == 0) {
+				out(get);
+				break;
+			} else {
+				sort(get,k);
+
+				if (isSort(get, temp)) {
+
+					break;
+				}
+				desort(get,k);
+				if (isSort(get, temp)) {
+
+					break;
+				}
+			}
+
+		}
+
+	}
+
+	static void sort(Integer get[],Integer k) {
+		// TODO Auto-generated method stub
+		Integer temp;
+
+		for (Integer j = 0; j + 1 < get.length; j++) {
+			if (get[j + 1] < get[j]) {
+				temp = get[j + 1];
+				get[j + 1] = get[j];
+				get[j] = temp;
+				out(get);k++;
+			}
+
+		}
+	}
+
+	static void desort(Integer get[],Integer k) {
+		// TODO Auto-generated method stub
+		Integer temp;
+
+		for (Integer j = get.length - 1; j >= 1; j--) {
+			if (get[j - 1] > get[j]) {
+				temp = get[j - 1];
+				get[j - 1] = get[j];
+				get[j] = temp;
+				out(get);k++;
+			}
+
+		}
+	}
+
+	static void out(Integer get[]) {
+		for (Integer i = 0; i < get.length; i++) {
+			System.out.print(get[i] + " ");
+
+		}
+		System.out.println();
+	}
+
+	static boolean isSort(Integer get[], Integer temp[]) {
+		for (Integer i = 0; i < get.length; i++)
+			if (get[i] != temp[i])
+				return false;
+		return true;
+
+	}
+}

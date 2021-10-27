@@ -1,0 +1,40 @@
+package case4;
+
+//密码的自动生成器：密码由大写字母/小写字母/数字组成，生成六位随机密码
+import java.util.Random;
+import java.util.Scanner;
+
+public class RandomTest {
+	public static void main(String[] args) {
+		// 定义一个字符型数组
+		char[] pardStore = new char[62];
+		// 把所有的大写字母放进去 把所有的小写字母放进去 把0到9放进去
+		/********* Begin *********/
+        int a =65;
+		for(int i=0;i<26;i++){
+        	pardStore[i]=(char)(a+i);
+        }
+        a = 97;
+        for(int i=0;i<26;i++){
+            pardStore[i+26]=(char)(a+i);
+        }
+        for(int i=0;i<10;i++){
+            pardStore[i+52]=(char)(i+48);
+        }
+        
+        
+        
+		/********* End *********/
+		// 分别以1、2、3作为种子数 生成6位随机密码
+		Scanner sc = new Scanner(System.in);
+		int seed = sc.nextInt();
+		/********* Begin *********/
+		Random random = new Random(seed);
+        StringBuffer sb = new StringBuffer();
+        for(int j=0;j<6;j++){
+            sb.append(pardStore[random.nextInt(62)]);
+        }
+		/********* End *********/
+        System.out.print(sb.toString());
+	}
+}

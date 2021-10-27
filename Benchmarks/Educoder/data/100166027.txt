@@ -1,0 +1,55 @@
+package step1;
+
+public class Person {
+    private String name; //姓名
+    private String number; //身份证号
+    private Date birthday; //出生日期
+    
+   /************Begin*************/
+   //无参构造
+	public Person(){
+		birthday=new Date();
+	}
+	//带参构造
+	public Person(String name,String number,int year,int month,int day){
+		this.name=name;
+		this.number=number;
+		birthday=new Date(year,month,day);
+	}
+	public Person(String name,String number,Date birthday){
+		this.name=name;
+		this.number=number;
+		this.birthday=birthday;
+	}
+
+	//属性的get、set方法
+	public void setName(String name){
+		this.name=name;
+	}
+	public String getName(){
+		return this.name;
+	}
+	public void setNumber(String number){
+		this.number=number;
+	}
+	public String getNumber(){
+		return this.number;
+	}
+	public void setBirthday(Date birthday){
+		this.birthday=birthday;
+	}
+	public Date getBirthday(){
+		return this.birthday;
+	}
+
+	//重载toString方法
+	public String toString(){
+		return "name="+this.name+" number="+this.number+" birthday:"+this.birthday;
+	}
+    
+    
+    
+    
+   /************End*************/
+}
+

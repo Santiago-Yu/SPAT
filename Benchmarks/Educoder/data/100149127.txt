@@ -1,0 +1,133 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Task {
+    
+	private List<Point> points = new LinkedList<Point>();
+
+	private ArrayList<ArrayList<Point>> ps = new ArrayList<ArrayList<Point>>();
+
+	public int virusArea(int n, int m, char[][] area) {
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < m; ++j) {
+				if (area[i][j] == 'o') {
+					Point p = new Point(i, j);
+					points.add(p);
+				}
+			}
+		}
+
+		int[] idxs = new int[points.size()];
+		for (int i = 0; i < idxs.length; ++i)
+			idxs[i] = 1;
+
+
+		for (int idx = 0; idx < idxs.length; ++idx) {
+
+			if (idxs[idx] == 0) {
+				continue; 
+			}
+			//				break; 
+
+			int[] idxy = new int[points.size()];
+			for (int i = 0; i < idxs.length; ++i)
+				idxy[i] = idxs[i];
+
+			ArrayList<Point> pList = new ArrayList<Point>();
+
+			pList.add(points.get(idx));
+
+			for (int i = idx+1; i < points.size(); ++i) {
+				if (i == idx)
+					continue; 
+				boolean flag = false;
+				for (Point p : pList) {
+					if (isConnected(p, points.get(i))) {
+						flag = true;
+						break;
+					}
+				}
+				if (flag && idxs[i] == 1) {
+					Point p = points.get(i);
+
+					pList.add(p);
+					idxs[i] = 0; 
+				}
+				else if (flag && idxs[i] == 0) {
+					idxs[idx] = 0; 
+				} 
+
+			}
+
+			boolean flag = false;
+
+			for (int i = 0; i < idxs.length; ++i) {
+				if (idxs[i] != idxy[i]) {
+					flag = true;
+					break;
+				}
+			}
+
+		}
+
+		int cnt = 0;
+		for (int i = 0; i < idxs.length; ++i) {
+			if (idxs[i] == 1) {
+				++cnt;
+			}
+		}
+
+		return cnt;
+	}
+
+	public boolean isConnected(Point a, Point b) {
+		int x1 = a.getX();
+		int x2 = b.getX();
+		int y1 = a.getY();
+		int y2 = b.getY();
+
+		if (y1 == y2 && Math.abs(x1 - x2) == 1) {
+			return true;
+		}
+
+		if (x1 == x2 && Math.abs(y1 - y2) == 1) {
+			return true;
+		}
+		return false;
+	}
+
+	private class Point {
+		private int x;
+		private int y;
+
+		public int getX() {
+			return x;
+		}
+
+		public void setX(int x) {
+			this.x = x;
+		}
+
+		public int getY() {
+			return y;
+		}
+
+		public void setY(int y) {
+			this.y = y;
+		}
+
+		public Point(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public String toString() {
+			return "(" + x + ", " + y + ")";
+		}
+
+	}
+}

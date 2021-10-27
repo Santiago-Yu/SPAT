@@ -1,0 +1,21 @@
+package step2;
+
+import java.util.Arrays;
+
+public class Task {
+	
+	public int getTheWay(int num,int bagCapacity,long[] snacks){
+			if(num == 1){
+                if(bagCapacity>=snacks[0])return 2;
+                else return 1;
+            }
+            long[] snacks_temp = new long[num-1];
+            for(int i = 0; i < num-1;i++)snacks_temp[i]=snacks[i+1];
+            int num_temp = num-1;
+			if(bagCapacity>=snacks[0])
+                return getTheWay(num_temp,bagCapacity-(int)snacks[0],snacks_temp)+getTheWay(num_temp,bagCapacity,snacks_temp);
+            else return getTheWay(num_temp,bagCapacity,snacks_temp);
+
+		
+	}
+}

@@ -1,0 +1,58 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+
+		return Jsoup.parse(new File(filePath), "utf-8");
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+		List<HotelCity> list = new ArrayList<HotelCity>();
+		Elements elements = doc.select(".pinyin_filter_detail").select(".layoutfix");
+        Element element = elements.first();
+        Elements ele_dd = element.getElementsByTag("dd");
+        Elements ele_head = element.select("dt");
+        for (int i = 0 ; i < ele_dd.size() ; i++) {
+			Element dd = ele_dd.get(i);
+			Elements links = dd.select("a");
+			
+			for (Element link : links) {
+				HotelCity city = new HotelCity();
+				
+				city.setCityName(link.html());
+				String str_href = link.attr("href");
+				String new_str_href = str_href.substring(str_href.lastIndexOf('/')+1);
+				char [] arr = new_str_href.toCharArray();
+				
+				city.setHeadPinyin(ele_head.get(i).text());
+				for (int j = 0; j < arr.length; j++) {
+					if(Character.isDigit(arr[j])){
+						city.setPinyin(new_str_href.substring(0, j));
+						city.setCityId(new_str_href.substring(j));
+						break;
+					}
+				}
+				
+				list.add(city);
+			}
+		}
+		return list;
+		/**********   End   **********/
+	}
+}
+	

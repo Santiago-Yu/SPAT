@@ -1,0 +1,62 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public int partition(int[] x, int begin, int end){
+        int pivot=x[end];
+        int cnt=begin-1;
+        for (int i=begin;i<end;i++){
+            if (x[i]>=pivot){
+                cnt++;
+                //swap x[cnt] and x[i]
+                int tmp=x[cnt];x[cnt]=x[i];x[i]=tmp;
+            }
+        }
+        int tmp=x[cnt+1];x[cnt+1]=x[end];x[end]=tmp;
+        return cnt+1;
+    }
+        
+    public void quicksort(int[] x, int begin, int end){
+        if (begin<end){
+            int mid=partition(x, begin, end);
+            quicksort(x, begin, mid-1);
+            quicksort(x,mid+1,end);
+        }
+    }
+
+    public void sortArray(int[][] arr){
+        int[] sum=new int[arr.length], index=new int[arr.length];
+        for (int i=0;i<arr.length;i++)
+            for (int j=0;j<arr[0].length;j++)
+				sum[i]+=arr[i][j];    
+        
+        for (int i=0;i<arr.length;i++){
+            int max=0;
+            for (int j=1;j<arr.length;j++){
+				if (sum[max]<sum[j]){
+                    
+                    max=j;
+                    
+                }
+        		
+            }
+            sum[max]=0;
+            index[i]=max;
+        }
+        
+        
+		for (int i=0;i<arr.length;i++){
+            quicksort(arr[i],0,arr[i].length-1);
+        }
+		for (int i=0;i<arr.length;i++){
+            System.out.println(Arrays.toString(arr[index[i]]));
+        }
+
+    }
+    
+    /********** END **********/
+}
+	

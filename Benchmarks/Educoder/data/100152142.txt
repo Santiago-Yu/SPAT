@@ -1,0 +1,58 @@
+package step2;
+
+import java.util.List;
+
+public class Task {
+    public static int solve(List<Integer> data, List<Operation> operations) {
+		
+     	long result=0;
+        int lenth=data.size();
+        int lenth_k=operations.size();
+        int data_k[]=new int[lenth];
+        char op_c[]=new char[lenth_k];
+        int op_x[]=new int[lenth_k];
+        int op_y[]=new int[lenth_k];
+        for(int i=0;i<lenth;i++)
+        {
+            data_k[i]=data.get(i);
+        }
+        for(int i=0;i<lenth_k;i++)
+        {
+            op_c[i]=operations.get(i).op.charAt(0);
+            op_x[i]=operations.get(i).x;
+            op_y[i]=operations.get(i).y;
+        }
+		for(int i=0;i<lenth_k;i++)
+		{
+			if(op_c[i]=='C')
+			{
+				data_k[op_x[i]]=op_y[i];
+			}
+			else if(op_c[i]=='L')
+			{
+                int k=1;
+				for(int j=op_x[i];j<=op_y[i];j++)
+				{
+					result+=data_k[j]*(k++);
+				}
+			}
+			else
+			{
+                int k=op_y[i]-op_x[i]+1;
+				for(int j=op_x[i];j<=op_y[i];j++)
+				{
+                    result+=data_k[j]*(k--);
+        		}	
+			}
+            result%=1000000007;
+        }
+		return (int)result;
+	}
+
+
+}
+class Operation {
+	String op;
+	int x;
+	int y;
+}

@@ -1,0 +1,36 @@
+package step2;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateExceptionTest {
+
+	public static void main(String[] args) {
+		/*****Begin*****/
+		Scanner sc1 = new Scanner(System.in);
+        try{
+            int year = sc1.nextInt();
+            int month = sc1.nextInt();
+            int day = sc1.nextInt();
+            String dateStr = year+"-"+month+"-"+day;
+            DateException d1 = new DateException(year,month,day);
+            Date date = d1.getDate(dateStr);
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
+            System.out.println(sdf.format(date));
+            //System.out.println(d1.getDate().toString());
+        }
+        catch(NumberFormatException e){
+            System.out.println("数据必须为整型");
+        }catch(Exception e){
+            System.out.println(e.toString());
+        }
+            
+            
+		
+		/******End******/
+	}
+
+}

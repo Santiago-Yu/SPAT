@@ -1,0 +1,41 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+public static void main(String[] args) {
+		// write your code here
+         Scanner sc=new Scanner(System.in);
+        int s=sc.nextInt();
+        int n=0;
+        String aString=String.valueOf(s);
+        List<Integer> as=new ArrayList<>();
+        while(s!=1){
+        	 char[] num=aString.toCharArray();
+        	 int sum=0;
+            for(int i=0;i<num.length;i++){
+            	int a=num[i]-48;
+            	sum=sum+a*a;
+            }
+            aString=String.valueOf(sum);
+           
+            if(sum==1){
+            	n=1;break;
+            }
+            else if(sum!=1){
+            	if(as.contains(sum)){
+            		n=0;break;
+            	}
+            	else{
+            		as.add(sum);
+            	}
+            }
+        }
+        if(n==1)System.out.print("YES");
+        else System.out.print("NO");
+        //System.out.print(s);
+        
+	}
+
+}

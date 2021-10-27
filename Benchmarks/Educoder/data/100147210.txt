@@ -1,0 +1,48 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+     public Long getBestTeam(int numbers, int[] abilities, int selectnum, int distance){
+
+        long dpMax[][] = new long[abilities.length][selectnum];
+        long dpMin[][] = new long[abilities.length][selectnum];
+
+        for (int i = 0; i < abilities.length; i++) {
+            // 最大乘积序列长度为1 时， a[i] 作为结尾元素时， 乘积序列的结果就是它本身
+            dpMax[i][0] = abilities[i];
+            dpMin[i][0] = abilities[i];
+        }
+        
+        long maxSoFar = Long.MIN_VALUE;
+        for (int j = 1; j < selectnum; j++) {// 开始计算乘积序列长度大于1 的情况
+            for (int i = j ; i < abilities.length; i++) {
+   
+                dpMax[i][j] = Long.MIN_VALUE;
+                dpMin[i][j] = Long.MAX_VALUE;
+                for (int x = 1; x <= distance && (i - x) >= j - 1; x++) {
+
+                    long resMax = Math.max(dpMax[i - x][j - 1] * abilities[i], dpMin[i - x][j - 1] * abilities[i]);
+                    long resMin = Math.min(dpMax[i - x][j - 1] * abilities[i], dpMin[i - x][j - 1] * abilities[i]);
+
+                    if (resMax > dpMax[i][j])
+                        dpMax[i][j] = resMax;
+                    if (resMin < dpMin[i][j])
+                        dpMin[i][j] = resMin;
+
+                }
+            }
+        }
+
+        for (int i = selectnum-1; i < abilities.length; i++) {
+            if (dpMax[i][selectnum-1] > maxSoFar) {
+                maxSoFar = dpMax[i][selectnum-1];
+            }
+        }
+
+        return maxSoFar;
+    }
+
+	/********* End *********/
+}

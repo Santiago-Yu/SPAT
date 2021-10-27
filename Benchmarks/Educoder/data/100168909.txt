@@ -1,0 +1,39 @@
+package step4;
+import java.util.Scanner;
+ 
+public class LianXi_Sort {
+
+	
+	public static void main(String[] args) {
+	
+		Scanner sc = new Scanner(System.in);
+		//获取平台分配的x的值
+		int x = sc.nextInt();
+		//获取平台分配的y的值
+		int y = sc.nextInt();
+		//获取平台分配的z的值
+		int z = sc.nextInt();
+
+	   if(x>=y){
+		   int t;
+		   t=x;
+		   x=y;
+		   y=t;
+		   if(x>=z){
+			   int d;
+			   d=x;
+			   x=z;
+			   z=d;
+		   }
+	   }
+	   else if(y>=z){
+		   int a;
+		   a=y;
+		   y=z;
+		   z=a;
+	   }
+		System.out.print("x:"+x+" y:"+y+" z:"+z);
+		
+	}
+
+}

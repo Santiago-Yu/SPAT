@@ -1,0 +1,37 @@
+package step3;
+
+public class MyThread implements Runnable {   
+    private String name;
+    private MyThread(String name) {   
+        this.name = name;  
+    }   
+    private int notes = 5;
+   public void run() {
+		while (true) {
+			dispatchNotes();
+			if (notes <= 0) {
+				break;
+			}
+		}
+	}
+	private synchronized void dispatchNotes() {
+		if (notes > 0) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.print(Thread.currentThread().getName());
+            notes--;
+		}
+
+}
+    public static void main(String[] args) throws Exception {   
+        MyThread A=new MyThread("E");
+        new Thread(A, "E").start();
+        MyThread B=new MyThread("D");
+        new Thread(B, "D").start();
+        MyThread C=new MyThread("U");
+        new Thread(C, "U").start();
+        }   
+}

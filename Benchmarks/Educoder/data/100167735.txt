@@ -1,0 +1,359 @@
+import java.util.*;
+
+
+/**
+ * @author Alfred Fu
+ * Created on 2019-06-14 01:22
+ */
+@SuppressWarnings("Duplicates")
+public class Java_TranslationSchemaAnalysis
+{
+
+    private boolean isError = false;
+    private String code;
+    private StringBuffer program = new StringBuffer();
+    private List<Token> inputBuffer = new ArrayList<>();
+    private List<String> errorOutput = new ArrayList<>();
+
+    private static HashSet<String> keywordDict = new HashSet<>();
+    private HashMap<String,Attribute> symbolTable = new HashMap<>();
+
+    private class Token{
+        private String token;
+        private Integer lineCount;
+
+        public Token(String token, Integer lineCount) {
+            this.token = token;
+            this.lineCount = lineCount;
+        }
+
+        @Override
+        public String toString() {
+            return "Token{" +
+                    "token='" + token + '\'' +
+                    ", lineCount=" + lineCount +
+                    '}';
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public Integer getLineCount() {
+            return lineCount;
+        }
+
+        public void setLineCount(Integer lineCount) {
+            this.lineCount = lineCount;
+        }
+    }
+    private class Attribute{
+        @Override
+        public String toString() {
+            return "Attribute{" +
+                    "type='" + type + '\'' +
+                    ", value=" + value +
+                    '}';
+        }
+
+        String type;
+        double value;
+
+        public Attribute(String type, double value) {
+            this.type = type;
+            this.value = value;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public double getValue() {
+            return value;
+        }
+
+        public void setValue(double value) {
+            this.value = value;
+        }
+    }
+
+    private void init(){
+        keywordDict.add("if");
+        keywordDict.add("then");
+        keywordDict.add("else");
+        keywordDict.add("int");
+        keywordDict.add("real");
+
+
+    }
+
+    private void readProgram() {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            program.append(sc.nextLine());
+            program.append('\n');
+        }
+        program.append('\0');
+        code = program.toString();
+        //
+        //
+        int lineCount = 1;
+        StringBuilder word = new StringBuilder();
+        for (int i=0;i<code.length();i++){
+            if (code.charAt(i)=='\0') {
+                if (word.length()>0){
+                    inputBuffer.add(new Token(word.toString(),lineCount));
+                    word.delete(0,word.length());
+                }
+                break;
+            }
+            else if (code.charAt(i)=='\n'){
+                if (word.length()>0){
+                    inputBuffer.add(new Token(word.toString(),lineCount));
+                    word.delete(0,word.length());
+                }
+                lineCount++;
+            }
+            else if (code.charAt(i)==' '){
+                if (word.length()>0) {
+                    inputBuffer.add(new Token(word.toString(),lineCount));
+                    word.delete(0, word.length());
+                }
+            }
+            else {
+                word.append(code.charAt(i));
+            }
+        }
+
+    }
+
+
+    private void constructSymbols(){
+        inputBuffer.forEach(o -> {
+                    // construct symbol table
+                    if(Character.isAlphabetic(o.getToken().charAt(0)) && !keywordDict.contains(o.getToken())){
+                        symbolTable.put(o.getToken(), new Attribute("unknown",0d));
+                    }
+                }
+        );
+    }
+
+    private void analyze() {
+        for (int i = 0; i < inputBuffer.size();) {
+            Token each = inputBuffer.get(i);
+            if (each.getToken().equals("int")||each.getToken().equals("real")){
+                Attribute attribute = symbolTable.get(inputBuffer.get(i+1).getToken());
+                attribute.setType(each.getToken());
+                attribute.setValue(Double.parseDouble(inputBuffer.get(i+3).getToken()));
+                //
+                if (each.getToken().equals("int")&&inputBuffer.get(i+3).getToken().contains(".")) {
+                    isError = true;
+                    errorOutput.add("error message:line " + each.getLineCount() + ",realnum can not be translated into int type");
+                }
+                //
+                i += 5; // include
+                continue;
+            }
+            else if (symbolTable.containsKey(each.getToken())){
+                int j=i+1;
+                while (!inputBuffer.get(j).getToken().equals(";"))
+                    j++;
+                computeArithmeticExpression(i,j);
+                //
+                i = j+1;
+                continue;
+            }
+            else if (each.getToken().equals("if")){
+                int thenPoint=i+1;
+                while (!inputBuffer.get(thenPoint).getToken().equals("then"))
+                    thenPoint++;
+                int elsePoint = thenPoint+1;
+                while (!inputBuffer.get(elsePoint).getToken().equals("else"))
+                    elsePoint++;
+                int lastSemiPoint = elsePoint+1;
+                while (!inputBuffer.get(lastSemiPoint).getToken().equals(";"))
+                    lastSemiPoint++;
+                boolean boolResult = computeBooleanExpression(i+2,thenPoint-1);
+                if (boolResult)
+                    computeArithmeticExpression(thenPoint+1,elsePoint-1);
+                else
+                    computeArithmeticExpression(elsePoint+1,lastSemiPoint);
+                //
+                i = lastSemiPoint+1;
+                continue;
+            }
+
+            i++;
+        }
+
+    }
+
+
+    private void computeArithmeticExpression(int includePoint,int excludePoint){
+        int equalPoint = 0;
+        for (int i = includePoint; i < excludePoint; i++)
+            if (inputBuffer.get(i).getToken().equals("="))
+                equalPoint = i;
+
+        List<Token> postfixExpr = new ArrayList<>();
+        Stack<Token> ops = new Stack<>();
+
+        for (int i = equalPoint+1; i < excludePoint; i++) {
+            if (isOps(inputBuffer.get(i).getToken())){
+                if (inputBuffer.get(i).getToken().equals("("))
+                    ops.push(inputBuffer.get(i));
+                else if (inputBuffer.get(i).getToken().equals(")")) {
+                    while (!ops.peek().getToken().equals("("))
+                        postfixExpr.add(ops.pop());
+                    ops.pop();
+                }
+                else {
+                    while (!ops.empty() && compareOps(ops.peek().getToken(),inputBuffer.get(i).getToken()))
+                        postfixExpr.add(ops.pop());
+                    ops.push(inputBuffer.get(i));
+                }
+            }
+            else
+                postfixExpr.add(inputBuffer.get(i));
+        }
+        while (!ops.empty())
+            postfixExpr.add(ops.pop());
+
+//        postfixExpr.forEach(o->System.out.print(o.getToken() + " "));
+//        System.out.println();
+        Stack<Double> numbers = new Stack<>();
+        postfixExpr.forEach(token -> {
+            if(isOps(token.getToken())){
+                switch (token.getToken()){
+                    case "+":{
+                        numbers.push(numbers.pop()+numbers.pop());
+                        break;
+                    }
+                    case "-":{
+                        numbers.push(0-numbers.pop()+numbers.pop());
+                        break;
+                    }
+                    case "*":{
+                        numbers.push(numbers.pop()*numbers.pop());
+                        break;
+                    }
+                    case "/":{
+                        double ops2 = numbers.pop();
+                        if (ops2==0){
+                            isError=true;
+                            errorOutput.add("error message:line "+token.getLineCount()+",division by zero");
+                        }
+                        else{
+                            numbers.push(numbers.pop()/ops2);
+                        }
+                        break;
+                    }
+                }
+            }
+            else {
+//                System.out.println(token);
+                Attribute attribute = symbolTable.getOrDefault(token.getToken(),null);
+                numbers.push(attribute==null? Double.parseDouble(token.getToken()) : attribute.getValue());
+            }
+        });
+//        System.out.println(numbers.peek());
+        symbolTable.get(inputBuffer.get(equalPoint-1).getToken()).setValue(numbers.peek());
+    }
+
+    private boolean compareOps(String stackTop,String current) {
+        if ((current.equals("*")||current.equals("/")) && (stackTop.equals("+")||stackTop.equals("-")))
+            return false;
+        else
+            return true;
+
+    }
+
+    private boolean isOps(String currentToken){
+        return currentToken.equals("+")||
+                currentToken.equals("-")||
+                currentToken.equals("*")||
+                currentToken.equals("/")||
+                currentToken.equals("(")||
+                currentToken.equals(")");
+
+    }
+
+    private boolean computeBooleanExpression(int includePoint,int excludePoint){
+      Attribute args1 = symbolTable.getOrDefault(inputBuffer.get(includePoint).getToken(),null);
+      Attribute args2 = symbolTable.getOrDefault(inputBuffer.get(excludePoint-1).getToken(),null);
+      double value1 = (args1==null?Double.parseDouble(inputBuffer.get(includePoint).getToken()):args1.getValue());
+      double value2   = (args2==null?Double.parseDouble(inputBuffer.get(excludePoint-1).getToken()):args2.getValue());
+
+      switch (inputBuffer.get(includePoint+1).getToken()){
+          case ">=":{
+              return value1>=value2;
+          }
+          case "<=":{
+              return value1<=value2;
+          }
+          case "==":{
+              return value1==value2;
+          }
+          case "<":{
+              return value1<value2;
+          }
+          case ">":{
+              return value1>value2;
+          }
+          default:
+              return false;
+      }
+    }
+
+
+    private void outputResult() {
+        if (!isError){
+            int count=0;
+            for (String each : symbolTable.keySet()){
+                Attribute j = symbolTable.get(each);
+                System.out.print(each+": ");
+                if (j.getType().equals("int"))
+                    System.out.print((int)j.getValue());
+                else
+                    System.out.print(j.getValue());
+                count++;
+                if (count!=symbolTable.keySet().size())
+                    System.out.println();
+            }
+        }
+        else {
+            int count=0;
+            for (int i = 0; i < errorOutput.size(); i++) {
+                System.out.print(errorOutput.get(i));
+                if (count!=errorOutput.size()-1)
+                    System.out.println();
+                count++;
+            }
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        Java_TranslationSchemaAnalysis clazz = new Java_TranslationSchemaAnalysis();
+        clazz.init();
+        clazz.readProgram();
+        clazz.constructSymbols();
+        clazz.analyze();
+        clazz.outputResult();
+    }
+
+
+
+
+}
+

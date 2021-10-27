@@ -1,0 +1,31 @@
+package step5;
+
+import java.util.Scanner;
+
+
+public class Task {
+	
+    int maxStep = 0;
+    
+    void dfs(TreeNode node, int step) {
+        if(node == null) {
+        	if(step > maxStep)
+                maxStep = step;
+            return ;
+        }
+        
+        dfs(node.left, step+1);
+        dfs(node.right, step+1);
+    }
+    
+	public int getDepth(TreeNode tree){
+		/********** BEGIN **********/
+
+		dfs(tree, 0);
+
+        return maxStep;
+		/********** END **********/
+		
+	}
+	
+}

@@ -1,0 +1,31 @@
+package step5;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class HelloWorld {
+
+	public static void main(String[] args) {
+		Map<String, Integer> menuDict = new HashMap<>();
+        //这里要注意menuDict。put(这里面字符串加""数字啥都不加)
+		Scanner sc = new Scanner(System.in);
+		for (int i = 0; i < 5; i++) {
+			menuDict.put(sc.next(),sc.nextInt());
+		}
+		/********** Begin **********/
+        System.out.println(menuDict.get("fish"));//调出Map中fish一起的值
+        menuDict.put("lamb",50);
+        menuDict.replace("fish",100);
+        menuDict.remove("noodles");
+		System.out.println(menuDict);
+		
+		
+		
+		
+		
+		
+		/********** End **********/
+	}
+	
+}

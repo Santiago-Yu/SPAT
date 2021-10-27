@@ -1,0 +1,38 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int Mark,CommonDivisor = 0;
+		if(length>=width) {
+			for(int i=1,j=0;i<=width;i++) {
+				if(length%i==0&&width%i==0) {
+					CommonDivisor=i;
+					Mark=j;
+					j++;
+				}
+			}
+		}else {
+			for(int i=1,j=0;i<=length;i++) {
+				if(length%i==0&&width%i==0) {
+					CommonDivisor=i;
+					Mark=j;
+					j++;
+				}
+			}
+		}
+		System.out.println(CommonDivisor);//边长
+		System.out.println((length*width)/(CommonDivisor*CommonDivisor));//个数
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

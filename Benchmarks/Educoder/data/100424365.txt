@@ -1,0 +1,14 @@
+    public static boolean writeFileB2C(InputStream pIs, File pFile, boolean pAppend) {
+        boolean flag = false;
+        try {
+            FileWriter fw = new FileWriter(pFile, pAppend);
+            IOUtils.copy(pIs, fw);
+            fw.flush();
+            fw.close();
+            pIs.close();
+            flag = true;
+        } catch (Exception e) {
+            LOG.error("灏嗗瓧鑺傛祦鍐欏叆锟�?" + pFile.getName() + "鍑虹幇寮傚父锟�?", e);
+        }
+        return flag;
+    }

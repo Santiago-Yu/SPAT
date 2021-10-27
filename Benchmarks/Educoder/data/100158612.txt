@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+	int n,m,i,j,len,maxl;
+	char a[500],b[500];
+    scanf("%s",a);
+    n=strlen(a);
+    scanf("%s",b);
+    m=strlen(b);
+    maxl=0;
+    int p,q;
+    for(i=0;i<n;i++){
+    	for(j=0;j<m;){
+            len=0;
+    		if(a[i]==b[j]){
+    			p=i;q=j;
+				while(a[p]==b[q]){
+    			    len++;
+    			    p++;
+    			    q++;
+    		    }
+    		    if(len>maxl){
+    		    	maxl=len;
+    		    }
+    		    j=q;
+    		}
+    		else{
+    			j++;
+    		}
+    	}
+    }
+    printf("%d",maxl);
+    return 0;
+}

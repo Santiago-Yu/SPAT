@@ -1,0 +1,49 @@
+package case6;
+
+public class finalTest {
+	public static void main(String args[]) {
+		Bike1 obj = new Bike1();
+		obj.run();
+
+		Honda honda = new Honda();
+		honda.run1();
+
+		Yamaha yamaha = new Yamaha();
+		yamaha.run1();
+	}
+}
+//不可以修改 final 变量的值
+// final方法,不可以重写
+//// 不可以扩展 final 类
+class Bike1 {
+	final int speedlimit = 90;
+
+	void run() {
+	// int speedlimit = 120; 
+		System.out.println("speedlimit=120");
+	}
+
+}
+
+class Bike2 {
+	final void run() {
+		System.out.println("running");
+	}
+}
+
+class Honda extends Bike2 {
+	void run1() { 
+		System.out.println("running safely with 100kmph");
+	}
+
+}
+
+ final class Bike3 {
+}
+
+class Yamaha extends Honda{ 
+void run1(){
+		System.out.println("running safely with 100kmph");
+	}
+
+}

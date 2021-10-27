@@ -1,0 +1,65 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+        Integer[] x = arr;
+		int length = 1,times = 0,maxlength = 0;
+		boolean m = false;
+		if(x.length == 2)
+			return 0;
+		int j = 0;
+		for(int i = 1;i < x.length;i++)
+		{
+			
+			if(x[i - 1] > x[i])
+			{
+				m = true;
+				times++;
+				length++;
+				if(i == x.length)
+				{
+					length -= times;
+					times = 0;
+					break;
+				}
+				continue;
+			}
+			else
+			{
+				if(m)
+				{
+					m = false;
+					times = 0;
+					length++;
+					for(j = i + 1; j < x.length;j++)
+					{
+                        if(maxlength < length)
+							maxlength = length;
+						if(x[j] > x[j - 1])
+						{
+							length++;
+							i = j-1;
+							if(maxlength < length)
+								maxlength = length;
+							continue;
+						}
+						else
+						{
+							length = 1;
+							i = j - 1;
+							if(maxlength < length)
+								maxlength = length;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return maxlength;
+
+		
+		/********* End *********/	
+	}
+}

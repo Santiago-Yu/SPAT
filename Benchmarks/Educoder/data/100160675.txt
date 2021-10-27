@@ -1,0 +1,74 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+      File file=new File(filePath);
+      
+     Document doc = Jsoup.parse(file,"UTF-8","http://hotels.ctrip.com/");
+
+
+		return doc;
+
+	
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+		Elements e=doc.select("a[href]");//获取a标签带有href属性
+        List<String> list=new ArrayList<String>();//创建集合
+        for(Element element : e){
+            String wb=element.text();//获取链接文本
+            String lianjie=element.attr("abs:href");//获取链接
+            String bqm=element.tagName();//获取标签名
+            String shuchu=bqm+"$"+lianjie+"("+wb+")";//规范输出格式
+            list.add(shuchu);//往集合添加元素
+        }
+
+		return list;//返回集合
+
+		/**********   End   **********/
+	}
+	
+	//获取图片
+	// ​img$http://pic.c-ctrip.com/platform/online/home/er_ctrip_app.jpg
+	public List<String> getMedia(Document doc){
+	List<String> arrays=new ArrayList<String>();
+        Elements tagimg=doc.select("img");
+		for(Element e : tagimg){
+			String bqm = e.tagName();//标签名
+			String lianjie = e.attr("abs:src");//获取了图片链接地址
+			String shuchu = bqm+"$"+lianjie;
+			arrays.add(shuchu);
+            			
+		}
+		return arrays;
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		/**********   Begin   **********/
+
+	List<String> list=new ArrayList<String>();
+		Elements links = doc.select("link");
+		for(Element e : links){
+			String bqm = e.tagName();
+			String lianjie = e.attr("rel");
+			String href = e.attr("abs:href");
+			String shuchu = bqm+ "$" +href+"("+lianjie+")";
+			list.add(shuchu);
+
+			}
+
+        return list;
+	}
+}

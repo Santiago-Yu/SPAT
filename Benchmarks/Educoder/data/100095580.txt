@@ -1,0 +1,41 @@
+package step4;
+
+import java.util.Scanner;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int isRun = 1;
+		int location = 0;
+		 if(year % 100 == 0 && year % 4 == 0){  
+		        isRun = 1;  
+		    }else isRun = 0;  
+		
+    switch (month){
+    case 1:{location=day;break;}  
+    case 2:{location=31+day;break;}  
+    case 3:{location=31+28+isRun+day;break;}  
+    case 4:{location=31+28+isRun+31+day;break;}  
+    case 5:{location=31+28+isRun+31+30+day;break;}  
+    case 6:{location=31+28+isRun+31+30+31+day;break;}  
+    case 7:{location=31+28+isRun+31+30+31+30+day;break;}  
+    case 8:{location=31+28+isRun+31+30+31+30+31+day;break;}  
+    case 9:{location=31+28+isRun+31+30+31+30+31+31+day;break;}  
+    case 10:{location=31+28+isRun+31+30+31+30+31+31+30+day;break;}  
+    case 11:{location=31+28+isRun+31+30+31+30+31+31+30+31+day;break;}  
+    case 12:{location=31+28+isRun+31+30+31+30+31+31+30+31+30+day;break;}  
+    }
+    System.out.print(location);
+}
+    	public static void main(String[] args){
+    		Scanner sc = new Scanner(System.in);
+    		int year = sc.nextInt();
+    		int month = sc.nextInt();
+    		int day = sc.nextInt();
+    		DayCount d = new DayCount();
+    		d.dayCount(year,month,day);
+    	}
+    
+
+		/********** End *********/
+	}

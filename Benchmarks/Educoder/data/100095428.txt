@@ -1,0 +1,44 @@
+package step4;
+import java.util.Scanner;
+
+public class DayCount {
+	public static void main(String args[]){
+		Scanner sc=new Scanner(System.in);
+		int year=sc.nextInt();
+		int month=sc.nextInt();
+		int day=sc.nextInt();
+		dayCount(year,month,day);
+	}
+	public static void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int D=0;//每月天数
+		int N=0;//总天数
+		boolean leap=false;
+		for(int i=1;i<month;i++){
+			switch(i){
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:D=31;break;
+			case 2:D=28;break;
+			case 4:
+			case 6:
+			case 8:
+			case 10:D=30;break;
+			}
+			N=N+D;
+		}
+		leap=(year%400==0)|(year%100!=0)&&(year%4==0);
+		if(leap&&(month>2)){
+			N=N+1+day;
+		}
+		else{
+			N=N+day;
+		}
+		System.out.print(N);
+
+		/********** End *********/
+	}
+}

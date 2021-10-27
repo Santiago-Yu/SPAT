@@ -1,0 +1,27 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+		System.out.println("+--"+file.getName());
+		show(file," ");
+		
+	}
+	public void show(File dir,String interval) {
+		File files[]=dir.listFiles();
+		interval+=" ";
+		for(File file:files) {
+			if(file.isDirectory()==true) {
+				System.out.println(interval+"+--"+file.getName());
+				show(file,interval+" ");
+			}else{
+				System.out.println(interval+"--"+file.getName());		
+			}
+		}
+	}
+	
+	/********** End **********/
+}

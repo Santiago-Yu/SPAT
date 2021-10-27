@@ -1,0 +1,26 @@
+package step1;
+
+import java.sql.*;
+
+public class UpdatePass {
+	// 修改数据
+	public static void updateDB() {
+    try{
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/tsgc","root","123123");
+		String sql="update employee set password='hello' where sex='女'";
+       Statement stmt=conn.createStatement();
+		stmt.executeUpdate(sql);
+        stmt.close();	
+        conn.close();
+    }
+    catch(ClassNotFoundException e){
+    e.printStackTrace();
+    }catch(SQLException e){
+    e.printStackTrace();
+    }  
+}
+		
+	}
+
+

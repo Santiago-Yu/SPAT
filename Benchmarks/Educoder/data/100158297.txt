@@ -1,0 +1,89 @@
+package step3;
+
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+public class Reflect_stu {
+
+    public static String toString(Object obj) {
+        Class cl = obj.getClass();
+        String r = "";
+        r += "[";
+
+        // 请获取所有 Field 并设置访问权限为 true
+        /********** Begin *********/
+        Field[] fields = null;
+        //AccessibleObject.setAccessible(fields, true);
+       // cl.getDeclaredFields();
+        fields=cl.getDeclaredFields();
+        //fields= cl.getDeclaredField("weight");
+       for (Field fff : fields) {
+      // AccessibleObject.setAccessible(fields, true);
+       //fff= cl.getDeclaredField(weight,age,height);
+      
+     /*   fff= cl.getDeclaredField("weight");
+         fff= cl.getDeclaredField("age");
+          fff= cl.getDeclaredField("height");
+          */
+        fff.setAccessible(true);
+        }
+        
+        
+        
+
+        /********** End *********/
+        for (Field f : fields) {
+            // 此处 if，逻辑为判断 Field 域是否为非静态域
+            if (!Modifier.isStatic(f.getModifiers())) {
+                if (!r.endsWith("[")) r += ",";
+                r += f.getName() + "=";
+                try {
+                    // 请获取域的类型及值
+                    /********** Begin *********/
+
+                    Class t = null;
+                    Object val = null;
+                    //Field[] field=t.getDeclaredFields();
+                   /* Field field=cl.getDeclaredField("weight");
+                    Field field2=cl.getDeclaredField("age");
+                    Field field3=cl.getDeclaredField("height");*/
+                   t=f.getType();
+                    val=f.get(obj);
+                   // val=field2.get(cl);
+                    //val=field3.get(cl);
+                    
+
+                    /********** End *********/
+                    // isPrimitive() 用于判断是否为基本数据类型，若为基础数据类型直接拼接，否则递归调用 toString 方法
+                    if (t.isPrimitive()) r += val;
+                    else r += toString(val);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        r += "]";
+        return r;
+    }
+
+
+    public static void main(String[] args) {
+        Person person = new Person(88, 19, 175);
+        System.out.println(toString(person));
+    }
+}
+
+class Person {
+    public Integer weight;
+    private Integer age;
+    private Double height;
+
+
+    public Person(Integer weight, Integer age, double height) {
+        this.weight = weight;
+        this.age = age;
+        this.height = height;
+    }
+}
+

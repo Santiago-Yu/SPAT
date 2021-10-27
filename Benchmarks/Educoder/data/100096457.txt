@@ -1,0 +1,66 @@
+package step3;
+import java.util.*;
+public class RecordRecovery{
+public static void main(String[] args) {
+	Scanner in=new Scanner(System.in);
+	
+// TODO Auto-generated method stub
+int[] record=new int[10];
+int len=record.length;
+//System.out.println(len);
+int count=0;//统计数组中重复元素的个数
+int count2=0;
+for(int i=0;i<record.length;i++){
+	record[i]=in.nextInt();
+}
+
+
+
+//System.out.println(len);
+for (int i = 0; i <record.length-1; i++) {
+for (int j = i+1; j < record.length; j++) {
+if(record[i]==record[j]){
+count++;//如果有相等的，就加1，然后break
+break;//防止后面重复加
+}
+}
+}
+int len1=len-count;
+
+int k=0;//新数组的角标
+int[] recordRecovery=new int[len1];
+for (int i = 0; i <record.length-1;) {
+for (int j = i+1;j <record.length; j++) {
+if(record[i]!=record[j]){
+count2++;//统计不相等的次数
+}
+}
+//如果不相等的次数等于比较的次数，就把这个数放入到新数组中
+if(count2==(record.length-1-i)){
+	recordRecovery[k]=record[i];
+//System.out.println(newArr[k]);
+k++;
+count2=0;
+}
+else{
+//否则，再把记不相等的计数器置0
+count2=0;
+}
+i++;
+//如果是最后数组最后一位了，就直接赋值到新数组中
+if(i==record.length-1){
+	recordRecovery[k++]=record[i];
+}
+}
+
+Arrays.sort(recordRecovery);
+for (int i = 0; i < len1; i++) {
+    System.out.print(recordRecovery[i]);
+    if (i !=len1 - 1) {
+        System.out.print(' ');
+    }
+}
+}
+}
+    
+

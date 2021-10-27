@@ -1,0 +1,40 @@
+package step3;
+
+public class Task {
+	public	void rotate(int[][] matrix) {
+		if (matrix.length ==0)  
+	        return;  
+	    int a = 0;  
+	    int b = matrix.length - 1;
+		//交换矩阵中的行  
+	    while (a < b)  
+	    {  
+	        swap(matrix[a++], matrix[b--]); 
+	    }  
+	    //交换matrix[i][j]和matrix[j][i]  
+	    for (int i = 0; i < matrix.length; ++i)  
+	    {  
+	        for (int j = 0; j < i; ++j)  
+	        {  
+	        	int t;
+	        	t = matrix[i][j];
+	        	matrix[i][j] = matrix[j][i];
+	        	matrix[j][i] = t;
+	        }  
+	    }  
+
+	}
+	public void swap(int[] is, int[] is2) {
+		int []is3 = new int[is.length];
+		for(int i =0;i<is.length;i++){
+			is3[i] = is[i];
+			is[i] = is2[i];
+			is2[i] = is3[i];
+		}
+	}
+
+}
+
+
+
+

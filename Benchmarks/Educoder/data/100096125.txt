@@ -1,0 +1,39 @@
+package step2;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class MarkStatistics {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] class1Grade = new int[5];
+        int[] class2Grade = new int[5];
+        int[] gradeCount = new int[class1Grade.length + class2Grade.length];
+        /********** Begin *********/
+        //вводим массив.присваиваем
+		for (int i=0;i<gradeCount.length;i++){
+            gradeCount[i] =scanner.nextInt();
+        }
+        
+        for(int i = gradeCount.length-1 ; i > 0 ; i--){
+        	for(int j = 0 ; j < i ; j++){
+            	/*Сравниваем элементы попарно, 
+              	если они имеют неправильный порядок, 
+              	то меняем местами*/
+            	if( gradeCount[j] > gradeCount[j+1] ){
+                int tmp = gradeCount[j];
+                gradeCount[j] = gradeCount[j+1];
+                gradeCount[j+1] = tmp;
+            	}
+        	}
+    	}
+        
+        /********** End *********/
+        for (int i = 0; i < gradeCount.length; i++) {
+            System.out.print(gradeCount[i]);
+            if (i != gradeCount.length - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

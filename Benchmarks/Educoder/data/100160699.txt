@@ -1,0 +1,76 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+		/**********   Begin   **********/
+        Document doc = Jsoup.parse(new File(filePath),"UTF-8","http://hotels.ctrip.com/");
+
+        
+		return doc;
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+        Elements els = doc.select("a[href]");
+        int a=0;
+        List<String> list=new ArrayList<String>();
+        for(Element ele : els){
+            String str=ele.text();
+            String str2=ele.attr("abs:href");
+            String str3=ele.tagName();
+            String str4=str3+"$"+str2+"("+str+")";
+            list.add(str4);
+        }
+		
+        return list;
+		/**********   End   **********/
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		/**********   Begin   **********/
+         Elements els = doc.select("img");
+         List<String> list=new ArrayList<String>();
+         for(Element ele : els){
+            String str=ele.attr("abs:src");
+            String str2=ele.tagName();
+            String str3=str2+"$"+str;
+            list.add(str3);
+        }
+
+		  return list;
+		/**********   End   **********/
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		/**********   Begin   **********/
+         Elements els = doc.select("link");
+         List<String> list=new ArrayList<String>();
+         for(Element ele : els){
+            String str=ele.attr("abs:href");
+            String str2=ele.tagName();
+			String str3=ele.attr("rel");
+			String str4=str2+"$"+str+"("+str3+")";
+			
+            list.add(str4);
+        }
+
+		  return list;
+		
+
+        /**********   End   **********/
+	}
+	
+}

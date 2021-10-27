@@ -1,0 +1,185 @@
+
+
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis {
+    //private static StringBuffer prog = new StringBuffer();
+    private static LinkedList<String> inputbuffer = new LinkedList<>();
+    private static Hashtable<String,String> result = new Hashtable<>();
+    private static StringBuffer outputbuffer = new StringBuffer();
+    private static boolean error;
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            String temp = sc.nextLine().trim();
+            Collections.addAll(inputbuffer,temp.split(" "));
+            inputbuffer.add("\n");
+        }
+        inputbuffer.add("$");
+    }
+
+
+    // add your method here!!
+
+
+    private static void init(){
+        result.put("a","0");
+        result.put("b","0");
+        result.put("c","0");
+    }
+//    private static int caculate_int(int x,int y,String symbol){
+//        switch (symbol) {
+//            case "+":
+//                return x + y;
+//            case "-":
+//                return x - y;
+//            case "*":
+//                return x * y;
+//            default:
+//                return x / y;
+//        }
+//    }
+    private static double calulate_double(double x,double y,String symbol){
+        switch (symbol) {
+            case "+":
+                return x + y;
+            case "-":
+                return x - y;
+            case "*":
+                return x * y;
+            default:
+                return x / y;
+        }
+    }
+    private static void caculate(int index,String symbol,int linecount){
+        String x = inputbuffer.get(index-1);
+        String y = inputbuffer.get(index+1);
+        String z = inputbuffer.get(index-3);
+        boolean flag = false;
+        if(inputbuffer.get(index+2).equals("-"))
+            flag = true;
+        if(x.equals("a")||x.equals("b")||x.equals("c")){
+            x = result.get(x);
+        }
+        if(y.equals("a")||y.equals("b")||y.equals("c")){
+            y = result.get(y);
+        }
+        if(symbol.equals("/")&&y.equals("0")){
+            outputbuffer.append("error message:line "+linecount+",division by zero\n");
+            error = true;
+        }else{
+            if(z.equals("a")||z.equals("b")){
+                int res = (int) calulate_double(Double.valueOf(x),Double.valueOf(y),symbol);
+                if(flag){
+                    result.put(z,String.valueOf(res-1));
+                }else {
+                    result.put(z, String.valueOf(res));
+                }
+            }else{
+                double res = calulate_double(Double.valueOf(x),Double.valueOf(y),symbol);
+                if(flag){
+                    result.put(z,String.valueOf(res-1));
+                }else{
+                    result.put(z,String.valueOf(res));
+                }
+            }
+        }
+    }
+    private static boolean Issymbol(String symbol){
+        if(symbol.equals("+")||symbol.equals("-")||symbol.equals("*")||symbol.equals("/"))
+            return true;
+        return false;
+    }
+
+    private static void match(int linecount){
+
+        String ini_a = inputbuffer.get(3);
+        String ini_b = inputbuffer.get(8);
+        String ini_c = inputbuffer.get(13);
+        if(ini_a.contains(".")||ini_b.contains(".")){
+            outputbuffer.append("error message:line 1,realnum can not be translated into int type\n");
+            error = true;
+        }
+        result.put("a",ini_a);
+        result.put("b",ini_b);
+        result.put("c",ini_c);
+
+        int i = 0;
+        String temp = inputbuffer.get(i);
+        while (!temp.equals("$")){
+            temp = inputbuffer.get(i);
+            if(temp.equals("\n")){
+                linecount++;
+                i++;
+                continue;
+            }
+            if(temp.equals("if")){
+                int a = Integer.valueOf(result.get(inputbuffer.get(i+2)));
+                String expr = inputbuffer.get(i+3);
+                int b = Integer.valueOf(result.get(inputbuffer.get(i+4)));
+//                System.out.print("a = "+a+" b = "+b+" expr = "+expr+"\n");
+                boolean flag = false;
+                if(expr.equals(">"))
+                    flag = (a>b);
+                else if(expr.equals("<")){
+                    flag = (a<b);
+                }else if(expr.equals(">=")){
+                    flag = (a>=b);
+                }else if(expr.equals("<=")){
+                    flag = (a<=b);
+                }else{
+                    flag = (a==b);
+                }
+                int j;
+                if(flag){
+                    j=i+10;
+                    temp = inputbuffer.get(j);
+                    caculate(j,temp,linecount);
+                }else {
+                    j=i+17;
+                    temp = inputbuffer.get(j);
+                    caculate(j,temp,linecount);
+                }
+                i = i+20;
+                continue;
+            }
+            if (Issymbol(temp)){
+                caculate(i,temp,linecount);
+                if(inputbuffer.get(i+2).equals("-")){
+                    i = i+4;
+                }
+            }
+            i++;
+        }
+    }
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        init();
+        match(1);
+        if(error){
+            outputbuffer.deleteCharAt(outputbuffer.length()-1);
+            System.out.print(outputbuffer.toString());
+        }else{
+            System.out.print("a: "+result.get("a")+"\nb: "+result.get("b")+"\nc: "+result.get("c"));
+        }
+        //System.out.print(prog);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

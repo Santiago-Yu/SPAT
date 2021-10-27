@@ -1,0 +1,33 @@
+package step4;
+
+public class HelloWorld {
+	public static void main(String[] args) {
+		/********** Begin **********/
+        int[][] scores = {{92,85}, {91,65}, {90,33}};
+        for(int[] i : scores)
+        {
+        	for(int j : i)
+            {
+            	System.out.println(j);
+            }
+        }
+        
+        for(int i = 0; i < scores.length; i++)
+        {
+            for(int j = 0; j < scores[i].length; j = j + 2)
+            {
+            	scores[i][j] = 1;
+                scores[i][j+1] = 2;
+            }
+        }
+        
+        for(int[] i : scores)
+        {
+        	for(int j : i)
+            {
+            	System.out.println(j);
+            }
+        }
+		/********** End **********/
+	}
+}

@@ -1,0 +1,38 @@
+package step3;
+import java.util.Scanner;
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+    	
+    	 String th1= data;
+        /********** Begin *********/
+        String[] words = th1.split(" ");
+         String[] words2 = new String[100];
+          for(int i =0;i<words.length;i++)
+          {
+        	ans.append(words[i]);
+  			ans.reverse();
+  			int temp = words[i].length();
+  			String a = ans.toString();
+  			words2[i]  = a;
+  			ans.delete(0,temp);
+          }
+	      for(int j =0;j<words.length;j++)
+	      {
+	    	  if(j<words.length-1)  
+	    	{
+	    		words2[j] = words2[j] + " ";
+	    		StringBuffer tth = new StringBuffer(words2[j]);  //String转换为StringBuffer
+	    		ans.append(tth);
+	    	}
+	    	else{
+	    		words2[j] = words2[j] + " ";
+	    		StringBuffer tth = new StringBuffer(words2[j]);  //String转换为StringBuffer
+	    		ans.append(tth);
+	    	}
+	    	  
+	      }
+        /********** End *********/
+        return ans;
+    }
+}

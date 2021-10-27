@@ -1,0 +1,54 @@
+package step4;
+
+public class DayJudge {
+    public static int MONTH_BIG = 31; // 大月
+    public static int MONTH_TINY = 30; // 小月
+    public static int MONTH_FEB_LEAP = 29; // 润年二月
+    public static int MONTH_FEB = 28; // 二月
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        //Calendar calendar = new Calendar();
+
+        boolean isLeapYear = false;
+        // 判断是否为润年
+        if ((year%4==0 && year%100!=0) || year%400==0) {
+            isLeapYear = true;
+        }
+
+        int sum = day;
+        month --;
+        /********** Begin *********/
+        switch (month) {
+            case 11:
+                sum += MONTH_TINY;
+            case 10:
+                sum += MONTH_BIG;
+            case 9:
+                sum += MONTH_TINY;
+            case 8:
+                sum += MONTH_BIG;
+            case 7:
+                sum += MONTH_BIG;
+            case 6:
+                sum += MONTH_TINY;
+            case 5:
+                sum += MONTH_BIG;
+            case 4:
+                sum += MONTH_TINY;
+            case 3:
+                sum += MONTH_BIG;
+            case 2:
+                if(isLeapYear) {
+                    sum += MONTH_FEB_LEAP;
+                } else {
+                    sum += MONTH_FEB;
+                }
+            case 1:
+                sum += MONTH_BIG;
+            case 0:
+                sum += 0;
+
+        }
+        return year+"年的第"+sum+"天";
+	}
+}

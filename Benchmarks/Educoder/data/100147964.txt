@@ -1,0 +1,32 @@
+package step4;
+
+//注意文件名，这里应该写MyRunnable类
+/***begin your code here***/
+class MyRunnable implements Runnable
+{
+    int num;
+    public MyRunnable()
+    {
+        this(0);
+    }
+    public MyRunnable(int num)
+    {
+        this.num=num;
+    }
+    public void run()
+    {
+        int result=1;
+        for(int i=1;i<=num;i++)
+        {
+            result=result*i;
+        }
+        try{
+        	Thread.sleep(1000);
+        }catch(InterruptedException e)
+        {
+         e.printStackTrace();   
+        }
+        System.out.println(result);
+    }
+}
+/***end your code***/

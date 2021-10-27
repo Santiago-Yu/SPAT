@@ -1,0 +1,38 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		int[] sum1=new int[arr.length]; 
+        int[] sum2=new int[arr.length];
+        int temp=0;
+        //定义一个数组，
+		for(int i=0;i<arr.length;i++){
+            for(int j=0;j<arr.length;j++){
+                for(int k=j+1;k<arr.length;k++){
+                    if(arr[i][j]<arr[i][k]){
+                        temp=arr[i][j];
+                		arr[i][j]=arr[i][k];
+                		arr[i][k]=temp;
+                    }
+                }
+                sum1[i]+=arr[i][j];
+                sum2[i]+=arr[i][j];
+            }
+        }
+        Arrays.sort(sum1);
+        for(int i=arr.length-1;i>=0;i--){
+            for(int j=0;j<arr.length;j++){
+                if(sum2[j]==sum1[i]){
+					System.out.println(Arrays.toString(arr[j]));
+                }
+            }
+        }
+    }
+    
+    /********** END **********/
+}
+	

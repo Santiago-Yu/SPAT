@@ -1,0 +1,19 @@
+package step1;
+import java.text.DecimalFormat;
+public class Yard {
+    int length,width;
+    DecimalFormat df = new DecimalFormat("0.0");
+    Yard(int length,int width)
+    {
+        this.length = length;
+        this.width = width;
+    }
+    public String getPerimeter()
+    {
+        return df.format((this.length+this.width)*2);
+    }
+    public String getAcreage()
+    {
+        return df.format(this.length*this.width);
+    }
+}

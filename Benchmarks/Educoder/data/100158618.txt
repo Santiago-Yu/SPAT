@@ -1,0 +1,41 @@
+#include <iostream>
+#include<string.h>
+using namespace std;
+#define changdu 80
+int main()
+{
+  char a[changdu],b[changdu];
+	scanf("%s",&a);
+	getchar();
+	scanf("%s",&b);
+	int i,j,m,n,x,y,max;
+	m=strlen(b);
+	n=strlen(a);
+	int counter[100000];
+	long long sum;
+	sum=0;
+	memset(counter,0,sizeof(counter));
+	for(i=0;a[i]!='\0';i++)
+	{
+	  for(j=0;b[j]!='\0';j++)
+	  {
+	  	x=i;y=j;
+	  	if(a[x]==b[y])
+	  	sum++;
+	  	while(a[x]==b[y])
+	  	{
+	  		counter[sum]++;
+	  		x++;
+	  		y++;
+	  	}
+	  }	
+	}
+	max=0;
+	for(i=0;i<=sum;i++)
+	{
+		if(counter[i]>max)
+		max=counter[i];
+	}
+	printf("%d",max);
+    return 0;
+}

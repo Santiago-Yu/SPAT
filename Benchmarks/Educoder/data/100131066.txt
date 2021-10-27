@@ -1,0 +1,23 @@
+package step1;
+import java.lang.*;
+import java.util.*;
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		
+        int max=num1>num2?num1:num2;
+        int min=num1>num2?num2:num1;
+        ArrayList<Integer> list=new ArrayList<>();
+        for(int i=min;i<=max;i++){
+            String each=String.valueOf(i);
+            for(int j=0;j<each.length();j++){
+                list.add((int)each.charAt(j)-'0');
+            }
+        }
+        return list.stream().reduce(0,(front,last)->front+last);
+    
+		/********** END **********/
+	}
+}

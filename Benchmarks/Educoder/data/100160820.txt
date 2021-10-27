@@ -1,0 +1,54 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+    File input = new File(filePath);
+    Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+    return doc;
+	}
+    
+    /**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+			List list=new ArrayList();
+			Element e=doc.getElementsByClass("pinyin_filter_detail layoutfix").first();
+			Elements e2=e.getElementsByTag("dd");//所有城市以首字母输出
+			for(Element e3:e2) {
+//				Elements e4=e3.children();
+				Elements e4=e3.getElementsByTag("a");//获取当前dd下所有a标签
+				for(Element e5:e4) {
+					String headPinyin=e3.previousElementSibling().text();//获取城市首字母
+					String cityName=e5.text();//获取当前a下的城市
+					String []e7=e5.attr("href").split("/");//获取当前a下href属性的值
+					String e8=e7[2];//获取第二个/后面的值
+					//城市拼音和城市id字符串类型转换为字符
+					char []e9=e8.toCharArray();//字符串转换为字符
+					String pinyin="";//城市拼音
+					String cityId="";//城市id
+					for(char n:e9) {
+						if(((int)(n)>=97)&&((int)(n)<=122)) {
+							pinyin+=n;//获取城市拼音
+						}else if(((int)(n)>=48)&&((int)(n)<=57)){
+							cityId+=n;//获取城市id
+						}
+					}
+					String demo="HotelCity [cityId=" + cityId + ", cityName=" + cityName
+				+ ", headPinyin=" + headPinyin + ", pinyin=" + pinyin + "]";
+					list.add(demo);
+				}		
+			}
+		return list;
+	}
+}

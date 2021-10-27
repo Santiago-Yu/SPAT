@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n,i=0,j,t,sum=0,k,a[1001];
+    char chr;
+	do{
+		scanf("%d",&a[i++]);
+	}while(chr=getchar()!='\n');
+	scanf("%d",&n);
+	for(j=0;j<i;j++){
+		for(t=j+1;t<i;t++){
+			for(k=t+1;k<i;k++){
+				if(a[k]+a[j]+a[t]<n)
+					sum++;
+			}
+		}
+	}
+	printf("%d",sum);
+	return 0;
+}

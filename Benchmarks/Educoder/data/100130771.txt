@@ -1,0 +1,45 @@
+package step5;
+
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Task {
+	
+	public int getDepth(TreeNode tree){
+		/********** BEGIN **********/
+		List<TreeNode> nodes = new ArrayList<>();
+		int num = 1, max=1;
+		TreeNode temptree = tree;
+		while( true ){
+			if(temptree.left!=null){
+				nodes.add(temptree);
+				num++;
+				temptree = temptree.left;
+			}else if(temptree.right!=null){
+				nodes.add(temptree);
+				num++;
+				temptree = temptree.right;
+			}else{
+				if(nodes.size()<1)
+					break;
+				TreeNode tempNode = temptree;
+				temptree = nodes.get(nodes.size()-1);
+				if(tempNode.equals(temptree.left))
+					temptree.left = null;
+				else
+					temptree.right = null;
+				nodes.remove(nodes.size()-1);
+				num--;
+			}
+			
+			if( num>max )
+				max = num;
+		}
+
+        return max;
+		/********** END **********/
+		
+	}
+	
+}

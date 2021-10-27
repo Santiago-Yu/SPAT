@@ -1,0 +1,45 @@
+package step1;
+import java.util.Arrays;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+        Integer[] num = arr.clone();
+        Arrays.sort(num);
+        //printArray(arr);
+        if(Arrays.equals(num, arr)) {
+            printArray(arr);
+            return;
+        }
+        while(!Arrays.equals(num, arr)) {
+            int i = 0;
+            while(i < arr.length - 1) {
+                if(arr[i] > arr[i + 1]) {
+                    swap(arr, i, i + 1);
+                    printArray(arr);
+                }
+                i++;
+            }
+            //printArray(arr);
+            while(i > 0) {
+                if(arr[i] < arr[i - 1]) {
+                    swap(arr, i, i - 1);
+                    printArray(arr);
+                }
+                i--;
+            }
+            //printArray(arr);
+        }
+    }
+    public void printArray(Integer[] arr) {
+        for (int a: arr) {
+            System.out.print(a + " ");
+        }
+        System.out.println();
+    }
+    public void swap(Integer[] arr, int i, int j) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+}

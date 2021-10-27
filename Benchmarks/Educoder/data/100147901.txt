@@ -1,0 +1,24 @@
+package step4;
+
+//注意文件名，这里应该写ThreadHelper类
+/***begin your code here***/
+public class ThreadHelper {
+	
+    static public void calcOnNewThread(int c) {
+    	//使用Thread匿名对象以及Runnable匿名对象创建并执行子线程
+    	new Thread(new Runnable() {
+    	    @Override public void run() {
+                
+    	    	int result = 1;
+    			for(int i=1;i<=c;i++){
+        		result=result*i;
+        	}
+    	    	System.out.println(result);
+    	    }		
+    	}).start();
+    }
+    private ThreadHelper() {
+    	throw new UnsupportedOperationException(this.getClass().getSimpleName() + " can not be instantiated.");
+    }
+}
+/***end your code***/

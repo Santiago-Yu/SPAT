@@ -1,0 +1,43 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int s=length*width;
+        int j,k,z;
+        int m=length;
+        int n=width;
+        if(m<n)
+        {
+            int temp=m;
+            m=n;
+            n=temp;
+        }
+		if(m%n==0)
+        {
+            j=m/n;
+            k=s/(j*j);
+        }
+		else 
+        {
+           while(m%n!=0) 
+           {
+              z=m%n;
+               m=n;
+               n=z;
+           }
+            j=n;
+            k=s/(j*j);
+        }
+		System.out.println(j);
+		System.out.println(k);
+		
+		
+		/********** END **********/
+	}
+}

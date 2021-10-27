@@ -1,0 +1,36 @@
+import java.util.*;
+public class Main {
+	public static double Cul(double n,double m){
+		double count1 = 1;
+		double count2 = 1;
+		for(double i=n-m+1;i<=n;i++){
+			count1 = count1*i;
+		}
+		for(double j=1;j<=m;j++){
+			count2 = count2*j;
+		}
+		n = count1/count2;
+		return n;
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner s = new Scanner(System.in);
+		double n = s.nextInt();
+		if(n==2){
+			System.out.print("2");
+		}
+		else if(n==3){
+			System.out.print("3");
+		}
+		else{
+			double count = 0;
+			for(int i=1;i<n;i++){
+				if((n-i)>=i)
+				count = Cul(n-i,i)+count;
+				else
+				break;
+			}
+			System.out.print((int)count+1);
+		}
+	}
+}

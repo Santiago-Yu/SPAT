@@ -1,0 +1,58 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+        try {
+             str = reader.readLine();
+
+			int a = 0;
+            int b = 0;
+            int c = 0;
+            int d = 0;
+           
+          
+            for(int i = 0 ; i < str.length() ; i++)
+            {
+                if (Character.isLetter(str.charAt(i))) {  
+  
+                // 判断是否为字母  
+  
+                a++;  
+  
+            } else if (Character.isSpaceChar(str.charAt(i))) {  
+  
+                // 判断是否为空格  
+  
+                b++;  
+  
+            } else if (Character.isDigit(str.charAt(i))) {  
+  
+                // 判断是否为数字  
+  
+                c++;  
+  
+            } else {  
+  
+                // 以上都不是则认为是其他字符  
+  
+                d++;  
+  
+            }  
+  
+          
+            }
+			System.out.print("letter=" + a + "," +"space=" + b + "," + "number=" + c + "," + "other=" + d);
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+          
+        }
+        /********** End *********/
+    }
+}

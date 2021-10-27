@@ -1,0 +1,27 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File dir)	{
+		DirStructure(dir,1);
+	}
+	public void DirStructure(File dir,int count){//count为空格数
+        String fileName=dir.getName();
+        if(dir.isDirectory()){
+             System.out.println("+--"+fileName);          
+           		File[] files=dir.listFiles();
+        	for(File file:files){
+                 for(int i=0;i<count*2;i++){
+           			System.out.print(" ");
+          		}
+            	DirStructure(file,count+1);
+       		}
+        }else{
+            System.out.println("--"+fileName);
+        }
+	}
+	/********** END **********/
+}

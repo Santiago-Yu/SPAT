@@ -1,0 +1,36 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+int main()
+{
+    char a[500];
+    char b[500];
+    int i,j,len0,len1,maxlen,stack;
+    cin>>a;
+    cin>>b;
+    len0=strlen(a);
+    len1=strlen(b);
+    maxlen=0;
+    stack=0;
+    int x,y;
+    for(i=0;i<len0;i++)
+    {
+        for(j=0;j<len1;j++)
+        {
+            x=i;
+            y=j;
+            while(a[x]==b[y])
+            {
+                x++;
+                y++;
+                stack++;
+                if(x>=len0)
+                    break;
+            }
+            maxlen=max(maxlen,stack);
+            stack=0;
+        }  
+    }
+    cout << maxlen;
+    return 0;
+}

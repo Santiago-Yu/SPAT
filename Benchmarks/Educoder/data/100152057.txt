@@ -1,0 +1,26 @@
+package step1;
+
+public class Task {
+
+	 public static double solve(double x1, double y1, double r1,double x2, double y2, double r2) {
+		double rLen = Math.sqrt(Math.abs((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)));
+		double area = 0;
+		if(rLen >= r1+r2) {
+			//两个圆直接相加
+			area =  r1*r1*Math.PI+r2*r2*Math.PI;
+		}
+		else if(rLen < r1+r2) {
+			//求相交的面积 然后减去
+			double angle1 = Math.acos((r1 * r1 + rLen * rLen - r2 * r2) / (2 * rLen * r1));
+		    double angle2 = Math.acos((r2 * r2 + rLen * rLen - r1 * r1) / (2 * rLen * r2));
+		    double ans =  r1 * r1 * angle1 + r2 * r2 * angle2 - Math.sin(angle1) * r1 * rLen;
+		
+		    area = r1*r1*Math.PI+r2*r2*Math.PI - ans;
+		}
+		else if(rLen <= Math.max(r1, r2)) {
+			//面积为大圆
+			area =  Math.max(r1, r2)*Math.max(r1, r2);
+		}
+		return area;
+	  }
+}

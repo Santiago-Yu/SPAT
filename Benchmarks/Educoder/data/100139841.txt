@@ -1,0 +1,35 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+		// TODO Auto-generated method stub
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+        String s1=scanner.nextLine();
+        String s2=scanner.nextLine(); 
+        String s3=s1;
+        int x1=s1.indexOf(s2);
+        System.out.println(x1);
+        int i=1;
+        while(i<3){
+          try{   	
+        	String s4=s3.substring(0,x1+2);
+            s1=s3.substring(x1+2);        
+            x1=s1.indexOf(s2);    
+            x1=x1+s4.length();
+              if(x1==s3.length()){
+               break;
+              }
+              if(x1==48)break;
+            System.out.println(x1);}
+            catch(Exception e){
+              break;
+            }
+       
+        }
+        }        
+        
+    }
+

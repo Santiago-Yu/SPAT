@@ -1,0 +1,49 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+    int temp,a=0;
+    boolean b=true;
+        //根据角标进行比较，
+        for(int i = 0; i<arr.length; i++){
+            //j是数组的最后一个角标
+            for (int j = 0; j <arr.length-1 ; j++) {
+                
+                if (arr[j] > arr[j + 1]) {
+                    //从后往前进行比较，小数往前，一轮之后最小数就在最前面了
+                    temp = arr[j + 1];
+                    arr[j + 1] = arr[j];
+                    arr[j] = temp;
+                    a=1;
+                    b=false;
+                } if(a==1){for(int p=0;p<arr.length;p++)
+                System.out.print(arr[p]+" ");
+                System.out.println();}
+                a=0;
+
+            }
+            for (int j =arr.length-2 ; j >=0 ; j--) {
+                
+                if (arr[j] > arr[j + 1]) {
+                    //从后往前进行比较，小数往前，一轮之后最小数就在最前面了
+                    temp = arr[j + 1];
+                    arr[j + 1] = arr[j];
+                    arr[j] = temp;
+                    a=1;
+                } if(a==1){for(int p=0;p<arr.length;p++)
+                System.out.print(arr[p]+" ");
+                System.out.println();}
+                a=0;
+
+            }
+            
+        }
+        //这是当输入为由小到大的数列时的情况，不存在比较，交换值，只需直接排序就好
+		if(b){for(int p=0;p<arr.length;p++)
+        System.out.print(arr[p]+" ");
+                System.out.println();}
+		/********* End *********/
+	}
+}

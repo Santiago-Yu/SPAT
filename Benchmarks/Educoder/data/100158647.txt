@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+int count;
+int dd[1000] = {0};
+int CCount = 0;
+int flag = 0;
+void dfs(int shengyu,int b,int sum){
+    if(shengyu==0&&sum<flag)CCount++;
+    if(b == count||shengyu==0)return;
+    dfs(shengyu,b+1,sum);
+    dfs(shengyu-1,b+1,sum+dd[b]);
+}
+int main()
+{
+    int i = 0;
+    int a;
+	while(scanf("%d",&a)!=EOF){
+        dd[i] = a;
+        i++;
+    }
+    count = i-1;
+    flag = dd[i-1];
+    dd[i-1] = 0;
+    dfs(3,0,0);
+    printf("%d",CCount);
+}

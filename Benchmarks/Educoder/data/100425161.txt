@@ -1,0 +1,33 @@
+    public void ftpUpload() {
+        FTPClient ftpclient = null;
+        InputStream is = null;
+        try {
+            ftpclient = new FTPClient();
+            ftpclient.connect(host, port);
+            if (logger.isDebugEnabled()) {
+                logger.debug("FTP杩炴帴杩滅▼鏈嶅姟鍣細" + host);
+            }
+            ftpclient.login(user, password);
+            if (logger.isDebugEnabled()) {
+                logger.debug("鐧婚檰鐢ㄦ埛锛�" + user);
+            }
+            ftpclient.setFileType(FTP.BINARY_FILE_TYPE);
+            ftpclient.changeWorkingDirectory(remotePath);
+            is = new FileInputStream(localPath + File.separator + filename);
+            ftpclient.storeFile(filename, is);
+            logger.info("涓婁紶鏂囦欢缁撴潫...璺緞锛�" + remotePath + "锛屾枃浠跺悕锛�" + filename);
+            is.close();
+            ftpclient.logout();
+        } catch (IOException e) {
+            logger.error("涓婁紶鏂囦欢澶辫触", e);
+        } finally {
+            if (ftpclient.isConnected()) {
+                try {
+                    ftpclient.disconnect();
+                } catch (IOException e) {
+                    logger.error("鏂紑FTP鍑洪敊", e);
+                }
+            }
+            ftpclient = null;
+        }
+    }

@@ -1,0 +1,74 @@
+package step3;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.*;
+
+public class Task {
+    private final String DIRPRE = "+--";
+	private final String FILEPRE = "--";
+	private final int BLANK = 2;
+	
+	public void showDirStructure(File file) {
+		if(file.exists() == false) return;
+		if(file.isFile()) {
+			System.out.println(FILEPRE + file.getName());
+			return;
+		}
+		showDir(file,0);
+		
+	}
+	
+	private void showDir(File dir, int b) {
+		File[] fileList = dir.listFiles(new FilenameFilter() {
+			private final Set<String> pics = new HashSet<String>(Arrays.asList("bmp","png","jpg"));
+			
+			private String getFileType(File f) {
+				String fileName = f.getName();
+				int idx = fileName.lastIndexOf(".");
+				return fileName.substring(idx+1, fileName.length());
+			}
+		    @Override
+		    //name是File中的所有文件或者路径的名称，一级的，而dir是File对象的绝对路径。
+		    public boolean accept(File dir, String name) {
+		        // TODO Auto-generated method stub
+		    	File f = new File(dir,name);
+		    	if(f.isDirectory()) {
+		    		//System.out.println("DIR "+f.getName());
+		    		return true;
+		    	}
+		    	String fileType = getFileType(f);
+		    	if(pics.contains(fileType) == false) {
+		    		//System.out.println("Not: "+f.getName());
+		    		return false;
+		    	}
+		    	//System.out.println("Is: " + f.getName());
+		        return true;
+		    }
+		});
+		print(dir,b);
+		for(File f:fileList) {
+			if(f.isDirectory()) {
+				showDir(f,b+BLANK);
+			}
+			else print(f,b+BLANK);
+		}
+	}
+	
+
+	private void print(File f,int b) {
+		StringBuilder blankStr = new StringBuilder();
+		for(int i=0;i<b;i++) {
+			blankStr.append(" ");
+		}
+		if(f.isDirectory()) {
+			System.out.println(blankStr + DIRPRE + f.getName());
+		}
+		else if(f.isFile()) {
+			System.out.println(blankStr + FILEPRE + f.getName());
+		}
+	}
+	
+
+	/********** END **********/
+}

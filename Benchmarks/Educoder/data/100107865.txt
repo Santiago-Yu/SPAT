@@ -1,0 +1,121 @@
+package step1;
+
+/**
+ * Created by zengpeng on 2017/12/25.
+ */
+public class MyArrayList {
+    private int[] elements;//元素
+    private int size;//List中当前的元素个数
+
+    public MyArrayList() {
+        this(1);//List默认大小为1
+    }
+
+    /**
+     * 按指定大小capacity构造List
+     *
+     * @param capacity List初始化时的大小
+     */
+    public MyArrayList(int capacity) {
+        elements = new int[capacity];
+        size = 0;
+    }
+
+    /**
+     * 返回List中元素的个数
+     *
+     * @return
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * 添加一个元素到末尾
+     *
+     * @param item
+     */
+    public void Add(int item) {
+        int len = elements.length;
+        if (size == len - 1) {
+            resize(2 * len);
+        }
+        /********** Begin *********/ 
+        elements[size++] = item;
+        /********** End *********/
+    }
+
+    /**
+     * 添加一个元素到指定位置index
+     *
+     * @param index
+     * @param item
+     */
+    public void Add(int index, int item) {
+        validateRangeForAdd(index);
+        int len = elements.length;
+        if (size == len - 1) {
+            resize(2 * len);
+        }
+        /********** Begin *********/
+        for(int j = size - 1;j >= index;j--){
+            elements[j + 1] = elements[j];
+        }
+        elements[index] = item;
+        size++;
+        /********** End *********/
+    }
+
+    /**
+     * 删除指定位置index的元素,并返回被删除的元素
+     *
+     * @param index
+     * @return 被删除的元素
+     */
+    public int remove(int index) {
+        validateRange(index);
+        /********** Begin *********/
+        int a = elements[index];
+        for(int j = index;j < size-1;j++){
+            elements[j] = elements[j + 1];
+        }
+        --size;
+        return a;
+        /********** End *********/
+    }
+
+    /**
+     * 校验索引范围
+     *
+     * @param index
+     */
+    private void validateRange(int index) {
+        if (index >= size || index < 0) {
+            throw new ArrayIndexOutOfBoundsException("索引越界了哦！Index: " + index + ", Size: " + size);
+        }
+    }
+
+    /**
+     * 校验索引范围
+     *
+     * @param index
+     */
+    private void validateRangeForAdd(int index) {
+        if (index > size || index < 0)
+            throw new IndexOutOfBoundsException("索引越界了哦！Index: " + index + ", Size: " + size);
+    }
+
+    /**
+     * 动态扩展数组大小
+     *
+     * @param capacity
+     */
+    private void resize(int capacity) {
+        assert capacity > size;
+        int[] tmp = new int[capacity];
+        for (int i = 0; i < size; i++) {
+            tmp[i] = elements[i];
+        }
+        elements = tmp;
+    }
+}

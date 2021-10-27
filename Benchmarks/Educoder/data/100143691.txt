@@ -1,0 +1,70 @@
+package step2;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+
+public class Task {
+	public static void main(String[] args)throws IOException {
+		/********* Begin *********/
+		File dir1 =new File("src/test2");
+        dir1.mkdir();
+        File deleteFile =new File("src/output/test2.txt");
+        deleteFile.delete();
+        
+        
+        
+        File dir2 = new File("src/output");
+        
+         try{
+            File createFile3 =new File("src/output/test.txt");
+            createFile3.createNewFile();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        try{
+            File createFile4 =new File("src/output/hello.txt");
+            createFile4.createNewFile();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        try{
+            File createFile1 =new File("src/test2/helloworld.txt");
+            createFile1.createNewFile();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        try{
+            File createFile2 = new File("src/test2/step2.txt");
+            createFile2.createNewFile();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        File deleteFile1 =new File("src/test2/ helloworld.txt");
+        deleteFile1.delete();
+        
+        File deleteFile2 =new File("src/test2/ step2.txt");
+        deleteFile2.delete();
+		
+		System.out.println("output目录结构为：");
+
+        File[] outputFiles = dir2.listFiles();
+        for(File file : outputFiles){
+            System.out.println(file.getName());
+        }
+
+		
+		System.out.println("test2目录结构为：");
+
+        File [] testFiles= dir1.listFiles();
+        for(File file: testFiles){
+            System.out.println(file.getName());
+        }
+
+
+		/********* End *********/
+	}
+}

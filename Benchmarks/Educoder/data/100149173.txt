@@ -1,0 +1,55 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+  int[][] x=new int[n+2][m+2];
+  //初始化一个开拓矩阵
+  for(int i=0;i<n+2;i++) {
+	  for(int j=0;j<m+2;j++) {
+		 x[i][j]=1;  
+	  }
+  }
+  for(int i=1;i<=n;i++) {
+	  for(int j=1;j<=m;j++) {
+		 if(area[i-1][j-1]=='o') x[i][j]=0;		  
+	  }
+  }
+  //
+  int g=2; 
+  for(int i=1;i<=n;i++) {
+	  for(int j=1;j<=m;j++) {
+		  if(x[i][j]==0&&x[i][j+1]<2&&x[i+1][j]<2
+				  &&x[i-1][j]<2&&x[i][j-1]<2) {
+			  g++;
+			  x[i][j]=g;
+			for(int y=0;y<m*n;y++) {
+				for(int h=1;h<=n;h++) {
+					for(int k=1;k<=m;k++) {
+						if(x[h][k]==0&&x[h][k+1]==g) 
+							x[h][k]=g;
+						else if(x[h][k]==0&&x[h][k-1]==g) 
+							x[h][k]=g;
+						else if(x[h][k]==0&&x[h-1][k]==g) 
+							x[h][k]=g;
+						else if(x[h][k]==0&&x[h+1][k]==g) 
+							x[h][k]=g;
+				}
+			}
+		  }
+//			for(int h=1;h<=n;h++) {
+//				for(int k=1;k<=m;k++) {
+//					System.out.print(x[h][k]+" ");
+//				}
+//				System.out.print("\n");	
+//					
+//				}
+//			System.out.println("下一次");	
+	  }
+  }
+  }	  
+	  
+  return g-2;
+	
+}
+}

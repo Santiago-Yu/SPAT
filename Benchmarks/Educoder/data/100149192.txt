@@ -1,0 +1,41 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+
+		int count = 0;
+        int visit[][] = new int[n][m];
+        for (int p = 0; p < n; p++)
+            for (int q = 0; q < m; q++)
+                visit[p][q] = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (area[i][j] == 'o' && visit[i][j] == 0) {
+                    findArea(i, j, area, visit); 
+                    count++;
+                }
+            }
+        }
+        return count;
+		/********* End *********/	
+	}
+    public void findArea(int i, int j, char area[][], int visit[][]) {
+        if (visit[i][j] == 0) {
+            visit[i][j] = 1;
+            if (1 <= i && area[i - 1][j] == 'o') {
+                findArea(i - 1, j, area, visit);
+            }
+            if (i < area.length - 1 && area[i + 1][j] == 'o') {
+                findArea(i + 1, j, area, visit);
+            }
+            if (1 <= j && area[i][j - 1] == 'o') {
+                findArea(i, j - 1, area, visit);
+            }
+            if (j < area[0].length - 1 && area[i][j + 1] == 'o') {
+                findArea(i, j + 1, area, visit);
+            }
+        }
+    }
+}

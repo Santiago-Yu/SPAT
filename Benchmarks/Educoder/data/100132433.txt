@@ -1,0 +1,42 @@
+package step2;
+
+import java.util.Scanner;
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int and = length * width;
+		int l = shu(length, width);
+		int ss = l*l;
+		int sum = and / ss;
+		System.out.println(l);
+		System.out.println(sum);
+
+		/********** END **********/
+	}
+	public static void swap(int a,int b)//交换位置  
+    {  
+        int k;  
+        if(a<b)  
+        {  
+            k=a;  
+            a=b;  
+            b=k;  
+        }  
+    } 
+	public static int shu(int a,int b)//循环寻找最大公约数  
+    {  
+        int k,y;  
+        swap(a,b);  
+        while(a%b!=0)  
+        {  
+            y=a%b;  
+            a=b;  
+            b=y;  
+        }  
+        return b;  
+    }  
+ 
+}

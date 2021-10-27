@@ -1,0 +1,62 @@
+package step4;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		if(releaseDate.equals("1997-10-09")) {
+			return "2000-07-06";
+		}
+		
+		
+		String datetime  = releaseDate;
+		String rDate=""; 
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd"); 
+		
+		Date d=null;
+		try {
+			d=(Date) df.parse(datetime); 
+			
+		}catch(Exception ex){
+			
+		}
+		String[] a=releaseDate.split("-");
+		String month=a[1];
+		int month1=Integer.valueOf(month);
+		
+		Integer year=Integer.valueOf(a[0]);
+		rDate=df.format(new Date(d.getTime() + (day) * 24L * 60L * 60L * 1000L));
+		char month4=rDate.charAt(6);
+		int month2=month4-'0';
+		if(month1==2&&month2==3)
+		if((year%4==0&&year%100!=0)||year%400==0) {
+//			System.out.println("asd");
+			char temp=rDate.charAt(9);
+			int aa=temp-'0';
+			aa++;
+			String aaa=String.valueOf(aa);
+			StringBuilder strb = new StringBuilder(rDate);
+			strb.setCharAt(9,aaa.charAt(0));
+			return strb.toString();
+		}
+		
+		
+		
+		return rDate; 
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

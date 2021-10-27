@@ -1,0 +1,28 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        int min=max(length,width);
+        System.out.println(min);
+        System.out.println(length*width/(min*min));
+	
+		/********** END **********/
+	}
+    public static int max(int m, int n){
+        if(m < n){   //保证m>n
+            int temp = n;
+            n = m;
+            m = temp;
+        }
+        if(m%n == 0){
+            return n;
+        }
+        return max(n,m%n);
+    }
+}

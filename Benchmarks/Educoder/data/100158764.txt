@@ -1,0 +1,35 @@
+package Q102;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		int a[] = new int[30];
+		Scanner sc = new Scanner(System.in);
+		while(sc.hasNext())
+		{
+			int in = sc.nextInt();
+			a[in] += 1;
+			if(in == 10)
+				a[5] -= 1;
+			if(in == 20)
+			{
+				if(a[10]!=0)
+				{
+					a[10]-=1;
+					a[5]-=1;
+				}
+				else
+					a[5]-=3;
+			}
+			if(a[5]>=0&&a[10]>=0)
+				;
+			else{
+				System.out.print("false");
+				return ;
+			}
+		}
+		System.out.print("true");
+	}
+
+}

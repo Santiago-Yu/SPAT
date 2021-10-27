@@ -1,0 +1,63 @@
+package step4;
+import java.util.*;
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+	int dates = 0;
+    switch (month){
+       case 1:
+           dates=day;
+           break;
+       case 2:
+           dates=31+day;
+           break;
+       case 3:
+           dates=59+day;
+           break;
+       case 4:
+           dates=90+day;
+           break;
+        case 5:
+            dates=120+day;
+            break;
+        case 6:
+             dates=151+day;
+             break;
+         case 7:
+             dates=181+day;
+             break;
+         case 8:
+             dates=212+day;
+             break;
+         case 9:
+             dates=243+day;
+             break;
+         case 10:
+             dates=273+day;
+             break;
+         case 11:
+             dates=304+day;
+             break;
+         case 12:
+             dates=335+day;
+             break;
+       default:
+        	System.out.println("打印默认值");
+       		 break;
+    }
+		
+     if(year%4==0&&year%100!=0||year%400==0)
+		dates=dates+1;
+      System.out.print(dates);
+		/********** End *********/
+	}
+    public static void main(String[] args){
+        DayCount a=new DayCount();
+        Scanner reader=new Scanner(System.in);
+        int y,m,d;
+        y=reader.nextInt();
+        m=reader.nextInt();
+        d=reader.nextInt();
+        a.dayCount(y,m,d);
+    }
+}

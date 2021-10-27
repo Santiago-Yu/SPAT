@@ -1,0 +1,29 @@
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+using namespace std;
+int main()
+{
+    int a [50];
+    int n;
+    int sum = 0;
+    do
+    {
+    scanf("%d", &a[sum]);
+    sum++;
+    } while (getchar() != '\n');
+    scanf("%d",&n);
+    int c =0 ;
+    for ( int i = 0;i<sum;i++)
+    {
+        for ( int j = i+1 ;j<sum;j++)
+        {
+            for ( int k = j+1 ; k < sum; k++)
+            {
+                if ( a[i] + a[j] + a[k]<n  )
+                    c ++ ;
+            }
+        }
+    }
+    cout << c;
+}

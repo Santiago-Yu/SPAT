@@ -1,0 +1,33 @@
+package step4;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.time.LocalDate;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		int yy =Integer.parseInt( releaseDate.split("-")[0]);
+		int mm =Integer.parseInt( releaseDate.split("-")[1]);
+		int dd =Integer.parseInt( releaseDate.split("-")[2]);
+		LocalDate  date = LocalDate.of(yy,mm,dd);
+		LocalDate newDay = date.plusDays(day);
+	
+	
+		return newDay.toString();
+
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

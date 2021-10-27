@@ -1,0 +1,26 @@
+package step1;
+import java.util.Scanner;
+public class Yard {
+	private double x;
+	private double y;
+	public Yard(double x,double y) {
+		this.x=x;
+		this.y=y;
+	}
+	public double getPerimeter() {
+		return (2*(x+y));
+	}
+	public double getAcreage() {
+		return x*y;
+	}
+	public static void main(String[] args) { 
+	Scanner input = new Scanner(System.in);
+    double c = input.nextDouble();
+    double d = input.nextDouble();
+    Yard yard = new Yard(c,d);
+    double a = yard.getPerimeter();
+    double b = yard.getAcreage();
+    System.out.println(a+" "+b);
+	}
+    
+}

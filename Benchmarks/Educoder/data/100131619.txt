@@ -1,0 +1,29 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File dir)	{
+		File[] files = dir.listFiles();
+		System.out.println("+--"+dir.getName());
+		File parent=dir.getParentFile();
+		if (files != null) {
+			for (int i = 0; i < files.length; i++) {
+				int dep=files[i].getPath().split("/").length;
+				for (int j = 0; j < dep-3; j++) {
+					System.out.print("  ");
+				}
+				if (files[i].isDirectory()) { // 判断是文件还是文件夹
+					showDirStructure(files[i]);
+				}else if (files[i].isFile()) {
+					System.out.println("--"+files[i].getName());
+				}
+			}
+		}
+    }	
+
+
+	/********** END **********/
+}

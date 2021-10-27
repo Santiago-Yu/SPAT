@@ -1,0 +1,25 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+        String len;
+        int sum = 0;
+        int length;
+        int temp;
+        int number;
+		for (int i = num1 ; i <=num2; i++){
+            number = i;
+            len = String.valueOf(i);
+            length = len.length();
+            while(length>0){
+            	temp = (int) (number/Math.pow(10,(length-1)));
+                sum += temp;
+                number -= temp*Math.pow(10,(length-1));
+                length--;
+            }
+		}
+		return sum;
+	}
+}

@@ -1,0 +1,57 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+		int startArr=0 , endArr = 0 , middleArr = 0 , max = 0, have = 0,temp = 0;
+		boolean start = false,end = false,middle = false,fristMiddle = false, secondMiddle = false;;
+		int[] X = new int[arr.length];
+        for(int i = 0 ; i < arr.length ; i++){
+        	X[i] = arr[i];
+        }
+		for(int i = 0  ; i < X.length ; i++){
+			if(i+1 == X.length){
+				if(end){
+					endArr = X.length-1;
+					max = endArr - middleArr + 1 + temp;
+				}
+				break;
+			}
+			if(X[i] > X[i+1] && start == false){
+				startArr = i;
+				start = true;
+			}
+			if(secondMiddle && X[i] < X[i+1]){
+				if(middleArr == i) temp--;
+				secondMiddle = false;
+				end = true;
+			}
+			
+			if(start == true && X[i] <= X[i+1] && fristMiddle == false){
+				middleArr = i;
+				fristMiddle = true;
+				secondMiddle = true;
+				temp = middleArr - startArr + 1;
+				i--;
+				continue;
+			}
+//			System.out.println(middleArr);
+			if(end && X[i] >= X[i+1]){
+				endArr = i;
+				if(endArr - middleArr + 1 + temp > max)
+					max = endArr - middleArr + 1 + temp;
+				middle = false;
+				end = false;
+				fristMiddle = false;
+				secondMiddle = false;
+				startArr = i;
+				temp = 0;
+                start = false;
+                i--;
+			}
+		}
+		return max;
+		/********* End *********/	
+	}
+}

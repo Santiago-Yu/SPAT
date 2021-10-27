@@ -1,0 +1,26 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int n = nGCD(length,width);
+        System.out.println(n);
+        System.out.println((length/n)*(width/n));
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+    public static int nGCD(int a,int b){
+        if(a == b) return a;
+        return a-b>b?nGCD(a-b,b):nGCD(b,a-b);
+    }
+}

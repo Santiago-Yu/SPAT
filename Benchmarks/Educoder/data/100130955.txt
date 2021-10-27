@@ -1,0 +1,42 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		
+
+
+ int[] sum=new int[arr.length];
+        //Map<Integer,Integer> map=new HashMap<>();
+        int[] index=new int[100000000];
+        for (int i = 0; i < arr.length; i++) {
+            Arrays.sort(arr[i]);
+        }
+        for (int i = 0; i < arr.length; i++) {
+            sum[i]=0;
+            for(int j = 0 ; j < arr[i].length ; j++){
+                sum[i]+=arr[i][j];
+            }
+           // map.put(sum[i],i);
+            index[sum[i]]=i;
+        }
+        Arrays.sort(sum);
+
+        int[][] arr2=new int[arr.length][arr[0].length];
+        for (int i = 0; i < arr.length; i++) {
+            for(int j = 0; j <arr[i].length  ; j++){
+                arr2[i][j]=arr[i][arr[i].length-1-j];
+            }
+        }
+        for (int i = arr.length-1; i >=0 ; i--) {
+            //System.out.println(Arrays.toString(arr2[map.get(sum[i])]));
+            System.out.println(Arrays.toString(arr2[index[sum[i]]]));
+        }
+    }
+    
+    /********** END **********/
+}
+	

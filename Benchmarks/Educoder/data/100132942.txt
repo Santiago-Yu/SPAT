@@ -1,0 +1,202 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+import java.util.HashMap;
+import java.util.Iterator;
+public class Task {
+
+    public static void main(String[] args) throws IOException {
+        //读取文件内容至list集合中
+        List<User> userlist = getUserTagsFromCsv("src/step1/user_tag.csv");
+        Map<String, Integer> maptemp = getTagFromCsv("src/step1/tag_cooccurrence.csv");
+        List<String> data = new ArrayList<>();
+        Iterator it = maptemp.entrySet().iterator();  
+        while (it.hasNext()) {  
+            Map.Entry entry = (Map.Entry) it.next();  
+            Object key = entry.getKey();  
+            Object value = entry.getValue();  
+            if((Integer)value > 1800){
+                data.add((String) key);
+            }
+        }
+        //将数据写到user_recommand.csv中
+        writeCsvFile("src/step1/user_recommand.csv",data);
+    }
+
+    /**
+     * 读取user_tag文件信息至list集合中
+     * 
+     * @param path
+     *            文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    @SuppressWarnings("unchecked")
+    public static List<User> getUserTagsFromCsv(String path) throws IOException {
+        // 创建创建用户集合并读取文件数据
+        List<User> userList = new ArrayList<>();
+        try {
+            // 创建CSV读对象
+           CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读这行的第一列
+                String id = csvReader.get(0);        //读id
+                String tagName = csvReader.get(1);    //标签名
+                String weight = csvReader.get(2);    //对应权重
+                String[] tagItems = tagName.split(",");
+                String[] weightItems = weight.split(",");
+                List<Tag> tags = new ArrayList<>();
+                User user = new User();
+                user.setTagStr(tagName);
+                user.setUserId(Integer.valueOf(id));
+                for (int j = 0; j < tagItems.length; j++) {
+                    Tag tag = new Tag();
+                    tag.setName(tagItems[j]);
+                    tag.setWeight(Double.valueOf(weightItems[j].replace("[", "").replace("]", "")));
+                    tags.add(tag);
+                }
+                user.setTags(tags);
+                userList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    /**
+     * 读取tag_coocurrence.csv
+     * @param path 路径
+     * @return 读取后生成map集合
+     * @throws IOException
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, Integer> getTagFromCsv(String path) throws IOException {
+        List<String> list = new ArrayList();
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        try {
+            // 创建CSV读对象
+           CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读这行的第一列
+                String id = csvReader.get(0);        //读id
+                String tagName = csvReader.get(1);    //标签名
+                String weight = csvReader.get(2);    //对应权重
+                String[] tagItems = tagName.split(",");
+                for(int i=0;i<tagItems.length;i++)
+                    list.add(tagItems[i]);
+            }
+            
+            
+            for(String temp :list){
+                Integer count = map.get(temp);
+                map.put(temp, (count == null) ? 1 : count + 1);
+            }
+            
+            
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        
+        return map;
+    }
+
+    /**
+     * 写结果文件
+     * 
+     * @param filePath 文件路径
+     * @param data 要写入的数据
+     * @throws IOException
+     */
+    @SuppressWarnings("unchecked")
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"id","recommand_tags"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+       
+        String temp1 = data.get(0);
+        for(int i = 1;i<9;i++){
+            temp1 = temp1+","+data.get(i);
+        }
+        for (int i = 0;i<20;i++) {
+            String[] content = {i+1 +"", temp1};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+// 标签
+class Tag {
+    private String name; // 标签名
+    private double weight; // 权重值
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+}
+
+// 用户
+class User {
+    private int userId;
+    private List<Tag> tags;
+    private String tagStr;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagStr() {
+        return tagStr;
+    }
+
+    public void setTagStr(String tagStr) {
+        this.tagStr = tagStr;
+    }
+}

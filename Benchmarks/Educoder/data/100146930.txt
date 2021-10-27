@@ -1,0 +1,46 @@
+package step1;
+import java.util.*;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+	       //请在此补全你的代码
+        Arrays.sort(nums);
+        int[] a=new int[3];
+        int c=0;
+	   for(int i =1;i <9997;i++)
+       {
+          
+            if(nums[i]-nums[i-1]==2)
+           {
+               a[c]=nums[i-1]+1;
+               c++;
+           }
+           else if(nums[i]-nums[i-1]==3)
+           {
+               a[c]=nums[i-1]+1;
+               c++;
+               a[c]=nums[i-1]+2;
+               c++;
+           }
+           else if(nums[i]-nums[i-1]==4)
+           {
+               a[c]=nums[i-1]+1;
+               c++;
+               a[c]=nums[i-1]+2;
+               c++;
+               a[c]=nums[i-1]+3;
+               c++;
+           }
+       }
+        
+        StringBuffer snum = new StringBuffer("");
+        snum.append(String.valueOf(a[0]));
+        snum.append(String.valueOf(a[1]));
+        snum.append(String.valueOf(a[2]));
+         long num=Long.parseLong(snum.toString())%11;
+	    return (int)num;
+        
+	/********* End *********/
+}
+}

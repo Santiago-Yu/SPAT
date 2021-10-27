@@ -1,0 +1,57 @@
+package step4;
+
+import java.util.Scanner;
+
+public class SportsEvents {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String sports = scanner.next();
+        String team = scanner.next();
+        MyFavourateTeam myFavourateTeam = new MyFavourateTeam();
+        myFavourateTeam.setSports(sports);
+        myFavourateTeam.setTeam(team);
+        myFavourateTeam.introduction();
+    }
+}
+
+interface Sports {
+    void setSports(String sports);
+}
+
+interface Team {
+    void setTeam(String team);
+}
+
+interface ChooseTeam extends Sports, Team {
+    void introduction();
+}
+
+/********** Begin *********/
+
+/*class MyFavourateTeam implements ChooseTeam {
+
+    void setTeam(String sports){
+   
+    }
+   void setSports(String team){
+    
+    }
+    void introduction(){System.out.println("我最喜欢的运动是"+sports+"我最喜欢的球队是"+team);
+    
+    }
+}*/
+class MyFavourateTeam implements ChooseTeam {
+    public void setSports(String sports) {
+        this.sports = sports;//传输过来的两个变量复制给该类中的变量
+    }
+    public void setTeam(String team) {
+        this.team = team;
+    }
+    public void introduction() {
+        System.out.println("我最喜欢的体育运动是" + sports + "，我最喜欢的球队是" + team);
+    }
+    private String sports;//两个变量不能随意更改
+    private String team;
+}
+
+/********** End *********/

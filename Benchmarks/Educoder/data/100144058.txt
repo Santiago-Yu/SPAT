@@ -1,0 +1,74 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+		System.out.println("+--"+file.getName());
+        File[] files=file.listFiles();
+        for(File file1:files){
+            System.out.print("  ");
+        	boolean isDir1=file1.isDirectory();
+            if(isDir1){
+                System.out.println("+--"+file1.getName());
+                File[] files1=file1.listFiles();
+        		for(File file2:files1){
+            		System.out.print("    ");
+        			boolean isDir2=file2.isDirectory();
+            		if(isDir2){
+                		System.out.println("+--"+file2.getName());
+                        File[] files2=file2.listFiles();
+        				for(File file3:files2){
+            				System.out.print("      ");
+        					boolean isDir3=file3.isDirectory();
+            				if(isDir3){
+                				System.out.println("+--"+file3.getName());
+                                File[] files3=file3.listFiles();
+        						for(File file4:files3){
+            						System.out.print("        ");
+        							boolean isDir4=file4.isDirectory();
+            						if(isDir4){
+                						System.out.println("+--"+file4.getName());
+                                        File[] files4=file4.listFiles();
+        								for(File file5:files4){
+            								System.out.print("          ");
+        									boolean isDir5=file5.isDirectory();
+            								if(isDir5){
+                								System.out.println("+--"+file5.getName());
+                                
+                							}else{
+            									System.out.println("--"+file5.getName());
+        									}
+                						}
+                                
+                					}else{
+            							System.out.println("--"+file4.getName());
+        							}
+                				}
+                			}else{
+            					System.out.println("--"+file3.getName());
+        					}
+                		}
+                	}else{
+            			System.out.println("--"+file2.getName());
+        			}
+                }
+            }else if(isDir1==false){
+            	System.out.println("--"+file1.getName());
+        	}
+        }
+        
+        
+
+
+
+
+
+	}
+	
+
+
+	/********** End **********/
+}

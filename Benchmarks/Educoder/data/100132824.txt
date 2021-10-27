@@ -1,0 +1,43 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 int count=0;
+		for(int m=0;m<ferry.length;m++) {
+			for(int n=0;n<ferry[m].length;n++) {
+				if(ferry[m][n]=='+') {
+                    
+					for(int k=m+1;k<ferry.length;k++) {
+						if(ferry[k][n]=='o') {
+							break;
+						}else {
+							ferry[k][n]='o';//如果同一列的第二个是+，则把+改成o
+							//这一段代码着实重要，不然之后的循环会把同列的+也算成一个船
+						}
+					}
+					for(int k=n+1;k<ferry[m].length;k++) {
+                        
+						if(ferry[m][k]=='o') {
+                            
+							break;
+						}else{
+                        ferry[m][k]='o';
+                        }
+                        
+						
+					}
+                    count++;
+					
+				}
+			}
+		}
+	
+		
+		return count;
+	 
+         
+      /***********END ***************/
+	 }
+}

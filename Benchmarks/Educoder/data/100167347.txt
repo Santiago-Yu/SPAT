@@ -1,0 +1,105 @@
+package jdbcTest;
+
+import jdbc.jdbcInsert;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Test2 {
+    public static void main(String[] args) {
+        boolean task = task();
+        if (task) {
+            test();
+        } else {
+            System.out.println("请按照要求编写代码！");
+        }
+    }
+
+    private static void test() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver" );
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Connection conn = null;
+        Statement statement = null;
+        String url = "jdbc:mysql://localhost:3306/";
+        String user = "root";
+        String password = "123123";
+        try {
+            conn = DriverManager.getConnection (url,user,password );
+            statement = conn.createStatement();
+            statement.executeUpdate("drop database if exists mysql_db");
+            statement.executeUpdate("create database mysql_db");
+            statement.executeUpdate("use mysql_db");
+            String sql = "create table student(" +
+                    "id int primary key  not null, " +
+                    "name varchar(20), " +
+                    "sex varchar(4), " +
+                    "age int" +
+                    ")";
+
+            statement.executeUpdate(sql);
+            jdbcInsert.insert();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if(statement!=null)
+                    statement.close();
+                if(conn!=null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private static boolean task() {
+        boolean flag = false;
+        //解析流
+        try {
+            String filePath=System.getProperty("user.dir");
+//            String path=filePath.substring(0,filePath.length()-7);
+            FileReader fr = new FileReader(filePath+"/src/jdbc/jdbcInsert.java");
+            StringBuilder sb = new StringBuilder();
+            char[] c = new char[1024];
+            int len = 0;
+            while( (len = fr.read(c)) != -1){
+                sb.append(c, 0, len);
+            }
+            String str = sb.toString().trim();
+            flag = succeed(str);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    public static boolean succeed(String str) {
+        if(str=="" || str.length()==0 || str==null){
+            return false;
+        }
+        boolean flag=true;
+        List<Boolean> isture = new ArrayList<Boolean>();
+        isture.add(str.contains("insert into student(id,name,sex,age)"));
+        isture.add(str.contains("statement.executeUpdate()"));
+        isture.add(str.contains("statement.executeQuery"));
+        isture.add(str.contains("resultSet.next()"));
+        for (int i = 0; i < isture.size(); i++) {
+            if (!isture.get(i))
+                flag = false;
+        }
+        return flag;
+    }
+}

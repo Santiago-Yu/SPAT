@@ -1,0 +1,39 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+	  public static void main(String[] agrs){
+		     double a,b,c; //方程的三个系数
+		    /**********begin******/
+		     Scanner scanner=new Scanner(System.in);
+		     a=scanner.nextDouble();
+		     b=scanner.nextDouble();
+		     c=scanner.nextDouble();
+		     double m=b*b-4*a*c;
+		     if(a!=0) {
+		     if(m>0) {
+		     double x1=((-b+Math.sqrt(b*b-4*a*c))/(2*a));//运用求根公式，并且Math.sqrt()为开平方根
+		     double x2=((-b-Math.sqrt(b*b-4*a*c))/(2*a));//运用求根公式，并且Math.sqrt()为开平方根
+		     System.out.printf("X1=%4.2f", x1 );
+		     System.out.println("");
+		     System.out.printf("X2=%4.2f", x2 );
+		     }
+		     if(m==0) {
+		        double x1=((-b+Math.sqrt(b*b-4*a*c))/(2*a));
+			     System.out.printf("X1=%4.2f", x1 );
+			     System.out.println("");
+			     System.out.printf("X2=%4.2f", x1 );
+		     }
+		     if(m<0) {
+		    	 System.out.printf("无实根");
+		     }
+		     }
+		     if(a==0) {
+		    	 double x1=-c/b;
+			     System.out.printf("唯一根 X=%4.2f", x1 );
+		     }
+		     
+ 
+		    /**********end*****/
+		  }
+		  	
+		}

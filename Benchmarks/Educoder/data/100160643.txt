@@ -1,0 +1,71 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+		/**********   Begin   **********/	    
+        File file = new File(filePath);
+        Document doc = Jsoup.parse(file, "UTF-8", "http:");        
+		return doc;
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+		Elements e = doc.select("a[href]");//获取a标签带有href属性
+        List<String> list = new ArrayList<String>();//创建集合
+        for(Element ele : e) {
+            String wb = ele.text();//获取链接文本
+            String lianjie = ele.attr("abs:href");//获取链接
+            String bqm = ele.tagName();//获取标签名
+            String shuchu = bqm + "$" + lianjie + "(" + wb + ")" ; //规范输出格式
+            list.add(shuchu);//往集合添加元素
+        }       
+        return list;//返回集合
+
+		/**********   End   **********/
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		/**********   Begin   **********/
+		Elements e2 = doc.select("img");
+        List<String> list2 = new ArrayList<String>();   
+        for(Element ele2 : e2) {
+        String bqm2 = ele2.tagName();
+        String lianjie2 = ele2.attr("abs:src");
+        String shuchu2 = bqm2 + "$" + lianjie2;
+        list2.add(shuchu2);
+        } 
+        return list2;
+		/**********   End   **********/
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		/**********   Begin   **********/
+         Elements e3 = doc.select("link");
+        List<String> list3 = new ArrayList<String>();
+        for(Element ele3 : e3) {
+        String bqm3 = ele3.tagName();    
+        String lianjie3 = ele3.attr("abs:href");
+        String href = ele3.attr("rel");
+        String shuchu3 = bqm3 + "$" + lianjie3 + "(" + href + ")";
+        list3.add(shuchu3);
+        }       
+        return list3;
+
+
+		/**********   End   **********/
+	}
+	
+}

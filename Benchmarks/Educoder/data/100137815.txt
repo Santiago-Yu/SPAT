@@ -1,0 +1,71 @@
+package case5;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Scanner;
+
+
+/*编写测试类，算一下你的出生日期到2020年10月1日总共有多少天。
+具体输出要求请看测试说明。
+测试说明
+测试输入：
+1999-09-01
+预期输出：
+你的出生日期距离2020年10月1日:7701天*/
+public class DateTest {
+    public static void main(String[] args) {
+    	Scanner sc = new Scanner(System.in);
+		String line = sc.nextLine();;
+        String dateStr2 = "2020-10-01";
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date1 = format1.parse(line);
+            Date date2 = format2.parse(dateStr2);
+
+            System.out.println("你的出生日期距离2020年10月1日:"+differentDays(date1,date2)+"天");
+   
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    public static int differentDays(Date date1,Date date2){
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(date1);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(date2);
+
+        int day1 = calendar1.get(Calendar.DAY_OF_YEAR);
+//        System.out.println(day1);
+        int day2 = calendar2.get(Calendar.DAY_OF_YEAR);
+//        System.out.println(day2);
+        int year1 = calendar1.get(Calendar.YEAR);
+        int year2 = calendar2.get(Calendar.YEAR);
+
+        if (year1 != year2)  //不同年
+        {
+            int timeDistance = 0;
+            for (int i = year1 ; i < year2 ;i++){ //闰年
+                if (i%4==0 && i%100!=0||i%400==0){
+                    timeDistance += 366;
+                }else { // 不是闰年
+                    timeDistance += 365;
+                }
+            }
+            return  timeDistance + (day2-day1);
+        }else{// 同年
+            return day2-day1;
+        }
+
+    }
+
+    public  static int differentDayMillisecond (Date date1,Date date2)
+    {
+
+
+        int day = (int)((date2.getTime()-date1.getTime())/(3600*1000*24));
+        return day;
+    }
+}

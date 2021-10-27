@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int max=(length>width)?length:width;
+		int min=(length<width)?length:width;
+		while (max%min!=0) {
+			int a = max;
+			int b = min;
+			max=b;
+			min=a%b;
+		}
+		//最小公倍数
+		int minSum = length*width/(min*min);
+		System.out.println(min);
+		System.out.println(minSum);
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

@@ -1,0 +1,35 @@
+package Pid_203;
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        
+        if (n <= 4) {
+            System.out.print(n);
+        } else {
+            int sum = 1;
+            int k = n / 3;
+            int r = n % 3;
+            if (r == 1) {
+                --k;
+                r += 3;
+            }
+            
+            for (int i = 0; i < k; ++i) {
+                sum *= 3;
+            }
+            if (r > 0) {
+                sum *= r;
+            }
+            
+            System.out.print(sum);
+        }
+    
+        
+	}
+
+}

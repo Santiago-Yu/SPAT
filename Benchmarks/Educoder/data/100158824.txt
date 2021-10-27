@@ -1,0 +1,40 @@
+
+package Q202;
+import java.util.Scanner;
+public class Main {
+
+	private static Scanner scan;
+
+	public static void main(String[] args) {
+		// write your code here
+		int i,j;
+		int str[]=new int[100];
+		scan = new Scanner(System.in);
+		int x=scan.nextInt();
+		if(x<10)
+		{
+			System.out.print(x);
+		}
+		else
+		{
+			for(i=9;i>1;i--)
+			{
+				while(x%i==0)
+				{
+					str[i]++;
+					x/=i;
+				}
+			}
+			for(j=2;j<10;j++)
+			{
+				while(str[j]!=0)
+				{
+				   str[j]--;
+				   System.out.print(j);
+				}
+			}
+		}
+	
+	}
+
+}

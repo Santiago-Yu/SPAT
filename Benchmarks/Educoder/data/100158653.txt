@@ -1,0 +1,40 @@
+#include<iostream>
+#include<string>
+#include<vector>
+#include<cstdlib>
+#include<cstdio>
+using namespace std;
+vector<int> slove(string s){
+	vector<int> abc;
+	string wcx;
+	int i;
+	int n=s.length();
+	for (i=0;i<n;i++){
+		if (s[i]==' '){
+			abc.push_back(atoi(wcx.c_str()));
+			wcx="";
+		}
+		else wcx = wcx+s[i];
+	}
+	int x=atoi(wcx.c_str());
+	abc.push_back(x);
+	return abc;
+}
+int main()
+{
+	string s;
+	getline(cin,s);
+	vector<int> x = slove(s);
+	int m,i,j,k;
+	scanf("%d",&m);
+	int wcx=0;
+	int w=x.size();
+	for(i=0;i<w;i++)
+	for(j=i+1;j<w;j++)
+	for(k=j+1;k<w;k++)
+	if((x[i]+x[j]+x[k])<m)
+	wcx++;
+	printf("%d",wcx);
+	return 0;
+}
+

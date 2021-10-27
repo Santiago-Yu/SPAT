@@ -1,0 +1,40 @@
+package step1;
+
+import java.util.ArrayList;
+
+public class Graph {
+    private int V;//顶点数
+    private int E;//边数
+    private ArrayList<Integer>[] adj;//邻接表
+
+    public Graph(int v) {
+        if (v < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
+        V = v;
+        E = 0;
+        adj = new ArrayList[V + 1];
+        for (int i = 0; i <= this.V; i++) {
+            adj[i] = new ArrayList<Integer>();
+        }
+    }
+
+    public void addEdge(int v, int w) {
+        /********** Begin *********/
+
+adj[v].add(w); adj[w].add(v); E++;
+
+        /********** End *********/
+    }
+
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(V + " 个顶点, " + E + " 条边\n");
+        for (int v = 1; v <= V; v++) {
+            s.append(v + ": ");
+            for (int w : adj[v]) {
+                s.append(w + " ");
+            }
+            s.append("\n");
+        }
+        return s.toString();
+    }
+}

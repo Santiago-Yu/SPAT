@@ -1,0 +1,62 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		int[] temp=new int[arr.length];
+		for (int i = 0; i < arr.length; i++) {
+			temp[i]=arr[i];
+		}
+        boolean isPrint=false;
+        int time=1;
+		while (true) {
+			if (time%2==0) {
+				for (int i = 0; i < temp.length-1; i++) {
+					if (temp[temp.length-i-1]<temp[temp.length-i-2]) {
+						int tempNum=temp[temp.length-i-2];
+						temp[temp.length-i-2]=temp[temp.length-i-1];
+						temp[temp.length-i-1]=tempNum;
+						isPrint=true;
+						for (int j = 0; j < temp.length; j++) {
+							System.out.print(temp[j]+" ");
+						}
+						System.out.println();
+					}
+				}
+			}else {
+				for (int i = 0; i < temp.length-1; i++) {
+					if (temp[i]>temp[i+1]) {
+						int tempNum=temp[i];
+						temp[i]=temp[i+1];
+						temp[i+1]=tempNum;
+						isPrint=true;
+						for (int j = 0; j < temp.length; j++) {
+							System.out.print(temp[j]+" ");
+						}
+						System.out.println();
+					}
+				}
+			}
+			time++;
+			
+			boolean isSorted=true;
+			for (int i = 0; i < temp.length-1; i++) {
+				if (temp[i]>temp[i+1]) {
+					isSorted=false;
+				}
+			}
+			if (isSorted) {
+				break;
+			}
+		}
+		if (!isPrint) {
+			for (int i = 0; i < temp.length; i++) {
+				System.out.print(temp[i]+" ");
+			}
+            System.out.println();
+		}
+		
+		/********* End *********/
+	}
+}

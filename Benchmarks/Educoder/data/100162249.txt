@@ -1,0 +1,45 @@
+package task04;
+import java.util.Scanner;
+      class Student
+{
+     String name;
+	  int age;
+	 public Student()
+	 {
+		
+	 }
+	 
+	 public Student(String n)
+	 {
+		 name=n;
+	 }
+	 public Student(String n,int a)
+	 {
+       name=n;
+       age=a;
+	 }
+	public void speak() {
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+
+public class Task04{
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+
+         Student p1=new Student();
+		 p1.speak();
+
+        String n2=scan.next();
+       Student p2=new Student(n2);
+	 
+	   p2.speak();
+
+         String n3=scan.next();
+		  int a3=scan.nextInt();
+		 Student p3=new Student(n3,a3);
+		 
+		 p3.speak();
+		
+	}
+}

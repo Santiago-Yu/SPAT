@@ -1,0 +1,69 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		int a=arr.length;
+        int[] b;
+        b= new int[a];
+        for(int i=0;i<a;i++)
+        {
+       b[i]=arr[i].length;
+        }
+        int[] m;
+        m = new int[a];
+        int[][] l;
+       l = new int[a][];
+        
+        
+        int[] g;
+        g = new int[a];
+        for(int i=0;i<a;i++)
+        { 
+         for(int n=0;n<b[i];n++)
+         {
+             m[i]=m[i]+arr[i][n];
+         }
+        }
+        for(int i=0;i<a;i++)
+        {int q=i;
+            for(int k=i;k<a;k++)
+        { if(m[q]<m[k])
+           {q=k;}
+        }
+         l[i]=arr[i];
+         arr[i]=arr[q];
+         arr[q]=l[i];
+         g[i]=m[i];
+         m[i]=m[q];
+         m[q]=g[i];
+        }
+        
+         
+        for(int i=0;i<a;i++)
+        { int[] temp =new int[b[i]];
+         for(int n=0;n<b[i];n++)
+         {  for(int e=n;e<b[i];e++)
+         {  if(arr[i][e]>arr[i][n])
+         {
+        	temp[n]=arr[i][n];
+          arr[i][n]=arr[i][e];
+          arr[i][e]=temp[n];
+         }
+         }
+         }
+        }
+        
+          for(int i=0;i<a;i++)
+          {
+     System.out.println(Arrays.toString(arr[i]));
+          }
+	
+    }
+    
+    /********** END **********/
+}
+	

@@ -1,0 +1,31 @@
+package step4;
+
+//注意文件名，这里应该写MyRunnable类
+//***begin your code here***/
+public class MyRunnable implements Runnable {
+    int num;
+    int mslen =  40;
+    MyRunnable() {
+        this(0);
+    }
+    MyRunnable(int num) {
+        this.num = num;
+    }
+    MyRunnable(int num, int mslen) {
+        this(num);
+        this.mslen = mslen;
+    }
+    @Override
+    public void run() {
+        int result = 1;
+        for(int i = 1; i <= num; i++)
+            result *= i;
+        try{
+            Thread.sleep(mslen);
+        } catch(InterruptedException e) {
+            return ;
+        }
+        
+        System.out.println(result);
+	}
+}

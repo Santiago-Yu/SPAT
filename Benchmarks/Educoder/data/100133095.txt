@@ -1,0 +1,30 @@
+package step3;
+
+public class Task {
+
+    public int getBlockNum(int n,int m,char[][] arr){
+        int res=0;
+        for(int i=0;i<n;i++){
+            for(int j =0;j<m;j++){
+                if(arr[i][j]=='x') {
+                    res++;
+                    setBlock(i,j,arr);
+                }
+            }
+        }
+        return res;
+
+    }
+    void setBlock(int n, int m, char[][] arr){
+        if(arr[n][m]=='*') return;
+        arr[n][m]='*';
+        if(n-1>=0) setBlock(n-1,m,arr);
+        if(m-1>=0) setBlock(n,m-1,arr);
+        if(n-1>=0&&m-1>=0) setBlock(n-1,m-1,arr);
+        if(n-1>=0&&m+1<arr[0].length) setBlock(n-1,m+1,arr);
+        if(n+1<arr.length&&m-1>=0) setBlock(n+1,m-1,arr);
+        if(n+1<arr.length) setBlock(n+1, m, arr);
+        if(m+1<arr[0].length) setBlock(n,m+1,arr);
+        if(n+1<arr.length&&m+1<arr[0].length) setBlock(n+1,m+1,arr);
+    }
+}

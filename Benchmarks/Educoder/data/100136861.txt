@@ -1,0 +1,41 @@
+package case1;
+
+import java.util.Scanner;
+
+public class ObjectTest {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num1 = sc.nextInt();
+		int num2 = sc.nextInt();
+         Demo d1=new Demo(num1);
+        System.out.println(d1.toString());
+        Demo d2=new Demo(num1);
+        System.out.println(d1.toString().equals(d2.toString()));
+        Person p=new Person(num2);
+        System.out.println(d1.equals(p));
+	}
+}
+
+class Demo {
+	private int num;
+
+	public Demo(int num) {
+		this.num = num;
+	}
+
+	public boolean equals(Object obj){
+		if (!(obj instanceof Demo)) 
+			return false;
+		Demo d = (Demo) obj;
+		return this.num == d.num;
+	}
+	public String toString(){
+		return "Demo:" + num; 
+	}
+}
+class Person {
+	private int num;
+	public Person(int num) {
+		this.num = num;
+	}
+}

@@ -1,0 +1,50 @@
+package com.servlet;
+
+import com.google.code.kaptcha.Constants;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+/**
+ * Created by 63194 on 2018/9/14.
+ */
+public class CheckCaptchaServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("utf-8");
+        resp.setContentType("text/html;charset=utf-8");
+        /********* Begin *********/
+        //校验kaptcha 验证码是否正确
+		//获取Kaptcha jar包里面的KAPTCHA_SESSION_KEY
+         HttpSession session=req.getSession();
+        PrintWriter out= resp.getWriter();
+       String trueCaptcha = (String)session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
+       String inputCaptcha = req.getParameter("captcha");
+        if(trueCaptcha.toLowerCase().equals(inputCaptcha.toLowerCase())) {
+            out.write("验证码输入正确");
+        }
+        else{
+            out.write("验证码输入错误");
+        }
+
+
+
+
+
+
+
+
+        /********* End *********/
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}

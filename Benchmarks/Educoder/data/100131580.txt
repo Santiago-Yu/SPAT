@@ -1,0 +1,43 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	public static int level = 0;
+	public static int count = 0;
+	/********** BEGIN **********/
+	public void showDirStructure(File file){
+		if(count == 0) {
+			String str = file.getName();
+			System.out.println("+--"+str);
+		}
+		count++;
+		//判断文件是否是文件夹
+		if(!file.isDirectory()) {
+			return;//程序结束
+		}else if(!file.exists()) {
+			return;
+		}
+		level++;
+		
+		//遍历文件夹内部的文件
+		File[] files = file.listFiles();
+		for(File file1 : files) {
+			for (int i = 0; i < level; i++) {
+				System.out.print("  ");
+			}
+			if(file1.isDirectory()) {
+				System.out.print("+");
+			}
+			System.out.print("--");
+			String name = file1.getName();
+			System.out.println(name);
+			showDirStructure(file1);
+			
+		}
+		level--;
+    }
+
+
+	/********** END **********/
+}

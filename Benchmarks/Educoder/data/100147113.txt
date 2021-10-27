@@ -1,0 +1,70 @@
+package step2;
+import java.util.Arrays;
+
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		class member{
+            int ability=0;
+            int id=0;
+        }
+        member[] tm = new member[abilities.length];
+//        System.out.println(tm[0].ability);
+        for(int i=0; i<abilities.length; i++){
+            tm[i] = new member();
+            tm[i].ability = abilities[i];
+            tm[i].id=i;
+        }
+        for(int i=0; i<abilities.length; i++){
+            for(int j = i+1; j<abilities.length; j++){
+                if(tm[i].ability<tm[j].ability){
+                    member t = tm[i];
+                    tm[i] = tm[j];
+                    tm[j] = t;
+                }
+            }
+        }
+//        for(member M:tm){
+//            System.out.println(M.ability+"  "+M.id);
+//        }
+        member remain[] = new member[selectedNum];
+        long n=1;
+        for(int i=0; i<selectedNum; i++){
+            remain[i] = new member();
+            remain[i] = tm[i];
+//            n*=tm[i].ability;
+        }
+//        int judge=1;
+//        int able[] = {12, 35, 68, 12, 12, 44, 45, 23, 24, 25, 12, 14, 45, 23, 45, 78, 91, 23, 20, 22};
+////        Arrays.sort(able);
+//        for(int i=0; i<able.length; i++){
+//            System.out.println(able[i]);
+//        }
+        for(int i = 0; i<remain.length; i++){
+            for(int j=i+1; j<remain.length; j++){
+                if(remain[i].id<remain[j].id){
+                    member t = remain[i];
+                    remain[i] = remain[j];
+                    remain[j] = t;
+                }
+            }
+        }
+        for(int i=0; i<remain.length-1; i++){
+            if(Math.abs(remain[i+1].id-remain[i].id)>distance){
+                int j=0;
+                for(j=0; j<tm.length; j++){
+                    if(tm[j].id==remain[i+1].id)break;
+                }
+                remain[i+1]=tm[j+1];
+                i--;
+            }
+        }
+        for(int i=0; i<selectedNum; i++)n*=remain[i].ability;
+        return n;
+    }
+
+	/********* End *********/
+}

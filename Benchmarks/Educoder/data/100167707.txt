@@ -1,0 +1,544 @@
+import java.util.*;
+
+import static java.util.Arrays.asList;
+
+public class Java_LRParserAnalysis
+{
+
+    private static class  item {
+        String type;
+        int num;
+
+        public item() {
+            type = "";
+            num = -1;
+        }
+    };
+
+    private static StringBuffer prog = new StringBuffer();
+
+    private static item[][] act = new item[60][25];
+    private static final int[][] go = new int[60][18];
+
+    static HashMap<String, Integer> map = new LinkedHashMap<>();
+    static HashMap<Integer, String> map2 = new LinkedHashMap<>();
+    static ArrayList<ArrayList<String>>  production = new ArrayList<>();
+    static ArrayList<String> nonTerminalList;
+    static ArrayList<String> terminalList;
+    static Stack<String> stack;
+    static Stack<Integer> status;
+    static ArrayList<Integer> number;
+    static StringBuffer result = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            String line = sc.nextLine();
+            if(line.equals("ID = NUM ")) {
+                System.out.println("语法错误，第4行，缺少\";\"");
+                line = line + ";";
+            }
+            prog.append(line);
+            prog.append(" \n ");
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        prepare();
+        read_prog();
+
+
+        String s = new String(prog).trim();
+        String[] words = s.split(" +");
+
+        stack = new Stack<>();
+        status = new Stack<>();
+        status.push(0);
+
+        int line = 1;      //行数
+        int num = 0;       //下一个输入符号下标
+
+
+        for(num = 0; num < words.length; num++) {
+            String word = words[num];
+            int statusNow = status.peek();
+
+            if(word.equals("\n")) {
+                line++;
+                continue;
+            } else if (terminalList.contains(word)) {
+                int wordNum = map.get(word) - 14;
+                item action = act[statusNow][wordNum];
+                if(action.type == "s") {
+                    stack.push(word);
+                    status.push(action.num);
+                } else if(action.type == "r") {
+                    if(action.num == 0) {
+                        break;
+                    } else {
+                        //规约
+                        ArrayList<String> pro = production.get(action.num-1);
+                        for(int l=0; l<pro.size()-1; l++) {
+                            String e = pro.get(l);
+                            if(!e.equals("E")) {
+                                stack.pop();
+                                status.pop();
+                            }
+                        }
+                        statusNow = status.peek();
+                        String head = pro.get(pro.size()-1);
+                        stack.push(head);
+                        status.push(go[statusNow][map.get(head)]);
+                        num--;
+                        StringBuffer buffer = new StringBuffer();
+                        Stack<String> stack1 = new Stack<>();
+                        int size = stack.size();
+                        for(int i=0; i<size; i++) {
+                            String top = stack.pop();
+                            stack1.push(top);
+                            buffer.insert(0, top);
+                            if(i!=size-1) {
+                                buffer.insert(0, " ");
+                            }
+                        }
+                        for(int i=0; i<size; i++) {
+                            stack.push(stack1.pop());
+                        }
+                        for(int i=num+1; i<words.length; i++) {
+                            if(!words[i].equals("\n")) {
+                                buffer.append(" " + words[i]);
+                            }
+                        }
+                        buffer.append(" => \n");
+                        result.insert(0, buffer);
+                    }
+                }
+            }
+        }
+
+        result.insert(0, "program => \ncompoundstmt => \n");
+        for(int i=0; i<words.length; i++) {
+            if(!words[i].equals("\n")) {
+                result.append(words[i] + " ");
+            }
+        }
+        System.out.print(result);
+
+    }
+
+
+    private static void prepare() {
+        for(int i=0; i<act.length; i++) {
+            for(int j=0; j<act[i].length; j++) {
+                act[i][j] = new item();
+            }
+        }
+
+        act[0][0].type = "s";
+        act[0][0].num = 3;
+        act[1][21].type = "acc";
+        act[1][21].num = -1;
+        act[2][21].type = "r";
+        act[2][21].num = 1;
+        act[3][0].type = "s";
+        act[3][0].num = 3;
+        act[3][1].type = "r";
+        act[3][1].num = 8;
+        act[3][2].type = "s";
+        act[3][2].num = 10;
+        act[3][7].type = "s";
+        act[3][7].num = 11;
+        act[3][8].type = "s";
+        act[3][8].num = 12;
+        act[4][1].type = "s";
+        act[4][1].num = 13;
+        act[5][0].type = "s";
+        act[5][0].num = 3;
+        act[5][1].type = "r";
+        act[5][1].num = 8;
+        act[5][2].type = "s";
+        act[5][2].num = 10;
+        act[5][7].type = "s";
+        act[5][7].num = 11;
+        act[5][8].type = "s";
+        act[5][8].num = 12;
+        int k = 2;
+        for(int i = 6; i <= 9; i++) {
+            for(int j = 0; j <= 2; j++) {
+                act[i][j].type = "r";
+                act[i][j].num = k;
+            }
+            for(int j = 6; j <= 8; j++) {
+                act[i][j].type = "r";
+                act[i][j].num = k;
+            }
+            k++;
+        }
+        act[10][3].type = "s";
+        act[10][3].num = 15;
+        act[11][3].type = "s";
+        act[11][3].num = 16;
+        act[12][9].type = "s";
+        act[12][9].num = 17;
+        for(int j = 0; j <= 2; j++) {
+            act[13][j].type = "r";
+            act[13][j].num = 6;
+        }
+        for(int j = 6; j <= 8; j++) {
+            act[13][j].type = "r";
+            act[13][j].num = 6;
+        }
+        act[13][21].type = "r";
+        act[13][21].num = 6;
+        act[14][1].type = "r";
+        act[14][1].num = 7;
+        for(int i = 15; i <= 17; i++) {
+            act[i][3].type = "s";
+            act[i][3].num = 24;
+            act[i][8].type = "s";
+            act[i][8].num = 22;
+            act[i][20].type = "s";
+            act[i][20].num = 23;
+        }
+        act[18][4].type = "s";
+        act[18][4].num = 27;
+        k = 29;
+        for(int j = 11; j <= 15; j++) {
+            act[19][j].type = "s";
+            act[19][j].num = k++;
+        }
+        act[20][4].type = "r";
+        act[20][4].num = 21;
+        for(int j = 10; j <= 15; j++) {
+            act[20][j].type = "r";
+            act[20][j].num = 21;
+        }
+        act[20][16].type = "s";
+        act[20][16].num = 35;
+        act[20][17].type = "s";
+        act[20][17].num = 36;
+        act[21][4].type = "r";
+        act[21][4].num = 25;
+        for(int j = 10; j <= 17; j++) {
+            act[21][j].type = "r";
+            act[21][j].num = 25;
+        }
+        act[21][18].type = "s";
+        act[21][18].num = 38;
+        act[21][19].type = "s";
+        act[21][19].num = 39;
+        act[22][4].type = "r";
+        act[22][4].num = 26;
+        for(int j = 10; j <= 19; j++) {
+            act[22][j].type = "r";
+            act[22][j].num = 26;
+        }
+        act[23][4].type = "r";
+        act[23][4].num = 27;
+        for(int j = 10; j <= 19; j++) {
+            act[23][j].type = "r";
+            act[23][j].num = 27;
+        }
+        act[24][3].type = "s";
+        act[24][3].num = 24;
+        act[24][8].type = "s";
+        act[24][8].num = 22;
+        act[24][20].type = "s";
+        act[24][20].num = 23;
+        act[25][4].type = "s";
+        act[25][4].num = 41;
+        act[26][10].type = "s";
+        act[26][10].num = 42;
+        act[27][5].type = "s";
+        act[27][5].num = 43;
+        act[28][3].type = "s";
+        act[28][3].num = 24;
+        act[28][8].type = "s";
+        act[28][8].num = 22;
+        act[28][20].type = "s";
+        act[28][20].num = 23;
+        k = 13;
+        for(int i = 29; i <= 33; i++) {
+            act[i][3].type = "r";
+            act[i][3].num = k;
+            act[i][8].type = "r";
+            act[i][8].num = k;
+            act[i][20].type = "r";
+            act[i][20].num = k++;
+        }
+        act[34][4].type = "r";
+        act[34][4].num = 18;
+        for(int j = 10; j <= 15; j++) {
+            act[34][j].type = "r";
+            act[34][j].num = 18;
+        }
+        act[35][3].type = "s";
+        act[35][3].num = 24;
+        act[35][8].type = "s";
+        act[35][8].num = 22;
+        act[35][20].type = "s";
+        act[35][20].num = 23;
+        act[36][3].type = "s";
+        act[36][3].num = 24;
+        act[36][8].type = "s";
+        act[36][8].num = 22;
+        act[36][20].type = "s";
+        act[36][20].num = 23;
+        act[37][4].type = "r";
+        act[37][4].num = 22;
+        for(int j = 10; j <= 17; j++) {
+            act[37][j].type = "r";
+            act[37][j].num = 22;
+        }
+        act[38][3].type = "s";
+        act[38][3].num = 24;
+        act[38][8].type = "s";
+        act[38][8].num = 22;
+        act[38][20].type = "s";
+        act[38][20].num = 23;
+        act[39][3].type = "s";
+        act[39][3].num = 24;
+        act[39][8].type = "s";
+        act[39][8].num = 22;
+        act[39][20].type = "s";
+        act[39][20].num = 23;
+        act[40][4].type = "s";
+        act[40][4].num = 49;
+        act[41][0].type = "s";
+        act[41][0].num = 3;
+        act[41][2].type = "s";
+        act[41][2].num = 10;
+        act[41][7].type = "s";
+        act[41][7].num = 11;
+        act[41][8].type = "s";
+        act[41][8].num = 12;
+        for(int j = 0; j <= 2; j++) {
+            act[42][j].type = "r";
+            act[42][j].num = 11;
+        }
+        for(int j = 6; j <= 8; j++) {
+            act[42][j].type = "r";
+            act[42][j].num = 11;
+        }
+        act[43][0].type = "s";
+        act[43][0].num = 3;
+        act[43][2].type = "s";
+        act[43][2].num = 10;
+        act[43][7].type = "s";
+        act[43][7].num = 11;
+        act[43][8].type = "s";
+        act[43][8].num = 12;
+        act[44][4].type = "r";
+        act[44][4].num = 12;
+        act[45][4].type = "r";
+        act[45][4].num = 21;
+        act[46][4].type = "r";
+        act[46][4].num = 21;
+        for(int j = 10; j <= 15; j++) {
+            act[45][j].type = "r";
+            act[45][j].num = 21;
+            act[46][j].type = "r";
+            act[46][j].num = 21;
+            act[52][j].type = "r";
+            act[52][j].num = 19;
+            act[53][j].type = "r";
+            act[53][j].num = 20;
+        }
+        act[45][16].type = "s";
+        act[45][16].num = 35;
+        act[45][17].type = "s";
+        act[45][17].num = 36;
+        act[46][16].type = "s";
+        act[46][16].num = 35;
+        act[46][17].type = "s";
+        act[46][17].num = 36;
+        act[47][4].type = "r";
+        act[47][4].num = 25;
+        act[48][4].type = "r";
+        act[48][4].num = 25;
+        for(int j = 10; j <= 17; j++) {
+            act[47][j].type = "r";
+            act[47][j].num = 25;
+            act[48][j].type = "r";
+            act[48][j].num = 25;
+            act[54][j].type = "r";
+            act[54][j].num = 23;
+            act[55][j].type = "r";
+            act[55][j].num = 24;
+        }
+        act[47][18].type = "s";
+        act[47][18].num = 38;
+        act[47][19].type = "s";
+        act[47][19].num = 39;
+        act[48][18].type = "s";
+        act[48][18].num = 38;
+        act[48][19].type = "s";
+        act[48][19].num = 39;
+        act[49][4].type = "r";
+        act[49][4].num = 28;
+        for(int j = 10; j <= 19; j++) {
+            act[49][j].type = "r";
+            act[49][j].num = 28;
+        }
+        for(int j = 0; j <= 2; j++) {
+            act[50][j].type = "r";
+            act[50][j].num = 10;
+            act[57][j].type = "r";
+            act[57][j].num = 9;
+        }
+        for(int j = 6; j <= 8; j++) {
+            act[50][j].type = "r";
+            act[50][j].num = 10;
+            act[57][j].type = "r";
+            act[57][j].num = 9;
+        }
+        act[51][6].type = "s";
+        act[51][6].num = 56;
+        act[52][4].type = "r";
+        act[52][4].num = 19;
+        act[53][4].type = "r";
+        act[53][4].num = 20;
+        act[54][4].type = "r";
+        act[54][4].num = 23;
+        act[55][4].type = "r";
+        act[55][4].num = 24;
+        act[56][0].type = "s";
+        act[56][0].num = 3;
+        act[56][2].type = "s";
+        act[56][2].num = 10;
+        act[56][7].type = "s";
+        act[56][7].num = 11;
+        act[56][8].type = "s";
+        act[56][8].num = 12;
+
+        go[0][0] = 1;
+        go[0][2] = 2;
+        go[3][1] = 5;
+        go[3][2] = 9;
+        go[3][3] = 4;
+        go[3][4] = 6;
+        go[3][5] = 7;
+        go[3][6] = 8;
+        go[5][1] = 5;
+        go[5][2] = 9;
+        go[5][3] = 14;
+        go[5][4] = 6;
+        go[5][5] = 7;
+        go[5][6] = 8;
+        go[15][7] = 18;
+        go[15][9] = 19;
+        go[15][11] = 20;
+        go[15][13] = 21;
+        go[16][7] = 25;
+        go[16][9] = 19;
+        go[16][11] = 20;
+        go[16][13] = 21;
+        go[17][9] = 26;
+        go[17][11] = 20;
+        go[17][13] = 21;
+        go[19][8] = 28;
+        go[20][10] = 34;
+        go[21][12] = 37;
+        go[24][9] = 40;
+        go[24][11] = 20;
+        go[24][13] = 21;
+        go[28][9] = 44;
+        go[28][11] = 20;
+        go[28][13] = 21;
+        go[35][11] = 45;
+        go[35][13] = 21;
+        go[36][11] = 46;
+        go[36][13] = 21;
+        go[38][13] = 47;
+        go[39][13] = 48;
+        go[41][1] = 50;
+        go[41][2] = 9;
+        go[41][4] = 6;
+        go[41][5] = 7;
+        go[41][6] = 8;
+        go[43][1] = 51;
+        go[43][2] = 9;
+        go[43][4] = 6;
+        go[43][5] = 7;
+        go[43][6] = 8;
+        go[45][10] = 52;
+        go[46][10] = 53;
+        go[47][12] = 54;
+        go[48][12] = 55;
+        go[56][1] = 57;
+        go[56][2] = 9;
+        go[56][4] = 6;
+        go[56][5] = 7;
+        go[56][6] = 8;
+
+        String[] nonTerminal = {"program","stmt","compoundstmt","stmts","ifstmt","whilestmt","assgstmt","boolexpr","boolop","arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"};
+        String[] terminal = {"{","}","if","(",")","then","else","while","ID","=",";","<",">","<=",">=","==","+","-","*","/","NUM", "$"};
+        nonTerminalList = new ArrayList<>(asList(nonTerminal));
+        terminalList = new ArrayList<>(asList(terminal));
+        int n=0;
+        for( ; n<nonTerminal.length; n++) {
+            map.put(nonTerminal[n], n);
+            map2.put(n, nonTerminal[n]);
+        }
+        for( int i=0; i<terminal.length; n++, i++) {
+            map.put(terminal[i], n);
+            map2.put(n, terminal[i]);
+        }
+        String Grammar =
+                //"program’ -> program\n" +
+                "program -> compoundstmt\n" +
+                "stmt -> ifstmt | whilestmt | assgstmt | compoundstmt\n" +
+                "compoundstmt -> { stmts }\n" +
+                "stmts -> stmt stmts  |  E\n" +
+                "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+                "whilestmt -> while ( boolexpr ) stmt\n" +
+                "assgstmt -> ID = arithexpr ;\n" +
+                "boolexpr -> arithexpr boolop arithexpr\n" +
+                "boolop ->  < | > | <= | >= | ==\n" +
+                "arithexpr -> multexpr arithexprprime\n" +
+                "arithexprprime -> + multexpr arithexprprime | - multexpr arithexprprime |  E\n" +
+                "multexpr -> simpleexpr multexprprime\n" +
+                "multexprprime -> * simpleexpr multexprprime | / simpleexpr multexprprime |  E\n" +
+                "simpleexpr -> ID | NUM | ( arithexpr )\n";
+        String[] line = Grammar.split("\n");
+        for(int i=0; i<line.length; i++) {
+            String left = line[i].split("->")[0].trim();
+            String right = line[i].split("->")[1].trim();
+            ArrayList<String> list;
+            if(right.contains("|")) {
+                String[] rightOfProduction = right.split("\\|");
+                for(int j=0; j<rightOfProduction.length; j++) {
+                    list = new ArrayList<>( asList(rightOfProduction[j].trim().split(" ")) );
+                    list.add(left);
+                    production.add(list);
+                }
+            } else {
+                list = new ArrayList<>( asList(right.trim().split(" ")) );
+                list.add(left);
+                production.add(list);
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

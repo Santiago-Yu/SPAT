@@ -1,0 +1,76 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < (1 << numbers); i++) {
+            //与m位长相匹配,测试数据的01计数器
+            int testtot_0 = 0;
+            int testtot_1 = 0;
+            int mathValue[] = new int[numbers];
+            int start = 0;
+            //还原回二进制数据
+            for (int k = i; k > 0; k /= 2) {
+
+                mathValue[start] = k % 2;
+                start++;
+
+                if (k % 2 == 1) {
+                    testtot_1++;
+                } else {
+                    testtot_0++;
+                }
+            }
+
+
+            //枚举数字的1的个数不匹配
+            if (testtot_1 != selectedNum) {
+                continue;
+            }
+
+
+            //检查距离是否超过最远距离
+            boolean nofinded = true;
+            int pre = 0;
+            boolean toolong = false;
+            for (int j = 0; j < mathValue.length; j++) {
+                if (nofinded && mathValue[j] == 1) {
+                    pre = j;
+                    nofinded = false;
+                } else if (mathValue[j] == 1) {
+                    if (j - pre > distance) {
+                        toolong = true;
+                        break;
+                    }
+                    pre = j;
+                }
+            }
+
+            //间距超出范围
+            if (toolong) {
+                continue;
+            } else {
+                int count = 1;
+                for (int j = 0; j < mathValue.length; j++) {
+                    if (mathValue[j] == 1) {
+                        count *= abilities[j+1];
+                    }
+                }
+                list.add(count);
+            }
+        }
+
+        Collections.sort(list);
+//        System.out.println(list);
+        return Long.parseLong(Math.max(list.get(list.size() - 1),list.get(0)) + "");
+    }
+	/********* End *********/
+}

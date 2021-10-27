@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main(){
+ string s1,s2;
+ cin>>s1>>s2;
+ int ans=0;
+ for(int i=0;i<s1.size();i++){
+ for(int j=0;j<s2.size();j++){
+ if(s1[i]==s2[j]){
+ int tmp=0;
+ for(int k=0;;k++){
+ if(i+k<s1.size()&&j+k<s2.size()){
+ if(s1[i+k]==s2[j+k]){
+ tmp++;
+ }
+  else
+  break;
+  }
+  else break;
+  }
+  ans=max(ans,tmp);
+  }
+  }
+  }
+  printf("%d",ans);
+  return 0;
+ }

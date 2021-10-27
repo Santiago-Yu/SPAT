@@ -1,0 +1,41 @@
+package step1;
+
+public class Rectangle{
+	private double width;
+	private double length;
+	
+	/*********begin*********/
+    public Rectangle(double width,double length){
+    	this.width=width;/*有参数的构造方法，用this给成员变量付初值*/
+        this.length=length;
+        System.out.println("r2的周长："+this.z(width,length));
+        System.out.println("r2的面积："+this.area(width,length));
+    }
+    public	Rectangle(){
+    	width=5;
+        length=6;
+        System.out.println("r1的周长："+this.z(width,length));
+        System.out.println("r1的面积："+this.area(width,length));
+    }
+	public double area(double width,double length){
+    	return width*length;
+    }
+    public double z(double width,double length){
+    	return (width+length)*2;
+    }
+    
+	/*********end*********/
+
+
+	public static void main(String[] args) {
+		/*********begin*********/
+        
+		Rectangle r1=new Rectangle();
+        Rectangle r2=new Rectangle(20,10);
+        
+
+
+		/*********end*********/
+	}
+
+}

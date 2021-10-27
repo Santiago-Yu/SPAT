@@ -1,0 +1,37 @@
+package step2;
+
+import java.util.Arrays;
+
+public class Task {
+	static long sum;
+    static int ans,n;
+	static long k;
+	static int[] vis=new int[100];
+    
+    public static void dfs(int x,long[] a)
+    {
+        ans=ans+1;
+		for(int i=x;i<n;i++)
+		{
+			if(vis[i]==0&&sum+a[i]<=k)
+			{
+				sum+=a[i];
+				vis[i]=1;
+				dfs(i,a);
+				vis[i]=0;
+				sum-=a[i];
+			}
+		}
+    }
+    
+	public int getTheWay(int num,int bagCapacity,long[] snacks){
+        
+			ans=0;sum=0;
+            k=bagCapacity;
+            n=num;
+        	for(int i=0;i<n;i++)
+                vis[i]=0;
+            dfs(0,snacks);
+            return ans;
+	}
+}

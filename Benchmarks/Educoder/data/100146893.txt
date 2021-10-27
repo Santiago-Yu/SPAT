@@ -1,0 +1,28 @@
+package step1;
+import java.util.BitSet;
+
+public class GetScores {
+
+    public int getLostScores(int[] nums) {
+        //请在此补全你的代码
+        BitSet b = new BitSet(10000);
+        for (int i : nums) {
+            b.set(i - 1);
+        }
+        int tmp = 0;
+        long ans = 0;
+        int ans1 = 0;
+        int mul = 10;
+        for(int i = 0; i < 3; i++) {
+            tmp = b.nextClearBit(tmp) + 1;
+            ans1 = ans1 * 100 + tmp;
+            while(tmp > mul) {
+                mul *= 10;
+            }
+            ans = ans * mul + tmp;
+        }
+        return (int) (ans %11);
+    }
+
+	/********* End *********/
+}

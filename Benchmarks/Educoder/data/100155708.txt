@@ -1,0 +1,42 @@
+package task6;
+import java.util.Scanner;
+
+public class ScaleBox extends Box{  
+	
+   public ScaleBox(int boxType) {
+       super(boxType);
+   }
+
+  private String unit;
+  
+  String getUnit() {
+  	return this.unit;
+  }
+   void setUnit(String unit) {
+  	this.unit=unit; 	
+  }
+  
+  void printVolumn() {
+	  double temp;
+      temp=super.volume();      //写不写都行
+      System.out.println("the volumn is:"+temp+unit);
+}
+  public static void main(String[] args) {
+	Scanner input=new Scanner(System.in);
+  	
+  	int m=input.nextInt();
+  	ScaleBox box = new ScaleBox(m); 
+  	
+  	  double a=input.nextDouble();
+      double b=input.nextDouble();
+      double c=input.nextDouble();
+	  String d=input.nextLine();
+	  box.setWidth(a);
+	  box.setHeight(b);
+	  box.setDepth(c);
+	  box.setUnit(d);
+	  box.printVolumn();
+}
+  
+}
+

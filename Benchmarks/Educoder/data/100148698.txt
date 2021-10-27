@@ -1,0 +1,53 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		int left = 1;
+		int right = arr.length - 1;
+		int t = 0;
+		boolean a = true;
+		do {
+			for (int i = left; i < right+1; i++) {
+				if (arr[i] < arr[i - 1]) {
+					a = false;
+					int temp = arr[i];
+					arr[i] = arr[i-1];
+					arr[i-1] = temp;
+					t = i ;
+					StringBuffer sb = new StringBuffer();
+					for (Integer string : arr) {
+						sb.append(string + " ");
+					}
+					System.out.println(sb);
+				}
+			}
+			if(a == true){
+				StringBuffer sb = new StringBuffer();
+				for (Integer string : arr) {
+					sb.append(string + " ");
+				}
+				System.out.println(sb);
+			}
+			right = t - 1;
+			//从右到左比较进行数组排序
+			for (int j = right; j >= left; j--) {
+				if (arr[j] < arr[j - 1]) {
+					int temp = arr[j];
+					arr[j] = arr[j-1];
+					arr[j-1] = temp;
+					t = j;
+					StringBuffer sb = new StringBuffer();
+					for (Integer string : arr) {
+						sb.append(string + " ");
+					}
+					System.out.println(sb);
+				}
+			}
+			left = t + 1;
+		}while(left <= right);
+
+		/********* End *********/
+	}
+}

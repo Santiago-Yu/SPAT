@@ -1,0 +1,30 @@
+package Q201;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		int n;
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		int[] vis = new int[1001];
+		int x = n,flag = 0;
+		while(true) {
+			int m = 0,k;
+			while(x>0) {
+				k=x%10;
+				x/=10;
+				m+=k*k;
+			}
+			if(vis[m]==1) {
+				flag = 1;
+				break;
+			}
+			if(m == 1)break;
+			vis[m] = 1;
+			x = m;
+		}
+		if(flag==1) System.out.print("NO");
+		else System.out.print("YES");
+	}
+
+}

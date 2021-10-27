@@ -1,0 +1,48 @@
+
+package step4;
+import step1.Date;
+import step2.Student;
+import step3.Course;
+
+public class Report {
+    private int count;
+    private Student s;//学生基本信息
+    private String major; //所学专业  
+    private Course[] selCourse = new Course[10];//所选课程
+   /************Begin****************/
+    public Report(Student s,String major,Course[] selCourse)
+    {
+        count=selCourse.length;
+        for(int i=0;i<selCourse.length;i++)
+        {
+        	this.selCourse[i]=new Course();
+        }
+    	this.s=s;
+        this.major=major;
+        for(int i=0;i<selCourse.length;i++)
+        {
+        	this.selCourse[i]=selCourse[i];
+        }
+    }
+    public Student getStudent()
+    {
+    	return s;
+    }
+    public String toString()
+    {
+        String sfin;
+    	sfin = s.toString()+" major:"+major+"\n";
+        for(int i=0;i<count;i++)
+        {
+        	sfin=sfin+selCourse[i].toString()+"\n";
+        }
+        return sfin;
+    }
+
+
+
+
+    /************End****************/
+
+  
+}

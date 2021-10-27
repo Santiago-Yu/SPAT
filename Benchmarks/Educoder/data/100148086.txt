@@ -1,0 +1,36 @@
+package task2;
+
+public class Task2 {
+	public static void main(String[] args) {
+        System.out.println("递归方法求2!+4!+5!的值：" + getFactorial(2)
+                + getFactorial(4) + getFactorial(5));
+        System.out.println("非递归方法求2!+4!+5!的值：" + getFactorial2(2)
+                + getFactorial2(4) + getFactorial2(5));
+    }
+
+	// 构造递归函数求n!
+	/********* Begin *********/
+	public static int getFactorial(int n) {
+        int f;
+	if(n==1){
+         f=1;
+    }
+	else{
+        f=getFactorial(n-1)*n;
+    }
+        return f;
+    }
+	/********* End *********/
+	
+	// 构造非递归函数求n!
+	/********* Begin *********/
+	public static int getFactorial2(int n) {
+	int m=1;
+     for(int i=1;i<=n;i++){
+         
+        m*=i;
+     }
+        return m;
+    } 
+	/********* End *********/
+}

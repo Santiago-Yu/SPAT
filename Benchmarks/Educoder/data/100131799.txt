@@ -1,0 +1,35 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File dir)	{
+		DirStructure(dir,0);
+	}
+	public void DirStructure(File dir,int count){//count为空格数
+        String fileName=dir.getName();
+        
+        if(dir.isDirectory()){
+            for(int i=0;i<count*2;i++){
+           		System.out.print(" ");
+        	}
+             System.out.println("+--"+fileName);          
+           		File[] files=dir.listFiles();
+        	for(File file:files){
+            	DirStructure(file,count+1);
+       		}
+        }else{
+            String prefix=fileName.substring(fileName.lastIndexOf("."));
+            if(prefix.equals(".jpg")||prefix.equals(".png")||prefix.equals(".bmp")){
+                for(int i=0;i<count*2;i++){
+           			System.out.print(" ");
+        		}
+            	System.out.println("--"+fileName);
+            }
+        }
+	}	
+
+	/********** END **********/
+}

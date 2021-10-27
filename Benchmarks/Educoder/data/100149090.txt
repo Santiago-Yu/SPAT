@@ -1,0 +1,50 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+int max = 0;;
+		
+		int[] low = new int[arr.length];//用于记录凹谷的位置
+		for(int i = 0; i < arr.length; i++){
+			low[i] = -1;
+		}
+		int j = 0;
+		for(int i = 1; i < arr.length - 1; i++){
+			if (arr[i] < arr[i-1] && arr[i] < arr[i+1]){
+				low[j] = i;
+				j++;
+			}
+		}
+		
+		//以下记录凹谷的长度
+		for(int i = 0; i < arr.length; i++){
+			int n1 = 0;
+			int n2 = 0;
+			//此时low【i】为这个凹谷的位置，及对应序号
+			if (low[i] > 0 ){
+				for(int m = low[i]; m > 0; m--){
+					if(arr[m] < arr[m-1])
+						n1 += 1;
+					else
+						break;
+				}
+				for(int m = low[i]; m < arr.length - 1; m++){
+					if (arr[m] < arr[m+1])
+						n2 += 1;
+					else 
+						break;
+				}
+				if(max < n1 + n2 + 1){
+					max = n1 + n2 + 1;
+
+				}
+				
+			}
+		}
+		return max;
+		
+		/********* End *********/	
+	}
+}

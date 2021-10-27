@@ -1,0 +1,19 @@
+package step1;
+//编写一个方法，统计1990年至2018年之间闰年的个数
+public class TestJava23_5 {
+
+	public static void main(String[] args) {
+
+	System.out.println("1990~2018年之间闰年的个数是："+GeShu());
+
+	}
+public static int GeShu() {
+	int y=0;
+	for(int x=1990;x<=2018;x++) {
+		if(x%4==0&&x%100!=0||x%400==0) {
+			y++;
+		}
+	}
+	return y;
+}
+}

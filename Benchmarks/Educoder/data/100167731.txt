@@ -1,0 +1,632 @@
+import java.util.*;
+class TreeNode
+{
+    private String symbol;
+    private String val;
+    private int production;
+    private Vector<TreeNode> child;
+    private String type;
+    private String operation;
+    private int line;
+
+    public TreeNode(String symbol)
+    {
+        this.symbol = symbol;
+        child = new Vector<TreeNode>();
+    }
+
+    public String getSymbol()
+    {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol)
+    {
+        this.symbol = symbol;
+    }
+
+    public String getVal()
+    {
+        return val;
+    }
+
+    public void setVal(String val)
+    {
+        this.val = val;
+    }
+
+    public void insertChild(int index, TreeNode c){
+        child.add(index,c);
+    }
+
+    public TreeNode getChildAt(int index){
+        return child.get(index);
+    }
+
+    public int getChildSize(){
+        return child.size();
+    }
+
+    public int getProduction()
+    {
+        return production;
+    }
+
+    public void setProduction(int production)
+    {
+        this.production = production;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+
+    public String getOperation()
+    {
+        return operation;
+    }
+
+    public void setOperation(String operation)
+    {
+        this.operation = operation;
+    }
+
+    public int getLine()
+    {
+        return line;
+    }
+
+    public void setLine(int line)
+    {
+        this.line = line;
+    }
+}
+
+public class Java_TranslationSchemaAnalysis
+{
+    //常量
+    private static final int nonterminalSymbolsSize = 15;
+    private static final String nonterminalSymbols[] = {"program","decls","decl","stmt","compoundstmt","stmts","ifstmt",
+            "assgstmt","boolexpr","boolop","arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"};
+
+    private static final int terminalSymbolsSize = 25;
+    private static final String terminalSymbols[] = {"int","ID","=","INTNUM","real","REALNUM","{","}","if","(",")","then","else",
+            ";","<",">","<=",">=","==","+","-","*","/","$","E"};
+
+    private static final int productionNumber = 31;
+    private static final String before[] = {"program","decls","decls","decl","decl","stmt","stmt","stmt","compoundstmt","stmts","stmts",
+            "ifstmt","assgstmt","boolexpr","boolop","boolop","boolop","boolop","boolop","arithexpr",
+            "arithexprprime","arithexprprime","arithexprprime","multexpr","multexprprime","multexprprime",
+            "multexprprime","simpleexpr","simpleexpr","simpleexpr","simpleexpr"};
+
+    private static final String after[][] = {{"decls","compoundstmt"},{"decl",";","decls"},{"E"},{"int","ID","=","INTNUM"},
+            {"real","ID","=","REALNUM"}, {"ifstmt"},{"assgstmt"},{"compoundstmt"},
+            {"{","stmts","}"},{"stmt", "stmts"},{"E"},{"if","(","boolexpr",")","then","stmt","else","stmt"},
+            {"ID","=","arithexpr",";"},{"arithexpr","boolop","arithexpr"},
+            {"<"},{">"},{"<="},{">="},{"=="},{"multexpr","arithexprprime"},{"+","multexpr","arithexprprime"},
+            {"-","multexpr","arithexprprime"},{"E"},{"simpleexpr" ,"multexprprime"},{"*","simpleexpr","multexprprime"},
+            {"/","simpleexpr","multexprprime"},{"E"},{"ID"},{"INTNUM"},{"REALNUM"},{"(","arithexpr",")"}};
+
+
+    private static final int table[][] = {
+            {1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {2,0,0,0,2,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {4,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,7,0,0,0,0,8,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,10,0,0,0,0,10,11,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,14,0,14,0,14,0,0,0,14,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,15,16,17,18,19,0,0,0,0,0},
+            {0,20,0,20,0,20,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,23,0,0,23,23,23,23,23,23,21,22,0,0,0},
+            {0,24,0,24,0,24,0,0,0,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,27,0,0,27,27,27,27,27,27,27,27,25,26,0},
+            {0,28,0,29,0,30,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+
+    //变量
+    private static StringBuffer prog = new StringBuffer();
+    private static String target;
+    private static String w;
+    private static int i;
+    private static int line;
+    private static Vector<Integer> ans = new Vector<Integer>();
+    private static Stack<TreeNode> tree = new Stack<TreeNode>();
+    private static Map<String, String> map = new HashMap<String, String >();
+    private static Queue<String> IDqueue = new LinkedList<String>();
+    private static Queue<String> NUMqueue = new LinkedList<String>();
+    private static Map<String,String> IDtable = new HashMap<String, String>();
+    private static Map<String,String> typeTable = new HashMap<String, String>();
+    private static Stack<String> stack = new Stack<String>();
+    private static TreeNode root;
+    private static boolean error = false;
+    private static boolean error2 = false;
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            //这里要加一行，否则无法在打印错误时输出错误所在的行号
+            prog.append("\n");
+        }
+    }
+
+
+    // add your method here!!
+    //判断字母或下划线
+    private static boolean isLetter(char x){
+        return (x >= 'A' && x <= 'Z') || (x >= 'a' && x <= 'z') || x == '_';
+    }
+
+    //判断数字
+    private static boolean isDigit(char x){
+        return (x >= '0' && x <= '9');
+    }
+
+    //判断无歧义的字符
+    private static boolean isUnambiguousSymbol(char x){
+        return x == '(' || x ==')' || x == ';' || x == '{' || x == '}' || x == '+' || x == '-' || x == '*' || x == '/';
+    }
+
+    //判断有歧义的字符
+    private static boolean isAmbiguousSymbol(char x){
+        return  x == '<' || x == '=' || x == '>';
+    }
+
+    //判断bool真假
+    private static String compare(TreeNode left, TreeNode right, String operation) {
+        String leftType = left.getType();
+        String rightType = right.getType();
+        String leftVal = left.getVal();
+        String rightVal = right.getVal();
+        boolean result = false;
+        double a,b;
+        if (leftType.equals("int")) {
+            int aa = Integer.parseInt(leftVal);
+            a = aa;
+            if (rightType.equals("int")) {
+                int bb = Integer.parseInt(rightVal);
+                b = bb;
+            } else {
+                b = Double.parseDouble(rightVal);
+            }
+        } else {
+            a = Double.parseDouble(leftVal);
+            if (rightType.equals("int")) {
+                int bb = Integer.parseInt(rightVal);
+                b = bb;
+            } else {
+                b = Double.parseDouble(rightVal);
+            }
+        }
+
+        if (operation.equals("<")) {
+            result = (a < b);
+        }else if(operation.equals(">")){
+            result = (a > b);
+        }else if(operation.equals("<=")){
+            result = (a <= b);
+        }else if(operation.equals(">=")){
+            result = (a >= b);
+        }else{
+            result = (a == b);
+        }
+
+//        System.out.println(a + " "+ operation + " " + b + " :  " + result);
+        if (result) {
+            return "true";
+        }
+        return "false";
+    }
+
+    //计算Val
+    private static String calculate(TreeNode left, TreeNode right, String operation){
+        String leftType = left.getType();
+        String rightType = right.getType();
+        String leftVal = left.getVal();
+        String rightVal = right.getVal();
+        double result,a,b;
+        boolean flag = false;
+        if (leftType.equals("int")) {
+            int aa = Integer.parseInt(leftVal);
+            a = aa;
+            if (rightType.equals("int")) {
+                int bb = Integer.parseInt(rightVal);
+                b = bb;
+                flag = true;
+            } else {
+                b = Double.parseDouble(rightVal);
+            }
+        } else {
+            a = Double.parseDouble(leftVal);
+            if (rightType.equals("int")) {
+                int bb = Integer.parseInt(rightVal);
+                b = bb;
+            } else {
+                b = Double.parseDouble(rightVal);
+            }
+        }
+
+        if (operation.equals("+")) {
+            result = a + b;
+        }else if(operation.equals("-")){
+            result = a - b;
+        }else if(operation.equals("*")){
+            result = a * b;
+        }else{
+            if(b  == 0){
+                System.out.println();
+                System.out.print("error message:line " +left.getLine() + ",division by zero");
+                error = true;
+                return "1";
+            }
+            result = a / b;
+        }
+
+        if(flag){
+            int x = (int)result;
+            return String.valueOf(x);
+        }
+        return String.valueOf(result);
+    }
+
+    //初始化map
+    private static void init(){
+        for(int i = 0; i < nonterminalSymbolsSize;i++){
+            char X = (char) ('A' + i);
+            map.put(nonterminalSymbols[i],""+X);
+        }
+        for(int i = 0; i < terminalSymbolsSize; i++){
+            char X = (char) ('a'+i);
+            map.put(terminalSymbols[i],"" + X);
+        }
+        root = new TreeNode("program");
+
+    }
+
+    //用于词法分析
+    private static String scan(){
+        target = "";
+        while(i < prog.length() && (prog.charAt(i) == ' ' || prog.charAt(i) == '\t'))
+            i++;
+        if(i >= prog.length())
+            return "$";
+        if(isLetter(prog.charAt(i))){
+            while(isLetter(prog.charAt(i))){
+                target += prog.charAt(i);
+                i++;
+            }
+            if(map.get(target) == null){
+                IDqueue.add(target);
+                return map.get("ID");
+            }
+            return map.get(target);
+        }else if(isDigit(prog.charAt(i))){
+            while(isDigit(prog.charAt(i))){
+                target += prog.charAt(i);
+                i++;
+            }
+            if(prog.charAt(i) == '.'){
+                target += prog.charAt(i);
+                i++;
+                while(isDigit(prog.charAt(i))){
+                    target += prog.charAt(i);
+                    i++;
+                }
+                NUMqueue.add(target);
+                return map.get("REALNUM");
+            }else{
+                NUMqueue.add(target);
+                return map.get("INTNUM");
+            }
+
+        } else if(isUnambiguousSymbol(prog.charAt(i))){
+            target += prog.charAt(i);
+            i++;
+            return map.get(target);
+        }else if(isAmbiguousSymbol(prog.charAt(i))){
+            if(prog.charAt(i) == '<'){
+                if(prog.charAt(i+1) == '='){
+                    target = "<=";
+                    i += 2;
+                }else{
+                    target = "<";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '='){
+                if(prog.charAt(i+1) == '='){
+                    target = "==";
+                    i += 2;
+                }else{
+                    target = "=";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '>'){
+                if(prog.charAt(i+1) == '='){
+                    target = ">=";
+                    i += 2;
+                }else{
+                    target = ">";
+                    i++;
+                }
+            }
+            return map.get(target);
+        }else if(prog.charAt(i) == '\n'){
+            i++;
+            return "\n";
+        }
+        else{
+            i++;
+            return "$";
+        }
+    }
+
+    //LL法语法分析 + 生成语法分析树
+    private static void semanticAnalysis(){
+        stack.push("$");
+        stack.push("A");
+        tree.push(root);
+        i = 0;
+        line = 1;
+        while(!stack.peek().equals("$")){
+            if(w.charAt(i) == '\n'){
+                line++;
+                i++;
+                continue;
+            }
+
+            //打印分析过程 1
+//            Stack<String> temp = new Stack<String>();
+//            while(!stack.empty()){
+//                System.out.print(stack.peek());
+//                temp.push(stack.pop());
+//            }
+//            while (!temp.empty()){
+//                stack.push(temp.pop());
+//            }
+//            System.out.print("  ");
+//            for(int k = i; k < w.length(); k++){
+//                if(w.charAt(k) != '\n'){
+//                    System.out.print(w.charAt(k));
+//                }
+//            }
+
+            char X = stack.peek().charAt(0);
+            char a = w.charAt(i);
+            if(X == a){
+                int x = X - 'a';
+                if(terminalSymbols[x].equals("ID")){
+                    tree.peek().setVal(IDqueue.poll());
+                }else if(terminalSymbols[x].equals("INTNUM")){
+                    tree.peek().setVal(NUMqueue.poll());
+                    tree.peek().setType("int");
+                }else if(terminalSymbols[x].equals("REALNUM")){
+                    tree.peek().setVal(NUMqueue.poll());
+                    tree.peek().setType("real");
+                }
+                tree.peek().setLine(line);
+                tree.pop();
+                i++;
+                stack.pop();
+            }else if(X >= 'a' && X <= 'z'){
+                int x = X - 'a';
+                if(terminalSymbols[x].equals("INTNUM")){
+                    tree.peek().setVal(NUMqueue.poll());
+                    error2 = true;
+                    System.out.print("error message:line " + line + ",realnum can not be translated into int type");
+                }
+//                else{
+//                    tree.peek().setVal(NUMqueue.poll());
+//                    error2 = true;
+//                    System.out.println("error message:line " + line + ",intnum can not be translated into real type");
+//                }
+                tree.peek().setLine(line);
+                tree.pop();
+                i++;
+                stack.pop();
+            }else{
+                int produnction = table[X-'A'][a-'a'] - 1;
+
+                //打印分析过程 2
+//                System.out.print("  "+ before[produnction] + "->");
+//                for(int k = 0; k < after[produnction].length; k++){
+//                    System.out.print(" " + after[produnction][k]);
+//                }
+
+                ans.add(produnction);
+                TreeNode parent = tree.peek();
+                parent.setProduction(produnction);
+                parent.setLine(line);
+                tree.pop();
+                stack.pop();
+                for(int j = after[produnction].length - 1; j >= 0; j--){
+                    if(!after[produnction][j].equals("E")){
+                        TreeNode child = new TreeNode(after[produnction][j]);
+                        parent.insertChild(0,child);
+                        tree.push(child);
+                        stack.push(map.get(after[produnction][j]));
+                    }
+                }
+            }
+
+            //打印分析过程 3
+//            System.out.println();
+        }
+    }
+
+    //前序遍历语法树
+    private static void preorderTraversal(TreeNode root){
+//        int production = root.getProduction();
+//        System.out.print((production+1) +  " : " + root.getSymbol() + "->");
+//        for(int k = 0; k < root.getChildSize(); k++){
+//            System.out.print(" " + root.getChildAt(k).getSymbol());
+//        }
+//        System.out.println();
+
+        String parent = root.getSymbol();
+        if (parent.equals("decl")){
+            String IDstring = root.getChildAt(1).getVal();
+            String Valstring = root.getChildAt(3).getVal();
+            String type1 = root.getChildAt(0).getSymbol();
+            String type2 = root.getChildAt(3).getType();
+            if(!type1.equals(type2)){
+                if(type1.equals("int")){
+                    double temp = Double.parseDouble(Valstring);
+                    int val = (int) temp;
+                    Valstring = String.valueOf(val);
+                }else{
+                    int temp = Integer.parseInt(Valstring);
+                    double val = temp;
+                    Valstring = String.valueOf(val);
+                }
+            }
+            IDtable.put(IDstring,Valstring);
+            typeTable.put(IDstring,type1);
+        } else if (parent.equals("assgstmt")){
+            String IDstring = root.getChildAt(0).getVal();
+            preorderTraversal(root.getChildAt(2));
+            String Valstring = root.getChildAt(2).getVal();
+            IDtable.replace(IDstring,Valstring);
+        }else if (parent.equals("ifstmt")){
+            preorderTraversal(root.getChildAt(2));
+            if(root.getChildAt(2).getVal().equals("true")){
+                preorderTraversal(root.getChildAt(5));
+            }else{
+                preorderTraversal(root.getChildAt(7));
+            }
+        }else if(parent.equals("boolexpr")){
+            for(int j = 0; j < root.getChildSize(); j++){
+                preorderTraversal(root.getChildAt(j));
+            }
+            root.setVal(compare(root.getChildAt(0),root.getChildAt(2),root.getChildAt(1).getVal()));
+        }else if(parent.equals("boolop")){
+          root.setVal(root.getChildAt(0).getSymbol());
+        } else if(parent.equals("arithexpr") || parent.equals("multexpr")){
+            TreeNode left = root.getChildAt(0);
+            TreeNode right = root.getChildAt(1);
+            preorderTraversal(left);
+            preorderTraversal(right);
+            if(left.getType().equals("real")||right.getType().equals("real")){
+                root.setType("real");
+            }else{
+                root.setType("int");
+            }
+            root.setVal(calculate(left,right,right.getOperation()));
+        }else if(parent.equals("arithexprprime") || parent.equals("multexprprime")){
+            if(root.getProduction() == 23-1){
+                root.setType("int");
+                root.setVal("0");
+                root.setOperation("+");
+            }else if(root.getProduction() == 27-1){
+                root.setType("int");
+                root.setVal("1");
+                root.setOperation("*");
+            }else{
+                root.setOperation(root.getChildAt(0).getSymbol());
+                TreeNode left = root.getChildAt(1);
+                TreeNode right = root.getChildAt(2);
+                preorderTraversal(left);
+                preorderTraversal(right);
+                if(left.getType().equals("real")||right.getType().equals("real")){
+                    root.setType("real");
+                }else{
+                    root.setType("int");
+                }
+                root.setVal(calculate(left,right,right.getOperation()));
+            }
+        }else if(parent.equals("simpleexpr")){
+            if(root.getProduction() == 28-1){
+                String IDstring = root.getChildAt(0).getVal();
+                root.setType(typeTable.get(IDstring));
+                root.setVal(IDtable.get(IDstring));
+            }else if(root.getProduction() == 31-1){
+                preorderTraversal(root.getChildAt(1));
+                root.setType(root.getChildAt(1).getType());
+                root.setVal(root.getChildAt(1).getVal());
+            }else{
+                root.setType(root.getChildAt(0).getType());
+                root.setVal(root.getChildAt(0).getVal());
+            }
+        } else{
+            for(int j = 0; j < root.getChildSize(); j++){
+                preorderTraversal(root.getChildAt(j));
+            }
+        }
+    }
+
+    //输出结果
+    private static void output(){
+        if(error || error2){
+            return;
+        }
+        boolean flag = true;
+        for (Map.Entry<String, String> entry : IDtable.entrySet()) {
+            if(flag){
+                flag = false;
+            }else{
+                System.out.println();
+            }
+            System.out.print(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        init();
+        //先词法分析
+        int len = prog.length();
+        i = 0;
+        w = "";
+        while(i <= len){
+            String code = scan();
+            w += code;
+            if(code.equals("$")){
+                break;
+            }
+        }
+        //打印w
+//        System.out.println(w+"\n");
+
+        //再进行语义分析
+        semanticAnalysis();
+
+//        for(int j =  0; j < ans.size(); j++){
+//            System.out.print((ans.get(j)+1) +  " : " + before[ans.get(j)] + "->");
+//            for(int k = 0; k < after[ans.get(j)].length; k++){
+//                System.out.print(" " + after[ans.get(j)][k]);
+//            }
+//            System.out.println();
+//        }
+
+        //前序遍历
+        preorderTraversal(root);
+
+        //输出结果
+        output();
+
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

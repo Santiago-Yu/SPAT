@@ -1,0 +1,42 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		/********** BEGIN **********/
+		double sum=0,a=1.0;
+        double count,i,j;
+        if (n%2==0)
+        {
+         count = n/2;
+            for (i=1;i<count;i++)
+            {
+                a =  a + count/i;
+                
+           
+            }
+            sum = 3*a/n;
+            //sum = sum*3;
+        }
+        else 
+        {
+        count = (n+1)/2;
+            for (i=1;i<=count;i++)
+            {
+            sum = sum + 1.0/(i*2-1);
+            }
+            sum = sum*4;
+            
+        }
+		
+        System.out.println(sum);
+		
+		
+		
+		/********** END **********/
+	}
+}

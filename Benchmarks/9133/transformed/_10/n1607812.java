@@ -1,0 +1,36 @@
+class n1607812 {
+	public void cleanup(long timeout) throws PersisterException {
+		Connection conn = null;
+		long threshold = System.currentTimeMillis() - timeout;
+		PreparedStatement ps = null;
+		try {
+			conn = _ds.getConnection();
+			conn.setAutoCommit(true);
+			ps = conn.prepareStatement("delete from " + _table_name + " where " + _ts_col + " < ?");
+			ps.setLong(1, threshold);
+			ps.executeUpdate();
+		} catch (Throwable th) {
+			throw new PersisterException("Failed to cleanup timed out objects: ", th);
+			if (conn != null) {
+				try {
+					conn.rollback();
+				} catch (Throwable th2) {
+				}
+			}
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Throwable th) {
+				}
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (Throwable th) {
+				}
+			}
+		}
+	}
+
+}

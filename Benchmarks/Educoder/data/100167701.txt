@@ -1,0 +1,1067 @@
+import java.util.*;
+import java.io.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+public class Java_LRParserAnalysis {
+    public static String readSouce() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder(12000);
+        List<String> list = new ArrayList<String>();
+        String tmp;
+        while ((tmp = bufferedReader.readLine()) != null)
+            sb.append(tmp).append(System.lineSeparator());
+        return sb.append(' ').toString();
+    }
+
+    public static void main(String[] args) throws IOException {
+        Parser parser = new Parser(readSouce());
+        System.out.print(parser.parse());
+    }
+
+    static class Parser {
+        GrammarParsingTable table;
+
+        Lexer lexer;
+
+        Tokens.Token token;
+
+        Tokens.Token nextToken;
+
+        List<String> errorList = new ArrayList<>();
+
+        public Parser(String buf) {
+            this.lexer = new Lexer(buf);
+            this.table = new GrammarParsingTable();
+            nextToken();
+        }
+
+        public void nextToken() {
+            if (nextToken != null) {
+                token = nextToken;
+                nextToken = null;
+            } else {
+                lexer.nextToken();
+                token = lexer.token();
+            }
+        }
+
+        private void reportError(int endPos, Tokens.TokenKind tk) {
+            errorList.add(String.format("语法错误，第%d行，缺少\"%s\"", lexer.getLineMap().getLineNumber(endPos), tk.name));
+        }
+
+        public String parse() {
+            LinkedList<Integer> stateStack = new LinkedList<>();
+            stateStack.push(0);
+            LinkedList<Grammar.Symbol> symbolStack = new LinkedList<>();
+            LinkedList<StringBuilder> res = new LinkedList<>();
+            res.add(new StringBuilder());
+
+            loop:
+            while (true) {
+                Integer currState = stateStack.peek();
+                GrammarParsingTable.Action action;
+                switch ((action = table.actionTable.get(currState, new Grammar.Terminal(token.kind))).getActionType()) {
+                case SHIFT:
+                    boolean isE = ((GrammarParsingTable.ShiftAction) action).isE;
+                    stateStack.push(((GrammarParsingTable.ShiftAction) action).shift);
+                    if (isE)
+                        symbolStack.push(Grammar.E);
+                    else {
+                        symbolStack.push(new Grammar.Terminal(token.kind)); ;
+                        res.forEach(sb -> sb.append(token.kind.name).append(' '));
+                    }
+                    if (!isE)
+                        nextToken();
+                    break;
+                case REDUCE:
+                    Grammar.Production production = ((GrammarParsingTable.ReduceAction) action).production;
+                    for (int i = 0; i < production.right.size(); i++) {
+                        symbolStack.pop();
+                        stateStack.pop();
+                    }
+                    symbolStack.push(production.left);
+                    ListIterator<Grammar.Symbol> symbolListIterator = symbolStack.listIterator(symbolStack.size());
+                    StringBuilder sb = new StringBuilder();
+                    while (symbolListIterator.hasPrevious()) {
+                        Grammar.Symbol symbol = symbolListIterator.previous();
+                        if (symbol instanceof Grammar.NonTerminal)
+                            sb.append(((Grammar.NonTerminal) symbol).name).append(' ');
+                        else if (symbol instanceof Grammar.Terminal && ((Grammar.Terminal) symbol).kind != null)
+                            sb.append(((Grammar.Terminal) symbol).kind.name).append(' ');
+                    }
+                    res.push(sb);
+                    currState = stateStack.peek();
+                    stateStack.push(table.gotoTable.get(currState, production.left));
+                    break;
+                case ACCEPT:
+                    break loop;
+                case ERROR:
+                    Grammar.Terminal errorSymbol = ((GrammarParsingTable.ErrorAction) action).errorSymbol;
+                    nextToken = token;
+                    token = new Tokens.Token(errorSymbol.kind, token.pos, token.endPos);
+                    reportError(lexer.prevToken().endPos, errorSymbol.kind);
+                }
+            }
+
+            res.forEach(sb->sb.append("=> "));
+            StringBuilder last = res.getLast();
+            last.replace(last.length()-3,last.length()  , "");
+            for (String s : errorList) {
+                res.addFirst(new StringBuilder(s));
+            }
+
+            return res.stream().collect(Collectors.joining(System.lineSeparator()));
+        }
+
+        public static void main(String[] args) {
+            Parser parser = new Parser(
+                    "{\n" +
+                            "while (ID == NUM)\n" +
+                            "{\n" +
+                            "ID = NUM\n" +
+                            "}\n" +
+                            "} "
+            );
+            System.out.print(parser.parse());
+        }
+    }
+
+    static class GrammarParsingTable {
+        Grammar grammar;
+
+        ActionTable actionTable;
+
+        GotoTable gotoTable;
+
+        ItemSetCollection itemSetCollection;
+
+        public GrammarParsingTable() {
+            grammar = new Grammar();
+            init();
+        }
+
+        private void init() {
+            grammar = augment(grammar);
+            ItemSetCollection itemSetCollection = new ItemSetCollection();
+            ItemSet initItemSet = new ItemSet(
+                    // 增广文法 产生式只有一个 S`->S
+                    new Item(grammar.getProductions(grammar.startSymbol).get(0), 0, grammar.endSymbol));
+            ItemSet initItemSetClosure = closure(initItemSet);
+            itemSetCollection.add(initItemSetClosure);
+            GotoTable gotoTable = new GotoTable();
+
+            List<ItemSet> itemSets = new ArrayList<>();
+            itemSets.add(initItemSetClosure);
+
+            int cnt = 0;
+
+            for (int i = 0; i < itemSets.size(); i++) {
+                ItemSet itemSet = itemSets.get(i);
+                for (Grammar.Symbol symbol : grammar.symbols) {
+                    if (symbol.equals(grammar.endSymbol))
+                        continue; ;
+                    ItemSet newItemSet;
+                    if ((newItemSet = gotoProcedure(itemSet, symbol)).items.size() != 0) {
+                        boolean contains = itemSetCollection.contains(newItemSet);
+                        gotoTable.add(i, symbol, contains ? itemSetCollection.indexOf(newItemSet) : ++cnt);
+                        if (!contains) {
+                            itemSetCollection.add(newItemSet);
+                            itemSets.add(newItemSet);
+                        }
+                    }
+                }
+            }
+
+            this.itemSetCollection = itemSetCollection;
+            this.gotoTable = gotoTable;
+            this.actionTable = new ActionTable(itemSetCollection, gotoTable);
+        }
+
+        //GOTO(I,X)
+        public ItemSet gotoProcedure(ItemSet itemSet, Grammar.Symbol x) {
+            Set<Item> newItemList = new LinkedHashSet<>(itemSet.items.size());
+            for (Item item : itemSet) {
+                List<Grammar.Symbol> right = item.production.right;
+                if (item.pointPos < right.size() && right.get(item.pointPos).equals(x))
+                    newItemList.add(new Item(item.production, item.pointPos + 1, item.lookAhead));
+            }
+            return closure(new ItemSet(newItemList));
+        }
+
+        private ItemSet closure(ItemSet itemSet) {
+            /**
+             * [A -> alpha B beta,a]
+             */
+            Set<Item> items = new LinkedHashSet<>(itemSet.items);
+            do {
+                Set<Item> newItems = new LinkedHashSet<>();
+                for (Item item : items) {
+                    Grammar.Production production = item.production;
+
+                    List<Grammar.Symbol> right = production.right;
+                    //[A -> alpha B beta,a]
+                    if (!(right.size() > item.pointPos && right.get(item.pointPos) instanceof Grammar.NonTerminal))
+                        continue;
+                    Grammar.NonTerminal B = ((Grammar.NonTerminal) right.get(item.pointPos));
+                    List<Grammar.Symbol> beta = new ArrayList<>(right.subList(item.pointPos + 1, right.size()));
+
+                    // B-> gammas
+                    // like
+                    // B-> gamma1 | gamma2 | gamma3 | ...
+                    List<Grammar.Production> gammas = grammar.getProductions(B);
+
+                    // beta a
+                    beta.add(item.lookAhead);
+
+                    //FIRST(beta alpha)
+                    List<Grammar.Terminal> bs = grammar.getFirstSet(beta);
+
+                    for (Grammar.Production gamma : gammas) {
+                        for (Grammar.Terminal b : bs) {
+                            Item item1 = new Item(gamma, 0, b);
+                            itemSet.addItem(item1);
+                            newItems.add(item1);
+                        }
+                    }
+                }
+
+                items = newItems;
+                newItems = null;
+            } while (items.size() != 0);
+
+            return itemSet;
+        }
+
+        private Grammar augment(Grammar grammar) {
+            String newName = grammar.startSymbol.name.concat("`");
+            Grammar.NonTerminal newStartSymbol = new Grammar.NonTerminal(newName);
+            grammar.productions.add(new Grammar.Production(newStartSymbol, Collections.singletonList(grammar.startSymbol)));
+            grammar.startSymbol = newStartSymbol;
+            return grammar;
+        }
+
+        public static enum ActionType {
+            SHIFT,
+            REDUCE,
+            ACCEPT,
+            ERROR
+        }
+
+        public static interface Action {
+            ActionType getActionType();
+        }
+
+        public static class ShiftAction implements Action {
+            public Integer shift;
+
+            public boolean isE;
+
+            public ShiftAction(Integer shift) {
+                this.shift = shift;
+            }
+
+            @Override
+            public ActionType getActionType() {
+                return ActionType.SHIFT;
+            }
+        }
+
+        public static class ReduceAction implements Action {
+            public Grammar.Production production;
+
+            public ReduceAction(Grammar.Production production) {
+                this.production = production;
+            }
+
+            @Override
+            public ActionType getActionType() {
+                return ActionType.REDUCE;
+            }
+        }
+
+        public static class ErrorAction implements Action{
+            public Grammar.Terminal errorSymbol;
+
+            public ErrorAction() {
+            }
+
+            public ErrorAction(Grammar.Terminal errorSymbol) {
+                this.errorSymbol = errorSymbol;
+            }
+
+            @Override
+            public ActionType getActionType() {
+                return ActionType.ERROR;
+            }
+        }
+
+        public static Action acceptAction = () -> ActionType.ACCEPT;
+
+        public static Action errorAction = new ErrorAction();
+
+
+        public class ActionTable {
+            public Map<Integer, Map<Grammar.Terminal, Action>> actionMap = new HashMap<>();
+
+            public void add(Integer from, Grammar.Terminal via, Action action) {
+                actionMap.computeIfAbsent(from, k -> new HashMap<>());
+                actionMap.get(from).put(via, action);
+            }
+
+            public Action get(Integer from, Grammar.Terminal via) {
+                Map<Grammar.Terminal, Action> terminalActionMap = actionMap.get(from);
+                if (terminalActionMap == null)
+                    return errorAction;
+                Action action = terminalActionMap.get(via);
+                if (action == null) {
+                    Action action1 = terminalActionMap.get(Grammar.E);
+                    if (action1 != null) {
+                        if (action1 instanceof ShiftAction)
+                            ((ShiftAction) action1).isE = true;
+                        return action1;
+                    }
+                    return new ErrorAction(terminalActionMap.keySet().iterator().next());
+                }
+
+                return action;
+            }
+
+            public ActionTable(ItemSetCollection itemSetCollection, GotoTable gotoTable) {
+                for (Map.Entry<ItemSet, Integer> entry : itemSetCollection) {
+                    ItemSet itemSet = entry.getKey();
+                    Integer from = entry.getValue();
+                    for (Item item : itemSet.items) {
+                        Grammar.Production production = item.production;
+                        Grammar.NonTerminal left = production.left;
+                        List<Grammar.Symbol> right = production.right;
+                        int pointPos = item.pointPos;
+                        Grammar.Terminal lookAhead = item.lookAhead;
+
+                        if (pointPos < right.size()) {
+                            Grammar.Symbol via = right.get(pointPos);
+                            if (via instanceof Grammar.NonTerminal)
+                                continue;
+                            Integer shift = gotoTable.get(from, via);
+                            add(from, ((Grammar.Terminal) via), new ShiftAction(shift));
+                        } else if (pointPos == right.size() && !left.equals(GrammarParsingTable.this.grammar.startSymbol)) {
+                            add(from, lookAhead, new ReduceAction(production));
+                        } else
+                            add(from, grammar.endSymbol, acceptAction);
+                    }
+                }
+            }
+        }
+
+        public static class GotoTable {
+            private Map<Integer, Map<Grammar.Symbol, Integer>> gotoTable = new HashMap<>();
+
+            public void add(Integer from, Grammar.Symbol via, Integer to) {
+                gotoTable.computeIfAbsent(from, k -> new HashMap<>());
+                gotoTable.get(from).put(via, to);
+            }
+
+            public Integer get(Integer from, Grammar.Symbol via) {
+                return gotoTable.get(from).get(via);
+            }
+        }
+
+        public static class ItemSetCollection implements Iterable<Map.Entry<ItemSet, Integer>> {
+            private Map<ItemSet, Integer> itemSetMap = new LinkedHashMap<>();
+
+            public void add(ItemSet itemSet) {
+                itemSetMap.put(itemSet, itemSetMap.size());
+            }
+
+            public boolean contains(ItemSet itemSet) {
+                return itemSetMap.containsKey(itemSet);
+            }
+
+            public Integer indexOf(ItemSet itemSet) {
+                return itemSetMap.get(itemSet);
+            }
+
+            @Override
+            public Iterator<Map.Entry<ItemSet, Integer>> iterator() {
+                return itemSetMap.entrySet().iterator();
+            }
+        }
+
+        public static class ItemSet implements Iterable<Item> {
+            private Set<Item> items;
+
+            public ItemSet(Set<Item> items) {
+                this.items = items;
+            }
+
+            public ItemSet(Item item) {
+                this.items = new LinkedHashSet<>();
+                items.add(item);
+            }
+
+            public void addItem(Item item) {
+                items.add(item);
+            }
+
+            @Override
+            public Iterator<Item> iterator() {
+                return items.iterator();
+            }
+
+            public boolean isEmpty() {
+                return items == null || items.size() == 0;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                ItemSet itemSet1 = (ItemSet) o;
+                return Objects.equals(items, itemSet1.items);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(items);
+            }
+        }
+
+        public static class Item {
+            private Grammar.Production production;
+
+            private int pointPos;
+
+            private Grammar.Terminal lookAhead;
+
+            public Item(Grammar.Production production, int pointPos, Grammar.Terminal lookAhead) {
+                this.production = production;
+                this.pointPos = pointPos;
+                this.lookAhead = lookAhead;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                Item item = (Item) o;
+                return pointPos == item.pointPos &&
+                        Objects.equals(production, item.production) &&
+                        Objects.equals(lookAhead, item.lookAhead);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(production, pointPos, lookAhead);
+            }
+        }
+    }
+
+
+    static class Grammar {
+        private static final Tokens tokens = Tokens.instance();
+
+
+        /*
+         * program -> compoundstmt
+         * stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt
+         * compoundstmt ->  { stmts }
+         * stmts ->  stmt stmts   |   E
+         * ifstmt ->  if ( boolexpr ) then stmt else stmt
+         * whilestmt ->  while ( boolexpr ) stmt
+         * assgstmt ->  ID = arithexpr ;
+         * boolexpr  ->  arithexpr boolop arithexpr
+         * boolop ->   <  |  >  |  <=  |  >=  | ==
+         * arithexpr  ->  multexpr arithexprprime
+         * arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E
+         * multexpr ->  simpleexpr  multexprprime
+         * multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E
+         * simpleexpr ->  ID  |  NUM  |  ( arithexpr )
+         */
+        public static final String grammrString =
+                "program -> compoundstmt\n" +
+                        "stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt\n" +
+                        "compoundstmt ->  { stmts }\n" +
+                        "stmts ->  stmt stmts   |   E\n" +
+                        "ifstmt ->  if ( boolexpr ) then stmt else stmt\n" +
+                        "whilestmt ->  while ( boolexpr ) stmt\n" +
+                        "assgstmt ->  ID = arithexpr ;\n" +
+                        "boolexpr  ->  arithexpr boolop arithexpr\n" +
+                        "boolop ->   <  |  >  |  <=  |  >=  | ==\n" +
+                        "arithexpr  ->  multexpr arithexprprime\n" +
+                        "arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E\n" +
+                        "multexpr ->  simpleexpr  multexprprime\n" +
+                        "multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E\n" +
+                        "simpleexpr ->  ID  |  NUM  |  ( arithexpr )";
+
+
+        public NonTerminal startSymbol;
+
+        public Set<Symbol> symbols;
+
+        public Productions productions;
+
+        public FirstSet firstSet;
+
+        public Terminal endSymbol = new Terminal(Tokens.TokenKind.EOF);
+
+        public Grammar() {
+            startSymbol = null;
+            symbols = new LinkedHashSet<>(30);
+            symbols.add(endSymbol);
+
+            productions = new Productions();
+
+            Pattern TRANS = Pattern.compile("\\s*->\\s*");
+            Pattern OR = Pattern.compile("\\s*\\|\\s*");
+            Pattern SPACE = Pattern.compile("\\s+");
+
+            Scanner scanner = new Scanner(grammrString);
+            while (scanner.hasNextLine()) {
+                String[] productionStr = TRANS.split(scanner.nextLine().trim());
+                NonTerminal leftSymbol = new NonTerminal(productionStr[0]);
+
+                if (startSymbol == null) {
+                    startSymbol = leftSymbol;
+                    symbols.add(startSymbol);
+                }
+
+                String[] rights = OR.split(productionStr[1].trim());
+
+                for (String right : rights) {
+                    String[] rightTokens = SPACE.split(right.trim());
+                    List<Symbol> rightSymbols = Arrays.stream(rightTokens).map(this::newSymbol).collect(Collectors.toList());
+
+                    symbols.addAll(rightSymbols);
+
+                    productions.add(new Production(leftSymbol, rightSymbols));
+                }
+            }
+
+            firstSet = new FirstSet();
+        }
+
+        public List<Terminal> getFirstSet(List<Symbol> symbols) {
+            List<Terminal> res = new ArrayList<>();
+            for (Symbol symbol : symbols) {
+                res.addAll(firstSet.getFirstSet(symbol));
+
+                if (!symbol.isE())
+                    break;
+            }
+            return res;
+        }
+
+        private static class MultiValueMap<K, V> {
+            private Map<K, List<V>> map = new HashMap<>();
+
+            public void put(K k, V v) {
+                List<V> vList = map.computeIfAbsent(k, k1 -> new LinkedList<>());
+                vList.add(v);
+            }
+
+            public void put(K k, List<V> vs) {
+                List<V> vList = map.computeIfAbsent(k, k1 -> new LinkedList<>());
+                vList.addAll(vs);
+            }
+
+            public List<V> get(K k) {
+                return map.get(k);
+            }
+        }
+
+        private Symbol newSymbol(String str) {
+            if (str.equals("E"))
+                return E;
+            Tokens.TokenKind tokenKind = tokens.lookUpTokenKind(str);
+            return tokenKind == Tokens.TokenKind.OTHER ? new NonTerminal(str) : new Terminal(tokenKind);
+        }
+
+        public static class Productions {
+            private MultiValueMap<NonTerminal, Production> productionMap = new MultiValueMap<>();
+
+            private Map<NonTerminal, Boolean> productECache = new HashMap<>();
+
+            public void add(Production production) {
+                productionMap.put(production.left, production);
+            }
+
+            public List<Production> get(NonTerminal left) {
+                List<Production> productions = productionMap.get(left);
+                if (productions == null)
+                    throw new AssertionError();
+                return productions;
+            }
+
+            public boolean productE(Symbol symbol) {
+                if (!(symbol instanceof NonTerminal))
+                    return false;
+
+                Boolean cacheProductE = productECache.get(((NonTerminal) symbol));
+                if (cacheProductE != null)
+                    return cacheProductE;
+
+                boolean productE = productionMap.get(((NonTerminal) symbol))
+                        .stream()
+                        .map(production -> production.right)
+                        .anyMatch(right -> right.get(0).isE());
+
+                productECache.put(((NonTerminal) symbol), productE);
+                return productE;
+            }
+        }
+
+        public List<Production> getProductions(NonTerminal left) {
+            return productions.get(left);
+        }
+
+        public class FirstSet {
+            private MultiValueMap<Symbol, Terminal> firstSet = new MultiValueMap<>();
+
+            public FirstSet() {
+                Grammar grammar = Grammar.this;
+                Productions productions = grammar.productions;
+                for (Symbol symbol : grammar.symbols)
+                    findFirst(symbol);
+            }
+
+            public List<Terminal> getFirstSet(Symbol symbol) {
+                return firstSet.get(symbol);
+            }
+
+            private void findFirst(Symbol symbol) {
+                if (calculated(symbol))
+                    return;
+
+                if (symbol instanceof Terminal)
+                    firstSet.put(symbol, (Terminal) symbol);
+                else {
+                    NonTerminal left = (NonTerminal) symbol;
+                    //这里的productionList是型如 X->Y1 | Y2 | Y3 | Y4的4个产生式的list
+                    List<Production> productionList = productions.get(left);
+                    for (Production production : productionList) {
+
+                        List<Symbol> right = production.right;
+
+                        for (Symbol rightSymbol : right) {
+
+                            if(symbol.equals(rightSymbol))
+                                break;
+
+                            if (!calculated(rightSymbol))
+                                findFirst(rightSymbol);
+
+                            firstSet.put(left, firstSet.get(rightSymbol));
+
+                            if (!productions.productE(rightSymbol))
+                                break;
+                        }
+                    }
+                }
+            }
+
+            private boolean calculated(Symbol symbol) {
+                return firstSet.get(symbol) != null;
+            }
+        }
+
+        public static class Production {
+            public NonTerminal left;
+
+            public List<Symbol> right;
+
+            public Production(NonTerminal left, List<Symbol> right) {
+                this.left = left;
+                this.right = right;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                Production that = (Production) o;
+                return Objects.equals(left, that.left) &&
+                        Objects.equals(right, that.right);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(left, right);
+            }
+
+        }
+
+        public static final Symbol E = new Terminal(null);
+
+        public static abstract class Symbol {
+            public abstract boolean isTerminal();
+
+            public boolean isE() {
+                return this instanceof Terminal && ((Terminal) this).kind == null;
+            }
+        }
+
+        public static class NonTerminal extends Symbol {
+            public String name;
+
+            public NonTerminal(String name) {
+                this.name = name;
+            }
+
+            @Override
+            public boolean isTerminal() {
+                return true;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                NonTerminal terminal = (NonTerminal) o;
+                return Objects.equals(name, terminal.name);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(name);
+            }
+        }
+
+        public static class Terminal extends Symbol {
+            public Tokens.TokenKind kind;
+
+            public Terminal(Tokens.TokenKind kind) {
+                this.kind = kind;
+            }
+
+            @Override
+            public boolean isTerminal() {
+                return false;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                Terminal that = (Terminal) o;
+                return kind == that.kind;
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(kind);
+            }
+        }
+    }
+
+
+    static class Lexer {
+        private Tokens tokens;
+        private Tokens.Token token;
+        private Tokens.Token prevToken;
+        private Tokenizer tokenizer;
+
+        public Lexer(String buf) {
+            this.tokenizer = new Tokenizer(buf);
+            this.tokens = Tokens.instance();
+        }
+
+        public Tokens.Token prevToken() {
+            return prevToken;
+        }
+
+        public void nextToken() {
+            prevToken = token;
+            token = tokenizer.readToken();
+        }
+
+        public Tokens.Token token() {
+            return token;
+        }
+
+        public Tokenizer.LineMap getLineMap() {
+            return tokenizer.getLineMap();
+        }
+    }
+
+    static class Tokenizer {
+        private Reader reader;
+
+        private Tokens.TokenKind tk;
+
+        private final Tokens tokens;
+
+        private final LineMap lineMap;
+
+        public Tokenizer(String buf) {
+            this.reader = new Reader(buf);
+            this.tokens = Tokens.instance();
+            this.lineMap = new LineMap(buf);
+        }
+
+        public Tokens.Token readToken() {
+            reader.tp = 0;
+            int pos = 0;
+            int endPos = 0;
+            loop:
+            while (true) {
+                pos = reader.bp;
+                switch (reader.ch) {
+                case ' ':
+                case '\t':
+                    do {
+                        reader.scanChar();
+                    } while (reader.ch == ' ' || reader.ch == '\t');
+                    break;
+                case '\n':
+                    reader.scanChar();
+                    break;
+                case '\r':
+                    reader.scanChar();
+                    if (reader.ch == '\n')
+                        reader.scanChar();
+                    break;
+                case 'A': case 'B': case 'C': case 'D': case 'E':
+                case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'K': case 'L': case 'M': case 'N': case 'O':
+                case 'P': case 'Q': case 'R': case 'S': case 'T':
+                case 'U': case 'V': case 'W': case 'X': case 'Y':
+                case 'Z':
+                case 'a': case 'b': case 'c': case 'd': case 'e':
+                case 'f': case 'g': case 'h': case 'i': case 'j':
+                case 'k': case 'l': case 'm': case 'n': case 'o':
+                case 'p': case 'q': case 'r': case 's': case 't':
+                case 'u': case 'v': case 'w': case 'x': case 'y':
+                case 'z':
+                case '_':
+                    scanIdentify();
+                    break loop;
+                case ';':
+                    reader.scanChar(); tk = Tokens.TokenKind.SEMI; break loop;
+                case '(':
+                    reader.scanChar(); tk = Tokens.TokenKind.LPAREN; break loop;
+                case ')':
+                    reader.scanChar(); tk = Tokens.TokenKind.RPAREN; break loop;
+                case '{':
+                    reader.scanChar(); tk = Tokens.TokenKind.LBRACE; break loop;
+                case '}':
+                    reader.scanChar(); tk = Tokens.TokenKind.RBRACE; break loop;
+                default:
+                    if (isSpecial(reader.ch))
+                        scanOperator();
+                    else if (reader.bp == reader.len)
+                        tk = Tokens.TokenKind.EOF;
+                    break loop;
+                }
+            }
+            endPos = reader.bp;
+            return new Tokens.Token(tk, pos, endPos);
+        }
+
+        private void scanOperator() {
+            while (true) {
+                reader.putChar(false);
+                String val = reader.chars();
+                Tokens.TokenKind tk1 = tokens.lookUpTokenKind(val);
+                if (tk1 == Tokens.TokenKind.ID) {
+                    reader.tp--;
+                    break;
+                }
+                tk = tk1;
+                reader.scanChar();
+                if (!isSpecial(reader.ch))
+                    break;
+            }
+        }
+
+        private boolean isSpecial(char ch) {
+            switch (ch) {
+            case '*': case '+': case '-': case '/':
+            case '<': case '=': case '>':
+                return true;
+            default:
+                return false;
+            }
+        }
+
+        private void scanIdentify() {
+            reader.putChar(true);
+            do {
+                switch (reader.ch) {
+                case 'A': case 'B': case 'C': case 'D': case 'E':
+                case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'K': case 'L': case 'M': case 'N': case 'O':
+                case 'P': case 'Q': case 'R': case 'S': case 'T':
+                case 'U': case 'V': case 'W': case 'X': case 'Y':
+                case 'Z':
+                case 'a': case 'b': case 'c': case 'd': case 'e':
+                case 'f': case 'g': case 'h': case 'i': case 'j':
+                case 'k': case 'l': case 'm': case 'n': case 'o':
+                case 'p': case 'q': case 'r': case 's': case 't':
+                case 'u': case 'v': case 'w': case 'x': case 'y':
+                case 'z':
+                case '$': case '_':
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                    break;
+                default:
+                    tk = tokens.lookUpTokenKind(reader.chars());
+                    return;
+                }
+                reader.putChar(true);
+            } while (true);
+        }
+
+        public LineMap getLineMap() {
+            return lineMap;
+        }
+
+        public static class LineMap {
+            private int[] startPos;
+
+            public LineMap(String src) {
+                List<Integer> startPos = new LinkedList<>();
+                int cnt = 0;
+                int pos = -1;
+                while ((pos = src.indexOf(System.lineSeparator(), pos + 1)) != -1)
+                    startPos.add(pos);
+                this.startPos = new int[startPos.size() + 1];
+                ListIterator<Integer> iterator = startPos.listIterator();
+                while (iterator.hasNext())
+                    this.startPos[iterator.nextIndex()] = iterator.next();
+            }
+
+            public int getLineNumber(int pos) {
+                int lineNumber = Arrays.binarySearch(startPos, pos);
+                return lineNumber >= 0 ? lineNumber + 1 : -lineNumber;
+            }
+
+        }
+    }
+
+    public static class Tokens {
+        private Map<String, TokenKind> tokenKindMap = new HashMap<>(128);
+
+        private static final Tokens tokens = new Tokens();
+
+        public static Tokens instance() {
+            return tokens;
+        }
+
+        private Tokens() {
+            for (TokenKind t : TokenKind.values())
+                if (t.name != null)
+                    tokenKindMap.putIfAbsent(t.name, t);
+        }
+
+        public TokenKind lookUpTokenKind(String val) {
+            return tokenKindMap.getOrDefault(val, TokenKind.OTHER);
+        }
+
+        public enum TokenKind {
+            EOF(),
+            ELSE("else"),
+            IF("if"),
+            THEN("then"),
+            WHILE("while"),
+            LPAREN("("),
+            RPAREN(")"),
+            SEMI(";"),
+            LBRACE("{"),
+            RBRACE("}"),
+            PLUS("+"),
+            SUB("-"),
+            STAR("*"),
+            SLASH("/"),
+            LT("<"),
+            LTEQ("<="),
+            EQ("="),
+            EQEQ("=="),
+            GT(">"),
+            GTEQ(">="),
+            NUM("NUM"),
+            ID("ID"),
+            OTHER();
+
+            public String name;
+
+            TokenKind(String name) {
+                this.name = name;
+            }
+
+            TokenKind() {
+
+            }
+        }
+
+        public static class Token {
+            public final TokenKind kind;
+
+            public final int pos;
+
+            public final int endPos;
+
+            public Token(TokenKind kind, int pos, int endPos) {
+                this.kind = kind;
+                this.pos = pos;
+                this.endPos = endPos;
+            }
+        }
+    }
+
+    static class Reader {
+        private char[] buf;
+
+        public int bp;
+
+        public final int len;
+
+        public char ch;
+
+
+        private char[] tbuf = new char[128];
+
+        public int tp;
+
+        public Reader(String input) {
+            buf = input.toCharArray();
+            int i = input.length() - 1;
+            while (i >= 0 && Character.isWhitespace(input.charAt(i)))
+                --i;
+            len = i + 1;
+            buf[len] = 0x1A;
+            bp = -1;
+            scanChar();
+        }
+
+        public void scanChar() {
+            if (bp < len) {
+                ch = buf[++bp];
+            }
+        }
+
+        public void putChar(char ch) {
+            putChar(ch, false);
+        }
+
+        public void putChar(boolean next) {
+            putChar(ch, next);
+        }
+
+        public void putChar(char ch, boolean next) {
+            tbuf[tp++] = ch;//不考虑缓冲区溢出的情况
+            if (next)
+                scanChar();
+        }
+
+        public String chars() {
+            return new String(tbuf, 0, tp);
+        }
+
+        public boolean isDigit() {
+            char c = ch;
+            if (c >= '0' && c <= '9')
+                return true;
+            return Character.isDigit(c);
+        }
+    }
+}

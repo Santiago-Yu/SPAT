@@ -1,0 +1,77 @@
+package step1;
+
+public class Task {
+    public boolean flag;
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+  Integer len = arr.length;
+        int k = 1;
+
+        for (int i = 0; i < len - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                flag = true;
+                break;
+            } else
+                flag = false;
+
+        }
+        if (flag == false) {
+            for (int j = 0; j < len; j++) {
+                System.out.print(arr[j] + " ");
+            }
+            System.out.println();
+        }
+
+        while (flag) {
+            Integer max = 0;
+            Integer min = 0;
+            if (k % 2 == 1) {
+                for (int i = 1; i < len; i++) {
+                    while (arr[i - 1] > arr[i]) {
+                        max = arr[i - 1];
+                        arr[i - 1] = arr[i];
+                        arr[i] = max;
+                        for (int j = 0; j < len; j++) {
+                         System.out.print(arr[j] + " ");
+                        }
+                        System.out.println();
+                    }
+                }
+                for (int i = 0; i < len - 1; i++) {
+                    if (arr[i] > arr[i + 1]) {
+                        flag = true;
+                        break;
+                    } else
+                        flag = false;
+                }
+                k++;
+               // System.out.println(k);
+            } else if (k % 2 == 0) {
+                for (int i = len - 1; i > 0; i--) {
+                    while (arr[i] < arr[i - 1]) {
+                        min = arr[i];
+                        arr[i] = arr[i - 1];
+                        arr[i - 1] = min;
+                        for (int j = 0; j < len; j++) {
+                          System.out.print(arr[j] + " ");
+                        }
+                        System.out.println();
+                    }
+                }
+                k++;
+                for (int i = 0; i < len - 1; i++) {
+                    if (arr[i] > arr[i + 1]) {
+                        flag = true;
+                        break;
+                    } else
+                        flag = false;
+                }
+             //   System.out.println(k);
+            }
+
+        }
+		
+		/********* End *********/
+	}
+}

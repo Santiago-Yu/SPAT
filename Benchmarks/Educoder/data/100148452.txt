@@ -1,0 +1,18 @@
+package step2;
+public class Station extends Thread{
+    static int ticket=20;
+    public void run(){
+        f();
+    }
+    public void f(){
+	   synchronized(this){
+           for(int i=1;i<=7;i++){
+           if(ticket!=0)System.out.println("卖出了第"+ticket--+"张票");
+           if(ticket==0){
+               System.out.println("票卖完了");
+               break;
+           }
+        }
+      }
+    }
+}

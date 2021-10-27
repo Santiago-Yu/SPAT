@@ -1,0 +1,40 @@
+package step2;
+
+
+public class Task {
+    static char rect[][] = null;
+	public int virusArea(int n,int m,char[][] area){
+			rect = (char[][])area.clone();
+			int count = 0;
+			for (int i = 0; i < area.length; i++) {
+				for (int j = 0; j < area[i].length; j++) {
+					// 当找到1时,开始处理其所在的块
+					if (area[i][j] == 'o') {
+						block(i, j);
+						count++;
+					}
+				}
+            }
+			return count;
+	}
+	 
+		// 判断连续块,递归
+		private static void block(int i, int j) {
+			// 修改(i,j)坐标对应的数组元素的值(避免递归时反复判断相邻元素)
+			rect[i][j] = 4;
+			// 分别判断上下左右
+			if (i < rect.length - 1 && rect[i + 1][j] == 'o') {
+				block(i + 1, j);
+			}
+			if (i > 0 && rect[i - 1][j] == 'o') {
+				block(i - 1, j);
+			}
+			if (j < rect[i].length - 1 && rect[i][j + 1] == 'o') {
+				block(i, j + 1);
+			}
+			if (j > 0 && rect[i][j - 1] == 'o') {
+				block(i, j - 1);
+			}
+		}
+	 
+	}

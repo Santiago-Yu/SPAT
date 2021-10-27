@@ -1,0 +1,43 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int a = 0,b = 0,sum = 0;
+		
+		//判断输入的两个数是否相等
+		if(num1 == num2) {
+			a = num1/100;   //取百位
+			num1 = num1 - a*100;   //去掉num1的百位
+			b = num1/10;    //取十位
+			num1 = num1 - b*10;     //去掉num1的十位，num1就是个位
+			sum = sum + a + b + num1;
+			sum = 2*sum;     //若相等，则只有num1和num2相加
+		}
+		
+		//比较num1和num2的大小
+		else {
+			if(num1>num2) {
+				int t;
+				t = num1;
+				num1 = num2;
+				num2 = t;
+			}
+			
+			for( ; num1<=num2 ;num1 = num1+1) {//循环相加，直到两数相等
+			int num = num1;
+			a = num/100;
+			num = num - a*100;
+			b = num/10;
+			num = num - b*10;
+			sum = sum + a + b + num;
+			}
+		}
+		return sum;
+		
+		
+		/********** END **********/
+	}
+}

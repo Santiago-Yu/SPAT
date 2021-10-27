@@ -1,0 +1,70 @@
+package step2;
+import java.util.*;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+   static int start, end;
+
+	public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance)
+	{
+		ArrayList<Long> arr = new ArrayList<>();
+		for(int i = 0; i < numbers - selectedNum; i++)
+		{
+			int[] result = new int[selectedNum];
+			int posiMark = getMaxPosi(abilities, 0, numbers - 1);
+			result[0] = abilities[posiMark];
+			abilities[posiMark] = -1;
+			start = posiMark - distance;
+			end = posiMark + distance;
+			getOther(result, abilities, selectedNum, distance);
+			arr.add(muti(result));
+		}
+		Collections.sort(arr);
+		;
+		return arr.get(arr.size() - 1);
+
+	}
+
+	public void getOther(int[] result, int[] abilities, int selectedNum, int distance)
+	{
+		for(int i = 1; i < selectedNum; i++)
+		{
+			int posiMark = getMaxPosi(abilities, start, end);
+			result[i] = abilities[posiMark];
+			abilities[posiMark] = -1;
+			start -= distance;
+			end += distance;
+		}
+	}
+
+	int getMaxPosi(int[] date, int from, int to)
+	{
+		int begin = from, end = to, maxValue = Integer.MIN_VALUE, maxPosi = begin;
+		if(begin < 0)
+			begin = 0;
+		if(end > date.length)
+			end = date.length;
+		for(; begin < end; begin++)
+		{
+			if(date[begin] > maxValue)
+			{
+				maxValue = date[begin];
+				maxPosi = begin;
+			}
+		}
+		return maxPosi;
+
+	}
+
+	long muti(int[] date)
+	{
+		long result = 1;
+		for(int i : date)
+			result *= i;
+		return result;
+	}
+
+	/********* End *********/
+}

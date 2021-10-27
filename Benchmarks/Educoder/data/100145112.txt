@@ -1,0 +1,31 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		int r=matrix.length;
+		int c=matrix[0].length;
+		int[][] b =new int[r][c];	
+		for (int i = 0; i < b.length; i++) {
+			for (int j = 0; j < b[i].length; j++) {
+				b[i][j]=matrix[i][j];
+				}
+			}
+		for (int i = 0; i < r; i++) {
+			for (int j = 0; j < c; j++) {
+				
+				matrix[j][r-i-1]=b[i][j];
+				
+			}
+		}
+		
+
+		
+		
+		
+		/********* End *********/
+	}
+}
+
+
+

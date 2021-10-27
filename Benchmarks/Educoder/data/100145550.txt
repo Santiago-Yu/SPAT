@@ -1,0 +1,162 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/**** ***** Begin *********/
+        String[] arr=releaseDate.split("-");
+        int[] a=new int[arr.length];
+        for(int i=0;i<arr.length;i++){
+         a[i]=Integer.parseInt(arr[i]);
+        }
+        String string="";
+        int t;
+		int x1=day/10;
+        int s2=day%10;
+        int sum=0;
+        int i=0;
+        int z1=0;
+        sum=x1;
+        //System.out.println("你好");
+               //System.out.println("s2="+s2+"  "+"sum="+sum);
+               while(z1<2){
+                   if(s2<10){break;}
+                     // System.out.println(s2+"  "+sum);
+                    
+                    x1=s2/10;
+                    s2=s2%10;
+                    sum=sum+x1;
+                }
+               //System.out.println(s2+"  "+sum);
+        //System.out.println("你好");
+        int k=a[0];
+        while(z1<1){
+        	
+            if(a[0]>k){a[1]=1;}
+            if(sum==0){
+            	//System.out.println("你好2");
+   break;             //String string=a[0]+"-"+a[1]+"-"+a[2];
+           // return string;
+            }
+          
+          if(a[0]%4==0&&a[0]%100!=0||a[0]%400==0){
+             while(a[1]<13){
+
+               if(sum==0){
+            	//System.out.println("你好2");
+                   if(a[1]<=9&&a[2]>9){string=a[0]+"-"+"0"+a[1]+"-"+a[2];}
+                   if(a[2]<=9&&a[1]>9){string=a[0]+"-"+a[1]+"-"+"0"+a[2];}
+                   if(a[1]<=9&&a[2]<=9){string=a[0]+"-"+"0"+a[1]+"-"+"0"+a[2];}
+                   if(a[1]>9&&a[2]>9){string=a[0]+"-"+a[1]+"-"+a[2];}
+              //System.out.println("你好1");
+            break;
+            }
+                   switch(a[1]){
+                       case 1: case 3: case 5: case 7: case 8: case 10: 
+                       case 12:
+                           if(a[2]+10+s2<=31){a[2]=a[2]+10+s2;sum--;
+                           s2=0;
+                            //System.out.println("sum="+sum);
+                           }
+                           else{
+                               int n=a[2]+10+s2;
+                               t=n-31;
+                               a[2]=t;
+                               a[1]++;
+                               //i++;
+                               sum--;
+                               s2=0;
+                           }
+                           break;
+                       case 2:
+                    	   //System.out.println("sum="+sum);
+                           if(a[2]+10+s2<=29){a[2]=a[2]+10+s2;sum--;s2=0;}
+                           else{
+                               int n=a[2]+10+s2;
+                               t=n-29;
+                               a[2]=t;
+                               a[1]++;
+                               sum--;
+                               //System.out.println("sum="+sum);
+                               s2=0;
+                           } break;                          
+                       case 4: case 6: case 9: case 11:
+                         if(a[2]+10+s2<=30){a[2]=a[2]+10+s2;sum--;s2=0;}
+                         else{
+                               int n=a[2]+10+s2;
+                               t=n-30;
+                               a[2]=t;
+                               a[1]++;
+                               //i++;
+                               sum--;
+                               s2=0;
+                           } break;
+                           
+                   }
+                 //return a[0]+a[1]+a[2];
+             }
+             }
+             else{
+             while(a[1]<13){//System.out.println("你好1");
+            	 //System.out.println("sum="+sum);
+               if(sum==0){
+            	//System.out.println("你好2");
+                   if(a[1]<=9&&a[2]>9){string=a[0]+"-"+"0"+a[1]+"-"+a[2];}
+                   if(a[2]<=9&&a[1]>9){string=a[0]+"-"+a[1]+"-"+"0"+a[2];}
+                   if(a[1]<=9&&a[2]<=9){string=a[0]+"-"+"0"+a[1]+"-"+"0"+a[2];}
+                   if(a[1]>9&&a[2]>9){string=a[0]+"-"+a[1]+"-"+a[2];}
+              //System.out.println("你好1");
+            break;
+            }                 
+                   switch(a[1]){
+                       case 1: case 3: case 5: case 7: case 8: case 10: 
+                       case 12:
+                           if(a[2]+10+s2<=31){a[2]=a[2]+10+s2;sum--;s2=0;}
+                           else{
+                               int n=a[2]+10+s2;
+                               t=n-31;
+                               a[2]=t;
+                               a[1]++;
+                               //i++;
+                               sum--;
+                               s2=0;
+                           }
+                           break;
+                       case 2:
+                           if(a[2]+10+s2<=28){a[2]=a[2]+10+s2;sum--;s2=0;}
+                           else{
+                               int n=a[2]+10+s2;
+                               t=n-28;
+                               a[2]=t;
+                               a[1]++;
+                               sum--;
+                               s2=0;
+                           } break;                          
+                       case 4: case 6: case 9: case 11:
+                         if(a[2]+10+s2<=30){a[2]=a[2]+10+s2;sum--;s2=0;}
+                         else{
+                               int n=a[2]+10+s2;
+                               t=n-30;
+                               a[2]=t;
+                               a[1]++;
+                               //i++;
+                               sum--;
+                               s2=0;
+                           } break;
+                           
+                   }
+                 //return a[0]+a[1]+a[2];
+             }               
+              
+              }
+              if(a[1]>12){
+              a[0]++;
+              }
+            
+          }
+    
+ //System.out.println(string);
+           return string;
+    }
+	
+}

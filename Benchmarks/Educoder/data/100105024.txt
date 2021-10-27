@@ -1,0 +1,21 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+        String data = scanner.nextLine();
+        String name = scanner.nextLine();
+        char[] data1 = data.toCharArray();
+        char c = name.charAt(0);
+        int i,len=data.length();
+        for(i=0; i<len; i++){
+            if(data1[i]==c && name.compareTo(data.substring(i,i+name.length()))==0)
+                System.out.println(i);
+        }
+        /********** End *********/
+    }
+}
+

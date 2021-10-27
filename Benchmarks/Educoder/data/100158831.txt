@@ -1,0 +1,32 @@
+package Q202;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc=new Scanner(System.in);
+	   int n=sc.nextInt();
+	   int k=0;
+	   int m=1;
+	 while(k!=n) {
+		   k=jisuan(m);
+		   m++;
+	   }
+     System.out.print(m-1);
+	}
+
+static int jisuan(int k) {
+	   int []a=new int[6];
+	   int i=0;
+	   int m=1;
+	   while(k!=0){
+		   a[i]=k%10;
+		   k=k/10;
+		   m=m*a[i];
+		   i++;
+	   }
+	   return m;
+
+	}
+
+}

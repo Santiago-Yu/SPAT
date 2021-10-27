@@ -1,0 +1,79 @@
+package step5;
+import java.util.*;
+import step2.ListNode;
+public class LinkedList {
+	ListNode head;  // 链表的头结点
+	private int length;  // 链表的长度
+
+	// 构造函数
+	public LinkedList() {
+			length = 0;
+	}
+	
+	// 返回链表的头结点
+	public synchronized ListNode getHead() { 
+			return head; 
+	}
+
+
+	// 删除链表中指定位置的节点
+	public void removeAt (int position) {
+		// 请在此添加实现代码
+        if(position < 0 || position >= this.length){
+            return;
+        }else{         
+            ListNode pNode = null;
+            ListNode node = head;
+            int i = 0;
+            while(i < position){
+                pNode = node;
+                node = node.getNext();
+                i ++;
+            }
+            if(i == 0){
+            	head = pNode;
+                length --;
+            }else{
+            	pNode.setNext(node.getNext());
+                length --;
+            }
+        }
+        
+        
+	}
+
+	// 在链表最前面插入一个结点
+	public synchronized void insertAtBegin(ListNode node) {
+		node.setNext(head);
+		head = node;
+		length ++;
+	}
+
+	// 在链表末尾追加一个元素
+	public synchronized void insertAtEnd(ListNode node) {
+			if (head == null) 
+					head = node;
+			else {
+					ListNode p, q;
+					for(p = head; (q = p.getNext()) != null; p = q);
+							p.setNext(node);
+			}
+			length ++;
+	}
+	
+	// 以字符串序列的形式返回链表的值
+	// 格式：["str1","str2",...]
+	public String toString() {
+		String result = "[";
+		if (head == null) {
+			return result+"]";
+		}
+		result = result + head.getData();
+		ListNode temp = head.getNext();
+		while (temp != null) {
+			result = result + "," + temp.getData();
+			temp = temp.getNext();
+		}
+		return result + "]";
+	}
+}

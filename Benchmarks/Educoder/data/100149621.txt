@@ -1,0 +1,49 @@
+package step1;
+
+import java.sql.*;
+
+public class QueryPass  {
+	
+	// 查询数据代码不用上实验报告
+	public static void queryDB() throws Exception {
+		
+		/********* Begin *********/
+        String DBDRIVER = "com.mysql.jdbc.Driver";
+        String DBURL = "jdbc:mysql://127.0.0.1:3306/tsgc";
+        String DBUSER = "root";
+        String DBPASSWORD = "123123";
+		// 第一步：加载驱动
+		Class.forName(DBDRIVER);
+		
+
+		// 第二步：建立连接, "root"和"123123"是针对MySQL设置了用户名(root)和密码(123123)的情况
+		// 127.0.0.1:3306是mysql服务器地址及端口   数据库编码格式设置为utf-8
+			Connection conn = DriverManager.getConnection(DBURL,DBUSER,DBPASSWORD);
+		
+
+		// 第三步：建立statement对象
+		String sql = "SELECT no,name,password,sex,salary FROM employee";
+        Statement stmt = conn.createStatement();
+		
+
+		// 第四步：查询数据
+		ResultSet rs = stmt.executeQuery(sql);
+        while(rs.next()){
+            int ids = rs.getInt("no");
+            String name = rs.getString("name");
+            String password = rs.getString("password");
+            String sex = rs.getString("sex");
+            double sal = rs.getDouble("salary");
+            System.out.print("no:"+ids+"\tname:"+name+"\tpassword:"+password+"\tsex:"+sex+"\tsalary"+sal+"\n");
+        }
+		
+
+		// 第五步：关闭statement对象和连接对象
+		rs.close();
+        stmt.close();
+        conn.close();
+		
+
+		/********* End *********/
+	}
+}

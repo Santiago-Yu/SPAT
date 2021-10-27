@@ -1,0 +1,38 @@
+package step2;
+public class Station extends Thread{ 
+static int ticket = 20; 
+public Station(){ 
+super(); 
+} 
+static Object ob = "aa"; 
+@Override 
+public void run() { 
+while(ticket>0){ 
+synchronized (ob) { 
+if(ticket>0){ 
+System.out.println("卖出了第"+ticket+"张票"); 
+ticket--; 
+}else{ 
+System.out.println("票卖完了"); 
+} 
+} 
+try{ 
+sleep(1000); 
+}catch (InterruptedException e) { 
+e.printStackTrace(); 
+} 
+} 
+} 
+public static void main(String[] args) { 
+	// TODO Auto-generated method stub 
+	Station s1 = new Station(); 
+	Station s2 = new Station(); 
+	Station s3 = new Station(); 
+	s1.start(); 
+	s2.start(); 
+	s3.start(); 
+	} 
+}
+
+
+

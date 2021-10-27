@@ -1,0 +1,37 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	private static String zifuchuan(String s1,String s2){	
+		String a1 = "";
+		String a2 = "";
+		String part="";
+		int sum = 0;
+		if(s1.length()>s2.length()){
+			a1 = s1;
+			a2 = s2;
+		}else{
+			a1 = s2;
+			a2 = s1;
+		}
+		for(int i = 0;i<a2.length();i++){
+			for(int j = 0,k = a2.length()-i;k<=a2.length();j++,k++){
+				part=a2.substring(j,k);
+				if(a1.contains(part)){
+					 return part;
+				}
+			}
+		}
+		
+		return null;
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+		String s1 = sc.next();
+		String s2 = sc.next();
+		String cc = zifuchuan(s1,s2);
+		System.out.print(cc.length());
+	}
+
+}

@@ -1,0 +1,46 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+				int sum = 0;
+		int max = 0;
+		int min = 0;
+		
+		if (num1 >= num2){
+			max = num1;
+			min = num2;
+		}
+		else{
+			max = num2;
+			min = num1;
+		}
+			
+		for (int i = min; i<=max; i++){
+			String s = String.valueOf(i);
+			int length = s.length();
+			
+			if(length == 2){ 
+		        int b10  =i/10%10;  
+		        int b1   =i%10; 
+				sum = sum+b10+b1;
+			}
+			else if (length == 3){
+				int b100 =i/100;  
+		        int b10  =i/10%10;  
+		        int b1   =i%10; 
+				sum = sum+b100+b10+b1;
+			}
+			else{
+				int b1   =i%10; 
+				sum = sum+b1;
+
+			}
+		}
+		return sum;
+		
+		/********** END **********/
+	}
+}

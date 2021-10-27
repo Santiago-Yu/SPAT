@@ -1,0 +1,51 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		
+		int i = num1/100;
+		int j = (num1/10)%10;
+		int k = (num1%100)%10;
+		int m = num2/100;
+		int n = (num2/10)%10;
+		int q = (num2%100)%10;
+		int sum = 0;
+		int inith = i;
+		int initt = j;
+		int inits = k;
+		while(inith<m) {
+			while(initt < 9) {
+					sum += inith*(9-inits+1);
+					sum += initt*(9-inits+1);
+					sum += (inits+9)*(9-inits+1)/2;
+					inits = 0;
+					initt++;
+					
+			}
+			sum += inith*(9-inits+1);
+			sum += initt*(9-inits+1);
+			sum += (inits + 9)*(9-inits+1)/2;
+			inith++;	
+			initt = 0;
+			inits = 0;
+		
+		}
+		while(initt < n) {
+			sum += inith*(9-inits+1);
+			sum += initt*(9-inits+1);
+			sum += (inits+9)*(9-inits+1)/2;
+			inits = 0;
+			initt++;
+		}
+		sum += inith*(q-inits+1);
+		sum += initt*(q-inits+1);
+		sum += (inits + q)*(q-inits+1)/2;
+	
+		return sum;
+		
+		/********** END **********/
+	}
+}

@@ -1,0 +1,36 @@
+#include <iostream>
+#include<stdio.h>
+using namespace std;
+int main()
+{
+    int i,j,k,len,m,n,flag=0,T,num=0;
+    int a[10000];
+    char s;
+    for(i=0;i<10000&&s!='\n';i++)
+    {
+        scanf("%d",&a[i]);
+        s=getchar();
+        len=i;
+    }
+    scanf("%d",&T);
+   // for(i=0;i<=len;i++)
+    //printf("%d ",a[i]);
+  //  printf("%d",T); 
+    for(i=0;i<=len-2;i++)
+    {
+        for(j=i+1;j<=len-1;j++)
+        {
+            for(k=j+1;k<=len;k++)
+            {
+                if(a[i]+a[j]+a[k]<T)
+                {
+                    num=num+1;
+                    flag=1;
+                }
+            }
+            //if(flag=1) break;
+        }
+    }
+    printf("%d",num);    
+    return 0;
+}

@@ -1,0 +1,35 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		//listFiles()方法是返回某个目录下所有文件和目录的绝对路径，返回的是File数组	
+		if(file.isDirectory()) {
+			System.out.println("+--"+file.getName());
+		}
+		look_dir(file,2);
+	}
+	private void look_dir(File file, int blank) {
+		// TODO Auto-generated method stub
+		File[] fs = file.listFiles();  
+        for(int i=0;i<fs.length;i++) {
+        	if(fs[i].isDirectory()) {
+        		for(int k=0;k<blank;k++) {
+        			System.out.print(" ");
+        		}
+        		System.out.println("+--"+fs[i].getName());
+        		//通过迭代不断调用文件，用blank控制前面的空格
+        		look_dir(fs[i],blank+2);
+        	}else {
+        		for(int k=0;k<blank;k++) {
+        			System.out.print(" ");
+        		}
+        		System.out.println("--"+fs[i].getName());
+        	}
+        }
+	}
+	/********** END **********/
+}

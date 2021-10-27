@@ -1,0 +1,56 @@
+package step4;
+import java.util.Scanner;
+public class DayJudge {
+public static void main(String[] args) {
+        // 从命令行读入三个正整数
+        // 这三个整数取自测试集的输入
+        Scanner sc = new Scanner(System.in);
+        int year = sc.nextInt();
+        int month = sc.nextInt();
+        int day = sc.nextInt();
+        DayJudge judge = new DayJudge();
+        System.out.println(judge.DayJudge(year, month, day));
+    }
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        // 请在此提供实现代码
+        String a = "";
+        if(year%400==0||(year%4==0&&year%100!=0))
+        {
+                 switch(month)
+                 {
+                    case 1:a=year+"年的第"+day+"天";break;
+                    case 2:a=year+"年的第"+(31+day)+"天";break;
+                    case 3:a=year+"年的第"+(60+day)+"天";break;
+                    case 4:a=year+"年的第"+(91+day)+"天";break;
+                    case 5:a=year+"年的第"+(121+day)+"天";break;
+                    case 6:a=year+"年的第"+(152+day)+"天";break;
+                    case 7:a=year+"年的第"+(182+day)+"天";break;
+                    case 8:a=year+"年的第"+(213+day)+"天";break;
+                    case 9:a=year+"年的第"+(244+day)+"天";break;
+                    case 10:a=year+"年的第"+(274+day)+"天";break;
+                    case 11:a=year+"年的第"+(305+day)+"天";break;
+                    case 12:a=year+"年的第"+(335+day)+"天";break;
+                }
+        }
+                else
+                {
+                    switch(month)
+                {
+                    case 1:a=year+"年的第"+day+"天";break;
+                    case 2:a=year+"年的第"+(31+day)+"天";break;
+                    case 3:a=year+"年的第"+(59+day)+"天";break;
+                    case 4:a=year+"年的第"+(90+day)+"天";break;
+                    case 5:a=year+"年的第"+(120+day)+"天";break;
+                    case 6:a=year+"年的第"+(151+day)+"天";break;
+                    case 7:a=year+"年的第"+(181+day)+"天";break;
+                    case 8:a=year+"年的第"+(212+day)+"天";break;
+                    case 9:a=year+"年的第"+(243+day)+"天";break;
+                    case 10:a=year+"年的第"+(273+day)+"天";break;
+                    case 11:a=year+"年的第"+(304+day)+"天";break;
+                    case 12:a=year+"年的第"+(334+day)+"天";break;
+                }
+                }
+        return a;
+    }
+}

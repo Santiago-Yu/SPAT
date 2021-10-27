@@ -1,0 +1,32 @@
+package step2;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+/********* Begin *********/
+//定义站台类，实现卖票的功能。
+public class Station extends Thread  {
+  
+		 static int t=20;
+    public  void run(){
+        
+    while(t>1){
+         synchronized("锁"){
+    	try{
+            if(t>0){
+             System.out.println("卖出了第"+t+"张票");
+             --t;   
+            }else{
+            System.out.println("票卖完了");break;
+            }
+        }catch (Exception e) {
+            // TODO: handle exception
+        }  
+          
+         }
+       
+    }
+    }
+    
+	
+}
+

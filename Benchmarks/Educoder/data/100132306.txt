@@ -1,0 +1,24 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){		//代入一个数组   返回一个数组
+		/********** EGIN **********/
+        int[] a = new int [temperatures.length];  			//新建一个数组
+        for(int i = 0;i<temperatures.length;i++) {
+        	for (int j = i+1; j < a.length; j++) {
+				if(temperatures[i] < temperatures[j]) {
+					a[i] = j-i;
+					break;
+				}
+				else {
+					for (int i1 = i; i1 < a.length; i1++) {
+						a[i1] = 0 ;
+					}
+				}
+			}
+        }      
+		return a ;
+		/********** END **********/
+	}
+}
+

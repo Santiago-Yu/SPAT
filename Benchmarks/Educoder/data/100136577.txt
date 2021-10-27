@@ -1,0 +1,70 @@
+package case3;
+
+import java.util.Scanner;
+
+public class Task3 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String Zhang = sc.next();
+		int zhangage = sc.nextInt();
+		String Yi = sc.next();
+		int Yiage = sc.nextInt();
+		String liu = sc.next();
+		int liuage = sc.nextInt();
+		String du = sc.next();
+		int duage = sc.nextInt();
+		Yun y = new Yun();
+		y.eat(Zhang, zhangage);
+		Yi yi = new Yi();
+		yi.eat(Yi,Yiage);
+		Liu l = new Liu();
+		l.eat(liu,liuage);
+		Du d= new Du();
+		d.eat(du,duage);
+		
+	}
+
+}
+	abstract class Person{
+		String name;
+		int age;
+		void eat() {
+			
+		}
+		void sleep() {
+			
+		}
+	}
+		class Yun extends Person{
+			void eat(String name,int age) {
+				System.out.println(name+"---"+age+"\r\n人都是要睡觉的\r\n" + 
+						"乒乓球运动员吃大白菜，喝小米粥\r\n" + 
+						"乒乓球运动员学习如何发球和接球\r\n" + 
+						"乒乓球运动员说英语");
+				System.out.println("----------------");
+			}
+		}
+		class Yi extends Person{
+			void eat(String name,int age) {
+				System.out.println(name+"---"+age+"\r\n人都是要睡觉的\r\n" + 
+						"篮球运动员吃牛肉，喝牛奶\r\n" + 
+						"篮球运动员学习如何运球和投篮");
+				System.out.println("----------------");
+		}}
+		class Liu extends Person{
+			void eat(String name,int age) {
+				System.out.println(name+"---"+age+"\r\n"+"人都是要睡觉的\r\n" + 
+						"乒乓球教练吃小白菜，喝大米粥\r\n" + 
+						"乒乓球教练教如何发球和接球\r\n" + 
+						"乒乓球教练说英语");
+				System.out.println("----------------");
+			}
+		}
+		class Du extends Person{
+			void eat(String name,int age) {
+				System.out.println(name+"---"+age+"\r\n"+"人都是要睡觉的\r\n" + 
+						"篮球教练吃羊肉，喝羊奶\r\n" + 
+						"篮球教练教如何运球和投篮");
+				System.out.println("----------------");
+			}
+		}

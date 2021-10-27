@@ -1,0 +1,28 @@
+package step2;
+
+public class Equation {
+    double a, b, c; //一元二次方程的三个系数
+    private double X1 = 0, X2 = 0, deta = 0;
+    public Equation(){}
+    public Equation(double a,double b,double c){
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+    public double getX1()
+    {
+        X1 = (b - deta) / (-2.0 * a);
+        return X1;
+    }
+    public double getX2()
+    {
+        X2 = (b + deta) / (-2.0 * a);
+        return X2;
+    }
+    public double deta()
+    {
+        deta = Math.sqrt(b * b - 4 * a * c);
+        return deta;
+    }
+}
+	

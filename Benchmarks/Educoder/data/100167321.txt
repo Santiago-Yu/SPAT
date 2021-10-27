@@ -1,0 +1,52 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcConn {
+    public static void getConn() {
+        /**********    Begin   **********/
+        try {
+			//1.注册驱动
+			Class.forName("com.mysql.jdbc.Driver");
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        /**********    End   **********/
+
+
+        /**********    Begin   **********/
+        
+        Connection conn = null;
+        Statement statement = null;
+        //2.建立连接并创建数据库和表
+        try{
+        conn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306","root","123123");
+        statement=conn.createStatement();
+            String sql1="create database mysql_db";
+        String sql="create table mysql_db.student (id int not null,name varchar(20),sex varchar(4),age int)";
+            statement.executeUpdate(sql1);
+        statement.executeUpdate(sql);
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+         }
+
+
+        
+
+        /**********    End   **********/
+        finally {
+            try {
+                if(statement!=null)
+                    statement.close();
+                if(conn!=null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}

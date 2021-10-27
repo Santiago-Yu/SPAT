@@ -1,0 +1,35 @@
+package task03;
+
+import java.util.Scanner;
+class Student {
+ private String name;
+ private int age;
+ Scanner scan=new Scanner(System.in);
+ public void setName(){
+  name=scan.next();
+ }
+ public String getName(){
+      return name;
+ }
+ public void setAge(){
+    age=scan.nextInt();
+  if(age<=0){
+   System.out.println("设置的年龄不合法");
+   age=0;
+  }
+ }
+ public int getAge(){
+  return age;
+ }
+ void speak() {
+  System.out.println("我的名字是" + name + ",今年" + age + "岁");
+ }
+}
+public class Task03{
+ public static void main(String[] args) {
+  Student s1=new Student();
+  s1.setName();
+  s1.setAge();
+  s1.speak();
+ }
+}

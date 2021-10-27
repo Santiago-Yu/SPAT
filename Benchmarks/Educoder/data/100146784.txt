@@ -1,0 +1,32 @@
+package step1;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+
+/**
+ * Created by liqiankun on 2018/9/14 0014
+ * Description：
+ */
+public class GetScores {
+    public int getLostScores(int[] num){
+       //请在此补全你的代码
+        int[] res = new int[3]; 
+        Arrays.sort(num);
+        int offset = 1;
+        int j = 0;
+        for(int i = 0; i < num.length; i++) {
+            if(num[i] != i + offset) {
+                offset++;
+                res[j++] = num[i] - 1;
+            }
+        }
+        Arrays.sort(res);
+        BigInteger a = new BigInteger((Integer.valueOf(res[0]).toString()
+        + Integer.valueOf(res[1]).toString()
+        + Integer.valueOf(res[2]).toString()));
+        return Integer.parseInt (
+                a.remainder(new BigInteger("11")).toString()
+           );
+    }
+    
+}

@@ -1,0 +1,26 @@
+package step1;
+import java.util.*;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	Arrays.sort(nums);
+        int k;
+        int l=0;
+        
+        int[] num=new int[3];
+        k=0;
+        for(int j=0;j<10000;j++){
+        	if(nums[k]!=j+1){num[l]=j+1;l++;k--;}
+            k++;
+        }
+        String r=new String();
+        r=String.valueOf(num[0])+String.valueOf(num[1])+String.valueOf(num[2]);
+        long c=Long.parseLong(r);
+        
+        return (int)(c%11);
+	}
+
+	/********* End *********/
+}

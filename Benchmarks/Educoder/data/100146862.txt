@@ -1,0 +1,33 @@
+package step1;
+import java.util.*;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	 boolean[] mark = new boolean[10001];
+        for(int i : nums){
+            mark[i] = true;
+        }
+        int[] lack = new int[3];
+        int p = 0;
+        for(int i = 1; i < mark.length; i++){
+            if(!mark[i]){
+                lack[p++] = i;
+                if(p == 3){
+                    break;
+                }
+            }
+        }
+        Arrays.sort(lack);
+        StringBuilder temp = new StringBuilder();
+        for(int i : lack){
+            temp.append(i);
+        }
+        long res = Long.valueOf(temp.toString());
+        return (int)(res % 11);
+	
+	}
+
+	/********* End *********/
+}

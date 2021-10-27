@@ -1,0 +1,70 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String []data = releaseDate.split("-");
+        int[] m = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int year = Integer.valueOf(data[0]);
+        int month = Integer.valueOf(data[1]);
+        int thisday = Integer.valueOf(data[2]);
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
+            m[1] = 29;
+        }
+        if (day > m[month - 1] - thisday) {
+            day = day - (m[month - 1] - thisday);
+            month += 1;
+            if (month > 12) {
+                year=year+1;
+                month = 1;
+            }
+            thisday = 0;
+            return getDate(temp(year, month, thisday), day);
+        }
+        thisday =thisday +day;
+        return temp(year, month, thisday);
+        /**
+         * ******* End ********
+         */
+    }
+    public String temp(int year,int month,int day){
+        String y=String.valueOf(year),m,d;
+        if(year<10){
+            y="000"+String.valueOf(year);
+        }
+        else if(year>9&&year<100){
+            y="00"+String.valueOf(year);
+        }
+        else if(year>99&&year<1000){
+            y="0"+String.valueOf(year);
+        }
+        if(month<10){
+            m="0"+String.valueOf(month);
+        }
+        else{
+            m=String.valueOf(month);
+        }
+        if(day<10){
+            d="0"+String.valueOf(day);
+        }
+        else{
+            d=String.valueOf(day);
+        }
+        return (y+"-"+m+"-"+d);
+    }
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	
+	
+	
+}

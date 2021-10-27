@@ -1,0 +1,36 @@
+#include<stdio.h>
+int main(){
+	int k;
+	int s,m,n;
+	int a[100];
+	int sum[100]={0};
+	int g=1;
+	scanf("%d",&k);
+	if(k==1){
+		printf("%d",0);
+	}
+	for(int i=2;i<=k;i++){
+		sum[g]=1;
+		s=k/i;
+        m=s*i;
+		n=k-m;
+		for(int h=0;h<i;h++){
+			a[h]=s;
+		}
+		for(int l=0;l<k,n>0;l++){
+			a[l]=a[l]+1;
+			n=n-1;
+		}
+		for(int j=0;j<i;j++){
+			sum[g]=sum[g]*a[j];
+		}
+		if(sum[g]<sum[g-1]){
+			sum[0]=sum[g-1];
+			break;
+		}
+        else n=n-1;
+        
+		g=g+1;
+	}
+	printf("%d",sum[0]);
+}

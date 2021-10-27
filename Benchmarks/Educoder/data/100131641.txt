@@ -1,0 +1,43 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	static int count = 0;
+	public void showDirStructure(File dir)	{
+		
+		File [] files = dir.listFiles();
+		
+		if(files!=null&&files.length>0)
+		{
+            System.out.println(makeSpace(count)+"+--"+dir.getName());
+			count++;
+			for(File fi:files)
+			{
+                
+				showDirStructure(fi);
+			}
+           
+			count--;
+             
+		}
+        else
+        {
+            System.out.println(makeSpace(count)+"--"+dir.getName());
+		}
+            
+	}
+	private String makeSpace(int count2) {
+		String spack="";
+	    for(int i=0;i<count2;i++){
+	        spack+="  ";
+	    }
+	    return spack;
+
+	}
+
+	
+	/********** END **********/
+}

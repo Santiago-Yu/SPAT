@@ -1,0 +1,47 @@
+package step1;
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+		MyThread AA = new MyThread();
+        MyThread BB = new MyThread();
+        MyThread CC = new MyThread();
+        AA.threadName="AA";
+        BB.threadName="BB";
+        CC.threadName="CC";
+        AA.start();
+        BB.start();
+        CC.start();
+        
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	
+	
+	String threadName;
+	
+
+	public void run() {
+	
+		int count = 5;
+		
+		while(count > 0){
+			
+			System.out.println("Java Thread" + this.threadName);
+			count--;
+            
+            try{
+                Thread.sleep(1);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            
+		}
+	}
+
+	/********* End *********/
+}

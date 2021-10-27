@@ -1,0 +1,28 @@
+package step2;
+/********* Begin *********/
+
+public class Station  extends Thread  {     
+    static int tick = 20; 
+    static Object ob = new Object(); 
+    public void ticket() {
+        System.out.println( "卖出了第" + tick + "张票");
+        tick--;
+    }
+    public void run() {
+        while (tick > 0) {
+            synchronized (ob) {
+                if (tick > 0) {
+                    ticket();
+                } 
+            }
+            if(tick == 0){
+                System.out.println("票卖完了");
+            }
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+            }
+        }
+    }
+}
+/********* End *********/

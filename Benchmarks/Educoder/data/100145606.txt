@@ -1,0 +1,37 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		String[] strs=releaseDate.split("-");
+		int y=Integer.valueOf(strs[0]);
+		int m=Integer.valueOf(strs[1]);
+		int d=Integer.valueOf(strs[2]);
+		int[] runY={31,29,31,30,31,30,31,31,30,31,30,31};
+		int[] pinY={31,28,31,30,31,30,31,31,30,31,30,31};
+		int[] curY;
+		while(day>0) {
+			//是否闰年
+			if(y%4==0 && y%100!=0 || y%400==0) curY=runY;
+			else curY=pinY;
+			d++;day--;
+			if(d>curY[m-1]) {
+				d=1;m++;
+			}
+			if(m>12) {
+				m=1;y++;
+			}
+		}
+		if(d>=10 && m>=10) return y+"-"+m+"-"+d;
+		else if(d>=10) return y+"-0"+m+"-"+d;
+		else if(m>=10) return y+"-"+m+"-0"+d;
+		else return y+"-0"+m+"-0"+d;
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,42 @@
+package task6;
+
+public class ScaleBox extends Box {  //继承Box类
+    private double width;
+    private double height;
+    private double depth;
+    //TODO 定义私有变量unit
+    private String unit;
+    
+    public ScaleBox(int boxType) {
+        super(boxType);
+    }
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+    
+    //实现 getUnit、setUnit方法
+    public void setUnit(String unitValue)
+    {
+        unit=unitValue;
+    }
+    public String getUnit()
+    {
+        return unit;
+    }
+
+	//实现printVolumn()方法，在该方法中调用父类的方法计算体积 最后输出体积
+    public void printVolumn() {
+		double V;
+        V=volume();
+        System.out.print("the volumn is:"+V);
+        System.out.println(getUnit());
+    }
+
+
+}

@@ -1,0 +1,43 @@
+package step1;
+import java.util.*;
+import java.math.BigInteger;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    Arrays.sort(nums);
+        int n[]=new int [3];
+        int count=0;
+        int j=1;
+        for(int i=0;i<9997;)
+        {
+            i++;
+            j++;
+            if(nums[i]!=j){
+             n[count]=j;
+                i--;
+                count++;                
+            }
+              if(count>=3) break;  
+        }
+         StringBuilder sb = new StringBuilder();
+            {
+             sb.append(Integer.valueOf(n[0])).append(Integer.valueOf(n[1])).append(Integer.valueOf(n[2]));   
+         BigInteger bi=new BigInteger(sb.toString(), 10);
+           BigInteger mod=new BigInteger("11");
+		  
+		 BigInteger result= bi.mod(mod);	
+	 	return result.intValue();
+
+
+        /*int k=n[0]%11+n[1]%11+n[2]%11;
+        while(k>=11){
+         k=k%11;   
+        }
+	return k;*/
+	}
+
+	/********* End *********/
+}
+}

@@ -1,0 +1,68 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 	int i = 0,j = 0,count = 0,ti,tj;
+		boolean flag;
+		int[][] it = new int[1000][3];
+		int length = 0;
+		while(i<ferry.length) {
+            j = 0;
+			while(j<ferry[i].length) {
+				flag = false;
+				for(int l=0;l<length;l++) {
+					if(j==it[l][0] && i>=it[l][1] && i<=it[l][1]+it[l][2]-1) {
+						j++;
+						flag = true;
+						break;
+					}
+				}
+				if(flag) {
+					continue;
+				} else {
+					if(ferry[i][j] == '+') {
+						tj = judgeRight(ferry,i,j);
+						if(tj == j) {
+							ti = judgeDown(ferry,i,j);
+							it[length][0] = j;
+							it[length][1] = i;
+							it[length][2] = ti-i;
+							length++;
+							j++;
+						} else {
+							j = tj+1;
+						}
+						count++;
+					} else {
+						j++;
+					}
+				}
+			}
+			i++;
+		}
+		return count;
+      /***********END ***************/
+	 }
+    public int judgeRight(char[][] ferry,int i,int j) {
+		j++;
+		while(j<ferry[i].length) {
+			if(ferry[i][j] != '+') {
+				return j-1;
+			}
+			j++;
+		}
+		return j-1;
+	}
+	public int judgeDown(char[][] ferry,int i,int j) {
+		i++;
+		while(i<ferry.length) {
+			if(ferry[i][j] != '+') {
+				return i;
+			}
+			i++;
+		}
+		return i;
+	}
+}

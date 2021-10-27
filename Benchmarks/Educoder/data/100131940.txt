@@ -1,0 +1,39 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+            printName(file,0);
+	}
+	
+private  void printName(File src,int deep){
+        ////递归输出子孙目录和名称
+        if(src == null||!src.exists())
+            return;      
+        else if(src.isDirectory()){
+            for(int i = 0;i<deep;i++){
+                System.out.print("  ");
+            } 
+            System.out.println("+--"+src.getName());
+            
+            File[] srcc = src.listFiles();
+            
+            for(File x : srcc)
+            printName(x,deep+1);
+        }
+        else {
+            String str= src.getName();
+            if(str.endsWith(".jpg")||str.endsWith(".png")||str.endsWith(".bmp")){
+            for(int i = 0;i<deep;i++){
+                System.out.print("  ");
+            }
+            System.out.println("--"+src.getName());
+        }
+        }
+    }
+
+	/********** END **********/
+}

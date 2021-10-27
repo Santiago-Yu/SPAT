@@ -1,0 +1,30 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+  public static void main(String[] agrs){
+     double a,b,c; //方程的三个系数
+    /**********begin******/
+      Scanner sc = new Scanner(System.in);
+      a=sc.nextDouble();
+      b=sc.nextDouble();
+      c=sc.nextDouble();
+      if(a == 0||b*b-4*a*c<0){
+          System.out.println("无实根");
+      }
+      else{
+          System.out.printf("X1=%4.2f",(-b + volume(a,b,c))/(2*a));
+          System.out.println("");
+          System.out.printf("X2=%4.2f",(-b - volume(a,b,c))/(2*a));
+      }
+
+
+  
+  
+  
+    /**********end*****/
+  }
+    public static double volume(double a,double b,double c){
+        return Math.sqrt(b*b-4*a*c);
+    }
+  	
+}

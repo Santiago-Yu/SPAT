@@ -1,0 +1,72 @@
+package step2;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import java.io.*;
+public class Task {
+	
+	/**
+	 * 使用fastjson解析数据
+	 * @param hotelResult	已经为你解析的所需json数据
+	 * @return
+	 */
+	public List<Hotel> getHotle(String hotelResult){
+		//将hotelResult解析成JSONObject
+        JSONObject hro=JSON.parseObject(hotelResult);
+        //创建集合来存放Hotel
+        List<Hotel> hotels=JSON.parseArray(
+            hro.getString("hotelPositionJSON"),Hotel.class);
+        //解析酒店的价格数据（htllist的值）存放到JSONArray
+        JSONArray htllists=hro.getJSONArray("htllist");
+        if(htllists!=null&&!htllists.isEmpty()){
+            //循环遍历htllists，获取hotelid和amount的数据
+            for(int i=0;i<htllists.size();i++){
+                JSONObject js=htllists.getJSONObject(i);
+                if(js!=null&&!js.isEmpty()){
+                String hotelid=js.getString("hotelid");
+                double amount=js.getDoubleValue("amount");
+                //获取某一个酒店的数据，即获取一个Hotel对象，即在hotel获取第i条数据
+                Hotel hotel=hotels.get(i);
+                //当hotel的id和hotelid相等的时候，
+                //将amount设置为该酒店的price
+                String id=hotel.getId();
+                if(id.equals(hotelid)){
+                    hotel.setPrice(amount);
+                }
+            }
+        }
+    }
+		return hotels;
+	}
+
+
+
+	/**
+	 * 由于携程网站经常更新，为了不影响测试，我们直接读取本地文件。
+	 * @return
+	 */
+	public  String getHotelListString(String cityId,String url){
+		String hotelResult="";
+    	try {
+        	InputStream is = new FileInputStream(new File("src/step2/hotelResult.txt"));
+        	byte[] b=new byte[1024];
+        	int len=0;
+        	try {
+            	while((len=is.read(b))!=-1){
+                	String str=new String(b,0,len);
+                	hotelResult+=str;
+            	}
+        	} catch (IOException e) {
+            	e.printStackTrace();
+        	}
+    	} catch (FileNotFoundException e) {
+        	e.printStackTrace();
+    	}
+        
+    	return hotelResult;
+	}
+
+}

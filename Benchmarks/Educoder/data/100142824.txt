@@ -1,0 +1,35 @@
+package step3;
+
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+        String c="src/step3/input/input.txt";
+		FileReader in=new FileReader(c);
+	char []b=new char[8];
+        in.read(b);
+        
+ /* System.out.println(b);*/
+        String a="src/step3/output/output.txt";
+        FileWriter bf= new FileWriter(a);
+ bf.write("Educoder");
+        bf.flush();
+        bf.close();
+ /*byte[] buff = new byte[8];
+    int n = 0;
+		while ((n = in.read(buff)) != -1) {
+        out.write(buff, 0, n);
+    }
+    out.flush();
+    in.close();
+    out.close();*/
+		
+		/********* End *********/		
+	}
+}

@@ -1,0 +1,95 @@
+package step2;
+
+public class Task {
+/********* Begin *********/
+public int virusArea(int n,int m,char[][] area){
+	int count = 0;
+for(int i=0;i<n;i++){
+for(int j=0;j<m;j++){
+	if(area[i][j]=='o'){
+
+		count++;
+		count(i,j,area);
+
+	}
+		
+}
+}
+if(count>11) return count-1;
+return count;
+/********* End *********/	
+}
+public void count(int i ,int j, char[][] area){
+int row=area.length;
+int clom=area[0].length;
+block[] blocks=new block[(row+1)*(clom+1)];
+block[] blocks1=new block[(row+1)*(clom+1)];
+for(int k=0;k<(row+1)*(clom+1);k++) {
+blocks[k]=new block(-1,-1);
+blocks1[k]=new block(-1,-1);
+}
+int tem=0,tem1=0;
+int[][] routed=new int[row][clom];
+for(int k=0;k<row;k++){
+for(int m=0;m<clom;m++) 
+	routed[k][m]=0;
+}
+blocks[tem]=new block(i,j);
+tem++;
+blocks1[tem1]=new block(i,j);
+//遍历
+while(blocks1[tem1].x!=-1){
+int key=tem1;
+block now=blocks1[tem1];
+
+routed[now.x][now.y]=1;
+//left
+if(now.y-1>=0&&routed[now.x][now.y-1]==0&&area[now.x][now.y-1]=='o'){
+block x=new block(now.x,now.y-1);
+blocks[tem++]=x;
+blocks1[++key]=x;
+
+}
+//down
+if(now.x+1<row&&routed[now.x+1][now.y]==0&&area[now.x+1][now.y]=='o'){
+block x=new block(now.x+1,now.y);
+blocks[tem++]=x;
+blocks1[++key]=x;
+
+}
+//right
+if(now.y+1<clom&&routed[now.x][now.y+1]==0&&area[now.x][now.y+1]=='o'){
+block x=new block(now.x,now.y+1);
+blocks[tem++]=x;
+blocks1[++key]=x;
+
+}
+//up
+
+if(now.x-1>=0&&routed[now.x-1][now.y]==0&&area[now.x-1][now.y]=='o'){
+block x=new block(now.x-1,now.y);
+blocks[tem++]=x;
+blocks1[++key]=x;
+
+}
+tem1=tem1+1;
+
+
+}
+int res=0;
+while(blocks[res].x!=-1){
+area[blocks[res].x][blocks[res].y]='x';
+res++;
+}
+
+}
+public class block{
+int x;
+int y;
+public block(int x,int y){
+this.x=x;
+this.y=y;
+}
+
+}
+}

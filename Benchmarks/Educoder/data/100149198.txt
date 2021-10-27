@@ -1,0 +1,30 @@
+package step2;
+
+public class Task {
+    public void dfs(char[][] area, int r, int c,int n,int m) {
+	    if (r < 0 || c < 0 || r >= n || c >= m || area[r][c] == 'x') {
+	      return;
+	    }
+
+	    area[r][c] = 'x';
+	    dfs(area, r - 1, c,n,m);
+	    dfs(area, r + 1, c,n,m);
+	    dfs(area, r, c - 1,n,m);
+	    dfs(area, r, c + 1,n,m);
+	  }
+      public int virusArea(int n,int m,char[][] area){
+	    if (area == null || area.length == 0) {
+	      return 0;
+	    }
+	    int res = 0;
+	    for (int r = 0; r < n; r++) {
+	      for (int c = 0; c <m; c++) {
+	        if (area[r][c] == 'o') {
+	          ++res;
+	          dfs(area, r, c,n,m);
+	        }
+	      }
+	    }
+	    return res;
+	  }
+}

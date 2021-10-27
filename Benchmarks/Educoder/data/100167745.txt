@@ -1,0 +1,979 @@
+
+
+import java.util.*;
+import java.util.regex.Pattern;
+
+@SuppressWarnings("unchecked")
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static final int nonStopCount = 16;
+    private static final int stopCount = 26;
+
+    public static class State{
+        public List<String> core;
+        public List<Integer> offset;
+
+        public State(){
+            core = new ArrayList<>();
+            offset = new ArrayList<>();
+        }
+
+        public void add(String pro, int off){
+            core.add(pro);
+            offset.add(off);
+        }
+
+        public boolean sameTo(State s){
+            if(core.size() != s.core.size()){
+                return false;
+            }else{
+                for(int i = 0; i < core.size(); i++){
+                    if(!contains(s.core.get(i),s.offset.get(i))){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
+        public boolean contains(String pro, int off){
+            for(int i = 0; i < core.size(); i++){
+                if(core.get(i).equals(pro) && offset.get(i) == off){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public static Map<String, String> keyToValue = new HashMap<String, String >() {
+        {
+            put("program","A");
+            put("compoundstmt","B");
+            put("stmt","C");
+            put("ifstmt","D");
+            put("whilestmt","E");
+            put("assgstmt","F");
+            put("stmts","G");
+            put("boolexpr","H");
+            put("arithexpr","I");
+            put("boolop","J");
+            put("multexpr","K");
+            put("arithexprprime","L");
+            put("simpleexpr","M");
+            put("multexprprime","N");
+            put("decls","O");
+            put("decl","P");
+
+            put("{","a");
+            put("}","b");
+            put("E","c");
+            put("(","d");
+            put(")","e");
+            put("ID","f");
+            put("=","g");
+            put(";","h");
+            put("<","i");
+            put(">","j");
+            put("<=","k");
+            put(">=","l");
+            put("==","m");
+            put("+","n");
+            put("-","o");
+            put("*","p");
+            put("/","q");
+            put("NUM","r");
+            put("if","s");
+            put("then","t");
+            put("else","u");
+            put("while","v");
+            put("int","w");
+            put("real","x");
+            put("INTNUM","y");
+            put("REALNUM","z");
+
+        }
+    };
+    public static Map<String, String> valueToKey = new HashMap<String, String >() {
+        {
+            put("A","program");
+            put("B","compoundstmt");
+            put("C","stmt");
+            put("D","ifstmt");
+            put("E","whilestmt");
+            put("F","assgstmt");
+            put("G","stmts");
+            put("H","boolexpr");
+            put("I","arithexpr");
+            put("J","boolop");
+            put("K","multexpr");
+            put("L","arithexprprime");
+            put("M","simpleexpr");
+            put("N","multexprprime");
+            put("O","decls");
+            put("P","decl");
+
+            put("a","{");
+            put("b","}");
+            put("c","E");
+            put("d","(");
+            put("e",")");
+            put("f","ID");
+            put("g","=");
+            put("h",";");
+            put("i","<");
+            put("j",">");
+            put("k","<=");
+            put("l",">=");
+            put("m","==");
+            put("n","+");
+            put("o","-");
+            put("p","*");
+            put("q","/");
+            put("r","NUM");
+            put("s","if");
+            put("t","then");
+            put("u","else");
+            put("v","while");
+            put("w","int");
+            put("x","real");
+            put("y","INTNUM");
+            put("z","REALNUM");
+        }
+    };
+    public static Map<String,Integer> proToId = new HashMap<String, Integer>(){
+        {
+            put("AOB",0);
+            put("CD",1);
+            put("CF",2);
+            put("CB",3);
+            put("BaGb",4);
+            put("GCG",5);
+            put("Gc",6);
+            put("DsdHetCuC",7);
+            put("EvdHeC",8);
+            put("FfgIh",9);
+            put("HIJI",10);
+            put("Ji",11);
+            put("Jj",12);
+            put("Jk",13);
+            put("Jl",14);
+            put("Jm",15);
+            put("IKL",16);
+            put("LnKL",17);
+            put("LoKL",18);
+            put("Lc",19);
+            put("KMN",20);
+            put("NpMN",21);
+            put("NqMN",22);
+            put("Nc",23);
+            put("Mf",24);
+            put("My",25);
+            put("Mz",26);
+            put("MdIe",27);
+
+            put("OPhO",28);
+            put("Oc",29);
+            put("Pwfgy",30);
+            put("Pxfgz",31);
+
+
+        }
+    };
+
+    public static String[] cfg = {"AOB","CD","CF","CB","BaGb","GCG","Gc","DsdHetCuC",
+            "EvdHeC","FfgIh","HIJI","Ji","Jj","Jk","Jl","Jm","IKL","LnKL","LoKL","Lc",
+            "KMN","NpMN","NqMN","Nc","Mf","My","Mz","MdIe","OPhO","Oc","Pwfgy","Pxfgz"};
+    public static Vector<Character>[] follow = new Vector[nonStopCount];
+    public static Vector<Character>[] first = new Vector[nonStopCount];
+    public static String[][] table = new String[nonStopCount + stopCount + 1][];
+    public static List<State> states = new ArrayList<>();
+    public static Vector<String>[] connector = new Vector[nonStopCount + stopCount];
+    public static List<Integer> resultPro = new ArrayList<>();
+
+    private static Map<String,String> varToType = new HashMap<>();
+    private static Map<String,Integer> varToInt = new HashMap<>();
+    private static Map<String,Double> varToReal = new HashMap<>();
+    private static boolean isWrong = false;
+
+
+    /**
+     *  this method is to read the standard input
+     */
+    /*private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+    }*/
+
+
+    // add your method here!!
+
+    private static boolean isStop(char c){
+        return c >='a' && c <= 'z';
+    }
+
+    private static boolean isNonStop(char c){
+        return c >= 'A' && c <= 'P';
+    }
+
+    private static boolean isNUM(String str){
+        return Pattern.matches("^-?\\d+$",str);
+    }
+
+    private static boolean isReal(String str){
+        return Pattern.matches("^(-?\\d+)(\\.\\d+)?$",str);
+    }
+
+    private static int charToId(char c){
+        int id;
+        if(c == '$'){
+            id =  nonStopCount + stopCount;
+        }else if(isNonStop(c)){
+            id = c - 'A';
+        }else{
+            id = c - 'a' + nonStopCount;
+        }
+        return id;
+    }
+
+    private static void initFirst(){
+        for(int i = 0; i < cfg.length; i++){
+            String product = cfg[i];
+            if(product.length() == 2 && product.charAt(1) == 'c'){
+                first[product.charAt(0)-'A'].add('c');
+            }
+        }
+        boolean k = true;
+        while(k){
+            boolean change = false;
+            for(int i = 0; i < cfg.length; i++){
+                String product = cfg[i];
+
+                for(int j = 1; j < product.length(); j++){
+                    if(isStop(product.charAt(j))){
+                        if(!first[product.charAt(0)-'A'].contains(product.charAt(j))){
+                            first[product.charAt(0)-'A'].add(product.charAt(j));
+                            change = true;
+                        }
+                        break;
+                    }else if(!first[product.charAt(j)-'A'].contains('c')){
+                        for(Object cO : first[product.charAt(j)-'A'].toArray()){
+                            Character cc = (Character) cO;
+                            if(!first[product.charAt(0)-'A'].contains(cc)){
+                                first[product.charAt(0)-'A'].add(cc);
+                                change = true;
+                            }
+                        }
+                        break;
+                    }else if(j == product.length()-1){
+                        if(!first[product.charAt(0)-'A'].contains('c')){
+                            first[product.charAt(0)-'A'].add('c');
+                            change = true;
+                        }
+                    }
+                }
+            }
+            if(!change){
+                k = false;
+            }
+        }
+
+    }
+
+    private static List<Character> first(String str){
+        List<Character> result = new ArrayList<>();
+
+        char[] chars = str.toCharArray();
+        for(int i = 0; i < chars.length; i++ ){
+            char c = chars[i];
+            if(isStop(c)) {
+                if(!result.contains(c)){
+                    result.add(c);
+                }
+                break;
+            }else{
+                boolean key = true;
+                for(Object cO : first[c-'A'].toArray()){
+                    Character cc = (Character) cO;
+                    if(cc != 'c'){
+                        if(!result.contains(cc)){
+                            result.add(cc);
+                        }
+                    }else if(i == chars.length-1){
+                        result.add('c');
+                    }else{
+                        key = false;
+                    }
+                }
+                if(key){
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static void initFollow(){
+        follow[0].add('$');
+        boolean k = true;
+        while (k){
+            boolean change = false;
+            for(int i = 0; i < cfg.length; i++){
+                String product = cfg[i];
+                Character pre = product.charAt(0);
+                String post = product.substring(1);
+                char[] postChars = post.toCharArray();
+
+                for(int j = 0; j < postChars.length; j++){
+                    char cur = postChars[j];
+                    if(isNonStop(cur)){
+                        if(j < postChars.length - 1){
+                            List<Character> chars =  first(post.substring(j+1));
+                            for(Character c : chars){
+                                if(c != 'c' && !follow[cur-'A'].contains(c)){
+                                    follow[cur-'A'].add(c);
+                                    change = true;
+                                }else if(c == 'c'){
+                                    for(Character cc : follow[pre-'A']){
+                                        if(!follow[cur-'A'].contains(cc)){
+                                            follow[cur-'A'].add(cc);
+                                            change = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }else{
+                            for(Character cc : follow[pre-'A']){
+                                if(!follow[cur-'A'].contains(cc)){
+                                    follow[cur-'A'].add(cc);
+                                    change = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            k = change;
+        }
+
+    }
+
+
+
+    private static void closure(State s){
+        boolean changed = true;
+        while (changed){
+            changed = false;
+            for(int i = 0; i < s.core.size(); i++){
+                String pro = s.core.get(i);
+                Integer off = s.offset.get(i);
+
+                if(off < pro.length() && isNonStop(pro.charAt(off))){
+                    char firstChar = pro.charAt(off);
+                    for(int j = 0; j < cfg.length; j++){
+                        if(cfg[j].charAt(0) == firstChar){
+                            String curPro = cfg[j];
+                            Integer curOff = 1;
+                            if(curPro.length() == 2 && curPro.charAt(1) == 'c'){
+                                curPro = curPro.substring(0,1);
+                            }
+                            if(!s.contains(curPro,curOff)){
+                                s.add(curPro,curOff);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    public static int containState(State s){
+        for(int i = 0; i < states.size(); i++){
+            State state = states.get(i);
+            if(s.sameTo(state)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static void produceState(State preState, char bridge, int stateId){
+        State newState = new State();
+        for(int i = 0; i < preState.core.size(); i++){
+            String pro = preState.core.get(i);
+            Integer off = preState.offset.get(i);
+            if(off < pro.length() && pro.charAt(off) == bridge){
+                newState.add(pro, off+1);
+            }
+        }
+        closure(newState);
+        int bridgeId = charToId(bridge);
+        int newStateId = containState(newState);
+        if(newStateId == -1){
+            states.add(newState);
+            newStateId = states.size()-1;
+        }
+        connector[bridgeId].add(stateId + "," + newStateId);
+    }
+
+    private static void createTable(){
+        int colCount = states.size();
+        for(int i = 0; i < table.length; i++){
+            table[i] = new String[colCount];
+            for(int j = 0; j < colCount; j++){
+                table[i][j] = "e";
+            }
+        }
+
+        for(int i = 0; i < colCount; i++){
+            State curState = states.get(i);
+            for(int j = 0; j < curState.core.size(); j++){
+                String pro = curState.core.get(j);
+                int off = curState.offset.get(j);
+                if(pro.length() == off){
+                    if(pro.length() == 1){
+                        pro = pro + 'c';
+                    }
+                    if("SA".equals(pro)){
+                        table[nonStopCount + stopCount][i] = "a";
+                    }else{
+                        int index = proToId.get(pro);
+                        Vector<Character> curFollow = follow[charToId(pro.charAt(0))];
+                        for(int k = 0; k < curFollow.size(); k++){
+                            int row = charToId(curFollow.get(k));
+                            table[row][i] = "r" + index;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        for(int i = 0; i < connector.length; i++){
+            Vector<String> shifts = connector[i];
+            for(int j = 0; j < shifts.size(); j++){
+                String[] shift = shifts.get(j).split(",");
+                int pre = Integer.parseInt(shift[0]);
+                int post = Integer.parseInt(shift[1]);
+                /*if(table[i][pre] != "e"){
+                    System.out.println("发生冲突");
+                }*/
+                if(i < nonStopCount){
+                    table[i][pre] = String.valueOf(post);
+                }else{
+                    table[i][pre] = "s" + post;
+                }
+            }
+        }
+
+
+
+    }
+
+    /**
+     *  初始化，produce SLR Action table and goto table based on the given grammar.
+     * */
+    public static void init(){
+
+        for(int i = 0; i < first.length; i++){
+            Vector<Character> vector1 = new Vector<>();
+            Vector<Character> vector2 = new Vector<>();
+            first[i] = vector1;
+            follow[i] = vector2;
+        }
+        for(int i = 0; i < connector.length; i++){
+            Vector<String> vector = new Vector<>();
+            connector[i] = vector;
+        }
+
+        initFirst();
+        initFollow();
+
+        State s0 = new State();
+        s0.add("SA",1);
+        closure(s0);
+        /*for(int i = 0; i < cfg.length; i++){
+            if(cfg[i].length() == 2 && cfg[i].charAt(1) == 'c'){
+                s0.add(cfg[i].substring(0,1),1);
+            }else{
+                s0.add(cfg[i],1);
+            }
+
+        }*/
+
+        states.add(s0);
+
+        for(int i = 0; i < states.size(); i++){
+            State s = states.get(i);
+            Boolean[] accessed = new Boolean[nonStopCount + stopCount];
+            for(int j = 0; j < accessed.length; j++){
+                accessed[j] = false;
+            }
+            for(int j = 0; j < s.core.size(); j++){
+                String pro = s.core.get(j);
+                Integer off = s.offset.get(j);
+                if(off < pro.length()){
+                    int index = charToId(pro.charAt(off));
+                    if(!accessed[index]){
+                        accessed[index] = true;
+                        produceState(s,pro.charAt(off),i);
+                    }
+
+                }
+            }
+        }
+
+        createTable();
+    }
+
+
+    public static String replaceLast( String text, String strToReplace,
+                                      String replaceWithThis ) {
+        return text.replaceFirst( "(?s)" + strToReplace + "(?!.*?" + strToReplace
+                + ")", replaceWithThis );
+    }
+
+
+    public static void print(){
+        //System.out.println("isWrong : " + isWrong);
+        if(!isWrong){
+            String[] intVars = new String[2];
+            varToInt.keySet().toArray(intVars);
+            String[] realVars = new String[1];
+            varToReal.keySet().toArray(realVars);
+            for(int i = 0; i < varToInt.size();i++){
+                System.out.println(intVars[i] + ": " + varToInt.get(intVars[i]));
+            }
+            for(int i = 0; i < varToReal.size(); i++){
+                System.out.print(realVars[i] + ": " + varToReal.get(realVars[i]));
+                if(i != varToReal.size() - 1){
+                    System.out.println();
+                }
+            }
+        }
+        /*String curOutput = valueToKey.get("A") + " ";
+        System.out.println(curOutput + "=> ");
+        for(int i = resultPro.size()-1; i >= 0; i--){
+            int proId = resultPro.get(i);
+            String pro = cfg[proId];
+            if(pro.length() == 2 && pro.charAt(1) == 'c'){
+                curOutput = replaceLast(curOutput,valueToKey.get(String.valueOf(pro.charAt(0))) + " ","");
+            }else{
+                char[] postChars = pro.substring(1).toCharArray();
+                StringBuffer replaceStr = new StringBuffer();
+                for(int j = 0; j < postChars.length; j++){
+                    replaceStr.append(valueToKey.get(String.valueOf(postChars[j])) + " ");
+                }
+                replaceStr.deleteCharAt(replaceStr.length()-1);
+
+
+                curOutput = replaceLast(curOutput,valueToKey.get(String.valueOf(pro.charAt(0))),replaceStr.toString());
+            }
+
+            System.out.print(curOutput);
+            if(i!=0){
+                System.out.println("=> ");
+            }
+        }*/
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+
+    private static double transfer(String arg1){
+        double a1;
+        if(isNUM(arg1)){
+            a1 = Integer.parseInt(arg1);
+        }else if(isReal(arg1)){
+            a1 = Double.parseDouble(arg1);
+        }else{
+            if("INT".equals(varToType.get(arg1))){
+                a1 = varToInt.get(arg1);
+            }else{
+                a1 = varToReal.get(arg1);
+            }
+        }
+        return a1;
+    }
+
+    private static double compute(String arg1, String op, String arg2){
+        double a1, a2, a3 = 0;
+        a1 = transfer(arg1);
+        a2 = transfer(arg2);
+
+        if("+".equals(op)){
+            a3 = a1 + a2;
+        }else if("-".equals(op)){
+            a3 = a1 - a2;
+        }else if("*".equals(op)){
+            a3 = a1 * a2;
+        }else if("/".equals(op)){
+            a3 = a1 / a2;
+        }
+        return a3;
+    }
+
+    public static boolean compare(String arg1, String op, String arg2){
+        double a1, a2;
+        boolean result = true;
+
+        a1 = transfer(arg1);
+        a2 = transfer(arg2);
+
+        if(">".equals(op)){
+            result = a1 > a2;
+        }else if(">=".equals(op)){
+            result = a1 >= a2;
+        }else if("==".equals(op)){
+            result = a1 == a2;
+        }else if("<".equals(op)){
+            result = a1 < a2;
+        }else if("<=".equals(op)){
+            result = a1 <= a2;
+        }
+
+        return result;
+    }
+
+    private static void analysis()
+    {
+        Scanner sc = new Scanner(System.in);
+        int lineCount = 0;
+        int state = 0;
+        while (sc.hasNextLine()){
+            String curLine = sc.nextLine();
+            String[] curLineStrs = curLine.split(" ");
+            lineCount++;
+            String curStr = "";
+
+            for(int i = 0; i < curLineStrs.length; i++){
+                curStr = curLineStrs[i];
+                //System.out.println(curStr);
+                if(state == 0){
+                    if("int".equals(curStr)){
+                        i++;
+                        String var = curLineStrs[i];
+                        i += 2;
+                        int num;
+                        if(!isNUM(curLineStrs[i])){
+                            //报错
+
+                            System.out.println("error message:line "+ lineCount +",realnum can not be translated into int type");
+                            isWrong = true;
+                            num = (int) Double.parseDouble(curLineStrs[i]);
+                        }else{
+                           num  = Integer.parseInt(curLineStrs[i]);
+                        }
+
+                        //System.out.println("int : " + var);
+                        varToType.put(var,"INT");
+                        varToInt.put(var,num);
+                    }else if("real".equals(curStr)){
+                        i++;
+                        String var = curLineStrs[i];
+                        i += 2;
+                        double num = Double.parseDouble(curLineStrs[i]);
+                        //System.out.println("real : " + var);
+                        varToType.put(var,"REAL");
+                        varToReal.put(var,num);
+                    }else if("{".equals(curStr)){
+                        state = 1;
+                    }else{
+
+                    }
+                }else if(state == 1){
+                    if("if".equals(curStr)){
+                        i += 2;
+                        String barg1 = curLineStrs[i++];
+                        String bop = curLineStrs[i++];
+                        String barg2 = curLineStrs[i++];
+                        boolean option = compare(barg1,bop,barg2);
+                        //System.out.println("比较结果:" + option);
+                        if(option){
+                            String key = curLineStrs[i];
+                            while (!"then".equals(key)){
+                                key = curLineStrs[++i];
+                            }
+                            i++;
+                            String result = curLineStrs[i];
+                            i += 2;
+                            String arg1 = curLineStrs[i++];
+                            String op = curLineStrs[i++];
+                            String arg2 = curLineStrs[i++];
+                            if("/".equals(op) && isNUM(arg2) && Integer.parseInt(arg2) == 0){
+                                //报错
+
+                                System.out.print("error message:line "+ lineCount +",division by zero");
+                                isWrong = true;
+                            }else{
+                                if(varToType.get(result).equals("INT")){
+                                    int var = (int)compute(arg1, op, arg2);
+                                    varToInt.remove(result);
+                                    varToInt.put(result,var);
+                                }else{
+                                    double var = compute(arg1, op, arg2);
+                                    varToReal.remove(result);
+                                    varToReal.put(result,var);
+                                }
+                            }
+                            i += 6;
+
+
+                        }else{
+                            String key = curLineStrs[i];
+                            while (!"else".equals(key)){
+                                key = curLineStrs[++i];
+                            }
+                            i++;
+                            String result = curLineStrs[i];
+                            i += 2;
+                            String arg1 = curLineStrs[i++];
+                            String op = curLineStrs[i++];
+                            String arg2 = curLineStrs[i++];
+                            if("/".equals(op) && isNUM(arg2) && Integer.parseInt(arg2) == 0){
+                                //报错
+
+                                System.out.print("error message:line "+ lineCount +",division by zero");
+                                isWrong = true;
+                            }else{
+                                if(varToType.get(result).equals("INT")){
+                                    int var = (int)compute(arg1, op, arg2);
+                                    varToInt.remove(result);
+                                    varToInt.put(result,var);
+                                }else{
+                                    double var = compute(arg1, op, arg2);
+                                    varToReal.remove(result);
+                                    varToReal.put(result,var);
+                                }
+                            }
+
+                        }
+                    }else if("}".equals(curStr)){
+                        state = 2;
+                    }else if(curStr.length() == 1 && isStop(curStr.charAt(0))){
+                        String result = curStr;
+                        i += 2;
+                        String arg1 = curLineStrs[i++];
+                        String op = curLineStrs[i++];
+                        String arg2 = curLineStrs[i++];
+                        if(";".equals(curLineStrs[i])){
+                            if("/".equals(op) && isNUM(arg2) && Integer.parseInt(arg2) == 0){
+                                //报错
+
+                                System.out.print("error message:line "+ lineCount +",division by zero");
+                                isWrong = true;
+                            }else{
+                                if(varToType.get(result).equals("INT")){
+                                    int var = (int)compute(arg1, op, arg2);
+                                    varToInt.remove(result);
+                                    varToInt.put(result,var);
+                                }else{
+                                    double var = compute(arg1, op, arg2);
+                                    varToReal.remove(result);
+                                    varToReal.put(result,var);
+                                }
+                            }
+
+                        }else{
+                            String op2 = curLineStrs[i++];
+                            String arg3 = curLineStrs[i++];
+                            if("/".equals(op) && isNUM(arg2) && Integer.parseInt(arg2) == 0){
+                                //报错
+
+                                System.out.print("error message:line "+ lineCount +",division by zero");
+                                isWrong = true;
+                            }else{
+                                if(varToType.get(result).equals("INT")){
+                                    int var = (int)compute(String.valueOf(compute(arg1,op,arg2)), op2, arg3);
+                                    varToInt.remove(result);
+                                    varToInt.put(result,var);
+                                }else{
+                                    double var = compute(String.valueOf(compute(arg1,op,arg2)), op2, arg3);
+                                    varToReal.remove(result);
+                                    varToReal.put(result,var);
+                                }
+                            }
+
+                        }
+
+                    }
+                    else{
+
+                    }
+                }else if(state == 2){
+
+                }
+
+            }
+        }
+        print();
+
+        /*Stack<Integer> stack = new Stack<>();
+        stack.push(0);
+
+        Scanner sc = new Scanner(System.in);
+        int lineCount = 0;
+        boolean accept = false;
+        while(!accept && sc.hasNextLine()) {
+
+            String curLine = sc.nextLine();
+            String[] curLineStrs = curLine.split(" ");
+            lineCount++;
+            int i = 0;
+            String curStr = "";
+            boolean skip = false;
+            while (i < curLineStrs.length || skip){
+
+                if(!skip){
+                    curStr = curLineStrs[i];
+                    if(curStr.isEmpty()) {
+                        i++;
+                        continue;
+                    }
+                }
+
+
+                Character curInput;
+                if(isNUM(curStr)){
+                    curStr = "INTNUM";
+                }else if(isReal(curStr)){
+                    curStr = "REALNUM";
+                }else if(curStr.length() == 1 && isStop(curStr.charAt(0))){
+                    curStr = "ID";
+                }
+                //System.out.println("++"+curStr+"++");
+                curInput = keyToValue.get(curStr).charAt(0);
+
+                int curInputId = charToId(curInput);
+                int curStack = stack.peek();
+                //System.out.println("cur stack " + curStack + " cur input " + curInputId);
+                //System.out.println("cur i " + i + " in length " + curLineStrs.length);
+                String command = table[curInputId][curStack];
+                if(command.charAt(0) == 's'){
+                    stack.push(Integer.parseInt(command.substring(1)));
+                    //System.out.println("shift " + Integer.parseInt(command.substring(1)));
+                    if(skip){
+                        skip = false;
+                    }else{
+                        i++;
+                    }
+                }else if(command.charAt((0)) == 'r'){
+                    int proId = Integer.parseInt(command.substring(1));
+                    resultPro.add(proId);
+
+                    //System.out.println("reduce " + proId);
+
+                    String pro = cfg[proId];
+                    if(pro.length() == 2 && pro.charAt(1) == 'c'){
+                        pro = pro.substring(0,1);
+                    }
+                    for(int j = 0; j < pro.length()-1; j++){
+                        stack.pop();
+                    }
+
+                    Integer pushState = Integer.parseInt(table[charToId(pro.charAt(0))][stack.peek()]);
+                    stack.push(pushState);
+
+                }else if(command.charAt((0)) == 'a'){
+                    //System.out.println("accept!");
+                    accept = true;
+                }else if(command.charAt((0)) == 'e'){
+                    //System.out.println("error occured!");
+                    int count = 0;
+                    for(int j = nonStopCount; j < nonStopCount + stopCount; j++) {
+                        if (!"e".equals(table[j][curStack])) {
+                            count++;
+                        }
+                    }
+                    for(int j = nonStopCount; j < nonStopCount + stopCount; j++){
+                        if(!"e".equals(table[j][curStack])){
+                            int linenow = lineCount;
+                            if(i==0){
+                                linenow--;
+                            }
+                            char lostChar = (char)(j - nonStopCount + 'a');
+                            if(count == 1){
+                                System.out.println("语法错误，第"+ linenow +"行，缺少\"" + valueToKey.get(Character.toString(lostChar))+ "\"");
+                            }
+                            //处理
+                            curStr = valueToKey.get(Character.toString(lostChar));
+                            skip = true;
+                            break;
+                        }
+
+                    }
+                    if(!skip){
+                        i++;
+                    }
+
+                }
+            }
+        }
+
+        while (!accept){
+            //System.out.println("@@@@");
+            char curInput = '$';
+            Integer curInputId = charToId(curInput);
+            Integer curStack = stack.peek();
+            //System.out.println("cur stack " + curStack + " cur input " + curInputId);
+            String command = table[curInputId][curStack];
+            if(command.charAt((0)) == 'r'){
+                int proId = Integer.parseInt(command.substring(1));
+                resultPro.add(proId);
+
+
+                //System.out.println("reduce " + proId);
+
+
+                String pro = cfg[proId];
+                if(pro.length() == 2 && pro.charAt(1) == 'c'){
+                    pro = pro.substring(0,1);
+                }
+                for(int j = 0; j < pro.length()-1; j++){
+                    stack.pop();
+                }
+
+                Integer pushState = Integer.parseInt(table[charToId(pro.charAt(0))][stack.peek()]);
+                stack.push(pushState);
+
+            }else if(command.charAt((0)) == 'a'){
+                accept = true;
+            }
+        }
+
+       // print();*/
+    }
+
+    private static void execute(){
+
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        init();
+        /*System.out.println(states.size());
+        for(int i = 0; i < states.size(); i++){
+            System.out.print(i+ ": ");
+            for(int j = 0; j < 37; j++){
+                System.out.print(table[j][i] + " ");
+            }
+            System.out.println();
+        }*/
+        analysis();
+        execute();
+    }
+}
+

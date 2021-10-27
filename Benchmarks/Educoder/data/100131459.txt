@@ -1,0 +1,48 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		
+		int depth=0;
+		find(file, depth);
+
+	}
+    public static void find(File dirFile,int depth) {
+        for (int j = 0; j < depth; j++) {
+			System.out.print(" ");
+		}
+		System.out.print("+--");
+		System.out.println(dirFile.getName());
+		//获取此目录下的所有文件名与目录名
+		String[] fileList = dirFile.list();
+		int currentDepth=depth+2;
+		for (int i = 0; i < fileList.length; i++) {
+			//遍历文件目录
+			String string = fileList[i];
+			//File("documentName","fileName")是File的另一个构造器
+			File file = new File(dirFile.getPath(),string);
+			String name = file.getName();
+			//如果是一个目录，搜索深度depth++，输出目录名后，进行递归
+			if (file.isDirectory()) {
+				//递归
+				find(file,currentDepth);
+			}else{
+				//如果是文件，则直接输出文件名
+				for (int j = 0; j < currentDepth; j++) {
+					System.out.print(" ");
+				}
+				System.out.print("--");
+				System.out.println(name);
+				
+			}
+		}
+	}
+	
+
+
+	/********** END **********/
+}

@@ -1,0 +1,23 @@
+package step2;
+
+public class Task {
+	static int thowNum=0;
+	public int getNum(int n){
+		/********* Begin *********/
+		
+        if(n==1){
+            thowNum++;
+            return thowNum;
+        }
+        if(n%2==0){
+            return getNum(n/2);
+        }
+        else {
+            thowNum++;
+            return getNum((n-1)/2);
+        }
+		
+		/********* End *********/
+	}
+	
+}

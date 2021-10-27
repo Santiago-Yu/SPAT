@@ -1,0 +1,37 @@
+package step2;
+
+public class Task {
+    public void setVisited(char[][] area,boolean[][]visited,int x,int y) {
+		if (x < 0 || y < 0)
+			return;
+		if (x > visited.length - 1 || y > visited[x].length - 1)
+			return;
+		if (area[x][y] != 'o')
+			return;
+		if (visited[x][y])
+			return;
+		
+		visited[x][y] = true;
+		setVisited(area,visited,x+1,y);
+		setVisited(area,visited,x-1,y);
+		setVisited(area,visited,x,y-1);
+		setVisited(area,visited,x,y+1);
+	}
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		boolean[][]visited = new boolean[area.length][area[0].length];
+		int count = 0;
+		for (int i = 0;i < area.length;i++) {
+			for (int j = 0;j < area[i].length;j++) {
+				if (!visited[i][j] && area[i][j] == 'o') {
+					count++;
+					setVisited(area,visited,i,j);
+				}
+			}
+		}
+		return count;
+		
+		/********* End *********/	
+	}
+}

@@ -1,0 +1,117 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		
+			if(file.isDirectory()) {
+			System.out.println("+--" + file.getName());
+			File[] filesList1 = file.listFiles();
+			    for (File f1 : filesList1) {
+			    	if(f1.isDirectory()) {
+				    	System.out.println("  +--" + f1.getName());
+				    	File[] filesList2 = f1.listFiles();
+				    	for (File f2 : filesList2) {
+				    		if(f2.isDirectory()) {
+				    			System.out.println("    +--" + f2.getName());
+				    			File[] filesList3 = f2.listFiles();
+				    			for (File f3 : filesList3) {
+				    				if(f3.isDirectory()) {
+				    					System.out.println("      +--" + f3.getName());
+				    					File[] filesList4 = f3.listFiles();
+				    					for(File f4 : filesList4) {
+				    						if(f4.isDirectory()) {
+				    	    					System.out.println("        +--" + f4.getName());
+				    	    					File[] filesList5 = f4.listFiles();
+				    	    					for(File f5 : filesList5) {
+				    	    						if(f5.isDirectory()) {
+				    	    							System.out.println("          +--" + f5.getName());
+				    	    						}else {
+				    	    							String str = "";
+														int i = f5.getName().lastIndexOf('.');
+														if(i > 0) {
+															str = f5.getName().substring(i + 1);
+														}
+														if("png".equals(str) || "jpg".equals(str) || "bmp".equals(str)) {
+															System.out.println("          --" + f5.getName());
+														}else {
+															System.out.print("");
+														}
+				    	    						}
+				    	    					}
+				    						}else {
+				    							String str = "";
+												int i = f4.getName().lastIndexOf('.');
+												if(i > 0) {
+													str = f4.getName().substring(i + 1);
+												}
+												if("png".equals(str) || "jpg".equals(str) || "bmp".equals(str)) {
+					    	    					System.out.println("        --" + f4.getName());
+												}else {
+													System.out.print("");
+												}
+				    						}
+				    					}
+				    				}else {
+							    		String str = "";
+										int i = f3.getName().lastIndexOf('.');
+										if(i > 0) {
+											str = f3.getName().substring(i + 1);
+										}
+										if("png".equals(str) || "jpg".equals(str) || "bmp".equals(str)) {
+											System.out.println("      --" + f3.getName());
+										}else {
+											System.out.print("");
+										}
+				    				}
+				    			}
+				    		}else {
+					    		String str = "";
+								int i = f2.getName().lastIndexOf('.');
+								if(i > 0) {
+									str = f2.getName().substring(i + 1);
+								}
+								if("png".equals(str) || "jpg".equals(str) || "bmp".equals(str)) {
+									System.out.println("    --" + f2.getName());
+								}else {
+									System.out.print("");
+								}
+				    		}
+				    	}
+			    	}else {
+			    		String str = "";
+						int i = f1.getName().lastIndexOf('.');
+						if(i > 0) {
+							str = f1.getName().substring(i + 1);
+						}
+						if("png".equals(str) || "jpg".equals(str) || "bmp".equals(str)) {
+							System.out.println("  --" + f1.getName());
+						}else {
+							System.out.print("");
+						}
+			    	}
+			    }
+			}else {
+				String str = "";
+				int i = file.getName().lastIndexOf('.');
+				if(i > 0) {
+					str = file.getName().substring(i + 1);
+				}
+				if("png".equals(str)||"jpg".equals(str)||"bmp".equals(str)) {
+					System.out.println("--" + file.getName());
+				}
+			}
+
+
+
+
+
+
+	}
+	
+
+	/********** END **********/
+}

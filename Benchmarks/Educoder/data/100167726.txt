@@ -1,0 +1,1624 @@
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuilder prog = new StringBuilder();
+    private static List<Integer> lineCnt = new ArrayList<>();
+    private static Map<String, List<List<String>>> grammer = new HashMap<>();
+    private static Map<Map<String, List<String>>, Integer> grammerToNumber = new HashMap<>();
+    private static Map<Integer, Map<String, List<String>>> numberToGrammer = new HashMap<>();
+    private static Map<String, List<String>> first = new HashMap<>();
+    private static List<LR1_item_content> I = new ArrayList<>();
+    private static Map<Map<Integer, String>, Integer> relation = new HashMap<>();
+    private static Map<Map<Integer, String>, String> actionTable = new HashMap<>();
+    private static Map<Map<Integer, String>, Integer> gotoTable = new HashMap<>();
+    private static Stack<Integer> resultStack = new Stack<>();
+    private static boolean allParametersInitialized = false;
+    private static List<Parameter> parameters = new ArrayList<>();
+    private static boolean inIfStmt = false;
+    private static int assgstmtCnt = 0;;
+    private static StringBuilder errorMsg = new StringBuilder("");
+
+    static class LR1_item_content {
+        HashSet<List<String>> content = new HashSet<>();
+    }
+
+    static class Parameter {
+        String name;
+        String type;
+        String value;
+    }
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int cnt = 0;
+        while(sc.hasNextLine())
+        {
+            String s = sc.nextLine();
+            prog.append(s);
+            cnt += s.length();
+            lineCnt.add(cnt);
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        initGrammer();
+        getFirst();
+        get_LR1_items();
+        getTable();
+//        initTable();
+        read_prog();
+        semetic_LR1_analyse();
+        showResult();
+    }
+
+//    private static void initTable() {
+//        actionTable.put(new HashMap<Integer, String>(){{put(51, "INTNUM");}}, "s32");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "*");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(60, "<");}}, "r20");
+//        actionTable.put(new HashMap<Integer, String>(){{put(41, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(50, "INTNUM");}}, "s32");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "+");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "-");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, ">");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(124, "}");}}, "r12");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "*");}}, "s64");
+//        actionTable.put(new HashMap<Integer, String>(){{put(60, ">");}}, "r20");
+//        actionTable.put(new HashMap<Integer, String>(){{put(48, "INTNUM");}}, "s32");
+//        actionTable.put(new HashMap<Integer, String>(){{put(120, "{");}}, "s17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "/");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, "<");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(45, ")");}}, "s73");
+//        actionTable.put(new HashMap<Integer, String>(){{put(55, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(127, "{");}}, "s109");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "/");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "*");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "/");}}, "s65");
+//        actionTable.put(new HashMap<Integer, String>(){{put(47, "(");}}, "s34");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "-");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "+");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(124, "{");}}, "r12");
+//        actionTable.put(new HashMap<Integer, String>(){{put(117, "}");}}, "s121");
+//        actionTable.put(new HashMap<Integer, String>(){{put(35, "+");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(37, "-");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(77, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(35, "*");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "/");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(76, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(34, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(39, "-");}}, "s62");
+//        actionTable.put(new HashMap<Integer, String>(){{put(32, "*");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(33, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(37, "/");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(49, ";");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(33, "*");}}, "s50");
+//        actionTable.put(new HashMap<Integer, String>(){{put(32, "+");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "-");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(39, "+");}}, "s61");
+//        actionTable.put(new HashMap<Integer, String>(){{put(33, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(35, "/");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "*");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(62, "INTNUM");}}, "s38");
+//        actionTable.put(new HashMap<Integer, String>(){{put(32, "-");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "+");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(33, "/");}}, "s51");
+//        actionTable.put(new HashMap<Integer, String>(){{put(61, "INTNUM");}}, "s38");
+//        actionTable.put(new HashMap<Integer, String>(){{put(35, "-");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(37, "+");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(32, "/");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(37, "*");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(57, ")");}}, "s85");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "<");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(58, "*");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(85, "E");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(109, "}");}}, "r11");
+//        actionTable.put(new HashMap<Integer, String>(){{put(34, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(56, ")");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(58, "+");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, ">");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(56, "*");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, "-");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(56, "+");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(58, ")");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "<");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, ">");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, "+");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(81, "E");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(43, ">");}}, "s71");
+//        actionTable.put(new HashMap<Integer, String>(){{put(61, "(");}}, "s41");
+//        actionTable.put(new HashMap<Integer, String>(){{put(46, ";");}}, "r20");
+//        actionTable.put(new HashMap<Integer, String>(){{put(56, "-");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(58, "/");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(62, "(");}}, "s41");
+//        actionTable.put(new HashMap<Integer, String>(){{put(109, "{");}}, "s17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, ">");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "<");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(43, "<");}}, "s70");
+//        actionTable.put(new HashMap<Integer, String>(){{put(56, "/");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(58, "-");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(48, "(");}}, "s34");
+//        actionTable.put(new HashMap<Integer, String>(){{put(53, "-");}}, "s80");
+//        actionTable.put(new HashMap<Integer, String>(){{put(35, ";");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, ">");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(54, "/");}}, "s83");
+//        actionTable.put(new HashMap<Integer, String>(){{put(39, ">");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(52, "-");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(41, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(50, "(");}}, "s34");
+//        actionTable.put(new HashMap<Integer, String>(){{put(33, ";");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "<");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(49, "+");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(95, "E");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(51, "(");}}, "s34");
+//        actionTable.put(new HashMap<Integer, String>(){{put(32, ";");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(39, "<");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(52, "/");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(54, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(47, "INTNUM");}}, "s32");
+//        actionTable.put(new HashMap<Integer, String>(){{put(54, "*");}}, "s82");
+//        actionTable.put(new HashMap<Integer, String>(){{put(49, "-");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(53, ")");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(52, ")");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(54, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(53, "+");}}, "s79");
+//        actionTable.put(new HashMap<Integer, String>(){{put(37, ";");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(52, "*");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(36, ";");}}, "s59");
+//        actionTable.put(new HashMap<Integer, String>(){{put(55, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(52, "+");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(54, ")");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "E");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(4, "$");}}, "acc");
+//        actionTable.put(new HashMap<Integer, String>(){{put(101, "E");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(100, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(31, ";");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(22, "INTNUM");}}, "s29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(96, "E");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(29, ";");}}, "r4");
+//        actionTable.put(new HashMap<Integer, String>(){{put(99, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(92, "{");}}, "s109");
+//        actionTable.put(new HashMap<Integer, String>(){{put(28, ";");}}, "r5");
+//        actionTable.put(new HashMap<Integer, String>(){{put(26, "INTNUM");}}, "s38");
+//        actionTable.put(new HashMap<Integer, String>(){{put(25, "INTNUM");}}, "s32");
+//        actionTable.put(new HashMap<Integer, String>(){{put(8, "$");}}, "r1");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, "E");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, "E");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(18, "=");}}, "s25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(25, "(");}}, "s34");
+//        actionTable.put(new HashMap<Integer, String>(){{put(116, "E");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(26, "(");}}, "s41");
+//        actionTable.put(new HashMap<Integer, String>(){{put(31, "-");}}, "s48");
+//        actionTable.put(new HashMap<Integer, String>(){{put(23, "$");}}, "r9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(31, "+");}}, "s47");
+//        actionTable.put(new HashMap<Integer, String>(){{put(11, "=");}}, "s22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(115, "E");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(10, "=");}}, "s21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(124, "E");}}, "r12");
+//        actionTable.put(new HashMap<Integer, String>(){{put(1, ";");}}, "s7");
+//        actionTable.put(new HashMap<Integer, String>(){{put(19, "(");}}, "s26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(59, "{");}}, "r13");
+//        actionTable.put(new HashMap<Integer, String>(){{put(122, ";");}}, "s125");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, "+");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, "+");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(119, "INTNUM");}}, "s38");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, "-");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(0, "E");}}, "s2");
+//        actionTable.put(new HashMap<Integer, String>(){{put(118, "INTNUM");}}, "s32");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, "-");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(59, "}");}}, "r13");
+//        actionTable.put(new HashMap<Integer, String>(){{put(111, "(");}}, "s119");
+//        actionTable.put(new HashMap<Integer, String>(){{put(97, ")");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(99, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(101, "-");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(98, "+");}}, "s79");
+//        actionTable.put(new HashMap<Integer, String>(){{put(99, "*");}}, "s82");
+//        actionTable.put(new HashMap<Integer, String>(){{put(100, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(97, "+");}}, "s79");
+//        actionTable.put(new HashMap<Integer, String>(){{put(15, "E");}}, "r6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(99, ")");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(101, "/");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(100, "/");}}, "s83");
+//        actionTable.put(new HashMap<Integer, String>(){{put(14, "E");}}, "r7");
+//        actionTable.put(new HashMap<Integer, String>(){{put(96, "+");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(98, ")");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(97, "-");}}, "s80");
+//        actionTable.put(new HashMap<Integer, String>(){{put(99, "/");}}, "s83");
+//        actionTable.put(new HashMap<Integer, String>(){{put(101, ")");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(96, "-");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(100, ")");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(100, "*");}}, "s82");
+//        actionTable.put(new HashMap<Integer, String>(){{put(99, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(101, "+");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(98, "-");}}, "s80");
+//        actionTable.put(new HashMap<Integer, String>(){{put(100, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(101, "*");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(123, ")");}}, "s126");
+//        actionTable.put(new HashMap<Integer, String>(){{put(110, "=");}}, "s118");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, "<");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(16, "E");}}, "r8");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, "<");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, ">");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, ">");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(102, ">");}}, "r21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(113, ")");}}, "r21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(115, "+");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(103, ">");}}, "r22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(116, "-");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(102, "<");}}, "r21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(115, ")");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(30, "E");}}, "r9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(96, ";");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(103, "<");}}, "r22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(114, ")");}}, "r22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(116, ")");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(118, "(");}}, "s34");
+//        actionTable.put(new HashMap<Integer, String>(){{put(115, "-");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(119, "(");}}, "s41");
+//        actionTable.put(new HashMap<Integer, String>(){{put(116, "+");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(75, "+");}}, "s47");
+//        actionTable.put(new HashMap<Integer, String>(){{put(83, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(37, "E");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(72, "(");}}, "r18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(77, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(74, "+");}}, "s47");
+//        actionTable.put(new HashMap<Integer, String>(){{put(82, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(76, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(77, "/");}}, "s51");
+//        actionTable.put(new HashMap<Integer, String>(){{put(76, "/");}}, "s51");
+//        actionTable.put(new HashMap<Integer, String>(){{put(80, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(30, "}");}}, "r9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "E");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(33, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "<");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, ">");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(95, ";");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(24, "}");}}, "s30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(30, "{");}}, "r9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(32, "E");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "<");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(94, ";");}}, "r22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(75, "-");}}, "s48");
+//        actionTable.put(new HashMap<Integer, String>(){{put(76, "*");}}, "s50");
+//        actionTable.put(new HashMap<Integer, String>(){{put(27, "}");}}, "r10");
+//        actionTable.put(new HashMap<Integer, String>(){{put(35, "E");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(77, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, ">");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "<");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(93, ";");}}, "r21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(74, "-");}}, "s48");
+//        actionTable.put(new HashMap<Integer, String>(){{put(77, "*");}}, "s50");
+//        actionTable.put(new HashMap<Integer, String>(){{put(79, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(76, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(78, ")");}}, "r20");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, ">");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(64, "(");}}, "s41");
+//        actionTable.put(new HashMap<Integer, String>(){{put(86, ">");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(65, "(");}}, "s41");
+//        actionTable.put(new HashMap<Integer, String>(){{put(20, "}");}}, "r11");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "E");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(87, ">");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(17, "{");}}, "s17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(86, "<");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(66, ")");}}, "s90");
+//        actionTable.put(new HashMap<Integer, String>(){{put(67, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(16, "{");}}, "r8");
+//        actionTable.put(new HashMap<Integer, String>(){{put(87, "<");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(17, "}");}}, "r11");
+//        actionTable.put(new HashMap<Integer, String>(){{put(68, "(");}}, "r19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(16, "}");}}, "r8");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(69, "(");}}, "r17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(70, "(");}}, "r15");
+//        actionTable.put(new HashMap<Integer, String>(){{put(85, ";");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(20, "{");}}, "s17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "E");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(71, "(");}}, "r16");
+//        actionTable.put(new HashMap<Integer, String>(){{put(13, "}");}}, "s23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(67, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(75, ";");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "*");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(52, "E");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(74, ";");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "+");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(9, "{");}}, "s17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(65, "INTNUM");}}, "s38");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "*");}}, "s64");
+//        actionTable.put(new HashMap<Integer, String>(){{put(15, "}");}}, "r6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(91, ")");}}, "r14");
+//        actionTable.put(new HashMap<Integer, String>(){{put(95, "-");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(64, "INTNUM");}}, "s38");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "*");}}, "s64");
+//        actionTable.put(new HashMap<Integer, String>(){{put(14, "}");}}, "r7");
+//        actionTable.put(new HashMap<Integer, String>(){{put(54, "E");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "+");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(9, "}");}}, "r11");
+//        actionTable.put(new HashMap<Integer, String>(){{put(15, "{");}}, "r6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(49, "E");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(71, "INTNUM");}}, "r16");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(95, "+");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(14, "{");}}, "r7");
+//        actionTable.put(new HashMap<Integer, String>(){{put(70, "INTNUM");}}, "r15");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "-");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "/");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "/");}}, "s65");
+//        actionTable.put(new HashMap<Integer, String>(){{put(69, "INTNUM");}}, "r17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(77, ";");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "/");}}, "s65");
+//        actionTable.put(new HashMap<Integer, String>(){{put(12, "{");}}, "r2");
+//        actionTable.put(new HashMap<Integer, String>(){{put(68, "INTNUM");}}, "r19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(76, ";");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "-");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(3, "{");}}, "s9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(80, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(81, ")");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(85, "-");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(2, "{");}}, "r3");
+//        actionTable.put(new HashMap<Integer, String>(){{put(82, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(87, "-");}}, "s62");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, "E");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(81, "+");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(85, "/");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(83, "(");}}, "s55");
+//        actionTable.put(new HashMap<Integer, String>(){{put(86, "-");}}, "s62");
+//        actionTable.put(new HashMap<Integer, String>(){{put(72, "INTNUM");}}, "r18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(79, "INTNUM");}}, "s52");
+//        actionTable.put(new HashMap<Integer, String>(){{put(87, "+");}}, "s61");
+//        actionTable.put(new HashMap<Integer, String>(){{put(7, "{");}}, "r3");
+//        actionTable.put(new HashMap<Integer, String>(){{put(81, "-");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(84, ")");}}, "s101");
+//        actionTable.put(new HashMap<Integer, String>(){{put(86, "+");}}, "s61");
+//        actionTable.put(new HashMap<Integer, String>(){{put(56, "E");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(59, "E");}}, "r13");
+//        actionTable.put(new HashMap<Integer, String>(){{put(85, "+");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(58, "E");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(85, "*");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(129, "{");}}, "s109");
+//        actionTable.put(new HashMap<Integer, String>(){{put(26, "ID");}}, "s42");
+//        actionTable.put(new HashMap<Integer, String>(){{put(25, "ID");}}, "s35");
+//        actionTable.put(new HashMap<Integer, String>(){{put(30, "if");}}, "r9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(30, "ID");}}, "r9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(20, "if");}}, "s19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(17, "ID");}}, "s18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(16, "ID");}}, "r8");
+//        actionTable.put(new HashMap<Integer, String>(){{put(17, "if");}}, "s19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(16, "if");}}, "r8");
+//        actionTable.put(new HashMap<Integer, String>(){{put(20, "ID");}}, "s18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(9, "ID");}}, "s18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(15, "if");}}, "r6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(14, "if");}}, "r7");
+//        actionTable.put(new HashMap<Integer, String>(){{put(9, "if");}}, "s19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(15, "ID");}}, "r6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(14, "ID");}}, "r7");
+//        actionTable.put(new HashMap<Integer, String>(){{put(6, "ID");}}, "s11");
+//        actionTable.put(new HashMap<Integer, String>(){{put(5, "ID");}}, "s10");
+//        actionTable.put(new HashMap<Integer, String>(){{put(59, "ID");}}, "r13");
+//        actionTable.put(new HashMap<Integer, String>(){{put(62, "ID");}}, "s42");
+//        actionTable.put(new HashMap<Integer, String>(){{put(61, "ID");}}, "s42");
+//        actionTable.put(new HashMap<Integer, String>(){{put(59, "if");}}, "r13");
+//        actionTable.put(new HashMap<Integer, String>(){{put(51, "ID");}}, "s35");
+//        actionTable.put(new HashMap<Integer, String>(){{put(50, "ID");}}, "s35");
+//        actionTable.put(new HashMap<Integer, String>(){{put(48, "ID");}}, "s35");
+//        actionTable.put(new HashMap<Integer, String>(){{put(55, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(41, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(47, "ID");}}, "s35");
+//        actionTable.put(new HashMap<Integer, String>(){{put(34, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(92, "if");}}, "s111");
+//        actionTable.put(new HashMap<Integer, String>(){{put(92, "ID");}}, "s110");
+//        actionTable.put(new HashMap<Integer, String>(){{put(83, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(82, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(80, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(72, "ID");}}, "r18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(79, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(67, "ID");}}, "s56");
+//        actionTable.put(new HashMap<Integer, String>(){{put(65, "ID");}}, "s42");
+//        actionTable.put(new HashMap<Integer, String>(){{put(64, "ID");}}, "s42");
+//        actionTable.put(new HashMap<Integer, String>(){{put(71, "ID");}}, "r16");
+//        actionTable.put(new HashMap<Integer, String>(){{put(70, "ID");}}, "r15");
+//        actionTable.put(new HashMap<Integer, String>(){{put(69, "ID");}}, "r17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(68, "ID");}}, "r19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(124, "if");}}, "r12");
+//        actionTable.put(new HashMap<Integer, String>(){{put(127, "if");}}, "s111");
+//        actionTable.put(new HashMap<Integer, String>(){{put(120, "ID");}}, "s18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(127, "ID");}}, "s110");
+//        actionTable.put(new HashMap<Integer, String>(){{put(120, "if");}}, "s19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(112, "else");}}, "s120");
+//        actionTable.put(new HashMap<Integer, String>(){{put(124, "ID");}}, "r12");
+//        actionTable.put(new HashMap<Integer, String>(){{put(125, "else");}}, "r13");
+//        actionTable.put(new HashMap<Integer, String>(){{put(119, "ID");}}, "s42");
+//        actionTable.put(new HashMap<Integer, String>(){{put(118, "ID");}}, "s35");
+//        actionTable.put(new HashMap<Integer, String>(){{put(121, "else");}}, "r9");
+//        actionTable.put(new HashMap<Integer, String>(){{put(109, "if");}}, "s19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(109, "ID");}}, "s18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(108, "else");}}, "r8");
+//        actionTable.put(new HashMap<Integer, String>(){{put(106, "else");}}, "r7");
+//        actionTable.put(new HashMap<Integer, String>(){{put(107, "else");}}, "r6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(130, "else");}}, "r12");
+//        actionTable.put(new HashMap<Integer, String>(){{put(128, "else");}}, "s129");
+//        actionTable.put(new HashMap<Integer, String>(){{put(129, "ID");}}, "s110");
+//        actionTable.put(new HashMap<Integer, String>(){{put(129, "if");}}, "s111");
+//        actionTable.put(new HashMap<Integer, String>(){{put(0, "real");}}, "s5");
+//        actionTable.put(new HashMap<Integer, String>(){{put(7, "real");}}, "s5");
+//        actionTable.put(new HashMap<Integer, String>(){{put(61, "REALNUM");}}, "s44");
+//        actionTable.put(new HashMap<Integer, String>(){{put(62, "REALNUM");}}, "s44");
+//        actionTable.put(new HashMap<Integer, String>(){{put(55, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(48, "REALNUM");}}, "s37");
+//        actionTable.put(new HashMap<Integer, String>(){{put(51, "REALNUM");}}, "s37");
+//        actionTable.put(new HashMap<Integer, String>(){{put(50, "REALNUM");}}, "s37");
+//        actionTable.put(new HashMap<Integer, String>(){{put(47, "REALNUM");}}, "s37");
+//        actionTable.put(new HashMap<Integer, String>(){{put(41, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(34, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(25, "REALNUM");}}, "s37");
+//        actionTable.put(new HashMap<Integer, String>(){{put(26, "REALNUM");}}, "s44");
+//        actionTable.put(new HashMap<Integer, String>(){{put(21, "REALNUM");}}, "s28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(119, "REALNUM");}}, "s44");
+//        actionTable.put(new HashMap<Integer, String>(){{put(118, "REALNUM");}}, "s37");
+//        actionTable.put(new HashMap<Integer, String>(){{put(126, "then");}}, "s127");
+//        actionTable.put(new HashMap<Integer, String>(){{put(73, "then");}}, "s92");
+//        actionTable.put(new HashMap<Integer, String>(){{put(80, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(83, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(82, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(79, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(72, "REALNUM");}}, "r18");
+//        actionTable.put(new HashMap<Integer, String>(){{put(69, "REALNUM");}}, "r17");
+//        actionTable.put(new HashMap<Integer, String>(){{put(68, "REALNUM");}}, "r19");
+//        actionTable.put(new HashMap<Integer, String>(){{put(71, "REALNUM");}}, "r16");
+//        actionTable.put(new HashMap<Integer, String>(){{put(70, "REALNUM");}}, "r15");
+//        actionTable.put(new HashMap<Integer, String>(){{put(65, "REALNUM");}}, "s44");
+//        actionTable.put(new HashMap<Integer, String>(){{put(64, "REALNUM");}}, "s44");
+//        actionTable.put(new HashMap<Integer, String>(){{put(67, "REALNUM");}}, "s58");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, ">=");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(60, ">=");}}, "r20");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "==");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(39, "==");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "==");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "==");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(43, "==");}}, "s68");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "==");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, ">=");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(43, ">=");}}, "s72");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, ">=");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, ">=");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(39, ">=");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, ">=");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(60, "==");}}, "r20");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, "==");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(39, "<=");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(38, "<=");}}, "r29");
+//        actionTable.put(new HashMap<Integer, String>(){{put(40, "<=");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(43, "<=");}}, "s69");
+//        actionTable.put(new HashMap<Integer, String>(){{put(42, "<=");}}, "r28");
+//        actionTable.put(new HashMap<Integer, String>(){{put(44, "<=");}}, "r30");
+//        actionTable.put(new HashMap<Integer, String>(){{put(60, "<=");}}, "r20");
+//        actionTable.put(new HashMap<Integer, String>(){{put(63, "<=");}}, "r24");
+//        actionTable.put(new HashMap<Integer, String>(){{put(102, "==");}}, "r21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(103, "==");}}, "r22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, "==");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, "==");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(87, "<=");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, ">=");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(86, "<=");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, ">=");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "<=");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(103, ">=");}}, "r22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "<=");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(102, ">=");}}, "r21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "<=");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, ">=");}}, "r31");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, ">=");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(103, "<=");}}, "r22");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, ">=");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(102, "<=");}}, "r21");
+//        actionTable.put(new HashMap<Integer, String>(){{put(87, ">=");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(105, "<=");}}, "r26");
+//        actionTable.put(new HashMap<Integer, String>(){{put(7, "int");}}, "s6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(86, ">=");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(104, "<=");}}, "r25");
+//        actionTable.put(new HashMap<Integer, String>(){{put(0, "int");}}, "s6");
+//        actionTable.put(new HashMap<Integer, String>(){{put(86, "==");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(87, "==");}}, "r23");
+//        actionTable.put(new HashMap<Integer, String>(){{put(88, "==");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(89, "==");}}, "r27");
+//        actionTable.put(new HashMap<Integer, String>(){{put(90, "==");}}, "r31");
+//
+//
+//        gotoTable.put(new HashMap<Integer, String>(){{put(17, "assgstmt");}}, 14);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(20, "assgstmt");}}, 14);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(109, "ifstmt");}}, 15);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(0, "program");}}, 4);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(25, "simpleexpr");}}, 33);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(26, "simpleexpr");}}, 40);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(9, "assgstmt");}}, 14);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(127, "ifstmt");}}, 107);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(120, "ifstmt");}}, 15);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(55, "simpleexpr");}}, 54);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(48, "simpleexpr");}}, 33);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(50, "simpleexpr");}}, 76);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(51, "simpleexpr");}}, 77);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(129, "compoundstmt");}}, 108);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(9, "stmts");}}, 13);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(61, "simpleexpr");}}, 40);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(62, "simpleexpr");}}, 40);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(17, "stmts");}}, 24);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(20, "stmts");}}, 27);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(34, "simpleexpr");}}, 54);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(92, "ifstmt");}}, 107);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(119, "boolexpr");}}, 123);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(47, "simpleexpr");}}, 33);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(41, "simpleexpr");}}, 54);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(80, "simpleexpr");}}, 54);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(82, "simpleexpr");}}, 99);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(83, "simpleexpr");}}, 100);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(109, "stmts");}}, 117);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(92, "assgstmt");}}, 106);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(64, "simpleexpr");}}, 88);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(65, "simpleexpr");}}, 89);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(26, "boolexpr");}}, 45);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(67, "simpleexpr");}}, 54);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(79, "simpleexpr");}}, 54);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(118, "simpleexpr");}}, 33);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(119, "simpleexpr");}}, 40);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(120, "assgstmt");}}, 14);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(9, "ifstmt");}}, 15);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(127, "assgstmt");}}, 106);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(20, "ifstmt");}}, 15);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(17, "ifstmt");}}, 15);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(109, "assgstmt");}}, 14);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(129, "stmt");}}, 130);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(127, "stmt");}}, 128);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(7, "decl");}}, 1);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(80, "multexpr");}}, 98);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(0, "decl");}}, 1);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(120, "stmt");}}, 124);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(55, "arithexpr");}}, 84);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(53, "arithexprprime");}}, 78);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(67, "multexpr");}}, 53);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(129, "assgstmt");}}, 106);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(109, "stmt");}}, 20);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(41, "arithexpr");}}, 66);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(79, "multexpr");}}, 97);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(39, "arithexprprime");}}, 60);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(34, "arithexpr");}}, 57);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(9, "compoundstmt");}}, 16);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(92, "stmt");}}, 112);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(119, "multexpr");}}, 39);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(25, "arithexpr");}}, 36);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(31, "arithexprprime");}}, 46);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(118, "multexpr");}}, 31);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(26, "arithexpr");}}, 43);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(54, "multexprprime");}}, 81);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(3, "compoundstmt");}}, 8);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(33, "multexprprime");}}, 49);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(17, "compoundstmt");}}, 16);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(0, "decls");}}, 3);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(40, "multexprprime");}}, 63);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(20, "compoundstmt");}}, 16);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(7, "decls");}}, 12);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(109, "compoundstmt");}}, 16);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(89, "multexprprime");}}, 105);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(26, "multexpr");}}, 39);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(88, "multexprprime");}}, 104);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(118, "arithexpr");}}, 122);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(25, "multexpr");}}, 31);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(119, "arithexpr");}}, 43);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(120, "compoundstmt");}}, 16);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(127, "compoundstmt");}}, 108);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(98, "arithexprprime");}}, 114);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(97, "arithexprprime");}}, 113);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(77, "multexprprime");}}, 96);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(76, "multexprprime");}}, 95);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(48, "multexpr");}}, 75);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(55, "multexpr");}}, 53);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(129, "ifstmt");}}, 107);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(20, "stmt");}}, 20);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(43, "boolop");}}, 67);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(86, "arithexprprime");}}, 102);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(87, "arithexprprime");}}, 103);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(62, "multexpr");}}, 87);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(61, "multexpr");}}, 86);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(17, "stmt");}}, 20);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(74, "arithexprprime");}}, 93);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(75, "arithexprprime");}}, 94);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(34, "multexpr");}}, 53);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(99, "multexprprime");}}, 115);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(92, "compoundstmt");}}, 108);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(100, "multexprprime");}}, 116);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(9, "stmt");}}, 20);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(41, "multexpr");}}, 53);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(47, "multexpr");}}, 74);
+//        gotoTable.put(new HashMap<Integer, String>(){{put(67, "arithexpr");}}, 91);
+//    }
+
+    private static void getTable() {
+        //shift项和Goto Table
+        for (Map<Integer, String> k : relation.keySet()) {
+            int to = relation.get(k);
+            for (int from : k.keySet()) {
+                String s1 = k.get(from);
+                if (!grammer.keySet().contains(s1)) {
+                    String s2 = "s"+to;
+                    actionTable.put(new HashMap<Integer, String>(){{put(from, s1);}}, s2);
+                }
+                else {
+                    gotoTable.put(new HashMap<Integer, String>(){{put(from, s1);}}, to);
+                }
+            }
+        }
+        //reduce项和acc项
+        for (int i=0; i<I.size(); i++) {
+            for (List<String> l : I.get(i).content) {
+                if (l.get(0).equals("program'") && l.get(1).equals("program .") && l.get(2).equals("$")) {
+                    HashMap<Integer, String> m2 = new HashMap<>();
+                    m2.put(i, l.get(2));
+                    actionTable.put(m2, "acc");
+                    continue;
+                }
+                if (l.get(1).indexOf(".") == l.get(1).length()-1) {
+                    HashMap<String, List<String>> m = new HashMap<>();
+                    ArrayList<String> ll = new ArrayList<>();
+                    int index = 0, end = 0;
+                    while (index <= l.get(1).length()-1 && (l.get(1).charAt(index) == ' ' || l.get(1).charAt(index) == '.')) index++;
+                    while (index <= l.get(1).length()-1) {
+                        end = index;
+                        while (end <= l.get(1).length()-1 && !(l.get(1).charAt(end) == ' ' || l.get(1).charAt(end) == '.')) end++;
+                        ll.add(l.get(1).substring(index, end));
+                        index = end;
+                        while (index <= l.get(1).length()-1 && (l.get(1).charAt(index) == ' ' || l.get(1).charAt(index) == '.')) index++;
+                    }
+                    if (ll.size() == 0) ll.add("E");
+                    m.put(l.get(0), ll);
+//                    System.out.println(m);
+                    int num = grammerToNumber.get(m);
+                    HashMap<Integer, String> m2 = new HashMap<>();
+                    m2.put(i, l.get(2));
+                    actionTable.put(m2, "r"+num);
+                }
+            }
+        }
+//        System.out.println("action Table:");
+//        for (Map<Integer, String> k : actionTable.keySet()) {
+//            System.out.println(k + "->" + actionTable.get(k));
+//        }
+//        System.out.println("\n\n\ngoto Table:");
+//        for (Map<Integer, String> k : gotoTable.keySet()) {
+//            System.out.println(k + "->" + gotoTable.get(k));
+//        }
+//        for (Map<Integer, String> k : actionTable.keySet()) {
+//            for (Integer i : k.keySet()) {
+//                System.out.println("actionTable.put(new HashMap<Integer, String>(){{put("+i+", \""+k.get(i)+"\");}}"+", \""+actionTable.get(k)+"\");");
+//            }
+//        }
+//        for (Map<Integer, String> k : gotoTable.keySet()) {
+//            for (Integer i : k.keySet()) {
+//                System.out.println("gotoTable.put(new HashMap<Integer, String>(){{put("+i+", \""+k.get(i)+"\");}}"+", "+gotoTable.get(k)+");");
+//            }
+//        }
+    }
+
+    private static void get_LR1_items() {
+        I.add(new LR1_item_content());
+        List<String> l;
+        l = new ArrayList<>();
+        l.add("program'"); l.add(". program"); l.add("$");
+        I.get(0).content.add(l);
+        l = new ArrayList<>();
+        l.add("program"); l.add(". decls compoundstmt"); l.add("$");
+        I.get(0).content.add(l);
+        l = new ArrayList<>();
+        l.add("decls"); l.add(". decl ; decls"); l.add("{");
+        I.get(0).content.add(l);
+        l = new ArrayList<>();
+        l.add("decls"); l.add(". E"); l.add("{");
+        I.get(0).content.add(l);
+        l = new ArrayList<>();
+        l.add("decl"); l.add(". int ID = INTNUM"); l.add(";");
+        I.get(0).content.add(l);
+        l = new ArrayList<>();
+        l.add("decl"); l.add(". real ID = REALNUM"); l.add(";");
+        I.get(0).content.add(l);
+//        //1
+//        l = new ArrayList<>();
+//        l.add("S'"); l.add(". S"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("S"); l.add(". C C"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". c C"); l.add("c");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". c C"); l.add("d");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". d"); l.add("c");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". d"); l.add("d");
+//        I.get(0).content.add(l);
+//        //2
+//        l = new ArrayList<>();
+//        l.add("S'"); l.add(". S"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("S"); l.add(". A a A b"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("S"); l.add(". B b B a"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("A"); l.add("."); l.add("a");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("B"); l.add("."); l.add("b");
+//        I.get(0).content.add(l);
+        int index = 0;
+        while (index == 0 || index <= I.size()-1) {
+//            System.out.println("************************");
+//            System.out.println("I"+index+":");
+//            System.out.println(I.get(index).content);
+//            System.out.println("************************");
+            //确定I[index] goto 到哪个项集
+            Map<String, LR1_item_content> m = new HashMap<>();
+            for (List<String> l2 : I.get(index).content) {
+                int pos = l2.get(1).indexOf(".");
+                if (pos == l2.get(1).length()-1) continue;
+                String s1 = "";
+                int end = pos+2;
+                while (end <= l2.get(1).length()-1 && l2.get(1).charAt(end)!=' ') end++;
+                s1 = l2.get(1).substring(pos+2, end);
+                String s2 = "";
+                if (end != l2.get(1).length()) {
+                    s2 = l2.get(1).substring(0, pos) + l2.get(1).substring(pos+2, end+1) + l2.get(1).substring(pos, pos+2) + l2.get(1).substring(end+1);
+                }
+                else {
+                    s2 = l2.get(1).substring(0, pos) + l2.get(1).substring(pos+2, end) + " .";
+                }
+                List<String> l3 = new ArrayList<>();
+                l3.add(l2.get(0));
+                l3.add(s2);
+                l3.add(l2.get(2));
+                if (m.get(s1) == null) m.put(s1, new LR1_item_content());
+                m.get(s1).content.add(l3);
+            }
+            //计算closure
+            for (String k : m.keySet()) {
+                LR1_item_content content = m.get(k);
+                List<List<String>> copy = new ArrayList<>();
+                for (List<String> ll : m.get(k).content) {
+                    copy.add(ll);
+                }
+                int index2 = 0;
+                while (index2 <= copy.size()-1) {
+                    int pos = copy.get(index2).get(1).indexOf(".");
+                    if (pos == copy.get(index2).get(1).length()-1) {
+                        index2++;
+                        continue;
+                    }
+                    int end = pos+2;
+                    while (end <= copy.get(index2).get(1).length()-1 && copy.get(index2).get(1).charAt(end)!=' ') end++;
+                    String s1 = copy.get(index2).get(1).substring(pos+2, end);
+                    if (grammer.containsKey(s1)) {
+                        String s2 = "";
+                        if (end < copy.get(index2).get(1).length()-1) {
+                            s2 += copy.get(index2).get(1).substring(end+1);
+                            s2 += " ";
+                        }
+                        s2 += copy.get(index2).get(2);
+                        for (String ss : getFirstByString(s2)) {
+                            for (List<String> l2 : grammer.get(s1)) {
+                                String s3 = ".";
+                                for (String s4 : l2) {
+                                    s3 += " "+s4;
+                                }
+                                if (s3.equals(". E")) s3 = ".";
+                                List<String> l3 = new ArrayList<>();
+                                l3.add(s1);
+                                l3.add(s3);
+                                l3.add(ss);
+//                                System.out.println(l3);
+                                m.get(k).content.add(l3);
+                                copy.add(l3);
+                            }
+                        }
+                    }
+                    index2++;
+                }
+            }
+            //判断计算得到的closure是否在之前出现过
+            for (String k : m.keySet()) {
+                int eq = -1;
+                for (int i=0; i<I.size(); i++) {
+                    if (judgeEqual(m.get(k).content, I.get(i).content)) {
+                        eq = i;
+                        break;
+                    }
+                }
+                if (eq == -1) {
+                    I.add(m.get(k));
+                    HashMap<Integer, String> ma = new HashMap<>();
+                    ma.put(index, k);
+                    relation.put(ma, I.size()-1);
+                }
+                else {
+                    HashMap<Integer, String> ma = new HashMap<>();
+                    ma.put(index, k);
+                    relation.put(ma, eq);
+                }
+            }
+            index++;
+        }
+//        System.out.println(relation);
+    }
+
+    private static boolean judgeEqual(HashSet<List<String>> content1, HashSet<List<String>> content2) {
+        if (content1.size()!=content2.size()) {
+            return false;
+        }
+        return content1.containsAll(content2);
+    }
+
+    private static List<String> getFirstByString(String s) {
+//        System.out.println(s);
+        List<String> l = new ArrayList<>();
+        int index = 0;
+        while (index <= s.length()-1 && s.charAt(index)==' ') index++;
+        while (index <= s.length()-1) {
+            boolean flag = false;
+            while (index <= s.length()-1 && s.charAt(index)==' ') index++;
+            int end = index;
+            while (end <= s.length()-1 && s.charAt(end)!=' ') end++;
+            for (String ss : first.get(s.substring(index, end))) {
+                if (!flag && ss.equals("E")) {
+                    flag = true;
+                }
+                if (!l.contains(ss)) {
+                    l.add(ss);
+                }
+            }
+            if (flag) {
+                index = end;
+            }
+            else {
+                break;
+            }
+        }
+        return l;
+    }
+
+    private static void getFirst() {
+        first.put("{", new ArrayList<>());
+        first.get("{").add("{");
+        first.put("}", new ArrayList<>());
+        first.get("}").add("}");
+        first.put("(", new ArrayList<>());
+        first.get("(").add("(");
+        first.put(")", new ArrayList<>());
+        first.get(")").add(")");
+        first.put("=", new ArrayList<>());
+        first.get("=").add("=");
+        first.put(";", new ArrayList<>());
+        first.get(";").add(";");
+        first.put(">", new ArrayList<>());
+        first.get(">").add(">");
+        first.put("<", new ArrayList<>());
+        first.get("<").add("<");
+        first.put(">=", new ArrayList<>());
+        first.get(">=").add(">=");
+        first.put("<=", new ArrayList<>());
+        first.get("<=").add("<=");
+        first.put("==", new ArrayList<>());
+        first.get("==").add("==");
+        first.put("+", new ArrayList<>());
+        first.get("+").add("+");
+        first.put("-", new ArrayList<>());
+        first.get("-").add("-");
+        first.put("*", new ArrayList<>());
+        first.get("*").add("*");
+        first.put("/", new ArrayList<>());
+        first.get("/").add("/");
+        first.put("if", new ArrayList<>());
+        first.get("if").add("if");
+        first.put("then", new ArrayList<>());
+        first.get("then").add("then");
+        first.put("else", new ArrayList<>());
+        first.get("else").add("else");
+        first.put("while", new ArrayList<>());
+        first.get("while").add("while");
+        first.put("ID", new ArrayList<>());
+        first.get("ID").add("ID");
+        first.put("INTNUM", new ArrayList<>());
+        first.get("INTNUM").add("INTNUM");
+        first.put("REALNUM", new ArrayList<>());
+        first.get("REALNUM").add("REALNUM");
+        first.put("int", new ArrayList<>());
+        first.get("int").add("int");
+        first.put("real", new ArrayList<>());
+        first.get("real").add("real");
+        first.put("E", new ArrayList<>());
+        first.get("E").add("E");
+        first.put("$", new ArrayList<>());
+        first.get("$").add("$");
+//        //1
+//        first.put("c", new ArrayList<>());
+//        first.get("c").add("c");
+//        first.put("d", new ArrayList<>());
+//        first.get("d").add("d");
+//        first.put("$", new ArrayList<>());
+//        first.get("$").add("$");
+//        //2
+//        first.put("a", new ArrayList<>());
+//        first.get("a").add("a");
+//        first.put("b", new ArrayList<>());
+//        first.get("b").add("b");
+//        first.put("E", new ArrayList<>());
+//        first.get("E").add("E");
+        for (Map.Entry<String, List<List<String>>> entry : grammer.entrySet()) {
+//            System.out.println(entry.getKey());
+//            System.out.println(entry.getValue());
+            getFirstRecursively(entry.getKey(), entry.getValue());
+        }
+//        for (String s : first.keySet()) {
+//            System.out.println(s);
+//            System.out.println(first.get(s));
+//            System.out.println("*********************************");
+//        }
+//        for (String s : first.keySet()) {
+//            System.out.println("prog.substring(start, start+len).equals(\""+s+"\") ||");
+//        }
+    }
+
+    private static void getFirstRecursively(String k, List<List<String>> l) {
+        if (first.containsKey(k)) return;
+        first.put(k, new ArrayList<>());
+        for (int i=0; i<l.size(); i++) {
+            if (l.get(i).size()==0) continue;
+            int index = 0;
+            boolean flag = true;
+            while (flag && index<=l.get(i).size()-1) {
+                flag = false;
+                String s = l.get(i).get(index);
+//            System.out.println(s);
+                if (first.containsKey(s)) {
+                    for (int j=0; j<first.get(s).size(); j++) {
+                        first.get(k).add(first.get(s).get(j));
+                    }
+                }
+                else {
+                    if (grammer.containsKey(s)) {
+                        getFirstRecursively(s, grammer.get(s));
+                        for (int j=0; j<first.get(s).size(); j++) {
+                            first.get(k).add(first.get(s).get(j));
+                        }
+                    }
+                    else {
+                        first.get(k).add(s);
+                    }
+                }
+                if (first.get(s).contains("E")) flag = true;
+                if (flag) {
+                    index++;
+                }
+            }
+        }
+    }
+
+        private static void initGrammer() {
+            int cnt = 0;
+//        //1
+//        grammer.put("S'", new ArrayList<>());
+//        grammer.get("S'").add(new ArrayList<>());
+//        grammer.get("S'").get(0).add("S");
+//        grammer.put("S", new ArrayList<>());
+//        grammer.get("S").add(new ArrayList<>());
+//        grammer.get("S").get(0).add("C");
+//        grammer.get("S").get(0).add("C");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("C");add("C");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("C");add("C");}});}});
+//        grammer.put("C", new ArrayList<>());
+//        grammer.get("C").add(new ArrayList<>());
+//        grammer.get("C").get(0).add("c");
+//        grammer.get("C").get(0).add("C");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("c");add("C");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("c");add("C");}});}});
+//        grammer.get("C").add(new ArrayList<>());
+//        grammer.get("C").get(1).add("d");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("d");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("d");}});}});
+//        //2
+//        grammer.put("S'", new ArrayList<>());
+//        grammer.get("S'").add(new ArrayList<>());
+//        grammer.get("S'").get(0).add("S");
+//        grammer.put("S", new ArrayList<>());
+//        grammer.get("S").add(new ArrayList<>());
+//        grammer.get("S").get(0).add("A");
+//        grammer.get("S").get(0).add("a");
+//        grammer.get("S").get(0).add("A");
+//        grammer.get("S").get(0).add("b");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("A");add("a");add("A");add("b");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("A");add("a");add("A");add("b");}});}});
+//        grammer.get("S").add(new ArrayList<>());
+//        grammer.get("S").get(1).add("B");
+//        grammer.get("S").get(1).add("b");
+//        grammer.get("S").get(1).add("B");
+//        grammer.get("S").get(1).add("a");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("B");add("b");add("B");add("a");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("B");add("b");add("B");add("a");}});}}); grammer.get("S").add(new ArrayList<>());
+//        grammer.put("A", new ArrayList<>());
+//        grammer.get("A").add(new ArrayList<>());
+//        grammer.get("A").get(0).add("E");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("A", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("A", new ArrayList<String>(){{add("E");}});}});
+//        grammer.put("B", new ArrayList<>());
+//        grammer.get("B").add(new ArrayList<>());
+//        grammer.get("B").get(0).add("E");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("B", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("B", new ArrayList<String>(){{add("E");}});}});
+            grammer.put("program'", new ArrayList<>());
+            grammer.get("program'").add(new ArrayList<>());
+            grammer.get("program'").get(0).add("program");
+            grammer.put("program", new ArrayList<>());
+            grammer.get("program").add(new ArrayList<>());
+            grammer.get("program").get(0).add("decls");
+            grammer.get("program").get(0).add("compoundstmt");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("program", new ArrayList<String>(){{add("decls");add("compoundstmt");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("program", new ArrayList<String>(){{add("decls");add("compoundstmt");}});}});
+            grammer.put("decls", new ArrayList<>());
+            grammer.get("decls").add(new ArrayList<>());
+            grammer.get("decls").get(0).add("decl");
+            grammer.get("decls").get(0).add(";");
+            grammer.get("decls").get(0).add("decls");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("decls", new ArrayList<String>(){{add("decl");add(";");add("decls");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("decls", new ArrayList<String>(){{add("decl");add(";");add("decls");}});}});
+            grammer.get("decls").add(new ArrayList<>());
+            grammer.get("decls").get(1).add("E");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("decls", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("decls", new ArrayList<String>(){{add("E");}});}});
+            grammer.put("decl", new ArrayList<>());
+            grammer.get("decl").add(new ArrayList<>());
+            grammer.get("decl").get(0).add("int");
+            grammer.get("decl").get(0).add("ID");
+            grammer.get("decl").get(0).add("=");
+            grammer.get("decl").get(0).add("INTNUM");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("decl", new ArrayList<String>(){{add("int");add("ID");add("=");add("INTNUM");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("decl", new ArrayList<String>(){{add("int");add("ID");add("=");add("INTNUM");}});}});
+            grammer.get("decl").add(new ArrayList<>());
+            grammer.get("decl").get(1).add("real");
+            grammer.get("decl").get(1).add("ID");
+            grammer.get("decl").get(1).add("=");
+            grammer.get("decl").get(1).add("REALNUM");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("decl", new ArrayList<String>(){{add("real");add("ID");add("=");add("REALNUM");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("decl", new ArrayList<String>(){{add("real");add("ID");add("=");add("REALNUM");}});}});
+            grammer.put("stmt", new ArrayList<>());
+            grammer.get("stmt").add(new ArrayList<>());
+            grammer.get("stmt").get(0).add("ifstmt");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("ifstmt");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("ifstmt");}});}});
+            grammer.get("stmt").add(new ArrayList<>());
+            grammer.get("stmt").get(1).add("assgstmt");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("assgstmt");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("assgstmt");}});}});
+            grammer.get("stmt").add(new ArrayList<>());
+            grammer.get("stmt").get(2).add("compoundstmt");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("compoundstmt");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("compoundstmt");}});}});
+            grammer.put("compoundstmt", new ArrayList<>());
+            grammer.get("compoundstmt").add(new ArrayList<>());
+            grammer.get("compoundstmt").get(0).add("{");
+            grammer.get("compoundstmt").get(0).add("stmts");
+            grammer.get("compoundstmt").get(0).add("}");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("compoundstmt", new ArrayList<String>(){{add("{");add("stmts");add("}");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("compoundstmt", new ArrayList<String>(){{add("{");add("stmts");add("}");}});}});
+            grammer.put("stmts", new ArrayList<>());
+            grammer.get("stmts").add(new ArrayList<>());
+            grammer.get("stmts").get(0).add("stmt");
+            grammer.get("stmts").get(0).add("stmts");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("stmt");add("stmts");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("stmt");add("stmts");}});}});
+            grammer.get("stmts").add(new ArrayList<>());
+            grammer.get("stmts").get(1).add("E");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("E");}});}});
+            grammer.put("ifstmt", new ArrayList<>());
+            grammer.get("ifstmt").add(new ArrayList<>());
+            grammer.get("ifstmt").get(0).add("if");
+            grammer.get("ifstmt").get(0).add("(");
+            grammer.get("ifstmt").get(0).add("boolexpr");
+            grammer.get("ifstmt").get(0).add(")");
+            grammer.get("ifstmt").get(0).add("then");
+            grammer.get("ifstmt").get(0).add("stmt");
+            grammer.get("ifstmt").get(0).add("else");
+            grammer.get("ifstmt").get(0).add("stmt");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("ifstmt", new ArrayList<String>(){{add("if");add("(");add("boolexpr");add(")");add("then");add("stmt");add("else");add("stmt");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("ifstmt", new ArrayList<String>(){{add("if");add("(");add("boolexpr");add(")");add("then");add("stmt");add("else");add("stmt");}});}});
+            grammer.put("assgstmt", new ArrayList<>());
+            grammer.get("assgstmt").add(new ArrayList<>());
+            grammer.get("assgstmt").get(0).add("ID");
+            grammer.get("assgstmt").get(0).add("=");
+            grammer.get("assgstmt").get(0).add("arithexpr");
+            grammer.get("assgstmt").get(0).add(";");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("assgstmt", new ArrayList<String>(){{add("ID");add("=");add("arithexpr");add(";");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("assgstmt", new ArrayList<String>(){{add("ID");add("=");add("arithexpr");add(";");}});}});
+            grammer.put("boolexpr", new ArrayList<>());
+            grammer.get("boolexpr").add(new ArrayList<>());
+            grammer.get("boolexpr").get(0).add("arithexpr");
+            grammer.get("boolexpr").get(0).add("boolop");
+            grammer.get("boolexpr").get(0).add("arithexpr");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolexpr", new ArrayList<String>(){{add("arithexpr");add("boolop");add("arithexpr");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolexpr", new ArrayList<String>(){{add("arithexpr");add("boolop");add("arithexpr");}});}});
+            grammer.put("boolop", new ArrayList<>());
+            grammer.get("boolop").add(new ArrayList<>());
+            grammer.get("boolop").get(0).add("<");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<");}});}});
+            grammer.get("boolop").add(new ArrayList<>());
+            grammer.get("boolop").get(1).add(">");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">");}});}});
+            grammer.get("boolop").add(new ArrayList<>());
+            grammer.get("boolop").get(2).add("<=");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<=");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<=");}});}});
+            grammer.get("boolop").add(new ArrayList<>());
+            grammer.get("boolop").get(3).add(">=");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">=");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">=");}});}});
+            grammer.get("boolop").add(new ArrayList<>());
+            grammer.get("boolop").get(4).add("==");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("==");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("==");}});}});
+            grammer.put("arithexpr", new ArrayList<>());
+            grammer.get("arithexpr").add(new ArrayList<>());
+            grammer.get("arithexpr").get(0).add("multexpr");
+            grammer.get("arithexpr").get(0).add("arithexprprime");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexpr", new ArrayList<String>(){{add("multexpr");add("arithexprprime");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexpr", new ArrayList<String>(){{add("multexpr");add("arithexprprime");}});}});
+            grammer.put("arithexprprime", new ArrayList<>());
+            grammer.get("arithexprprime").add(new ArrayList<>());
+            grammer.get("arithexprprime").get(0).add("+");
+            grammer.get("arithexprprime").get(0).add("multexpr");
+            grammer.get("arithexprprime").get(0).add("arithexprprime");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("+");add("multexpr");add("arithexprprime");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("+");add("multexpr");add("arithexprprime");}});}});
+            grammer.get("arithexprprime").add(new ArrayList<>());
+            grammer.get("arithexprprime").get(1).add("-");
+            grammer.get("arithexprprime").get(1).add("multexpr");
+            grammer.get("arithexprprime").get(1).add("arithexprprime");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("-");add("multexpr");add("arithexprprime");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("-");add("multexpr");add("arithexprprime");}});}});
+            grammer.get("arithexprprime").add(new ArrayList<>());
+            grammer.get("arithexprprime").get(2).add("E");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("E");}});}});
+            grammer.put("multexpr", new ArrayList<>());
+            grammer.get("multexpr").add(new ArrayList<>());
+            grammer.get("multexpr").get(0).add("simpleexpr");
+            grammer.get("multexpr").get(0).add("multexprprime");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexpr", new ArrayList<String>(){{add("simpleexpr");add("multexprprime");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexpr", new ArrayList<String>(){{add("simpleexpr");add("multexprprime");}});}});
+            grammer.put("multexprprime", new ArrayList<>());
+            grammer.get("multexprprime").add(new ArrayList<>());
+            grammer.get("multexprprime").get(0).add("*");
+            grammer.get("multexprprime").get(0).add("simpleexpr");
+            grammer.get("multexprprime").get(0).add("multexprprime");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("*");add("simpleexpr");add("multexprprime");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("*");add("simpleexpr");add("multexprprime");}});}});
+            grammer.get("multexprprime").add(new ArrayList<>());
+            grammer.get("multexprprime").get(1).add("/");
+            grammer.get("multexprprime").get(1).add("simpleexpr");
+            grammer.get("multexprprime").get(1).add("multexprprime");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("/");add("simpleexpr");add("multexprprime");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("/");add("simpleexpr");add("multexprprime");}});}});
+            grammer.get("multexprprime").add(new ArrayList<>());
+            grammer.get("multexprprime").get(2).add("E");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("E");}});}});
+            grammer.put("simpleexpr", new ArrayList<>());
+            grammer.get("simpleexpr").add(new ArrayList<>());
+            grammer.get("simpleexpr").get(0).add("ID");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("ID");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("ID");}});}});
+            grammer.get("simpleexpr").add(new ArrayList<>());
+            grammer.get("simpleexpr").get(1).add("INTNUM");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("INTNUM");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("INTNUM");}});}});
+            grammer.get("simpleexpr").add(new ArrayList<>());
+            grammer.get("simpleexpr").get(2).add("REALNUM");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("REALNUM");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("REALNUM");}});}});
+            grammer.get("simpleexpr").add(new ArrayList<>());
+            grammer.get("simpleexpr").get(3).add("(");
+            grammer.get("simpleexpr").get(3).add("arithexpr");
+            grammer.get("simpleexpr").get(3).add(")");
+            grammerToNumber.put(new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("(");add("arithexpr");add(")");}});}}, ++cnt);
+            numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("(");add("arithexpr");add(")");}});}});
+//        grammer.put("ID", new ArrayList<>());
+//        grammer.get("ID").add(new ArrayList<>());
+//        grammer.get("ID").get(0).add("a");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("ID", new ArrayList<String>(){{add("a");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("ID", new ArrayList<String>(){{add("a");}});}});
+//        grammer.get("ID").add(new ArrayList<>());
+//        grammer.get("ID").get(1).add("b");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("ID", new ArrayList<String>(){{add("b");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("ID", new ArrayList<String>(){{add("b");}});}});
+//        grammer.get("ID").add(new ArrayList<>());
+//        grammer.get("ID").get(2).add("c");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("ID", new ArrayList<String>(){{add("c");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("ID", new ArrayList<String>(){{add("c");}});}});
+//        for (String g : grammer.keySet()) {
+//            System.out.println(g);
+//            System.out.println(grammer.get(g));
+//        }
+//        for (int k : numberToGrammer.keySet()) {
+//            System.out.println(k + "   " + numberToGrammer.get(k));
+//        }
+        }
+
+    private static void semetic_LR1_analyse() {
+        prog.append("$");
+        int start = 0, end;
+        while (start <= prog.length()-1) {
+//            System.out.println(start);
+            while (start <= prog.length()-1 && (prog.charAt(start)==' ' || prog.charAt(start)=='\n')) start++;
+            if (prog.charAt(start) == '{') {
+                allParametersInitialized = true;
+                start++;
+                continue;
+            }
+            else if (prog.charAt(start) == '}') {
+                break;
+            }
+            if (!allParametersInitialized && (prog.substring(start, start+3).equals("int") || prog.substring(start, start+4).equals("real"))) {         //初始化赋值
+                Parameter p = new Parameter();
+                int index1 = start, index2;
+                if (prog.substring(start, start+3).equals("int")) index1 += 4;
+                else if (prog.substring(start, start+4).equals("real")) index1 += 5;
+                index2 = index1;
+                while (index2 <= prog.length()-1 && prog.substring(index2, index2+1).matches("[a-z]")) index2++;
+                p.name = prog.substring(index1, index2);
+                index1 = index2;
+                while (index1 <= prog.length()-1 && (prog.charAt(index1)==' ' || prog.charAt(index1)=='\n' || prog.charAt(index1)=='=')) index1++;
+                index2 = index1;
+                boolean flag = false;
+                while (index2 <= prog.length()-1 && (prog.substring(index2, index2+1).matches("[0-9]") || prog.charAt(index2) == '.')) {
+                    index2++;
+                    if (prog.charAt(index2) == '.') flag = true;
+                }
+                if (flag) {
+                    p.type = "realnum";
+                    p.value = prog.substring(index1, index2);
+                    if (prog.substring(start, start+3).equals("int")) {
+                        String s = prog.substring(index1, index2);
+                        s = s.substring(0, s.indexOf('.'));
+                        p.type = "int";
+                        p.value = s;
+                        int cnt = 0;
+                        while (lineCnt.get(cnt) <= start) cnt++;
+                        errorMsg.append("error message:line "+(cnt+1)+",realnum can not be translated into int type");
+                    }
+                }
+                else {
+                    p.type = "int";
+                    p.value = prog.substring(index1, index2);
+                }
+//                System.out.println(p.name+"   "+p.value+"   "+p.type);
+                parameters.add(p);
+                start = index2;
+                while (start <= prog.length()-1 && prog.charAt(start)==' ' || prog.charAt(start)=='\n' || prog.charAt(start)==';') start++;
+            }
+            else if (allParametersInitialized) {
+                while (start <= prog.length()-1 && prog.charAt(start)==' ' || prog.charAt(start)=='\n') start++;
+                if (prog.substring(start, start+2).equals("if")) {      //if判断语句
+                    String p1, p2, p3, sign;
+                    int index1 = start+2, index2;
+                    while (index1 <= prog.length()-1 && prog.charAt(index1) == ' ' || prog.charAt(index1) == '(') index1++;
+                    index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.substring(index2, index2+1).matches("[a-z]")) index2++;
+                    p1 = prog.substring(index1, index2);
+                    index1 = index2;
+                    while (index1 <= prog.length()-1 && prog.charAt(index1) == ' ') index1++;
+                    index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.charAt(index2) != ' ') index2++;
+                    sign = prog.substring(index1, index2);
+                    index1 = index2;
+                    while (index1 <= prog.length()-1 && prog.charAt(index1) == ' ') index1++;
+                    index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.substring(index2, index2+1).matches("[a-z]")) index2++;
+                    p2 = prog.substring(index1, index2);
+//                    System.out.println("if compare: " +p1+"   "+sign+"   "+p2);
+                    int n1=-1, n2=-1, n3=-1;
+                    for (int i=0; i<parameters.size(); i++) {
+                        if (parameters.get(i).name.equals(p1)) {
+                            n1 = i;
+                        }
+                        if (parameters.get(i).name.equals(p2)) {
+                            n2 = i;
+                        }
+                    }
+                    boolean flag = false;
+                    if (sign.equals("<")) {
+                        if (Integer.parseInt(parameters.get(n1).value) < Integer.parseInt(parameters.get(n2).value)) flag = true;
+                        else flag = false;
+                    }
+                    if (sign.equals(">")) {
+                        if (Integer.parseInt(parameters.get(n1).value) > Integer.parseInt(parameters.get(n2).value)) flag = true;
+                        else flag = false;
+                    }
+                    if (sign.equals("<=")) {
+                        if (Integer.parseInt(parameters.get(n1).value) <= Integer.parseInt(parameters.get(n2).value)) flag = true;
+                        else flag = false;
+                    }
+                    if (sign.equals(">=")) {
+                        if (Integer.parseInt(parameters.get(n1).value) >= Integer.parseInt(parameters.get(n2).value)) flag = true;
+                        else flag = false;
+                    }
+                    if (sign.equals("==")) {
+                        if (Integer.parseInt(parameters.get(n1).value) == Integer.parseInt(parameters.get(n2).value)) flag = true;
+                        else flag = false;
+                    }
+//                    System.out.println(flag);
+                    if (flag) {
+                        index1 = start;
+                        while (index1+4 <= prog.length()-1 && !prog.substring(index1, index1+4).equals("then")) index1++;
+                        index1+=4;
+                        while (index1 <= prog.length()-1 && prog.charAt(index1) ==' ') index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        p1 = prog.substring(index1, index2);
+                        index1 = index2;
+                        while (index1 <= prog.length()-1 && (prog.charAt(index1) ==' ' || prog.charAt(index1) =='=')) index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        p2 = prog.substring(index1, index2);
+                        index1 = index2;
+                        while (index1 <= prog.length()-1 && prog.charAt(index1) ==' ') index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        sign = prog.substring(index1, index2);
+                        index1 = index2;
+                        while (index1 <= prog.length()-1 && prog.charAt(index1) ==' ') index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        p3 = prog.substring(index1, index2);
+//                        System.out.println(p1+"   "+p2+"  "+sign+"   "+p3);
+                        n1=-1; n2=-1; n3=-1;
+                        for (int i=0; i<parameters.size(); i++) {
+                            if (parameters.get(i).name.equals(p1)) {
+                                n1 = i;
+                            }
+                            if (parameters.get(i).name.equals(p2)) {
+                                n2 = i;
+                            }
+                            if (parameters.get(i).name.equals(p3)) {
+                                n3 = i;
+                            }
+                        }
+                        double num1=0, num2, num3;
+                        if (n2 == -1) num2 = Double.parseDouble(p2);
+                        else num2 = Double.parseDouble(parameters.get(n2).value);
+                        if (n3 == -1) num3 = Double.parseDouble(p3);
+                        else num3 = Double.parseDouble(parameters.get(n3).value);
+//                        System.out.println(num2+"   "+num3);
+                        boolean flag2 = true;
+                        if (sign.equals("+")) num1 = num2 + num3;
+                        else if (sign.equals("-")) num1 = num2 - num3;
+                        else if (sign.equals("*")) num1 = num2 * num3;
+                        else if (sign.equals("/") && num3!=0.0) num1 = num2 / num3;
+                        else if (sign.equals("/") && num3==0.0) {
+                            flag2 = false;
+                            int cnt = 0;
+                            while (lineCnt.get(cnt) <= start) cnt++;
+                            errorMsg.append("\nerror message:line "+(cnt+1)+",division by zero");
+                        }
+                        if (flag2) {
+//                            System.out.println(num1);
+                            if (parameters.get(n1).type.equals("int")) {
+                                parameters.get(n1).value = String.valueOf((int)num1);
+                            }
+                            else if (parameters.get(n1).type.equals("realnum")) {
+                                parameters.get(n1).value = String.valueOf(num1);
+                            }
+//                            System.out.println(parameters.get(n1).name+"   "+parameters.get(n1).value);
+                        }
+                    }
+                    else {      //赋值语句
+                        index1 = start;
+                        while (index1+4 <= prog.length()-1 && !prog.substring(index1, index1+4).equals("else")) index1++;
+                        index1+=4;
+                        while (index1 <= prog.length()-1 && prog.charAt(index1) ==' ') index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        p1 = prog.substring(index1, index2);
+                        index1 = index2;
+                        while (index1 <= prog.length()-1 && (prog.charAt(index1) ==' ' || prog.charAt(index1) =='=')) index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        p2 = prog.substring(index1, index2);
+                        index1 = index2;
+                        while (index1 <= prog.length()-1 && prog.charAt(index1) ==' ') index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        sign = prog.substring(index1, index2);
+                        index1 = index2;
+                        while (index1 <= prog.length()-1 && prog.charAt(index1) ==' ') index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && !(prog.charAt(index2) ==' ')) index2++;
+                        p3 = prog.substring(index1, index2);
+//                        System.out.println(p1+"   "+p2+"  "+sign+"   "+p3);
+                        n1=-1; n2=-1; n3=-1;
+                        for (int i=0; i<parameters.size(); i++) {
+                            if (parameters.get(i).name.equals(p1)) {
+                                n1 = i;
+                            }
+                            if (parameters.get(i).name.equals(p2)) {
+                                n2 = i;
+                            }
+                            if (parameters.get(i).name.equals(p3)) {
+                                n3 = i;
+                            }
+                        }
+                        double num1=0, num2, num3;
+                        if (n2 == -1) num2 = Double.parseDouble(p2);
+                        else num2 = Double.parseDouble(parameters.get(n2).value);
+                        if (n3 == -1) num3 = Double.parseDouble(p3);
+                        else num3 = Double.parseDouble(parameters.get(n3).value);
+//                        System.out.println(num2+"   "+num3);
+                        if (sign.equals("+")) num1 = num2 + num3;
+                        else if (sign.equals("-")) num1 = num2 - num3;
+                        else if (sign.equals("*")) num1 = num2 * num3;
+                        else if (sign.equals("/")) num1 = num2 / num3;
+//                        System.out.println(num1);
+                        if (parameters.get(n1).type.equals("int")) {
+                            parameters.get(n1).value = String.valueOf((int)num1);
+                        }
+                        else if (parameters.get(n1).type.equals("realnum")) {
+                            parameters.get(n1).value = String.valueOf(num1);
+                        }
+//                        System.out.println(parameters.get(n1).name+"   "+parameters.get(n1).value);
+                    }
+                    while (start+4 <= prog.length()-1 && !prog.substring(start, start+4).equals("else")) start++;
+                    while (prog.charAt(start) != ';') start++;
+                    start++;
+                }
+                else {
+                    String p1, p2, p3, p4, sign1, sign2;
+                    int index1 = start, index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.substring(index2, index2+1).matches("[a-z]")) index2++;
+                    p1 = prog.substring(index1, index2);
+                    index1 = index2;
+                    while (index1 <= prog.length()-1 && (prog.charAt(index1) == ' ' || prog.charAt(index1) == '=')) index1++;
+                    index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.charAt(index2) != ' ') index2++;
+                    p2 = prog.substring(index1, index2);
+                    index1 = index2;
+                    while (index1 <= prog.length()-1 && prog.charAt(index1) == ' ') index1++;
+                    index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.charAt(index2) != ' ') index2++;
+                    sign1 = prog.substring(index1, index2);
+                    index1 = index2;
+                    while (index1 <= prog.length()-1 && prog.charAt(index1) == ' ') index1++;
+                    index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.charAt(index2) != ' ') index2++;
+                    p3 = prog.substring(index1, index2);
+                    index1 = index2;
+                    while (index1 <= prog.length()-1 && prog.charAt(index1) == ' ') index1++;
+                    index2 = index1;
+                    while (index2 <= prog.length()-1 && prog.charAt(index2) != ' ' && !prog.substring(index2, index2+1).matches("[a-z]")) index2++;
+                    sign2 = prog.substring(index1, index2);
+//                    System.out.println("sign2: "+sign2);
+                    if (sign2.equals(";")) {
+//                        System.out.println(p1+"   "+p2+"   "+sign1+"   "+p3);
+                        int n1=-1, n2=-1, n3=-1;
+                        for (int i=0; i<parameters.size(); i++) {
+                            if (parameters.get(i).name.equals(p1)) {
+                                n1 = i;
+                            }
+                            if (parameters.get(i).name.equals(p2)) {
+                                n2 = i;
+                            }
+                            if (parameters.get(i).name.equals(p3)) {
+                                n3 = i;
+                            }
+                        }
+                        double num1=0, num2, num3;
+                        if (n2 == -1) num2 = Double.parseDouble(p2);
+                        else num2 = Double.parseDouble(parameters.get(n2).value);
+                        if (n3 == -1) num3 = Double.parseDouble(p3);
+                        else num3 = Double.parseDouble(parameters.get(n3).value);
+//                        System.out.println(num2+"   "+num3);
+                        if (sign1.equals("+")) num1 = num2 + num3;
+                        else if (sign1.equals("-")) num1 = num2 - num3;
+                        else if (sign1.equals("*")) num1 = num2 * num3;
+                        else if (sign1.equals("/")) num1 = num2 / num3;
+//                        System.out.println(num1);
+                        if (parameters.get(n1).type.equals("int")) {
+                            parameters.get(n1).value = String.valueOf((int)num1);
+                        }
+                        else if (parameters.get(n1).type.equals("realnum")) {
+                            parameters.get(n1).value = String.valueOf(num1);
+                        }
+//                        System.out.println(parameters.get(n1).name+"   "+parameters.get(n1).value);
+                        start = index2;
+                    }
+                    else {
+                        index1 = index2;
+                        while (index1 <= prog.length()-1 && prog.charAt(index1) == ' ') index1++;
+                        index2 = index1;
+                        while (index2 <= prog.length()-1 && prog.charAt(index2) != ' ') index2++;
+                        p4 = prog.substring(index1, index2);
+//                        System.out.println(p1+"   "+p2+"   "+sign1+"   "+p3+"   "+sign2+"   "+p4);
+                        int n1=-1, n2=-1, n3=-1, n4=-1;
+                        for (int i=0; i<parameters.size(); i++) {
+                            if (parameters.get(i).name.equals(p1)) {
+                                n1 = i;
+                            }
+                            if (parameters.get(i).name.equals(p2)) {
+                                n2 = i;
+                            }
+                            if (parameters.get(i).name.equals(p3)) {
+                                n3 = i;
+                            }
+                            if (parameters.get(i).name.equals(p4)) {
+                                n4 = i;
+                            }
+                        }
+                        double num1=0, num2, num3, num4;
+                        if (n2 == -1) num2 = Double.parseDouble(p2);
+                        else num2 = Double.parseDouble(parameters.get(n2).value);
+                        if (n3 == -1) num3 = Double.parseDouble(p3);
+                        else num3 = Double.parseDouble(parameters.get(n3).value);
+                        if (n4 == -1) num4 = Double.parseDouble(p4);
+                        else num4 = Double.parseDouble(parameters.get(n4).value);
+                        if (sign1.equals("*") && sign2.equals("-")) num1 = num2 * num3 - num4;
+                        if (parameters.get(n1).type.equals("int")) {
+                            parameters.get(n1).value = String.valueOf((int)num1);
+                        }
+                        else if (parameters.get(n1).type.equals("realnum")) {
+                            parameters.get(n1).value = String.valueOf(num1);
+                        }
+//                        System.out.println(parameters.get(n1).name+"   "+parameters.get(n1).value);
+                        start = index2;
+                        while (prog.charAt(start) == ' ' || prog.charAt(start) == ';') start++;
+                    }
+                }
+            }
+        }
+    }
+
+    private static void showResult() {
+        if (errorMsg.toString().equals("")) {
+            for (int i=0; i<parameters.size(); i++) {
+                System.out.print(parameters.get(i).name+": "+parameters.get(i).value);
+                if (i<parameters.size()-1) System.out.println();
+            }
+        }
+        else {
+            System.out.print(errorMsg);
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

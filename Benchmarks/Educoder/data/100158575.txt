@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+	int n,i,j,m,k,t=0,res=0;
+	string a,b; 
+	cin>>a;
+	cin>>b;
+	n=a.length();
+	m=b.length();
+	for (i=0;i<n;i++)
+	{
+		for (j=i;j<n;j++)
+		{
+			t=j-i+1;
+			for (k=0;k<=m-t;k++)
+			{
+				int p,q;
+				for (p=i,q=k;p<=j;p++,q++)
+				{
+					if (a[p]!=b[q])
+					break;
+				}
+				if (p==j+1)
+				res=max(t,res);
+			}
+		}
+	}
+	cout<<res;
+}

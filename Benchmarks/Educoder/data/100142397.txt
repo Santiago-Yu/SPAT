@@ -1,0 +1,49 @@
+package step2;
+
+import java.io.*;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		File file=new File("src/step2/input/task.txt"); 
+        File file2=new File("src/step2/output/output.txt"); 
+        if(!file2.getParentFile().exists()){  
+           file2.getParentFile().mkdirs();  
+        }
+        if(!file2.exists()){
+            file2.mkdirs(); 
+        }
+        	//file2.createNewFile();
+        InputStream fs = new FileInputStream(file);
+        byte[] b =new byte[8];
+        fs.read(b);
+        String str =new String(b,"UTF-8");
+        System.out.println(str);
+        OutputStream out = null;
+        try{
+            //String file ="src/step2/input/task.text";
+            out = new FileOutputStream(file2);
+            String str1="learning practice";
+            
+           b =str1.getBytes();
+            out.write(b);
+            out.flush();
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }finally{
+            if (out != null){
+                try{
+                    out.close();
+                }catch(FileNotFoundException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+		
+		
+		/********* End *********/
+	}
+	
+}

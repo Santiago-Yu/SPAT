@@ -1,0 +1,16 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2){
+        
+        int sum=0;
+        for(int i=num1;i<=num2;i++){
+            sum+=i%10;
+            sum+=(i%100-(i%10))/10;
+            sum+=(i-i%100)>0 ? (i-i%100)/100:0;
+	}
+        return sum;
+}
+}

@@ -1,0 +1,44 @@
+package step2;
+
+public class Task {
+    
+    public void mark(int n,int m,char[][] area,int mx,int my){
+    	area[mx][my] = 'm';
+        if(mx<n-1){
+        	if(area[mx+1][my]=='o'){
+            	mark(n,m,area,mx+1,my);
+            }
+        }
+        if(my<m-1){
+        	if(area[mx][my+1]=='o'){
+            	mark(n,m,area,mx,my+1);
+            }
+        }
+        if(mx!=0){
+        	if(area[mx-1][my]=='o'){
+            	mark(n,m,area,mx-1,my);
+            }
+        }
+        if(my!=0){
+        	if(area[mx][my-1]=='o'){
+            	mark(n,m,area,mx,my-1);
+            }
+        }
+    }
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int num = 0;
+        int[][] arr = new int[n][m];
+        for(int i=0;i < n;i++){
+        	for(int j=0;j<m;j++){
+            	if(area[i][j] == 'o'){
+                	num++;
+                    mark(n,m,area,i,j);
+                }
+            }
+        }
+        return num;
+		/********* End *********/	
+	}
+}

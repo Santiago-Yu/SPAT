@@ -1,0 +1,39 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    
+		String rs=getRemoveNums(nums,10000);
+		Long i = Long.valueOf(rs);
+        Long b=i%11;
+        int a=b.intValue();
+		return a;	
+    }	
+	private static String getRemoveNums(int[] src, int maxLength){
+		String result = "";
+		int[] toolArray = new int[maxLength + 1];
+		toolArray[0]=1;
+		for (int i = 0; i < src.length; i++) {
+			int num = src[i];
+			toolArray[num] = 1;
+		}
+
+		for (int i = 0; i < toolArray.length; i++) {
+
+			int num = toolArray[i];			
+
+			if (num != 1 ) {
+				result += i;
+			}
+		}
+		return result;
+		
+	}
+	
+	}
+
+	/********* End *********/
+

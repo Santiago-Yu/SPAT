@@ -1,0 +1,66 @@
+package step4;
+import java.util.Scanner;
+public class DayCount {
+    public static void main(String [] atgs){
+    Scanner sc1=new Scanner(System.in);
+        int year=sc1.nextInt();
+        int month=sc1.nextInt();
+        int day=sc1.nextInt();
+    new DayCount().dayCount(year,month,day);
+    }
+	public void dayCount(int year, int month, int day) {
+	int day1=0,day2=0;
+		/********** Begin *********/
+		switch(month-1){
+			case 1:
+				day1=31;
+				break;
+			case 2:
+				day1=59;
+				break;
+			case 3:
+				day1=90;
+				break;
+			case 4:
+				day1=120;
+				break;
+			case 5:
+				day1=151;
+				break;
+			case  6:
+				day1=181;
+				break;
+			case 7:
+				day1=212;
+				break;
+			case 8:
+				day1=243;
+				break;
+			case 9:
+				day1=273;
+				break;
+			case 10:
+				day1=304;
+				break;
+			case 11:
+				day1=334;
+				break;
+			case 12:
+				day1=365;
+				break;
+			default :
+				System.out.print("cuo wu");
+		}
+		if( year % 4 == 0 && ( year % 100 != 0 || year % 400 == 0) && month>2){
+			day2=day1+day+1;
+			System.out.print(day2);
+        		}
+		else{
+			day2=day1+day;
+			System.out.print(day2);
+		}
+
+		/********** End *********/
+	}
+}
+

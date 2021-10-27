@@ -1,0 +1,39 @@
+package Step2;
+
+import java.util.Scanner;
+
+public class RankingBySwitch {
+	public static void main(String args[]){
+		/********** Begin *********/
+		Scanner scanner = new Scanner(System.in);
+        String a="";
+        int score=scanner.nextInt();
+		//输入课程的分数
+        boolean falg=true;
+		switch(score/10)
+        {
+            case 10:a="优秀";break;
+            case 9:a="优秀";break;
+            case 8:a="良好";break;
+            case 7:a="中等";break;    
+        	case 6:a="及格";break;
+            case 5:a="不及格";break;    
+            case 4:a="不及格";break; 
+            case 3:a="不及格";break; 
+            case 2:a="不及格";break;
+            case 1:a="不及格";break;    
+            default:falg=false;
+        }
+        
+		//switch-case语句
+		if(falg)
+        {
+        	System.out.println("成绩为"+score+"分，评定为"+a);
+        }
+        else
+        {
+        	System.out.println("错误");
+        }
+		/********** End *********/
+	}
+}

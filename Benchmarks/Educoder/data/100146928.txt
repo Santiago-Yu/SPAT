@@ -1,0 +1,36 @@
+package step1;
+import java.util.Arrays;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+  		 long result = 0;
+		 long combine = 0; 
+		 //创建新数组全部填充0
+		 int[] n = new int[10001];
+		 Arrays.fill(n, 0);
+		 //所有未丢失的值放在新数组里
+		 for(int x:nums)
+			 n[x] = x;
+		 int[] three = new int[3];
+		 int count = 0;
+		 //将丢失的值找出放在three里
+		 for(int i = 1; i <= 10000; i++){
+			 if(n[i] == 0){
+				 three[count] = i;
+				 count++;
+			 }				 
+		 }
+		 //转字符串拼接
+		 String s = "";
+		 for(int x:three)
+			 s += Integer.toString(x);
+		 //转成int
+		 combine = Long.parseLong(s);
+		 result = combine%11;
+		 return (int)result;
+	}
+
+	/********* End *********/
+}

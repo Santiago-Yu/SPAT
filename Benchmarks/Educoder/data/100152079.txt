@@ -1,0 +1,38 @@
+package step1;
+
+ public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double area = 0.0;
+		//获取两个圆形圆心的距离
+		double d = Math.sqrt( (x2 - x1) * (x2 - x1) + (y2 - y1)*(y2 - y1) );
+		
+		//两个圆的圆心距离大于两个圆的半径之和，没有重叠面积
+		if ( d >= r1 + r2 ) {
+			area = Math.PI*r1 * r1 + Math.PI*r2 * r2;
+		}
+		//一个圆在另一个圆内
+		else if ( d <= Math.abs(r1 - r2)) {
+			if ( r1 > r2 ) {
+				area = Math.PI*r1*r1;
+			}
+			else {
+				area = Math.PI*r2*r2;
+			}
+		}
+		//两圆有部分重叠
+		else {
+			double angle1 = 2*Math.acos( ( d*d + r1*r1 - r2*r2 ) / ( 2*d*r1 ) );
+			double angle2 = 2*Math.acos( ( d*d + r2*r2 - r1*r1 ) / ( 2*d*r2 ) );
+			double s1 = 0.5*r1*r1*Math.sin(angle1) + 0.5*r2*r2*Math.sin(angle2);
+			double s2 = 0.5*angle1*r1*r1 + 0.5*angle2*r2*r2;
+			area = r1*r1*Math.PI + r2*r2*Math.PI - ( s2 - s1);
+		}
+		return area;
+		  
+		  
+		  /********* End *********/
+	  }
+}

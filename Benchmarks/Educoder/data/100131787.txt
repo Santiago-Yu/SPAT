@@ -1,0 +1,41 @@
+package step3;
+
+import java.io.File;
+ 
+public class Task {
+	
+	public static void showDirStructure(File file) {
+		if (file.isDirectory()) {		//判断文件是否存在目录，
+			System.out.println("+--" + file.getName());
+		}
+		int Blank = 2;
+		wokao(file, Blank);				//调用方法
+	}
+ 
+	public static void wokao(File file, int Blank ) {	//新建一个新的方法
+		File[] files = file.listFiles();			//将文件的子文件赋值给files数组		
+		for (int i = 0; i < files.length; i++) {	//通过循环将file数组中的元素执行一遍
+			if (files[i].isDirectory()) {			//判断是否有目录
+				for (int k = 0; k < Blank; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("+--" + files[i].getName());
+				
+				wokao(files[i], Blank+2);			//调用我靠函数
+			} 
+			
+			else {									//当不存在子目录是进行判断文件类型，如果是图片  加上符号
+				int end =  files[i].toString().indexOf(".");
+				String suffix = files[i].toString().substring(end+1);	//判断文件类型
+			
+				if(suffix.equals("jpg") || suffix.equals("png") || suffix.equals("bmp")) {	//判断是否为图片
+					for (int k = 0; k < Blank; k++) {				//先输出空格  在输出空格名
+						System.out.print(" ");
+					}
+					System.out.println("--" + files[i].getName());			//输出图片的名称
+				}
+			}
+		}
+	}
+}
+

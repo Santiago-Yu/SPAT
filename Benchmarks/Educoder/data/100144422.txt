@@ -1,0 +1,47 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+	public void showDirStructure(File file)	{
+		System.out.println("+--" + file.getName());
+        showDirTree(file," ");
+    }
+  public static void showDirTree(File dir,String interval){
+        
+               FileFilter filter = filess->{
+       if(filess.isFile()){
+       String fileName =filess.getName().toLowerCase();
+           if(fileName.endsWith(".txt")){
+               return false;
+           }else if(fileName.endsWith(".docx")){
+               return false;
+          /* }else if(fileName.endsWith(".bmp")){
+               return false;
+           }*/
+       }
+       }
+        return true;
+       };
+        
+                File[] files = dir.listFiles(filter);
+        interval += " ";
+        
+        for (File f : files) {
+            if(!f.isDirectory()){
+                System.out.println(interval + "--" +  f.getName());
+            }else{
+                System.out.println(interval + "+--" +  f.getName());
+                showDirTree(f,interval + " ");
+            }
+        }
+    }
+
+
+
+
+	/********** End **********/
+}

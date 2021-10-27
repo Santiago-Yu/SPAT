@@ -1,0 +1,31 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int dayOfFeb = 28;
+        if( year%400==0 || (year%4==0 && year%100!=0) ){
+        	dayOfFeb = 29;
+        }
+        int sumOfDay=day;
+        for( int i=1; i<month; i++){
+            switch( i ){
+                    case 1:
+                    case 3:
+                    case 5:
+                    case 7:
+                    case 8:
+                    case 10:
+                    case 12:sumOfDay+=31;break;
+                    case 4:
+                    case 6:
+                    case 9:
+                    case 11:sumOfDay+=30;break;
+                    case 2:sumOfDay+=dayOfFeb;break;
+            }
+        }
+        System.out.print( sumOfDay );     
+
+		/********** End *********/
+	}
+}

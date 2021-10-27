@@ -1,0 +1,32 @@
+package step1;
+import java.util.Scanner;
+
+//循环输入某位同学4门课成绩，定义一个数组存放课程成绩，计算总成绩、平均分并输出
+public class ChengJi {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		int k;
+		float sum=0.0f,avg=0.0f;//sum变量存放总成绩、avg存放平均分
+		/**********Start**********/
+        Float[]score=new Float[4];
+        for(int y=1;y<=4;y++){
+        	System.out.println("请输入第"+y+"门课程成绩：");
+       	 	score[y-1]=sc.nextFloat();        	
+    	}
+        for(int y=0;y<score.length;y++ ){
+            sum+=score[y];
+        }
+        System.out.print("4门课程的成绩分别是：");
+        avg=sum/4;
+        for(int y=0;y<=3;y++){
+    		System.out.print(score[y]+"\t");
+        }
+        System.out.println("");
+		System.out.printf("总成绩：%.2f,平均分：%.2f\n",sum,avg);
+        
+		
+		
+		
+		/**********End**********/
+	}
+}

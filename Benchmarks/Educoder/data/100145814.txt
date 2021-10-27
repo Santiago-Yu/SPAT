@@ -1,0 +1,38 @@
+package step4;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+		Calendar calendar = Calendar.getInstance();
+		//设定日期
+		String subSentences[] = releaseDate.split("-");
+        for (String sub : subSentences) {
+          //  System.out.println(sub);
+        }
+        int year= Integer.parseInt(subSentences[0]);
+        int month = Integer.parseInt(subSentences[1]);
+        int dater = Integer.parseInt(subSentences[2]);
+        calendar.set(year, month-1, dater);
+        
+       
+		calendar.add(Calendar.DATE, day);
+		Date date = calendar.getTime();
+	//	DateFormat format = DateFormat.getDateInstance(DateFormat.FULL);
+	//	String string = format.format(date);
+		SimpleDateFormat sdf1 =new SimpleDateFormat("yyyy-MM-dd" );
+		String string = sdf1.format(date);
+     //   System.out.println("当前时间通过 yyyy-MM-dd 格式化后的输出: "+str1);
+
+		return string;
+        /********* End *********/
+	}
+	
+	
+}

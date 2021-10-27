@@ -1,0 +1,23 @@
+package step2;
+
+public class AdditionCalculator {
+	public void addition(int a, int n) {
+        /********** Begin *********/
+        String temp;
+        int sum = 0;
+        while(n-- != 0){
+            temp = "";
+            for(int i = n; i >= 0; i--) {
+                temp = temp.concat(Integer.toString(a));
+            }
+            sum += Integer.parseInt(temp);
+        }
+        System.out.print(sum);
+
+        /********** End *********/
+    }
+    public static void main(String[] args) {
+        AdditionCalculator additionCalculator = new AdditionCalculator();
+        additionCalculator.addition(2, 3);
+    }
+}

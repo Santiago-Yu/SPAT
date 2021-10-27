@@ -1,0 +1,184 @@
+package step1;
+
+class Node<T> {
+	private T data;
+	public Node<T> lChild;
+	public Node<T> rChild;
+	public Node()
+	{
+		data = null;
+		lChild = null;
+		rChild = null;
+	}
+	public Node(T elem)
+	{
+		data = elem;
+		lChild = null;
+		rChild = null;
+	}
+	public T getData()
+	{
+		return data;
+	}
+}
+
+
+public class BinaryTree<T>
+{
+	private final int maxNodes=100;
+	public Node<T> root;        
+    
+	public BinaryTree()  //创建一棵空二叉树
+	{
+		 this.root = new Node<T>();
+	}    
+	public BinaryTree(T x)   //创建一棵以数据元素x为根结点的二叉树
+	{
+		this.root = new Node<T>(x);
+	}
+	
+	public BinaryTree(Node<T> node){
+		this.root = node;
+	}
+	
+	public boolean insertLeft(T x, Node<T> parent)
+	{ 
+		/********* Begin *********/
+        if(parent==null)	return false;
+		Node<T> p= new Node<T>(x);
+		if(parent.lChild==null) parent.lChild = p;
+		else{
+        p.lChild = parent.lChild;
+			parent.lChild = p;
+            }
+            return true;
+		
+
+
+
+
+
+
+
+		/********* End *********/
+	} 
+    //在当前二叉树的parent节点中插入一个新的右子结点，若已存在右子树，则将该右子树变成新右子结点的左子树
+    public boolean insertRight(T x, Node<T> parent)
+    { 
+		if(parent==null)	return false;
+		Node<T> p= new Node<T>(x);
+		if(parent.rChild==null) parent.rChild = p;
+		else
+		{
+			p.rChild = parent.rChild;
+			parent.rChild = p;
+		}
+		return true; 
+	}
+    
+    //删除在当前二叉树的parent节点中的左子树
+    public boolean deleteLeft(Node<T> parent)
+    {
+    	if(parent==null)	return false;
+    	else
+    	{
+    		parent.lChild=null;
+    		return true;
+    	}
+    } 
+ 
+    public boolean deleteRight(Node<T> parent)
+    { 
+    	if(parent==null)  	return false;
+    	else
+    	{
+       		parent.rChild=null;
+    		return true; 		
+    	}
+    } 
+    //删除在当前二叉树的parent节点中的右子树
+    public boolean search(T x){return false;} //在当前二叉树中查找数据x
+  
+	public void preorder(Node<T> node)
+	{
+		if(node==null) return;
+		else
+		{
+			System.out.print(node.getData() + " ");
+			preorder(node.lChild);
+			preorder(node.rChild);
+		}
+	}
+	public void inorder(Node<T> node)
+	{
+		if(node==null) return;
+		else
+		{
+			inorder(node.lChild);
+			System.out.print(node.getData());
+			inorder(node.rChild);
+		}
+	}
+	public void postorder(Node<T> node)
+	{
+		if(node==null) return;
+		else
+		{
+			postorder(node.lChild);		
+			postorder(node.rChild);
+			System.out.print(node.getData());
+		}
+	}
+	public void levelorder()
+	{
+		Node<T>[] queue= new Node[this.maxNodes];
+		int front,rear;
+		if (this.root==null) return;
+		front=-1;
+		rear=0;
+		queue[rear]=this.root;
+		while(front!=rear)
+		{
+			front++;
+			System.out.print(queue[front].getData());    /*访问队首结点的数据域*/
+			/*将队首结点的左孩子结点进队列*/
+			if (queue[front].lChild!=null)
+			{ 
+				rear++;
+				queue[rear]=queue[front].lChild;
+			}
+			/*将队首结点的右孩子结点进队列*/
+			if (queue[front].rChild!=null)
+			{
+				rear++;
+				queue[rear]=queue[front].rChild;
+			}
+		}
+	}
+	//按指定方式遍历二叉树
+	//i=0表示先序遍历，=1表示中序遍历，=2表示后序遍历，=3表示层次遍历
+	public void traversal(int i)
+	{
+		switch(i)
+		{
+			case 0: preorder(this.root);break;
+			case 1: inorder(this.root);break;
+			case 2: postorder(this.root);break;
+			default: levelorder();	
+		}
+	}
+	public int getHeight(Node<T> parent)
+	{
+		int lh, rh, max;
+		if(parent != null)
+		{
+			lh = getHeight(parent.lChild);
+			rh = getHeight(parent.rChild);
+			max = lh>rh? lh : rh;
+			return(max+1);
+		}
+		else  return 0;
+	}
+}
+
+

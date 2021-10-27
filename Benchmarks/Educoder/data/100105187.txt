@@ -1,0 +1,40 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+	        StringBuffer ans1=new StringBuffer();
+        String data1=new String();
+		
+		int num=0;
+		while(num!=-1){
+			
+			num=data.indexOf(" ");
+			if(num!=-1) {
+			data1=data.substring(0,num);
+			ans1=new StringBuffer(data1);
+			ans1=ans1.reverse();
+			data1=ans1.toString();
+			ans=ans.append(data1);
+			ans=ans.append(" ");
+			
+	        
+			data=data.substring(num+1);
+			}
+            
+	        
+		}
+		data1=data;
+		ans1=new StringBuffer(data1);
+		ans1=ans1.reverse();
+		data1=ans1.toString();
+		ans=ans.append(data1);
+        ans=ans.append(" ");
+
+
+
+        /********** End *********/
+        return ans;
+    }
+}

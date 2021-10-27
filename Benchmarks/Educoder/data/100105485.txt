@@ -1,0 +1,28 @@
+package step1;
+import java.util.Scanner;
+
+public class Yard {
+	protected double chang;
+    protected double kuan;
+   	Yard(double a, double b){
+    	this.chang = a;
+        this.kuan = b;
+    }
+    protected double getPerimeter(){
+    	return (this.chang+this.kuan)*2;
+    }
+    protected double getAcreage(){
+    	return this.chang*this.kuan;
+    }
+    
+    public static void main(String[] args){
+    	double a,b;
+        Scanner in = new Scanner(System.in);
+        a = in.nextDouble();
+        b = in.nextDouble();
+        Yard test = new Yard(a, b);
+        System.out.print(test.getPerimeter()+" ");
+        System.out.print(test.getAcreage());
+        
+    }
+}

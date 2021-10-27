@@ -1,0 +1,72 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+	public void showDirStructure(File file)	{
+		boolean isDir=file.isDirectory();
+        int deep=1;
+        System.out.println("+--"+file.getName());
+        getdeep(file,deep);
+
+
+
+
+	}
+	public static void getdeep (File file1,int deep){
+    
+        FileFilter filter = file ->  {
+    if (file.isFile()) {
+        String fileName   = file.getName().toLowerCase();
+        if (fileName.endsWith(".png"))  {
+            return true;
+        }
+        if (fileName.endsWith(".jpg"))  {
+            return true;
+        }
+        if (fileName.endsWith(".bmp"))  {
+            return true;
+        }
+        
+    }if(file.isDirectory()){return true;}
+    return false;
+};
+        
+        
+        
+        File[] p=file1.listFiles(filter);
+        
+        
+        
+        
+        
+        
+        
+    for(int i=0;i<p.length;i++){
+    if(p[i].isDirectory()){
+    for(int l=0;l<deep;l++){
+    System.out.print("  ");}
+    System.out.println("+--"+p[i].getName());
+    getdeep(p[i],deep+1);}
+    if(p[i].isFile()){
+    for(int j=0;j<deep;j++){
+    System.out.print("  ");}
+    System.out.println("--"+p[i].getName());}
+    }
+    }
+
+
+
+
+
+
+
+
+	
+	
+
+	/********** End **********/
+}

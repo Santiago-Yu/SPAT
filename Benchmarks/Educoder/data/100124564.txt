@@ -1,0 +1,22 @@
+
+package step3;
+import java.util.Scanner;
+public class Sum{
+	public static void main(String args[]){
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+        int result = recursionSum(num);
+        System.out.println(result);
+	}
+	
+    public static int recursionSum(int mum){
+        /*********begin*********/
+        if(mum == 1){
+        	return 1;
+        }
+        else{
+        	return mum+recursionSum(mum-1);
+        }
+        /*********end*********/
+    }  
+}

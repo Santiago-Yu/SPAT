@@ -1,0 +1,108 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+        int begin=find(arr,0)[0];
+         int max=find(arr,0)[1];
+	
+                
+    
+        while(begin!=arr.length-1){
+            max=Math.max(max,find(arr,begin)[1]);
+           begin=find(arr,begin)[0];
+        }
+		return max;
+			
+	}
+    
+    public int[] find(Integer[] arr,int begin){
+        int[] list=new int[2];
+        int n=0,min1,min2,max,start,end,length;
+        int i=begin; 
+        if(arr.length==0){list[0]=-1;list[1]=0;return list;}
+        while(arr[i]<=arr[i+1]){
+        i++;
+            if(i==arr.length-1){
+             list[0]=i;
+                list[1]=0;
+                return list;
+            }
+        }
+        start=i;
+        
+  		while(arr[i]>arr[i+1]){
+            i++;
+            if(i==arr.length-1){
+             list[0]=i;
+             list[1]=0;
+            return list;
+           }
+        }
+            
+        	min1=i;
+        while(arr[i]==arr[i+1]){
+			i++;
+            if(i==arr.length-1){
+             list[0]=i;
+             list[1]=0;
+            return list;
+           }
+        }
+            min2=i+1;
+        
+      
+       
+        
+       
+        while(arr[i]<arr[i+1]){
+        	i++;
+            if(i==arr.length-1){
+                max=i;
+                length=min1-start+1+max-min2+1;
+                end=i;
+                if(max==min1){ length=0;}
+                list[0]=end;
+                list[1]=length;
+                return list;
+                
+            }
+        }
+            max=i;
+       
+          
+        
+        
+        while(arr[i]==arr[i+1]){
+         	i++;   
+            if(i==arr.length-1){
+               
+                length=min1-start+1+max-min2+1;
+                end=i;
+                if(max==min1){ length=0;}
+                list[0]=end;
+                list[1]=length;
+                return list;
+                
+            }
+            
+            
+        }
+              end=i;
+      
+        
+        
+       
+    
+    
+    length=min1-start+1+max-min2+1;
+                end=i;
+                if(max==min1){ length=0;}
+    
+        list[0]=end;
+        list[1]=length;
+        return list;
+    }     
+        /********* End *********/
+}

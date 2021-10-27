@@ -1,0 +1,100 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+char[] tmp = releaseDate.toCharArray();
+		int[] mon1 = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		int[] mon2 = { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		char a = tmp[0];
+		int A = (int) (a - '0');
+		char b = tmp[1];
+		int B = (int) (b - '0');
+		char c = tmp[2];
+		int C = (int) (c - '0');
+		char d = tmp[3];
+		int D = (int) (d - '0');
+		char e = tmp[5];
+		int E = (int) (e - '0');
+		char f = tmp[6];
+		int F = (int) (f - '0');
+		char g = tmp[8];
+		int G = (int) (g - '0');
+		char h = tmp[9];
+		int H = (int) (h - '0');
+		int year = A * 1000 + B * 100 + C * 10 + D;
+		int month = E * 10 + F;
+		int date = G * 10 + H;
+		int date2 = date;
+		while (day > 0) {
+
+			if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+				if (date2 == mon2[month]) {
+					month++;
+					date2 = 0;
+					if (month == 13) {
+						year++;
+						month = 1;
+					}
+				}
+				date2++;
+				day--;
+			}
+
+			else {
+
+				if (date2 == mon1[month]) {
+					month++;
+					date2 = 0;
+					if (month == 13) {
+						year++;
+						month = 1;
+					}
+				}
+
+				date2++;
+				day--;
+
+			}
+		}
+
+		// String str;
+		char[] str = new char[10];
+		int[] k = new int[10];
+		k[0] = year / 1000;
+		k[1] = year % 1000 / 100;
+		k[2] = year % 100 / 10;
+		k[3] = year % 10;
+		k[4] = 0;
+		k[5] = month / 10;
+		k[6] = month % 10;
+		k[7] = 0;
+		k[8] = date2 / 10;
+		k[9] = date2 % 10;
+
+		for (int i = 0; i < 10; i++) {
+			if (i == 4 || i == 7) {
+				str[i] = '-';
+			} else {
+				str[i] = (char) (k[i] + '0');
+			}
+		}
+		// System.out.println(str);
+		return new String(str);
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

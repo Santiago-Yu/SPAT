@@ -1,0 +1,66 @@
+package step3;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class BFSGraph {
+    private int V;//顶点数
+    private int E;//边数
+    private boolean[] marked;
+    private ArrayList<Integer>[] adj;//邻接表
+
+    public BFSGraph(int v) {
+        if (v < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
+        V = v;
+        E = 0;
+        adj = new ArrayList[V + 1];
+        marked = new boolean[V + 1];
+        for (int i = 0; i <= this.V; i++) {
+            adj[i] = new ArrayList<Integer>();
+        }
+    }
+
+    public void addEdge(int v, int w) {
+        adj[v].add(w);
+        adj[w].add(v);
+        E++;
+    }
+
+    public void BFS(int s) {
+        /********** Begin *********/
+      Queue<Integer> que=new LinkedList<>();
+        que.offer(s);
+        marked[s]=true;
+        while(!que.isEmpty()){
+            int v=que.poll();
+            System.out.print(v +" ");
+            for(int w:adj[v]){
+                if(!marked[w]){
+                    que.offer(w);
+                    marked[w]=true;
+
+                }
+
+            }
+
+        }
+
+        /********** End *********/
+
+    }
+
+
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(V + " 个顶点, " + E + " 条边\n");
+        for (int v = 1; v <= V; v++) {
+            s.append(v + ": ");
+            for (int w : adj[v]) {
+                s.append(w + " ");
+            }
+            s.append("\n");
+        }
+        return s.toString();
+    }
+}

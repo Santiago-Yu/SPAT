@@ -1,0 +1,60 @@
+package step2;
+
+public class Task {
+    int temp = 0;
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        for(int i = 0;i<n;i++){
+            for( int k = 0;k<m;k++){
+                //递归算法实现
+                if(area[i][k]=='o'){
+                    recursion(i,k,area);
+                    temp++;
+                }
+
+            }
+
+        }
+        return temp;
+
+		
+		/********* End *********/	
+	}
+     //递归算法实现
+    public void recursion(int x,int y,char[][] area){
+
+        if(area[x][y] =='o'){
+            area[x][y] = 'x';
+            if(x-1>=0) {
+                if (area[x - 1][y] == 'o') {
+                    recursion(x - 1, y, area);
+                    area[x - 1][y] = 'x';
+                }
+            }
+            if(x+1<area.length) {
+                if (area[x + 1][y] == 'o') {
+                    recursion(x + 1, y, area);
+                    area[x + 1][y] = 'x';
+
+                }
+            }
+            if(y-1>=0) {
+                if (area[x][y - 1] == 'o') {
+                    recursion(x, y - 1, area);
+                    area[x][y - 1] = 'x';
+
+                }
+            }
+            if(y+1<area[0].length) {
+                if (area[x][y + 1] == 'o') {
+                    recursion(x, y + 1, area);
+                    area[x][y + 1] = 'x';
+
+                }
+            }
+
+
+        }
+    }
+}

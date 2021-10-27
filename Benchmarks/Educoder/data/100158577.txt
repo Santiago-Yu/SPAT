@@ -1,0 +1,36 @@
+#include<stdio.h>
+#include<string.h>
+int main()
+{
+	char a[10000],b[10000];
+	int c[10000];
+	int i,j,k,m;
+	int max=0;
+	scanf("%s %s",&a,&b);
+	int aa,bb;//字符串a，b的长度 
+	aa=strlen(a);
+	bb=strlen(b);
+	for(i=0;i<aa;i++)
+	{
+		for(j=0;j<bb;j++)
+		{
+            c[i]=0;
+			if(a[i]==b[j])
+			{
+				c[i]++;
+				for(k=i+1,m=j+1;k<aa,m<bb;k++,m++)
+				{
+					if(a[k]==b[m])
+					{
+						c[i]++;
+					}
+					else 
+					break;
+				}
+				if(c[i]>max)
+				max=c[i];
+			}
+		}
+	}
+	printf("%d",max);
+}

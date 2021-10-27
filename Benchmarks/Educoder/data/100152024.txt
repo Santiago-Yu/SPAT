@@ -1,0 +1,34 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double PI=Math.acos(-1.0);
+		double area;
+		double dis=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+		if(dis<=Math.abs(r1-r2)) {//内切或者内含
+			if(r1>=r2)  area=PI*r1*r1;
+			else area=PI*r2*r2;
+		}
+		else if(dis>=(r1+r2))//外切或者相离
+			area=PI*r1*r1+PI*r2*r2;
+		else{//相交
+			double p,a1,a2,s1,s2,s3;
+			p=(r1+r2+dis)/2.0;
+			a1=Math.acos((r1*r1+dis*dis-r2*r2)/(2.0*r1*dis));
+			a2=Math.acos((r2*r2+dis*dis-r1*r1)/(2.0*r2*dis));
+			s1=r1*r1*a1;
+			s2=r2*r2*a2;
+			s3=2*Math.sqrt(p*(p-r1)*(p-r2)*(p-dis));
+			
+			area=PI*r1*r1+PI*r2*r2-(s1+s2-s3);
+		}
+		return area;
+		  
+		  
+		  /********* End *********/
+	  }
+}
+

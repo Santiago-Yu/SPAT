@@ -1,0 +1,34 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: 63194
+  Date: 2018/9/14
+  Time: 19:14
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+<!--------- Begin --------->
+    <script type="text/javascript">
+        function reloadCode() {
+            var date = new Date().getTime();
+            document.getElementById("code").src = "<%=request.getContextPath() %>/imageKaptcha?d="+date;
+        }
+    </script>
+    <form action="checkCaptcha.jsp" method = "post">
+         <img alt="验证码" src="imageKaptcha" id = "code"><a href = "javascript:reloadCode();">看不清</a>
+         <input type = "text" name = "captcha">
+         <input type = "submit" value = "submit">
+    </form>
+
+
+
+
+
+
+<!--------- End --------->
+</body>
+</html>

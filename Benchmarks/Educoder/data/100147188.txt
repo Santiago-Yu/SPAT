@@ -1,0 +1,38 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+            int[][] f = new int[numbers + 1][selectedNum + 1];
+            int[][] g = new int[numbers + 1][selectedNum + 1];
+            for (int index = 1; index <= numbers; index++) {
+                f[index][1] = abilities[index];
+                g[index][1] = abilities[index];
+            }
+            for (int kk = 2; kk <= selectedNum; kk++) {
+                for (int index = kk; index <= numbers; index++) {
+                    Integer tmpmax = Integer.MIN_VALUE;
+                    Integer tmpmin = Integer.MAX_VALUE;
+                    for (int left = Math.max(kk - 1, index - distance); left <= index - 1; left++) {
+                        if (tmpmax < Math.max(f[left][kk - 1] * abilities[index], g[left][kk - 1] * abilities[index]))
+                            tmpmax = Math.max(f[left][kk - 1] * abilities[index], g[left][kk - 1] * abilities[index]);
+                        if (tmpmin > Math.min(f[left][kk - 1] * abilities[index], g[left][kk - 1] * abilities[index]))
+                            tmpmin = Math.min(f[left][kk - 1] * abilities[index], g[left][kk - 1] * abilities[index]);
+                    }
+ 
+                    f[index][kk] = tmpmax;
+                    g[index][kk] = tmpmin;
+                }
+            }
+            int res = Integer.MIN_VALUE;
+            for (int index = selectedNum; index <= numbers; index++)
+                if (res < f[index][selectedNum])
+                    res = f[index][selectedNum];
+        Integer b = Integer.valueOf(res);
+        return b.longValue();
+    }
+
+	/********* End *********/
+}

@@ -1,0 +1,30 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int m = sc.nextInt();	//长
+		int n = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int j = 0,k = 0;
+		for(int i=1;i<=n;i++){
+			int max=i;
+			if((max*max<=i*i)&&((m*n)%(max*max)==0)&&(m%max==0)&&(n%max==0)){
+				max=i;
+				k=(m*n)/(max*max);
+				j=max;
+			}
+		}
+		System.out.println(j);
+        System.out.println(k);
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

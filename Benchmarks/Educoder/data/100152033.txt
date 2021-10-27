@@ -1,0 +1,36 @@
+package step1;
+
+public class Task {
+
+        
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		double xj = fun(x1, y1,r1,x2,y2,r2);
+		return Math.PI * r1 * r1 + Math.PI * r2 * r2 - xj;
+		/********* End *********/
+	  }
+    
+    public double fun(double firstX, double firstY, double firstR, double secondX, double secondY, double secondR) {
+		double ans = 0.0;
+		double distance = Math.sqrt((firstX - secondX) * (firstX - secondX) + (firstY - secondY) * (firstY - secondY));
+		if (firstR + secondR < distance)
+			return 0.0;
+		else if (Math.abs(secondR - firstR) >= distance) {
+			if (secondR >= firstR)
+				ans = Math.PI * firstR * firstR;
+			else
+				ans = Math.PI * secondR * secondR;
+		}
+		else {
+			double angle1 = 2 * Math.acos((firstR * firstR + distance * distance - secondR * secondR) / (2.0 * firstR * distance));
+			double angle2 = 2 * Math.acos((secondR * secondR + distance * distance - firstR * firstR) / (2.0 * secondR * distance));
+			ans = firstR * firstR * angle1 / 2.0 + secondR * secondR * angle2 / 2.0- firstR * firstR * Math.sin(angle1) / 2.0 - secondR * secondR * Math.sin(angle2) / 2.0;
+		}
+		java.math.BigDecimal bg = new java.math.BigDecimal(ans);
+		ans = bg.setScale(6, java.math.BigDecimal.ROUND_HALF_UP).doubleValue();
+		return ans;
+
+	}
+
+}

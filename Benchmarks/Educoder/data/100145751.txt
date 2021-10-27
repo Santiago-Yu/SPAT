@@ -1,0 +1,28 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date currdate = null;
+		try {
+			currdate = format.parse(releaseDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(currdate);
+        ca.add(Calendar.DATE, day);// num为增加的天数，可以改变的
+        currdate = ca.getTime();
+        String enddate = format.format(currdate);
+        return enddate;
+        /********* End *********/
+	}
+	
+	
+}

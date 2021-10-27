@@ -1,0 +1,23 @@
+package step3;
+import java.util.Scanner;
+public class SumOfDigit {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc = new Scanner(System.in);
+        System.out.println("请输入一个五位数字：");
+        int x = sc.nextInt();
+        getSum(x);
+        System.out.println(x+"的各位数字之和是："+getSum(x));
+		/******End******/
+    }
+        public static int getSum(int num) {
+		    int n;
+		    int sum = 0;
+		    while( num != 0 ) { //未取尽
+			    n = num%10;  //取个位数
+			    sum += n;  //增加
+			    num = (num-n)/10;  //剩余数字
+		    }
+		    return sum;
+	}
+}

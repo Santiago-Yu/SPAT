@@ -1,0 +1,29 @@
+package step4;
+
+
+public class MyRunnable implements Runnable {
+	private int num;
+    public MyRunnable() {
+    	this(0);
+    }
+    public MyRunnable(int num) {
+    	this.num=num;   	
+    }
+	
+	@Override
+	public void run() {		
+    	int result=1;	      
+		for(int i=1;i<=this.num;i++){
+            result*=i;
+        }	    
+        try   
+		{   
+		Thread.currentThread().sleep(2000);//毫秒   
+		}  catch(Exception e){}  
+
+    	System.out.println(result);
+	}
+
+}
+
+

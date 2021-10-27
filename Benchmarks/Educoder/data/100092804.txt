@@ -1,0 +1,30 @@
+package step1;
+import java.util.Scanner;
+public class LetterChange {
+	public static void main(String[] args) {
+        // 从命令行读入一个字母
+        // 这个字母取自测试集的输入
+        Scanner sc = new Scanner(System.in);
+        String s = sc.next();
+        char ch = s.charAt(0);
+        LetterChange change = new LetterChange();
+        System.out.println(change.LetterChange(ch));
+    }
+    // 使用 switch把小写字母转为大写字母
+    public char LetterChange(char ch){
+        // 请在此提供实现代码
+        if((ch=='a')||(ch=='b')||(ch=='c')||(ch=='d')||(ch=='e'))
+        {
+        switch(ch)
+        {  
+            case 'a':  
+            case 'b':  
+            case 'c':
+            case 'd':
+            case 'e':return (char)((int)ch-32);
+        }
+        }
+        else
+        return ch;
+    return ch;}
+}

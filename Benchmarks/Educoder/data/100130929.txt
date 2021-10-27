@@ -1,0 +1,50 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		for (int i=0;i<arr.length;i++){//行长度
+            int b[] = new int[arr[i].length]; 
+            for(int j=0;j<arr[i].length;j++){//列长度  
+                 b[j] = arr[i][j];
+            } Arrays.sort(b);
+            int k=arr[i].length-1;
+            for(int j=0;j<arr[i].length;j++){//列长度  
+                 arr[i][j]=b[k--];
+            } 
+        }
+            int b[] = new int[arr.length]; 
+        	for (int i=0;i<arr.length-1;i++){//行长度
+               	int t[] = new int[arr[i].length];
+                for(int j=i+1;j<arr.length;j++){
+                    if(arr[i][0]<arr[j][0]){
+                    	for(int k=0;k<arr[i].length;k++){
+                        	t[k]=arr[i][k];
+                        }
+                        for(int k=0;k<arr[i].length;k++){
+                        	arr[i][k]=arr[j][k];
+                        }
+                        for(int k=0;k<arr[i].length;k++){
+                        	arr[j][k]=t[k];
+                        }
+                    }
+                }
+           }
+            for (int i=0;i<arr.length;i++){//行长度
+                 System.out.print("[") ;
+           		 for(int j=0;j<arr[i].length;j++){//列长度
+                     System.out.print(arr[i][j]) ;
+                     if(j!=arr[i].length-1){
+                         System.out.print(", ") ;
+                     }
+              
+            	}
+                System.out.println("]") ;
+            }
+        }
+    /********** END **********/
+}
+	

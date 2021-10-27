@@ -1,0 +1,27 @@
+package step4;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		LocalDate beginDateTime = LocalDate.parse(releaseDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate endDateTime = beginDateTime.plus(day, ChronoUnit.DAYS);
+        return endDateTime.toString();
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

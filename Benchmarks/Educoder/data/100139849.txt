@@ -1,0 +1,25 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+String data = scanner.nextLine();
+String name = scanner.nextLine();
+        
+        int n = 0;//n用来表示name在data中的位置
+        int l = 0;//l表示每次更新data时剔除字符串的总长度
+while(n != -1){
+    n = data.indexOf(name);
+    if(data.length() == 0){break;}
+    data = data.substring(n + name.length());//更新data为name之后的字符串
+        System.out.println(n + l);//n+l等于当前name在原data中的位置序号
+        l += n + name.length();//l必须加上此次剔除的字符串长度才能表示目前已被剔除字符串的总长度
+    
+
+}
+        /********** End *********/
+    }
+}

@@ -1,0 +1,27 @@
+
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch 
+    {
+    private static void readWord ( String input, String word, int offset )
+    {
+        offset = input.indexOf (word, offset);
+        if (offset != -1)
+        {
+            System.out.println ( offset );
+            readWord (input, word,++offset);
+        }
+      
+        }
+    
+ 
+    public static void main ( String[] args )
+    {
+    	Scanner sc=new Scanner(System.in);
+        String input =sc.nextLine() ;
+        String word = sc.next();
+        readWord (input, word, 0);
+    }
+}

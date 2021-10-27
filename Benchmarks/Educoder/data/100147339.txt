@@ -1,0 +1,33 @@
+package task3;
+
+import java.util.*;
+
+public class Task3 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		// 根据返回值判断输入的数是否是水仙花数
+		/********* Begin *********/
+		if(xian(num)) {
+			System.out.println(num+"是水仙花数");
+		}else{
+            System.out.println(num+"不是水仙花数");
+        }
+		/********* End *********/
+	}
+
+	// 用带有一个输入参数的函数实现，返回值类型为布尔类型
+	/********* Begin *********/
+	public static boolean xian(int n) {
+		int a,b,c;
+		a=n/100;
+		b=(n-a*100)/10;
+		c=n%10;
+		if(a*a*a+b*b*b+c*c*c==n) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	/********* End *********/
+}

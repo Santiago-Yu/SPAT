@@ -1,0 +1,24 @@
+#include<iostream>
+using namespace std;
+int main() {
+	int a[100];
+	int T,t = 0;
+	int count=0,sum;
+
+	do {
+		cin >> a[t];
+		t++;
+	} while (getchar() != '\n');
+		cin >> T;
+	for (int i = 0; i < t - 2; i++) {
+		for (int j = i + 1; j <t - 1; j++) {
+			for (int k = j + 1; k < t; k++) {
+				sum = a[i] + a[j] + a[k];
+				if (sum < T) {
+					count++;
+				}
+			}
+		}
+	}
+	cout << count;
+}

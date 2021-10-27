@@ -1,0 +1,34 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int g ;
+		int s ; 
+		int b ;
+		int sum1;
+		int count = 0;
+		while(true) {
+			sum1 = num1;
+			g = sum1 % 10;
+
+			sum1 = sum1 - g;
+			s = (sum1 % 100) / 10;
+			sum1 = sum1 - s * 10;
+
+			b = sum1 / 100;
+
+			count = count + g + s + b;
+			num1++;
+			if (num1 > num2) {
+				break;
+			}
+		}
+		return count;
+		
+		
+		/********** END **********/
+	}
+}

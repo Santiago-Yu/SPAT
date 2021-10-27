@@ -1,0 +1,42 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+		
+        int s = length * width;
+        int min = Math.min(length, width);
+//        System.out.println(d);
+
+
+        int ansj=-1;
+        int ansk=-1;
+
+        for (int i = 1; i <= min; i++) {
+            for (int j = 1; j <= s; j++) {
+                if (i*i*j>s) {
+                    break;
+                }
+                if (i*i*j==s&&width%i==0&&length%i==0) {
+                    ansj = i;
+                    ansk = j;
+                }
+            }
+        }
+        System.out.println(ansj);
+        System.out.println(ansk);
+
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

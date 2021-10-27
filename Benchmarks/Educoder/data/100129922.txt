@@ -1,0 +1,54 @@
+package step4;
+
+import java.util.Scanner;
+
+class WuMingFen{
+    String mm = "酸辣";
+    int fl = 2;
+    boolean isSupe = false;
+    
+    public WuMingFen(){
+        this.isSupe = true;
+    }
+    
+    public WuMingFen(String mm,int lfa,boolean isSupea){
+
+        this.mm = mm;
+        this.fl = lfa;
+        this.isSupe = isSupea;
+       
+    }
+    
+    public WuMingFen(String mm,int fl){
+        this.mm = mm;
+        this.fl = fl;
+    }
+    
+    public void check(){
+     	System.out.println("面码："+mm+"，粉的份量："+fl+"两，是否带汤："+isSupe);   
+    }
+    
+}
+
+
+public class Test {
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String theMa = sc.next();
+		int quantity = sc.nextInt();
+		boolean likeSoup = sc.nextBoolean();
+		
+		//使用三个参数的构造方法创建WuMingFen对象  取名 f1
+        WuMingFen f1 = new WuMingFen(theMa,quantity,likeSoup);
+		//使用两个参数的构造方法创建WuMingFen对象  取名 f2
+        WuMingFen f2 = new WuMingFen(theMa,quantity);
+		//使用无参构造方法创建WuMingFen对象  取名 f3
+		WuMingFen f3 = new WuMingFen();
+		//分别调用三个类的 check方法
+        f1.check();
+        f2.check();
+        f3.check();
+
+	}
+}

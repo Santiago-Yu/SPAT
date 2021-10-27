@@ -1,0 +1,82 @@
+package case2;
+
+public class extendsTest {
+    public static void main(String args[]) {
+        // 实例化一个Cat对象，设置属性name和age，调用voice()和eat()方法，再打印出名字和年龄信息
+        /********* begin *********/
+        Animal dahuamao = new Cat("大花猫", 6);
+        Animal daheigou = new Dog("大黑狗", 8);
+        /********* end *********/
+
+        // 实例化一个Dog对象，设置属性name和age，调用voice()和eat()方法，再打印出名字和年龄信息
+        /********* begin *********/
+        dahuamao.voice();
+        dahuamao.eat();
+        System.out.println(dahuamao.getName() + dahuamao.getAge() + "岁");
+
+        daheigou.voice();
+        daheigou.eat();
+        System.out.println(daheigou.getName() + daheigou.getAge() + "岁");
+        /********* end *********/
+
+    }
+}
+
+class Animal {
+    /********* begin *********/
+    private String name;
+    private int age;
+
+    public Animal(String name, int age){
+        this.name = name;
+        this.age = age;
+    }
+
+    public void voice(){};
+
+    public void eat(){};
+
+    public String getName(){
+        return name;
+    }
+
+    public int getAge(){
+        return age;
+    }
+    /********* end *********/
+
+}
+
+class Cat extends Animal {
+    // 定义Cat类的voice()和eat()方法
+    /********* begin *********/
+    public Cat(String name, int age){
+        super(name, age);
+    }
+
+    public void voice(){
+        System.out.println(getName() + "喵喵叫");
+    }
+
+    public void eat(){
+        System.out.println(getName() + "吃鱼");
+    }
+    /********* end *********/
+}
+
+class Dog extends Animal {
+    // 定义Dog类的voice()和eat()方法
+    /********* begin *********/
+    public Dog(String name, int age){
+        super(name, age);
+    }
+
+    public void voice(){
+        System.out.println(getName() + "汪汪叫");
+    }
+
+    public void eat(){
+        System.out.println(getName() + "吃骨头");
+    }
+    /********* end *********/
+}

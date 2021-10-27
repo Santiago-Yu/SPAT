@@ -1,0 +1,38 @@
+package step3;
+
+public class Task {
+
+	private static int[][] dir = new int[][] {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+	private boolean vis[][];
+	
+	void markLocal(int row, int col, char[][] map) {
+		if(vis[row][col] || map[row][col] != '+')
+			return;
+		vis[row][col] = true;
+		for(int i=0; i<dir.length; i++) {
+			int nextRow = row + dir[i][0];
+			int nextCol = col + dir[i][1];
+			if(nextRow >= 0 && nextRow < vis.length && nextCol >= 0 && nextCol < vis[0].length) {
+				markLocal(nextRow, nextCol, map);
+			}
+		}
+	}
+	
+	 public int countOfShips(char[][] ferry) {
+		 if(ferry.length == 0 || ferry[0].length == 0)
+			 return 0;
+		 int row = ferry.length;
+		 int col = ferry[0].length;
+		 int ans = 0;
+		 vis = new boolean[row][col];
+		 for(int i=0; i<row; i++) {
+			 for(int j=0; j<col; j++) {
+				 if(!vis[i][j] && ferry[i][j] == '+') {
+					 ans++;
+					 markLocal(i, j, ferry);
+				 }
+			 }
+		 }
+		 return ans;
+	 }
+}

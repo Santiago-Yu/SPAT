@@ -1,0 +1,29 @@
+package step1;
+import java.util.Scanner;
+public class Yard {
+    int length;
+    int width;
+    public Yard(int length,int width){
+        this.length=length;
+        this.width=width;
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int length = scanner.nextInt();
+        int width = scanner.nextInt();
+        Yard yard = new Yard(length,width);
+        System.out.print(yard.getPerimeter() + " " + yard.getAcreage());
+    }
+
+    public  float getPerimeter(){
+        
+        return (length+width)*2.0f;
+    }
+    public float getAcreage(){
+        
+        
+        return length*width*1.0f;
+    }
+    
+    
+}

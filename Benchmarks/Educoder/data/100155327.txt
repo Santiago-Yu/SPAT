@@ -1,0 +1,42 @@
+package task3;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume(int boxType) {
+        double vol=0;
+        double r=width/2;
+        switch(boxType){
+            case 1:vol=width*height*depth;
+                break;
+            case 2:vol=width*width*3.14*height;
+                break;
+        }
+        return vol;
+    }
+
+}
+    
+    class task3{
+        public void main(String[] args){
+            double vol;
+            Box box = new Box();
+			box.width = 10;
+			box.height = 20;
+			double volume = box.volume( Box.CYLINDER );
+			System.out.println( "the volumn is:" + volume );
+        }
+    }

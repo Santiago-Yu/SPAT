@@ -1,0 +1,77 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+        int[] bigMonth = new int[]{1, 0, 3, 0, 5, 0, 7, 8, 0, 10, 0, 12};
+
+        String[] s = releaseDate.split("-");
+        int[] date = new int[3];
+        for (int i = 0; i < 3; i++) {
+            date[i] = Integer.parseInt(s[i]);
+        }
+
+        for (int i = 0; i < day; i++) {
+           addOneDay(date, bigMonth);
+        }
+
+        if(date[1]<10 && date[2]<10)
+            return date[0]+ "-0" + date[1]+ "-0" +date[2];
+        else if(date[1]<10)
+            return date[0]+ "-0" + date[1]+ "-" +date[2];
+        else if(date[2]<10)
+            return date[0]+ "-" + date[1]+ "-0" +date[2];
+        else
+            return date[0]+ "-" + date[1]+ "-" +date[2];
+
+        /********* End *********/
+	}
+    public static void addOneDay(int[] date, int[] bigMonth) {
+        if (date[2] <= 27) {
+            date[2]++;
+        } else if (date[2] == 28) {
+            if (date[1] == 2) {
+                if (isLeapYear(date[0], date[1], date[2]))
+                    date[2]++;
+                else {
+                    date[1]++;
+                    date[2] = 1;
+                }
+            } else {
+                date[2]++;
+            }
+        } else if (date[2] == 29) {
+            if (date[1] == 2) {
+                date[1]++;
+                date[2] = 1;
+            } else {
+                date[2]++;
+            }
+        } else if (date[2] == 30) {
+            if (bigMonth[date[1] - 1] == date[1]) {
+                date[2]++;
+            } else {
+                date[1]++;
+                date[2] = 1;
+            }
+        } else if (date[2] == 31) {
+            if (date[1] == 12) {
+                date[0]++;
+                date[1] = 1;
+            } else {
+                date[1]++;
+            }
+            date[2] = 1;
+        }
+    }
+
+    private static boolean isLeapYear(int year, int month, int day) {
+        if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+	
+}

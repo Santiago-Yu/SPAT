@@ -1,0 +1,303 @@
+import java.util.*;
+
+public class Java_LRParserAnalysis {
+
+    private class Token {
+        String value;
+        int lineNum;
+
+        private Token(String value, int lineNum) {
+            this.value = value;
+            this.lineNum = lineNum;
+        }
+
+        @Override
+        public String toString() {
+            return "<" + value + ", " + lineNum + ">";
+        }
+    }
+
+    private class Action {
+        String type;
+        int target;
+
+        Action(String type, int target) {
+            this.type = type;
+            this.target = target;
+        }
+
+        private boolean isError() {
+            return type.equals("error");
+        }
+
+        private boolean isShift() {
+            return type.equals("shift");
+        }
+
+        private boolean isReduce() {
+            return type.equals("reduce");
+        }
+
+        private boolean isAccept() {
+            return type.equals("accept");
+        }
+    }
+
+    private class Production {
+        String from;
+        List<String> to;
+
+        private Production(String _from, String... strings) {
+            from = _from;
+            to = Arrays.asList(strings);
+        }
+
+        @Override
+        public String toString() {
+            return from + " -> " + String.join(" ", to);
+        }
+    }
+
+    private Action createAction(String input) {
+        String content = input.substring(1);
+        String type = "";
+        switch (input.substring(0, 1)) {
+            case "s":
+                type = "shift";
+                break;
+            case "r":
+                type = "reduce";
+                break;
+            case "a":
+                type = "accept";
+                break;
+            case "e":
+                type = "error";
+                break;
+        }
+        if (type.equals("accept")) return new Action(type, 0);
+        return new Action(type, Integer.valueOf(content));
+    }
+
+    private List<Production> productions = new ArrayList<>();
+
+    private List<Token> tokenize(String input) {
+        int lineNum = 0;
+        List<Token> tokens = new ArrayList<>();
+        for (String line : input.split("\n")) {
+            lineNum++;
+            if (line.trim().length() == 0) continue;
+            for (String token : line.split("[ \t]+")) {
+                tokens.add(new Token(token.trim(), lineNum));
+            }
+        }
+        return tokens;
+    }
+
+    private List<Map<String, Action>> actionTable = new ArrayList<>();
+    private List<Map<String, Integer>> gotoTable = new ArrayList<>();
+
+    {
+        int T_SIZE = 22;
+        String[] IDS = new String[]{"{", "}", "if", "(", ")",
+            "then", "else", "while", "ID", "=", ";", "<", ">", "<=", ">=", "==", "+", "-", "*", "/", "NUM", "$",
+            "program'", "program", "stmt", "compoundstmt", "stmts", "ifstmt", "whilestmt", "assgstmt", "boolexpr",
+            "boolop", "arithexpr", "arithexprprime", "multexpr", "multexprprime", "simpleexpr"};
+        String tableData = "s3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ 2 _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ac _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ r1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "s3 r8 s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 5 9 4 6 7 8 _ _ _ _ _ _ _ \n" +
+            "_ s13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "s3 r8 s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 5 9 14 6 7 8 _ _ _ _ _ _ _ \n" +
+            "r2 r2 r2 _ _ _ r2 r2 r2 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "r3 r3 r3 _ _ _ r3 r3 r3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "r4 r4 r4 _ _ _ r4 r4 r4 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "r5 r5 r5 _ _ _ r5 r5 r5 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ s15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ _ _ _ _ _ s17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "r6 r6 r6 _ _ _ r6 r6 r6 _ _ _ _ _ _ _ _ _ _ _ _ r6 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ r7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ 18 _ 19 _ 20 _ 21 \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ 25 _ 19 _ 20 _ 21 \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 26 _ 20 _ 21 \n" +
+            "_ _ _ _ s27 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ _ _ _ _ _ _ _ s29 s30 s31 s32 s33 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 28 _ _ _ _ _ \n" +
+            "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 34 _ _ _ \n" +
+            "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 37 _ \n" +
+            "_ _ _ _ r26 _ _ _ _ _ r26 r26 r26 r26 r26 r26 r26 r26 r26 r26 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ e1 _ _ r27 _ _ _ _ _ r27 r27 r27 r27 r27 r27 r27 r27 r27 r27 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 40 _ 20 _ 21 \n" +
+            "_ _ _ _ s41 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ _ _ _ _ _ _ s42 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ _ s43 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 44 _ 20 _ 21 \n" +
+            "_ _ _ r13 _ _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ r14 _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ r15 _ _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ r16 _ _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ r17 _ _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ r18 _ _ _ _ _ r18 r18 r18 r18 r18 r18 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ 45 _ 21 \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ 46 _ 21 \n" +
+            "_ _ _ _ r22 _ _ _ _ _ r22 r22 r22 r22 r22 r22 r22 r22 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 47 \n" +
+            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 48 \n" +
+            "_ _ _ _ s49 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 50 9 _ 6 7 8 _ _ _ _ _ _ _ \n" +
+            "r11 r11 r11 _ _ _ r11 r11 r11 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 51 9 _ 6 7 8 _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ r12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 52 _ _ _ \n" +
+            "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 53 _ _ _ \n" +
+            "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 54 _ \n" +
+            "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 55 _ \n" +
+            "_ _ _ _ r28 _ _ _ _ _ r28 r28 r28 r28 r28 r28 r28 r28 r28 r28 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "r10 r10 r10 _ _ _ r10 r10 r10 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ _ _ s56 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ r19 _ _ _ _ _ r19 r19 r19 r19 r19 r19 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ r20 _ _ _ _ _ r20 r20 r20 r20 r20 r20 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ r23 _ _ _ _ _ r23 r23 r23 r23 r23 r23 r23 r23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "_ _ _ _ r24 _ _ _ _ _ r24 r24 r24 r24 r24 r24 r24 r24 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+            "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 57 9 _ 6 7 8 _ _ _ _ _ _ _ \n" +
+            "r9 r9 r9 _ _ _ r9 r9 r9 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
+
+        String productionData = "program' -> program\n" +
+            "program -> compoundstmt\n" +
+            "stmt -> ifstmt\n" +
+            "stmt -> whilestmt\n" +
+            "stmt -> assgstmt\n" +
+            "stmt -> compoundstmt\n" +
+            "compoundstmt -> { stmts }\n" +
+            "stmts -> stmt stmts\n" +
+            "stmts -> ''\n" +
+            "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+            "whilestmt -> while ( boolexpr ) stmt\n" +
+            "assgstmt -> ID = arithexpr ;\n" +
+            "boolexpr -> arithexpr boolop arithexpr\n" +
+            "boolop -> <\n" +
+            "boolop -> >\n" +
+            "boolop -> <=\n" +
+            "boolop -> >=\n" +
+            "boolop -> ==\n" +
+            "arithexpr -> multexpr arithexprprime\n" +
+            "arithexprprime -> + multexpr arithexprprime\n" +
+            "arithexprprime -> - multexpr arithexprprime\n" +
+            "arithexprprime -> ''\n" +
+            "multexpr -> simpleexpr multexprprime\n" +
+            "multexprprime -> * simpleexpr multexprprime\n" +
+            "multexprprime -> / simpleexpr multexprprime\n" +
+            "multexprprime -> ''\n" +
+            "simpleexpr -> ID\n" +
+            "simpleexpr -> NUM\n" +
+            "simpleexpr -> ( arithexpr )";
+
+        for (String line : tableData.split("\n")) {
+            Map<String, Action> actionLine = new HashMap<>();
+            Map<String, Integer> gotoLine = new HashMap<>();
+            String[] items = line.split(" ");
+            for (int i = 0; i < IDS.length; i++) {
+                if (items[i].equals("_")) continue;
+                if (i < T_SIZE)
+                    actionLine.put(IDS[i], createAction(items[i]));
+                else
+                    gotoLine.put(IDS[i], Integer.valueOf(items[i]));
+            }
+            actionTable.add(actionLine);
+            gotoTable.add(gotoLine);
+        }
+        for (String line : productionData.split("\n")) {
+            String from = line.split(" +-> +")[0];
+            String[] to = line.split(" +-> +")[1].split(" ");
+            if (to.length == 1 && to[0].equals("''")) {
+                productions.add(new Production(from));
+            } else {
+                productions.add(new Production(from, to));
+            }
+        }
+    }
+
+    private void handleError(Action action, Stack<Token> tokens) {
+        if (action.target == 1) {
+            System.out.println("语法错误，第" + (tokens.peek().lineNum - 1) + "行，缺少\";\"");
+            tokens.push(new Token(";", -1));
+        }
+
+    }
+
+    private List<Production> analyze(String code) {
+        List<Production> result = new ArrayList<>();
+        Stack<Token> tokens = new Stack<>();
+        tokens.add(new Token("$", -1));
+        List<Token> temp = tokenize(code);
+        Collections.reverse(temp);
+        tokens.addAll(temp);
+
+        Stack<String> stack = new Stack<>();
+        stack.add("0");
+        while (true) {
+            int curState = Integer.valueOf(stack.peek());
+            Token a = tokens.peek();
+            Action action = actionTable.get(curState).get(a.value);
+            if (action == null) {
+                System.out.println(curState);
+                System.out.println(a);
+                break;
+            }
+            if (action.isShift()) {
+                // 状态改变、移入下一个符号
+                stack.push(tokens.pop().value);
+                stack.push(Integer.toString(action.target));
+            } else if (action.isReduce()) {
+                // 规约、并输出产生式
+                Production production = productions.get(action.target);
+                for (int i = 0; i < production.to.size() * 2; i++) {
+                    stack.pop();
+                }
+                curState = Integer.valueOf(stack.peek());
+                stack.push(production.from);
+                stack.push(Integer.toString(gotoTable.get(curState).get(production.from)));
+                result.add(production);
+            } else if (action.isAccept()) {
+                // 接受
+                break;
+            } else if (action.isError()) {
+                // 短语级错误恢复
+                handleError(action, tokens);
+            }
+        }
+        return result;
+    }
+
+    private void output(String code) {
+        List<Production> productions = analyze(code);
+        Collections.reverse(productions);
+        List<String> cur = new ArrayList<>();
+        List<String> res = new ArrayList<>();
+        cur.add(productions.get(0).from);
+        res.add(String.join(" ", cur));
+        for (Production p : productions) {
+            int index = cur.lastIndexOf(p.from);
+            cur.remove(index);
+            cur.addAll(index, p.to);
+            res.add(String.join(" ", cur));
+        }
+        for (int i = 0; i < res.size(); i++) {
+            if (i == res.size() - 1) {
+                System.out.print(res.get(i) + " ");
+                return;
+            }
+            System.out.println(res.get(i) + " => ");
+        }
+    }
+
+    public static void main(String[] args) {
+        Java_LRParserAnalysis solver = new Java_LRParserAnalysis();
+        Scanner sc = new Scanner(System.in);
+        StringBuilder code = new StringBuilder();
+        while (sc.hasNextLine()) {
+            code.append(sc.nextLine()).append("\n");
+        }
+        solver.output(code.toString());
+    }
+}

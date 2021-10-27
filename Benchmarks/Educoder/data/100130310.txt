@@ -1,0 +1,46 @@
+package step1;
+
+public class Task {
+
+	public void sortArray(int[] arr, String sort){
+		/********** BEGIN **********/
+		int i,j,min;
+		int temp;
+        String str1="asc";
+        String str2="desc";
+		if(sort.compareTo(str1)==0) {
+		for(i=0;i<arr.length-1;i++) {
+			min=i;
+			for(j=i+1;j<arr.length;j++) {
+				if(arr[min]>arr[j])
+					min=j;
+			}
+			if(min!=i) {
+				temp=arr[min];
+				arr[min]=arr[i];
+				arr[i]=temp;
+			}
+		}
+	}
+		if(sort.compareTo(str2)==0) {
+			for(i=0;i<arr.length-1;i++) {
+				min=i;
+				for(j=i+1;j<arr.length;j++) {
+					if(arr[min]<arr[j])
+						min=j;
+				}
+				if(min!=i) {
+					temp=arr[min];
+					arr[min]=arr[i];
+					arr[i]=temp;
+				}
+			}
+		}
+        for(i=0;i<arr.length;i++){
+            System.out.println(arr[i]);
+        }
+		
+	
+		/********** END **********/
+	}
+}

@@ -1,0 +1,37 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        int i,j;
+        i = gys(length, width);
+        j = (length/i)*(width/i);
+      	System.out.println(i);
+        System.out.println(j);
+ }       
+        public static int gys(int m, int n){
+            int a, b, c;
+            if(m<n){
+                a = n;
+                n = m;
+                m = a;
+            }
+            b = n;
+			if(b == 0){
+            	return m;
+                
+            }else{
+                b = m%n;
+                c = gys(n, b);
+            }
+            return c;
+		}
+		
+		/********** END **********/
+	
+}

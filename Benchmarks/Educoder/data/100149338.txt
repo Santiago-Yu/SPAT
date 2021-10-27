@@ -1,0 +1,53 @@
+package step4;
+
+public class Task {
+    
+    public double func1(double x,double y){
+     	double tmp = (Math.pow(x,2) + Math.pow(y,2) - 1);
+        tmp = Math.pow(tmp,3);
+        double tmp2 = Math.pow(x,2) * Math.pow(y,3);
+        
+        return tmp - tmp2;
+    }
+    
+    public double func2(double x, double y) {
+		double tmp = Math.pow(x, 2);
+		double tmp2 = 5.0 * y / 4.0 - Math.sqrt(Math.abs(x));
+		tmp2 = Math.pow(tmp2, 2);
+		return tmp + tmp2 - 1.0;
+	}
+    
+	public void love(int n){
+		/********* Begin *********/
+        if (n == 1){
+			for (double y = 1.3; y > -1.101; y -= 0.06) {
+				for (double x = 1.2; x > -1.2; x -= 0.025) {
+					if (func1(x, y) > 0) {
+						System.out.print("$");
+					} else {
+						System.out.print(" ");
+					}
+				}
+				System.out.println();
+			}
+        }else if (n == 2){
+            	String iloveyou = "I love you!";
+            	int index = 0;
+            	for (double y = 1.3; y > -1.1; y -= 0.06) {
+                    for (double x = 1.1; x > -1.1; x -= 0.025) {
+                        double tmp = func2(x, y);
+                        if (tmp > 0 || tmp == 0) {
+                            System.out.print(" ");
+                        } else {
+                            System.out.print(iloveyou.charAt(index));
+                            index = (index + 1) % iloveyou.length();
+                        }
+                    }
+					System.out.println();
+                    index = 0;
+				}
+        }
+		
+		/********* End *********/	
+	}
+}

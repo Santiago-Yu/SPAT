@@ -1,0 +1,112 @@
+package step1;
+
+/**
+ * Created by zengpeng on 2018/3/3.
+ */
+public class BSTree {
+
+    private TreeNode root;//根结点
+
+    public BSTree() {
+        root = null;
+    }
+
+    /**
+     * 向树root中插入key
+     *
+     * @param key 要插入的值
+     */
+    public void insert(int key) {
+        /********** Begin *********/
+		        TreeNode x = root;
+        TreeNode p = null;//始终指向x的父结点
+        while (x != null) {
+            p = x;
+            if (key < x.item) {
+                x = x.leftChild;
+            } else {
+                x = x.rightChild;
+            }
+        }
+        if (null == p) {//空树
+            root = new TreeNode(key);
+        } else if (key < p.item) {
+            p.leftChild = new TreeNode(key);
+        } else {
+            p.rightChild = new TreeNode(key);
+        }
+		/*
+		TreeNode Node_travel = root;
+		TreeNode Node_father_travel = null;
+		 while(Node_travel != null){
+			 Node_father_travel = Node_travel;
+			 if(Node_travel.item > key){
+				 Node_travel = Node_travel.leftChild;
+			 }else{
+				  Node_travel = Node_travel.rightChild;
+			 }
+		 }
+		 if(Node_father_travel == null){
+			 Node_travel = new TreeNode(key);
+		 }
+		 else if(key < Node_father_travel.item){
+			 Node_father_travel.leftChild = new TreeNode(key);
+		 }else{
+			 Node_father_travel.rightChild = new TreeNode(key);
+		 }*/
+        /********** End *********/
+    }
+
+    public void preOrder() {
+        preOrder(root);
+    }
+
+    public void inOrder() {
+        inOrder(root);
+    }
+
+    public void postOrder(){
+        postOrder(root);
+    }
+
+    private void preOrder(TreeNode node) {
+        if (node != null) {
+            System.out.print(node.item + " ");
+            preOrder(node.leftChild);
+            preOrder(node.rightChild);
+        }
+    }
+
+    private void inOrder(TreeNode node) {
+        if (node != null) {
+            inOrder(node.leftChild);
+            System.out.print(node.item + " ");
+            inOrder(node.rightChild);
+        }
+    }
+
+    private void postOrder(TreeNode node) {
+        if (node != null) {
+            postOrder(node.leftChild);
+            postOrder(node.rightChild);
+            System.out.print(node.item + " ");
+        }
+    }
+
+
+    public static class TreeNode {
+        private TreeNode leftChild;
+        private TreeNode rightChild;
+        private int item;
+
+        public TreeNode(int item) {
+            this(null, null, item);
+        }
+
+        public TreeNode(TreeNode leftChild, TreeNode rightChild, int item) {
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
+            this.item = item;
+        }
+    }
+}

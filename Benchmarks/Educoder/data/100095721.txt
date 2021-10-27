@@ -1,0 +1,30 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+int total=0;
+        switch(month){
+            case 1:total=day;break;
+            case 2:total=31+day;break;
+            case 3:total=31+28+day;break;
+            case 4:total=31+28+31+day;break;
+            case 5:total=31+28+31+30+day;break;
+            case 6:total=31+28+31+30+31+day;break;
+            case 7:total=31+28+31+30+31+30+day;break;
+            case 8:total=31+28+31+30+31+30+31+day;break;
+            case 9:total=31+28+31+30+31+30+31+31+day;break;
+            case 10:total=31+28+31+30+31+30+31+31+30+day;break;
+            case 11:total=31+28+31+30+31+30+31+31+30+31+day;break;
+            case 12:total=31+28+31+30+31+30+31+31+30+31+30+day;break;
+                    
+        }
+        if(((year%4==0)&&(year%100!=0))||year%400==0){
+            total=total+1;
+        }
+        System.out.print(total);
+
+
+		/********** End *********/
+	}
+}

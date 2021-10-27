@@ -1,0 +1,21 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		int mianji=length*width;
+		int width1=width;
+		/********** BEGIN **********/
+		for(;width>0;width--){
+			if(length*width%(width*width)==0&&length%width==0&&width1%width==0){
+				System.out.println(width);
+				System.out.println(mianji/(width*width));
+				break;
+			}
+		}
+	}
+}

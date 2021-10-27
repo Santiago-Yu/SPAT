@@ -1,0 +1,44 @@
+package step2;
+import java.util.Arrays;
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		int n = numbers;
+		int [] a = abilities;
+		int d = distance;
+		int num = selectedNum;
+		
+		int size = d*num;
+		int l=a.length-n,h=0;
+		if(a.length-n+size>n)
+			h = a.length;
+		else
+			h = a.length-n+size;
+		
+		long max = 0,mp=1;
+		while(h<=a.length){
+			mp = 1;
+			int k=0;
+			int tmp[] = new int[size];
+			for(int j=l;j<h;j++)
+				{
+				tmp[k] = a[j];
+				k++;
+				}
+			Arrays.sort(tmp);
+			for(int j=tmp.length-num;j<tmp.length;j++)
+				mp=mp*tmp[j];
+			if(max<mp)
+				max = mp;
+			l++;h++;
+			
+		}
+		return max;
+			
+			
+
+    }
+	/********* End *********/
+}

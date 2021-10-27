@@ -1,0 +1,54 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+     for (int x = 0; x < nums.length - 1; x++) {
+	            for (int y = x + 1; y < nums.length; y++) {
+	                if (nums[x] > nums[y]) {
+	                    int temp = nums[x];
+	                    nums[x] = nums[y];
+	                    nums[y] = temp;
+	                }
+	            }
+	     }
+		 int[] lose= {0,0,0};
+		 int k=0;
+		 for(int i=1;i<=nums[nums.length-1];i++){
+			 int j=0;
+			while(j<nums.length) {
+				if(i==nums[j]) break;
+				j++;
+			 }
+			if(j==nums.length) {
+				lose[k]=i;
+				k++;
+			}
+			 
+		 }
+		 int n=nums[nums.length-1];
+		 while(k<3) {
+			 n++;
+			 lose[k]=n;
+			 k++;
+		 }
+		String str=Integer.toString(lose[0])+Integer.toString(lose[1])+Integer.toString(lose[2]);
+        int l=Integer.toString(lose[0]).length()+Integer.toString(lose[1]).length()+Integer.toString(lose[2]).length();
+        char[] a= new char[l];
+		 for(int i=0;i<l;i++) {
+			 a[i]=str.charAt(i);
+		 }
+		 int i=0;
+		 int res=0;
+		 while(i<l) {
+			 res=res*10+a[i]-48;
+			 res=res%11;
+			 i++;
+		 }
+		return res;
+	}
+
+	/********* End *********/
+}

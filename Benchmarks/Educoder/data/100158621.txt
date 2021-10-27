@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string.h>
+#include <cstring>
+#include <stdio.h>
+using namespace std;
+int f[10005];
+int main()
+{
+    string a,b;
+    cin>>a;
+    cin>>b;
+    int m,n,ans=0,s=0;
+    int u,v;
+    m = a.size();
+    n = b.size();
+    for(int i = 0; i < m; i++)
+    {
+    	int flag = 0;
+    	for(int j = 0; j < n; j++)
+    	{
+    		f[i]=0;
+    		if(a[i]==b[j])
+    		{
+    		f[i]++;
+    		u = i;
+    		v = j;
+    		for(int k = 0; k < min(m,n)&&u+1<m&&v+1<n;k++)
+    		{
+    			u++;
+    			v++;
+    			if(a[u] == b[v])
+    			{
+    				f[i]++;
+    			}
+    			else
+    			{
+    				break;
+    			}
+    			
+    		}
+    		s = max(s,f[i]);
+    	    }
+    	}
+    }
+    
+    cout<<s;
+    return 0;
+}

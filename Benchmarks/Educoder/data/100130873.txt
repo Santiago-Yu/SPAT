@@ -1,0 +1,71 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    
+    public void sortArray(int[][] arr){
+		int[] sumA = new int[arr.length];
+		for(int k = 0;k<arr.length;k++) {
+			int n = arr[k].length;
+			int h = 0;
+			while(h<=n){
+				h = 3*h+1;
+			}
+			while(h>=1) {
+				for(int i = h;i<n;i++) {
+					int j = i-h;
+					int get = arr[k][i];
+					while(j>=0&&arr[k][j]<get) {
+						arr[k][j+h] = arr[k][j];
+						j = j-h;
+					}
+					arr[k][j+h] = get;
+				}
+				h = (h-1)/3;
+			}
+			for(int i = 0;i<arr[k].length;i++)
+				sumA[k]+=arr[k][i];
+		}
+		
+		int n = arr.length;
+		int h = 0;
+		while(h<=n){
+			h = 3*h+1;
+		}
+		while(h>=1) {
+			for(int i = h;i<n;i++) {
+				int j = i-h;
+				int get = sumA[i];
+				int[] t = arr[i];
+				while(j>=0&&sumA[j]<get) {
+					arr[j+h] = arr[j];
+					sumA[j+h] = sumA[j];
+					j = j-h;
+				}
+				sumA[j+h] = get;
+				arr[j+h] = t;
+			}
+			h = (h-1)/3;
+		}
+		for(int i =0;i<arr.length;i++) {
+			System.out.print("[");
+			for(int j =0;j<arr[i].length;j++) {
+				if(j!=0)
+					System.out.print(", ");
+				System.out.print(arr[i][j]);
+			}
+			System.out.println("]");
+		}
+
+
+
+
+		
+	
+    }
+    /********** END **********/
+}
+	

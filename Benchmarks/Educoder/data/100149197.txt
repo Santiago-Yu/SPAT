@@ -1,0 +1,47 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int count=0;
+		char[][] ar=new char[n+2][m+2];
+		for(int i=0;i<n+2;i++){
+			for(int j=0;j<m+2;j++){
+				ar[i][j]='x';
+			}
+		}
+		for(int i=1;i<n+1;i++){
+			for(int j=1;j<m+1;j++){
+				ar[i][j]=area[i-1][j-1];
+			}
+		}
+		for(int i=1;i<n+1;i++){
+			for(int j=1;j<m+1;j++){
+				if(ar[i][j]=='o'){
+					jude(ar,i,j);count++;
+				}
+				else continue;
+				
+			}
+		}
+		return count;
+		/********* End *********/	
+	}
+   public void jude(char[][] ar,int l,int k){
+	ar[l][k]='m';
+	if(ar[l-1][k]!='o'&&ar[l][k-1]!='o'&&ar[l+1][k]!='o'&&ar[l][k+1]!='o'){
+			return ;
+		}
+	else{
+		if(ar[l][k+1]=='o') 
+			jude(ar,l,k+1);
+		if(ar[l+1][k]=='o')
+			jude(ar,l+1,k);
+		if(ar[l-1][k]=='o')
+			jude(ar,l-1,k);
+		if(ar[l][k-1]=='o')
+			jude(ar,l,k-1);
+		}
+	}
+}

@@ -1,0 +1,37 @@
+package step4;
+import java.util.Calendar;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String [] a=releaseDate.split("-");
+        int j=Integer.parseInt(a[0]);
+        int k=Integer.parseInt(a[1]);
+        int l=Integer.parseInt(a[2]);
+        Calendar c = Calendar.getInstance();
+        c.set(j,k-1,l);
+        c.add(Calendar.DATE,day);
+        String str1=String.valueOf(c.get(Calendar.YEAR));
+        String str2=new String();
+        String e="";
+        String d="";
+        if(c.get(Calendar.MONTH)+1<10) e="0";
+        str2="-"+e+String.valueOf(c.get(Calendar.MONTH)+1)+"-";
+        if(c.get(Calendar.DATE)<10) d="0";
+        String str3=d+String.valueOf(c.get(Calendar.DATE));
+        return str1+str2+str3;
+
+        
+        
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

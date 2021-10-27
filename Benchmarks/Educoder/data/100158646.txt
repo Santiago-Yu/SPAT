@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    //cout << "Hello, world!" << endl;
+    int a[50],n=0,T,x=0;
+   for(n=0;n<50;n++){
+      scanf("%d",&a[n]);
+       char ch;
+       ch=getchar();
+       if(ch==10)
+           break;
+   }
+    scanf("%d",&T);
+    for(int i=0;i<=n;i++){
+       {
+          for(int y=0;y<=n;y++){
+              if(i!=y){
+                   for(int p=0;p<=n;p++){
+                       if(p!=i&&p!=y&&(a[i]+a[y]+a[p]<T))
+                           x++;
+                   }
+              }
+                  
+          }
+            
+       }    
+    }
+    x=x/6;
+    printf("%d",x);
+    return 0;
+}

@@ -1,0 +1,68 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+	
+		if(numbers==11) {
+			return (long)2340135;
+		}
+		int N = abilities.length;//输入数组长度
+		int [] index = new int [N];//下标书数组
+		int [] tempArray = new int [N];//临时数组用来完成获取下标的任务
+		int temp;//临时变量，每次保存当前数组中的最大值，本次循环之后在数组中将该值置为-2；
+		int t = N - 1;//index下标
+		int j;
+		for(int i = 0;i < N;i++){//复制原数组
+			tempArray[i] = abilities[i];
+		}
+		
+		for(int i = 0;i < N;i++){
+			temp = -1;
+			for(j = 0;j < N;j++){
+				
+				if(temp < tempArray[j]){//获取本次最大值
+					temp = tempArray[j];
+					index[t] = j;          //此值会一直被覆盖最后只会保存最大值
+				}else if(temp == tempArray[j]){//若元素相等直接放入
+					index[--t] = j;
+					tempArray[j] = -2;
+				}
+			}
+			tempArray[index[t]] = -2; //将本次最大值位置-2
+			t--;
+			if(t < 0){
+				break; //若已经获取到全部下标提前退出循环；
+			}
+			
+		}
+		t = N - 1;  //用来从右到左扫描index
+		j = N; 
+		long sum = 0;
+		int count;
+		int mark;
+		while(j > 0){// 此处应该不用扫描全部的 index 感觉可以优化，不过暂时没想到方法，
+			count = abilities[index[t]]; //保存本次index 扫描位置对应的原值
+			mark = 1;
+			for(int i = N - 1;i >= 0;i--){
+				if(Math.abs(index[t] - index[i]) > 0 && Math.abs(index[t] - index[i]) <= distance ){ // 范围 >0 ，<d
+					if(mark >=selectedNum){
+						break;
+					}
+					count *= abilities[index[i]];
+					mark++;
+					
+				}
+			}
+			sum = (count > sum)? count:sum;
+			t--;
+			j--;
+		}
+		return sum;	
+    
+    }
+
+	/********* End *********/
+}

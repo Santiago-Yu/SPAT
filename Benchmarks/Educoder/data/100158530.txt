@@ -1,0 +1,28 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        		Scanner sc = new Scanner(System.in);
+		String a,b;
+		a = sc.nextLine();
+		b = sc.nextLine();
+		int ans = 0;
+		for(int len=a.length();len>0;--len){
+			for(int l=0;l+len<=a.length();++l){
+				String temp = a.substring(l,l+len);
+				if(b.contains(temp)){
+					ans = len;
+					break;
+				}
+			}
+			if(ans!=0){
+				break;
+			}
+		}
+		System.out.print(ans);
+		sc.close();
+	}
+
+}

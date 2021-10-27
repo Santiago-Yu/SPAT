@@ -1,0 +1,28 @@
+package step3;
+
+public class Task {
+    
+       public void rotate(int[][] array) {
+        int hang = array.length - 1;
+        int lie = array[0].length - 1;
+        int[][] newarray = new int[lie + 1][hang + 1];
+
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[0].length; j++) {
+                if (newarray[i][j] == 1) {
+                    continue;
+                }
+
+                int temp;
+                temp = array[j][hang - i];
+                array[j][hang - i] = array[i][j];
+                array[i][j] = temp;
+                newarray[i][j] = 1;
+                newarray[j][hang - i] = 1;
+            }
+        }
+    }
+}
+
+
+

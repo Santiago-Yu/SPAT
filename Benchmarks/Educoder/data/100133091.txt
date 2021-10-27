@@ -1,0 +1,75 @@
+package step3;
+
+public class Task {
+    
+	public void find(int oi, int oj, int i, int j, int n, int m, char[][] a) {
+        if (i > 0) {//top
+            if (a[i - 1][j] == 'x' && (i - 1 != oi || j != oj)) {
+                a[i - 1][j] = '1';
+                find(oi, oj, i - 1, j, n, m, a);
+            }
+        }
+        if (j > 0) {//left
+            if (a[i][j - 1] == 'x' && (i != oi || j - 1 != oj)) {
+                a[i][j - 1] = '1';
+                find(oi, oj, i, j - 1, n, m, a);
+            }
+        }
+        if (j < m - 1) {//right
+            if (a[i][j + 1] == 'x' && (i != oi || j + 1 != oj)) {
+                a[i][j + 1] = '1';
+                find(oi, oj, i, j + 1, n, m, a);
+
+            }
+        }
+        if (i < n - 1) {//bottom
+            if (a[i + 1][j] == 'x' && (i + 1 != oi || j != oj)) {
+                a[i + 1][j] = '1';
+                find(oi, oj, i + 1, j, n, m, a);
+            }
+        }
+        if (i > 0 && j > 0) {// top left
+            if (a[i - 1][j - 1] == 'x' && (i - 1 != oi || j - 1 != oj)) {
+                a[i - 1][j - 1] = '1';
+                find(oi, oj, i - 1, j - 1, n, m, a);
+            }
+        }
+        if (i > 0 && j < m - 1) { //top right
+            if (a[i - 1][j + 1] == 'x' && (i - 1 != oi || j + 1 != oj)) {
+                a[i - 1][j + 1] = '1';
+                find(oi, oj, i - 1, j + 1, n, m, a);
+            }
+        }
+
+        if (i < n - 1 && j > 0) {// bottom left
+            if (a[i + 1][j - 1] == 'x' && (i + 1 != oi || j - 1 != oj)) {
+                a[i + 1][j - 1] = '1';
+                find(oi, oj, i + 1, j - 1, n, m, a);
+            }
+        }
+
+        if (i < n - 1 && j < m - 1) { //top right
+            if (a[i + 1][j + 1] == 'x' && (i + 1 != oi || j + 1 != oj)) {
+                a[i + 1][j + 1] = '1';
+                find(oi, oj, i + 1, j + 1, n, m, a);
+            }
+        }
+    }
+
+    public int getBlockNum(int n, int m, char[][] arr) {
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (arr[i][j] == 'x') {
+                    find(i, j, i, j, n, m, arr);
+                }
+            }
+        }
+        for (char[] row : arr) {
+            for (char c : row) {
+                if (c == 'x') sum++;
+            }
+        }
+        return sum;
+    }
+}

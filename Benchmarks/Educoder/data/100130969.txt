@@ -1,0 +1,48 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+        int size = arr.length;
+        int z=arr[0].length;
+        int[] num=new int[size];
+		for(int i=0;i<arr.length;i++){
+            for(int i1=0;i1<arr[i].length-1;i1++){
+            for(int j=0;j<arr[i].length-1-i1;j++){
+             if(arr[i][j] < arr[i][j+1])  //交换两数位置
+            {
+            int emp = arr[i][j];
+            arr[i][j] = arr[i][j+1];
+            arr[i][j+1] = emp;
+            }
+            }
+        }}
+        for(int i=0;i<arr.length;i++){
+            for(int j=0;j<arr[i].length;j++){
+               num[i]=num[i]+arr[i][j];
+            }
+        }
+        
+        int[] temp=new int[z];
+         for(int i = 0 ; i < size-1; i ++)
+        {
+        for(int j = 0 ;j < size-1-i ; j++)
+        {
+            if(num[j] < num[j+1])  //交换两数位置
+            {
+            temp = Arrays.copyOf(arr[j],z);
+            arr[j] = Arrays.copyOf(arr[j+1],z);
+            arr[j+1] = Arrays.copyOf(temp,z);
+            }
+        }
+        }
+        for(int i=0;i<arr.length;i++)
+        System.out.println(Arrays.toString(arr[i]));
+    }
+    
+    /********** END **********/
+}
+	

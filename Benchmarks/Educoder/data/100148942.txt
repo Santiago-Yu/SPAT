@@ -1,0 +1,66 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+        int length = 0;
+        int begin = 0, end = 0;
+        int f = 0, g = 0;
+        for(int i = 1; i < arr.length; i++)
+        {
+            if(arr[i] == arr[i-1])
+                continue;
+            if(arr[i] < arr[i-1])
+            {
+                begin = i-1;
+                for(int j = i; j < arr.length; j++)
+                    if(arr[j-1] < arr[j])
+                    {
+                        i = j-1;
+                       // System.out.println(arr[j-1]);
+                        break;
+                    }
+            }
+            if(arr[i] > arr[i-1])
+                for(int j = i; j < arr.length; j++)
+                    if(arr[j-1] >= arr[j])
+                    {
+                        end = j-1;
+                        if(i == 1)
+                            begin = j-1;
+                        i = j-1;
+                        break;
+                    }
+                    else if(arr[j] > arr[j-1] &&j == arr.length-1)
+                    {
+                        if(i == 1)
+                            begin = j;
+                        end = j;
+                        i = j;
+                      //  System.out.println(arr[j]);
+                    }
+            if(length < end - begin)
+            {
+                int key = 0;
+                for(int k = begin+1 ; k <= end; k++)
+                    if(arr[k] == arr[k-1])
+                        key = 1;
+                if(key != 1)
+                {
+//                    for(int k = begin; k <= end; k++)
+//                        System.out.print(arr[k] + " ");
+//                    System.out.println();
+                    length = end - begin;
+                }
+            }
+           
+        }
+        if(length == 0)
+            return length;
+        else
+            return length + 1;
+		
+		/********* End *********/	
+	}
+}

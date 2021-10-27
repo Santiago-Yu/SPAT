@@ -1,0 +1,57 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        
+    	int n=0,q=0;
+        long max,min,middle;
+		int[] a=new int[3];
+		boolean flag=false;
+		for(int i=1;i<=10000;i++){
+			for(int p=0;p<9997;p++){
+				if(nums[p]==i){
+					flag=true;
+                    break;
+				}
+			}
+          
+			if(!flag){a[q++]=i;}
+			else{flag=false;}
+		}
+        
+		
+		if(a[0]>a[1]){max=a[0];}
+		else{max=a[1];}
+		if(max<a[2]){max=a[2];}
+		
+		if(a[0]<a[1]){min=a[0];}
+		else{min=a[1];}
+		if(a[2]<min){min=a[2];}
+		
+		middle=a[0]+a[1]+a[2]-max-min;
+		
+		int len=0;
+        long maxt=max,middlet=middle;
+		while(maxt!=0){
+			len++;
+			maxt=maxt/10;
+		}
+		int gth=0;
+		while(middlet!=0){
+			gth++;
+			middlet=middlet/10;
+		}
+		for(int i=1;i<=len;i++){middle*=10;}
+		for(int i=1;i<=len+gth;i++){min*=10;}
+		long ll=(min+middle+max)%11;
+        n = Integer.parseInt(String.valueOf(ll));
+
+		return n;
+	
+	}
+
+	/********* End *********/
+}

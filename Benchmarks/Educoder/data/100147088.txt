@@ -1,0 +1,33 @@
+package step2;
+import java.util.*;
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        long out=1;
+        
+        int[] num=new int[distance+selectedNum];
+        if(numbers<=distance){Arrays.sort(abilities);int j=numbers;for(int i=0;i<selectedNum;i++){out*=abilities[j];j--;}}
+        else{
+            for(int i=0;i<=numbers-(selectedNum+distance)+1;i++){
+                long outxu=1;
+        		for(int j=i,a=0;j<i+distance+selectedNum;j++,a++){
+            		num[a]=abilities[j];   
+            	}
+                Arrays.sort(num);
+                //for(int j=0,a=0;j<distance+selectedNum;j++,a++){
+            		
+                //    System.out.print(num[a]+"\t");
+            	//}
+                //System.out.println();
+                for(int k=selectedNum+distance-1;k>=distance;k--){outxu*=num[k];}
+                if(outxu>out){out=outxu;}
+        	}
+        }
+        return out;
+
+    }
+
+	/********* End *********/
+}

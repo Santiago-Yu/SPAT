@@ -1,0 +1,34 @@
+package step3;
+
+public class MyThread implements Runnable {   
+    String word;
+    int i = 0;
+    Object lock = new Object();
+    MyThread(String word){
+        this.word = word;
+    }
+	public void run(){
+        while(true){
+		synchronized(lock){
+            try{
+            	Thread.sleep(10);
+            }catch(Exception e){
+            	e.printStackTrace();
+            }
+            if(i<5){
+            	System.out.print(word);
+            	i++;
+            }
+            else break;
+        }    
+        }    
+    }
+    public static void main(String[] args) throws Exception {   
+        Thread a = new Thread(new MyThread("E"));
+        a.start();
+        Thread b = new Thread(new MyThread("U"));
+        b.start();
+        Thread c = new Thread(new MyThread("D"));
+        c.start();
+    }   
+}

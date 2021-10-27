@@ -1,0 +1,71 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		class T{
+		private char[][] data;
+		private boolean[][] isMarked;
+		private int d;
+		private int maxN;
+		private int maxM;
+		int count=0;
+		public T(int n,int m,char[][] area) {
+			d=n*m;
+			maxN=n;
+			maxM=m;
+			isMarked=new boolean[n][m];
+			for(int i=0;i<n;i++) {
+				for(int j=0;j<m;m++)
+					isMarked[i][j]=false;
+			}
+			data=area;
+			
+		}
+		
+		public void dfs() {
+			for(int i=0;i<maxN;i++) {
+				for(int j=0;j<maxM;j++) {
+					if(isMarked[i][j]!=true&&data[i][j]!='x') {
+						inDfs(i,j);
+						count++;
+					}
+				}
+			}
+			
+			
+		}
+		public void inDfs(int n,int m) {
+			isMarked[n][m]=true;
+			
+			if(n-1>=0) {
+				if(isMarked[n-1][m]!=true&&data[n-1][m]!='x')
+					inDfs(n-1,m);
+			}
+			if(n+1<maxN) {
+				if(isMarked[n+1][m]!=true&&data[n+1][m]!='x')
+					inDfs(n+1,m);
+			}
+			if(m-1>=0) {
+				if(isMarked[n][m-1]!=true&&data[n][m-1]!='x')
+					inDfs(n,m-1);
+			}
+			if(m+1<maxM) {
+				if(isMarked[n][m+1]!=true&&data[n][m+1]!='x')
+					inDfs(n,m+1);
+			}
+			
+		}
+	}
+        
+        
+        
+        T t=new T(n,m,area);
+		t.dfs();
+		return t.count;
+        
+		
+		/********* End *********/	
+	}
+}

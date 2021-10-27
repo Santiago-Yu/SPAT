@@ -1,0 +1,33 @@
+package step2;
+
+
+public class FindZhiShu {
+
+
+	public static void main(String[] args) {
+		   /*
+		     打印输出质数的时候务必按照如下格式：System.out.print(质数+" ")；
+		     使用print进行打印同时被打印输出的质数后加上一个空格，
+		     以便于与平台提供的结果格式保持一致！
+            */
+
+		   /**********begin**********/
+           //由于偶数中只有2是质数，此处直接将2的值进行输出，如下代码中查找质数时，只需考虑奇数即可
+         System.out.print(2+" ");
+          //定义标签
+           OUT:
+          //1不是质数，2是质数但是已经打印输出，因此循环中i的值从3开始即可，i+=2是因为在循环中我们不再考虑偶数
+           for (int i = 3; i <= 1000; i+=2) {
+           //请补充程序判断i是否是质数并打印i，如果是质数按照 System.out.print(i+" "); 格式进行打印
+             for (int j = 2; j < i; j++) {
+                if(i % j == 0) {
+                  //如果i对j求余数等于0说明i不是质数
+                  continue OUT;
+               }
+             }
+           //说明i是质数
+           System.out.print(i+" ");
+        }
+           /**********end**********/	
+	}
+}

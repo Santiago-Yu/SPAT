@@ -1,0 +1,72 @@
+package Q202;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+Scanner in =new Scanner(System.in);
+	 int a;
+	 a=in.nextInt();
+	 int temp=a;
+	 int []b = new int[100];
+	 int j=0;
+	 int js=0;
+	 boolean flag=true;
+	 while(a>=2)
+	 {
+		 if(flag==false)
+			 break;
+	 for(int i =9;i>=1;i--)
+	 {
+		 if(a%i==0)
+		 {
+			 b[j]=i;
+			 j++;
+			 a=a/i;
+			 js++;
+			 break;
+		 }
+		 if(i==1)
+		 {
+			flag= false;
+		 }
+	 } 
+	 }
+	 int i =0;
+	 int k=0;
+	 int tem;
+
+	 for(i=0;i<b.length&&b[i]>0;i++) 
+	 {
+		 for(j=0;j<b.length&&b[j]>0;j++)
+		 {
+			 if(b[i]<b[j])
+			 {
+				 tem=b[i];
+				 b[i]=b[j];
+				 b[j]=tem;
+				 
+			 }
+		 }
+	 }
+	 int sum=0;
+	 if(js>32)
+		 flag=false;
+	 js=js-1;
+	 for(i=0;i<b.length&&b[i]>0;i++)
+	 {
+		 for(k=0;k<js;k++)
+		 {
+			 b[i]=b[i]*10;
+		 }
+		 sum=sum+b[i];
+		 js--;
+	 }
+	 if(temp<10)
+		 System.out.print(temp);
+	 else if(flag==true)
+		 System.out.print(sum);
+	 else if(flag==false)
+		 System.out.print("0");
+	}
+
+}

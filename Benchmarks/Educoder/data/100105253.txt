@@ -1,0 +1,25 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        String x = " ";
+		StringBuffer s = new StringBuffer();
+        for(int i=0;i<data.length();i++)
+        {
+            if(x.compareTo(data.substring(i, i+1))==0)
+            {
+                ans.append(s.reverse());
+                s.setLength(0);
+                ans.append(" ");
+            }
+            else
+        		s.append(data.substring(i, i+1));
+        }
+        ans.append(s.reverse());
+        ans.append(" ");
+        /********** End *********/
+        return ans;
+    }
+}

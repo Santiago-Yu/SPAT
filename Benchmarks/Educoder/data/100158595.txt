@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int maxlen=1000000;
+int main()
+{
+    char a[maxlen];
+    char b[maxlen];
+    scanf("%s",a);
+    scanf("%s",b);
+    int px1=strlen(a);
+    int px2=strlen(b);
+    int max=0;
+    int temp=0;
+    int i;
+    int j;
+    int k;
+    int p;
+    /*char test1='1';
+    char test2='1';
+    if (test1==test2){
+        printf("*********yes*******\n");
+    }*/
+    for(i=0;i<px1;i++){
+        for(j=0;j<px2;j++){
+            if (a[i]==b[j]){
+                for(k=i,p=j;;k++,p++){
+                    if(a[k]==b[p]){
+                        if(k>=px1||p>=px2){
+                                break;
+                        }else temp=temp+1;
+
+                    }else break;
+                }
+            }
+            if(temp>max){
+                max=temp;
+            }
+            temp=0;
+
+        }
+    }
+    printf("%d",max);
+
+
+}

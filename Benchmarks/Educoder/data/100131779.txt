@@ -1,0 +1,107 @@
+package step3;
+
+import java.io.File;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Scanner;
+public class Task {
+    
+	private void getDir(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/********** BEGIN **********/
+		public void showDirStructure(File dir)	{
+		if(dir.isDirectory()) 
+		{
+			String pathname=dir.getName();
+			System.out.println("+--"+pathname);
+			File[] fList=dir.listFiles(); 
+			
+			for(int j=0;j<fList.length;j++)
+			{ 
+				if(fList[j].isDirectory()){
+					getDir(fList[j].getPath());
+					System.out.println("  "+"+--"+fList[j].getName());
+					if(fList[j].isDirectory()){
+						File[] llist=fList[j].listFiles();
+						for(int k=0;k<llist.length;k++){
+							String fileName=llist[k].getName();
+							if(llist[k].isDirectory()){
+								System.out.println("    "+"+--"+llist[k].getName());
+								File[] f=llist[k].listFiles();
+								if(f!=null){
+									for(int i=0;i<f.length;i++){
+										if(f[i].isDirectory()){
+											System.out.println("      "+"+--"+f[i].getName()+"");
+											File[] ff=f[i].listFiles();
+											
+											if(ff!=null){
+												
+												for(int c=0;c<ff.length;c++){
+													if(ff[c].isDirectory()){
+														System.out.println("        "+"+--"+ff[c].getName());
+														File[] fff=ff[c].listFiles();
+														if(fff!=null){
+															for(int a=0;a<fff.length;a++){
+																if(fff[a].getName().endsWith(".bmp")||fff[a].getName().endsWith(".jpg")||fff[a].getName().endsWith(".png"))
+																	
+																System.out.println("          "+"--"+fff[a].getName()+"");
+															}
+														}
+													}
+													
+														if(ff[c].getName().endsWith(".bmp")||ff[c].getName().endsWith(".jpg")||ff[c].getName().endsWith(".png"))
+														System.out.println("        "+"--"+ff[c].getName()+"");
+													
+														
+													
+												
+												}
+											}
+										}else {
+											if(f[i].getName().endsWith(".bmp")||f[i].getName().endsWith(".jpg")||f[i].getName().endsWith(".png"))
+											System.out.println("      "+"--"+f[i].getName()+"");
+										}
+										
+									}
+									
+								}
+								
+							}else{
+								if(llist[k].getName().endsWith(".bmp")||llist[k].getName().endsWith(".jpg")||llist[k].getName().endsWith(".png"))
+									System.out.println("    "+"--"+fileName+"");
+							}
+							
+							
+                        }
+					}
+					
+				}else{
+					if(fList[j].getName().endsWith(".bmp")||fList[j].getName().endsWith(".jpg")||fList[j].getName().endsWith(".png"))
+						
+					System.out.println("  "+"--"+fList[j].getName()+"");
+				}	
+			} 
+		}  
+
+
+
+
+
+
+	
+			}  
+
+	
+
+	/********** END **********/
+}

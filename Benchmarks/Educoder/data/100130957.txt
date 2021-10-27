@@ -1,0 +1,55 @@
+package step4;
+
+import java.util.*;
+public class Task {
+    
+	/********** BEGIN **********/
+    public static void sortArray1(int[] arr){
+		
+    	for (int i = 0; i < arr.length -1; i++) {
+            for (int j = i+1; j < arr.length; j++) {
+		    	if(arr[i] < arr[j]){
+                    int tmp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = tmp;
+                }
+				}
+		    }
+    }
+    public static int sumArray(int[] arr){
+		/********** BEGIN **********/
+    	int sum=0;
+			for(int i=0;i<arr.length-1;i++){		
+		    sum+=arr[i];
+		    }
+			return sum;
+    }
+    public static void sortArray(int[][] arr){
+		int leng=arr.length;
+		for(int i=0;i<leng;i++){
+			sortArray1(arr[i]);
+		}
+        int first[]=new int[arr.length];
+        for(int i=0;i<leng;i++){
+			first[i]=sumArray(arr[i]);
+		}
+        int first1[]=Arrays.copyOf(first, leng);
+        sortArray1(first);
+        int[][]arr1=new int[leng][leng];
+        for(int i=0;i<leng;i++){
+        	for(int j=0;j<leng;j++){
+        		if(first[i]==first1[j]){
+        			arr1[i]=Arrays.copyOf(arr[j], leng);
+        		}
+        	}
+        }
+        for(int i=0;i<leng;i++){
+        	arr[i]=Arrays.copyOf(arr1[i],leng);
+        }
+       for(int i=0;i<leng;i++){
+		System.out.println(Arrays.toString(arr[i]));
+		}
+    }
+    
+    /********** END **********/
+}

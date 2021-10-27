@@ -1,0 +1,467 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static int count = 0;
+    private static String[] reservedWord = new String[]{"int","real","if","{","}","(",")","+","-","*","/",";","then","else","=","==","<",">","<=",">=","==","a","b","c"};
+    private static String[] other = new String[]{"-","--","-=","->","!","!=","%","%=","&","&&","&=","(",")","*","*=",",",
+            ".","/","/=",":",";","?","[","]","^","^=","{","|","||","|=","}","~",
+            "+","++","+=","<","<<","<<=","<=","=","==",">",">=",">>",">>=","\""};
+    private static StringBuffer token = new StringBuffer();
+    private static int a=0,b=0,c=0;
+    private static double a1=0.0,b1=0.0,c1=0.0;
+    private static int pProg = 0;
+    private static boolean flag = false;
+    private static List<String[]> allToken = new ArrayList<>();
+    private static List<String> param = new ArrayList<>();
+
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append('\n');
+        }
+    }
+    private static void lexAnalysis(){
+
+        while (pProg<prog.length()-1){
+            token.delete(0,token.length());
+            while (pProg<prog.length()&&(prog.charAt(pProg)==' '||prog.charAt(pProg)=='\t'||prog.charAt(pProg)=='\n')){   //删除空格,\t,\n
+                pProg++;
+            }
+            if (isLetter(prog.charAt(pProg))){    //若首位为字母，则可能是保留字或variable
+                token.append(prog.charAt(pProg));
+                pProg++;
+                while(isLetter((prog.charAt(pProg)))||isDigit(prog.charAt(pProg))){     //从第二位开始，若为字母或数字
+                    token.append(prog.charAt(pProg));
+                    if(pProg<prog.length()-1){
+                        pProg++;
+                    }else {
+                        break;
+                    }
+                }
+                if (pProg==prog.length()){      //输出时判断对应的序号
+                    allToken.add(new String[]{token.toString(),"reserved"});
+                    //System.out.print(": <"+token+","+reservedWordOrder(token)+">");
+                }else{
+                    allToken.add(new String[]{token.toString(),"reserved"});
+                    //System.out.println(": <"+token+","+reservedWordOrder(token)+">");
+                }
+                token.delete(0,token.length());
+            }else if(isDigit(prog.charAt(pProg))){     //若首位为数字，则一定是常数
+                token.append(prog.charAt(pProg));
+                pProg++;
+                while(isDigit(prog.charAt(pProg))||prog.charAt(pProg)=='.'){
+                    token.append(prog.charAt(pProg));
+                    if(pProg<prog.length()-1){
+                        pProg++;
+                    }else {
+                        break;
+                    }
+                }
+                if (pProg==prog.length()){
+                    allToken.add(new String[]{token.toString(),"num"});
+                    //System.out.print(": <"+token+",80>");
+                }else{
+                    allToken.add(new String[]{token.toString(),"num"});
+                    //System.out.println(": <"+token+",80>");
+                }
+                token.delete(0,token.length());
+            }else {                                     //若首位不是字母也不是数字，则可能是分界符或运算符
+                token.append(prog.charAt(pProg));
+                pProg++;
+                StringBuffer stringBuffer = new StringBuffer();
+                while(!isDelimiter(token)&&!isDelimiter(stringBuffer.append(prog.charAt(pProg)))&&!isDigit(prog.charAt(pProg))&&!isLetter(prog.charAt(pProg))&&prog.charAt(pProg)!=' '){
+                    token.append(prog.charAt(pProg));                //判断是否为"<<","<="等两个或两个以上字符的运算符
+                    stringBuffer.delete(0,stringBuffer.length());
+                    if(pProg<prog.length()-1){
+                        pProg++;
+                    }else {
+                        break;
+                    }
+                }
+                if (token.toString().equals("%")&&(prog.charAt(pProg)=='c'||prog.charAt(pProg)=='d')){
+                    token.append(prog.charAt(pProg));
+                    pProg++;
+                }
+                if (token.toString().equals("//")){            //检查注释“//”
+                    while(prog.charAt(pProg)!='\n'){
+                        token.append(prog.charAt(pProg));
+                        pProg++;
+                    }
+                }else if (token.toString().equals("/*")){           //检查注释“/*     */”
+                    while(!(prog.charAt(pProg-2)=='*'&&prog.charAt(pProg-1)=='/')){
+                        token.append(prog.charAt(pProg));         //检查到“/*”后一直append，直到出现“*/”为止
+                        pProg++;
+                    }
+                }
+                //if(otherOrder(token)!=-1){
+                if (pProg==prog.length()){
+                    allToken.add(new String[]{token.toString(),"other"});
+                    //System.out.print(": <"+token+","+otherOrder(token)+">");
+                }else{
+                    allToken.add(new String[]{token.toString(),"other"});
+                    //System.out.println(": <"+token+","+otherOrder(token)+">");
+                }
+                token.delete(0,token.length());
+                //}
+            }
+            //pProg++;
+        }
+
+//        for (int j=0;j<allToken.size();j++){
+//            System.out.println(allToken.get(j)[0]+" "+allToken.get(j)[1]);
+//        }
+
+    }
+
+    private static boolean isLetter(char c){
+        if ((c>='a'&&c<='z')||(c>='A'&&c<='Z')){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private static boolean isDigit(char c){
+        if (c>='0'&&c<='9'){ return true; }
+        else{ return false; }
+    }
+
+    private static String reservedWordOrder(StringBuffer token){     //判断是第几个保留字，如果都不是，那就是变量variable
+        for(int i=0;i<reservedWord.length;i++){
+            String str = "";
+            str = token.toString();
+            if(str.equals(reservedWord[i])){ return reservedWord[i]; }
+        }
+        return "error";
+    }
+
+    private static String otherOrder(StringBuffer token){     //判断是第几个操作符/运算符，如果都不是，可能是%c之类的，如果再不是，那就是注释
+        for (int i=0;i<other.length; i++){
+            String str = "";
+            str = token.toString();
+            if (str.equals(other[i])){ return other[i]; }
+        }
+        return "error";
+    }
+
+    private static boolean isDelimiter(StringBuffer token){
+        String[] delimiter = new String[]{"(",")",",",".",":",";","?","[","]","{","}","~","\""};
+        for (int i=0;i<delimiter.length;i++){
+            String str = "";
+            str = token.toString();
+            if (str.equals(delimiter[i])){ return true; }
+        }
+        return false;
+    }
+
+    private static void analysis()
+    {
+        while (!allToken.get(count)[0].equals("}")){
+            while (!allToken.get(count)[0].equals("{")){
+
+                while (!allToken.get(count)[0].equals(";")){
+                    if (allToken.get(count)[0].equals("int")&&allToken.get(count+2)[0].equals("=")){
+                        count=count+2;
+                        if (allToken.get(count-1)[0].equals("a")&&allToken.get(count+1)[1].equals("num")){
+                            a = getIntValue(allToken.get(count+1)[0]);
+                            //System.out.println("a:"+a);
+                            param.add("a");
+                        }else if (allToken.get(count-1)[0].equals("b")&&allToken.get(count+1)[1].equals("num")){
+                            b = getIntValue(allToken.get(count+1)[0]);
+                            //System.out.println("b:"+b);
+                            param.add("b");
+                        }else if (allToken.get(count-1)[0].equals("c")&&allToken.get(count+1)[1].equals("num")){
+                            c = getIntValue(allToken.get(count+1)[0]);
+                            //System.out.println("c:"+c);
+                            param.add("c");
+                        }
+                        count=count+2;
+                    }else if (allToken.get(count)[0].equals("real")&&allToken.get(count+2)[0].equals("=")){
+                        count=count+2;
+                        if (allToken.get(count-1)[0].equals("a")&&allToken.get(count+1)[1].equals("num")){
+                            a1 = getRealValue(allToken.get(count+1)[0]);
+                            //System.out.println("a:"+a1);
+                            param.add("a1");
+                        }else if (allToken.get(count-1)[0].equals("b")&&allToken.get(count+1)[1].equals("num")){
+                            b1 = getRealValue(allToken.get(count+1)[0]);
+                            //System.out.println("b:"+b1);
+                            param.add("b1");
+                        }else if (allToken.get(count-1)[0].equals("c")&&allToken.get(count+1)[1].equals("num")){
+                            c1 = getRealValue(allToken.get(count+1)[0]);
+                            //System.out.println("c:"+c1);
+                            param.add("c1");
+                        }
+                        count=count+2;
+                    }
+                }
+                count++;
+            }
+            count++;
+            //进入大括号
+            while (!allToken.get(count)[0].equals("}")){
+                while (!allToken.get(count)[0].equals("if")){
+                    processAssign();
+                    count++;
+                }
+                while (allToken.get(count)[0].equals("if")){
+                    processIf();
+                }
+            }
+        }
+    }
+
+    public static void processAssign(){
+
+        String result = allToken.get(count)[0];
+        String first = allToken.get(count+2)[0];
+        String second = allToken.get(count+4)[0];
+        String oper = allToken.get(count+3)[0];
+
+            while (!allToken.get(count)[0].equals(";")){
+                if (oper.equals("+")){
+                    if (result.equals("a")){
+                        if (param.get(0).equals("a")){
+                            a = (int)getParamName(first)+(int)getParamName(second);
+                            //System.out.println("a:"+a);
+                        }else {
+                            a1 = getParamName(first)+getParamName(second);
+                            //System.out.println("a1:"+a1);
+                        }
+                    }
+                    if (result.equals("b")){
+                        if (param.get(1).equals("b")){
+                            b = (int)getParamName(first)+(int)getParamName(second);
+                            //System.out.println("b:"+b);
+                        }else {
+                            b1 = getParamName(first)+getParamName(second);
+                            //System.out.println("b1:"+b1);
+                        }
+                    }
+                    if (result.equals("c")){
+                        if (param.get(2).equals("c")){
+                            c = (int)getParamName(first)+(int)getParamName(second);
+                            //System.out.println("c:"+c);
+                        }else {
+                            c1 = getParamName(first)+getParamName(second);
+                            //System.out.println("c1:"+c1);
+                        }
+                    }
+                }else if (oper.equals("-")){
+                    if (result.equals("a")){
+                        if (param.get(0).equals("a")){
+                            a = (int)getParamName(first)-(int)getParamName(second);
+                            //System.out.println("a:"+a);
+                        }else {
+                            a1 = getParamName(first)-getParamName(second);
+                            //System.out.println("a1:"+a1);
+                        }
+                    }
+                    if (result.equals("b")){
+                        if (param.get(1).equals("b")){
+                            b = (int)getParamName(first)-(int)getParamName(second);
+                            //System.out.println("b:"+b);
+                        }else {
+                            b1 = getParamName(first)-getParamName(second);
+                            //System.out.println("b1:"+b1);
+                        }
+                    }
+                    if (result.equals("c")){
+                        if (param.get(2).equals("c")){
+                            c = (int)getParamName(first)-(int)getParamName(second);
+                            //System.out.println("c:"+c);
+                        }else {
+                            c1 = getParamName(first)-getParamName(second);
+                            //System.out.println("c1:"+c1);
+                        }
+                    }
+                }else if (oper.equals("*")){
+                    if (result.equals("a")){
+                        if (param.get(0).equals("a")){
+                            a = (int)getParamName(first)*(int)getParamName(second);
+                            //System.out.println("a:"+a);
+                        }else {
+                            a1 = getParamName(first)*getParamName(second);
+                            //System.out.println("a1:"+a1);
+                        }
+                    }
+                    if (result.equals("b")){
+                        if (param.get(1).equals("b")){
+                            b = (int)getParamName(first)*(int)getParamName(second);
+                            //System.out.println("b:"+b);
+                        }else {
+                            b1 = getParamName(first)*getParamName(second);
+                            //System.out.println("b1:"+b1);
+                        }
+                    }
+                    if (result.equals("c")){
+                        if (param.get(2).equals("c")){
+                            c = (int)getParamName(first)*(int)getParamName(second);
+                            //System.out.println("c:"+c);
+                        }else {
+                            c1 = getParamName(first)*getParamName(second);
+                            //System.out.println("c1:"+c1);
+                        }
+                    }
+                }else if (oper.equals("/")){
+                    if (allToken.get(count+4)[0].equals("0")){
+                        System.out.print("error message:line 5,division by zero");
+                    }
+                    if (result.equals("a")){
+                        if (param.get(0).equals("a")){
+                            a = (int)getParamName(first)/(int)getParamName(second);
+                            //System.out.println("a:"+a);
+                        }else {
+                            a1 = getParamName(first)/getParamName(second);
+                            //System.out.println("a1:"+a1);
+                        }
+                    }
+                    if (result.equals("b")){
+                        if (param.get(1).equals("b")){
+                            b = (int)getParamName(first)/(int)getParamName(second);
+                            //System.out.println("b:"+b);
+                        }else {
+                            b1 = getParamName(first)/getParamName(second);
+                            //System.out.println("b1:"+b1);
+                        }
+                    }
+                    if (result.equals("c")){
+                        if (param.get(2).equals("c")){
+                            c = (int)getParamName(first)/(int)getParamName(second);
+                            //System.out.println("c:"+c);
+                        }else {
+                            c1 = getParamName(first)/getParamName(second);
+                            //System.out.println("c1:"+c1);
+                        }
+                    }
+                }
+                count=count+5;
+                if (allToken.get(count)[0].equals("-")){
+                    a--;
+                    count=count+2;
+                }
+            }
+    }
+
+    public static void processIf(){
+            count=count+2;
+            boolean r = false;
+            while (!allToken.get(count)[0].equals(")")) {
+                if (allToken.get(count + 1)[0].equals("<")) {
+                    if (getParamName(allToken.get(count)[0]) < getParamName(allToken.get(count + 2)[0])) {
+                        r = true;
+                    }
+                } else if (allToken.get(count + 1)[0].equals(">")) {
+                    if (getParamName(allToken.get(count)[0]) > getParamName(allToken.get(count + 2)[0])) {
+                        r = true;
+                    }
+                } else if (allToken.get(count + 1)[0].equals(">=")) {
+                    if (getParamName(allToken.get(count)[0]) >= getParamName(allToken.get(count + 2)[0])) {
+                        r = true;
+                    }
+                } else if (allToken.get(count + 1)[0].equals("<=")) {
+                    if (getParamName(allToken.get(count)[0]) <= getParamName(allToken.get(count + 2)[0])) {
+                        r = true;
+                    }
+                } else if (allToken.get(count + 1)[0].equals("==")) {
+                    if (getParamName(allToken.get(count)[0]) == getParamName(allToken.get(count + 2)[0])) {
+                        r = true;
+                    }
+                }
+                count=count+3;
+            }
+            if (r == true) {
+                count = count + 2;
+            } else {
+                count = count + 9;
+            }
+            processAssign();
+            if (r==true){
+                count=count+7;
+            }
+            count++;
+    }
+
+    public static double getParamName(String str){
+        if (str.equals("a")){
+            if (param.get(0).equals("a")){
+                return (int) a;
+            }else {
+                return a1;
+            }
+        }else if (str.equals("b")){
+            if (param.get(1).equals("b")){
+                return (int) b;
+            }else {
+                return b1;
+            }
+        }else if (str.equals("c")){
+            if (param.get(2).equals("c")){
+                return (int) c;
+            }else {
+                return c1;
+            }
+        }
+        if (str.contains(".")){
+            return getRealValue(str);
+        }
+        return getIntValue(str);
+    }
+
+    public static int getIntValue(String str){
+        int num = 0;
+        int mul = 1;
+        if(str.contains(".")){
+            System.out.println("error message:line 1,realnum can not be translated into int type");
+            flag = true;
+        }
+        for (int i=str.length()-1;i>=0;i--){
+            num = num + mul*(str.charAt(i)-'0');
+            mul = mul*10;
+        }
+        return num;
+    }
+
+    public static double getRealValue(String str){
+        //System.out.println(str);
+        double num = 0;
+        int mul = 1;
+        double div = 0.1;
+        String str1 = str.substring(0,str.indexOf("."));
+        String str2 = str.substring(str.indexOf(".")+1);
+        //System.out.println(str1+"   "+str2);
+        for (int i=str1.length()-1;i>=0;i--){
+            num = num + mul*(str1.charAt(i)-'0');
+            mul = mul*10;
+        }
+        for (int i=0;i<str2.length();i++){
+            num = num + div*(str2.charAt(i)-'0');
+            div = div/10;
+        }
+        return num;
+    }
+
+    public static void main(String[] args) {
+        read_prog();
+        lexAnalysis();
+        analysis();
+        if (flag==false){
+            if (param.get(0).equals("a")){
+                System.out.println("a: "+a);
+            }else System.out.println("a: "+a1);
+            if (param.get(1).equals("b")){
+                System.out.println("b: "+b);
+            }else System.out.println("b: "+b1);
+            if (param.get(2).equals("c")){
+                System.out.print("c: "+c);
+            }else System.out.print("c: "+c1);
+        }
+    }
+}

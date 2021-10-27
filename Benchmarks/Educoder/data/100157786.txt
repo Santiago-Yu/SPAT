@@ -1,0 +1,29 @@
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Scanner;
+public class Main {
+
+    
+			public static void main(String[] args) {
+				// write your code here
+		        Scanner sc=new Scanner(System.in);
+		        int s=sc.nextInt();
+		        //System.out.print(add(2, 3));
+		        int num=1;
+		        int num1=1,num2=2;
+		        int i=1;
+		       if(s==1) num1=1;
+		       else if(s==2) num2=2;
+		       else{
+		    	   while(i<=s-2){
+		    		   if(i%2==1) num1=num1+num2;
+		    		   else num2=num1+num2;
+		    		   i++;
+		    	   }
+		       }
+		       if(s%2==1)System.out.print(num1);
+		       else System.out.print(num2);
+			}
+	
+}

@@ -1,0 +1,19 @@
+class n23537684 {
+	public static void copyResourceToFile(Class owningClass, String resourceName, File destinationDir) {
+		final byte[] resourceBytes = readResource(owningClass, resourceName);
+		final File destinationFile = new File(destinationDir, resourceName);
+		final ByteArrayInputStream inputStream = new ByteArrayInputStream(resourceBytes);
+		final FileOutputStream fileOutputStream;
+		try {
+			fileOutputStream = new FileOutputStream(destinationFile);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+		try {
+			IOUtils.copy(inputStream, fileOutputStream);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+}

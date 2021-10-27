@@ -1,0 +1,23 @@
+package step2;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringJoiner;
+
+public class NameSearch {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String  data = new String();
+        String  name = new String();
+        /********** Begin *********/
+        data = br.readLine();
+        name = br.readLine();
+        int len = data.indexOf(name);
+        while(len >=0) {
+        	System.out.println(len);
+        	len = data.indexOf(name, len+1);
+        }
+        
+        /********** End *********/
+    }
+}

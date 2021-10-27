@@ -1,0 +1,57 @@
+package step2;
+import java.util.Arrays;
+public class BestTeam {
+
+	/********* Begin *********/
+
+      public static long getBestTeam( int n , int[] a , int kk , int d ) {
+        //记录最大值
+        int max = 0;
+
+        boolean[] bool = new boolean[a.length];
+        for( int i = 0;  i < a.length;  i++ )
+            bool[i] = false;
+
+
+        for( int i=0; i<a.length; i++ ) {
+
+            bool[i] = true;
+            int count = 1;
+            int sum = a[i];
+            int l = (i-d>=0)?(i-d):0;
+            int r = (i+d<a.length-1)?(i+d):a.length-1;
+            boolean[] b = Arrays.copyOf(bool,bool.length);
+
+
+            while( count < kk ) {
+                int maxnum = 0;
+                int key = 0;
+                for( int j=l; j<=r; j++) {
+                    if( !b[j] && a[j]>maxnum ) {
+                        maxnum = a[j];
+                        key = j;
+                    }
+                }
+
+                sum*=maxnum;
+                b[key] = true;
+                count++;
+
+                if(key<i) {
+                    l = (key-d<l&&key-d>=0)?(key-d):l;
+                }else{
+                    r = (key+d>r&&key+d<a.length-1)?(key+d):a.length-1;
+                }
+            }
+
+            if( sum > max )
+                max=sum;
+
+        }
+
+
+   //   System.out.println(max);
+        return (long)max;
+    }
+	/********* End *********/
+}

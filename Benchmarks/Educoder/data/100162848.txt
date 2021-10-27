@@ -1,0 +1,40 @@
+package task07;
+
+
+
+public class Task07 {
+	static {
+		System.out.println("静态代码块");
+	}
+	
+	{
+		System.out.println("构造代码块");
+	}
+	
+	public Task07() {
+		System.out.println("构造方法");
+	}
+	
+	void localBlock() {
+		{
+			System.out.println("局部代码块");
+		}
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("---------");
+		Task07 t1=new Task07();
+		
+		System.out.println("---------");
+		Task07 t2=new Task07();
+		
+		System.out.println("---------");
+		t1.localBlock();
+		
+		
+		System.out.println("---------");
+		t2.localBlock();
+	}
+}
+
+

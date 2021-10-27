@@ -1,0 +1,100 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    void Swap(int A[], int i, int j)
+	{
+	    int temp = A[i];
+	    A[i] = A[j];
+	    A[j] = temp;
+	}
+
+	void BubbleSort(int A[], int n)
+	{
+	    for (int j = 0; j < n - 1; j++)         // 每次最大元素就像气泡一样"浮"到数组的最后
+	    {
+	        for (int i = 0; i < n - 1 - j; i++) // 依次比较相邻的两个元素,使较大的那个向后移
+	        {
+	            if (A[i] < A[i + 1])            // 如果条件改成A[i] >= A[i + 1],则变为不稳定的排序算法
+	            {
+	                Swap(A, i, i + 1);
+	            }
+	        }
+	    }
+	}
+    
+    public void sortArray(int[][] arr){
+        
+         int temp=0;
+         int temp1=0;
+        
+         //排序
+         
+     
+         
+		 
+		
+		 //然后以一维数组整体的和作为一个单位来进行降序排序。
+		 int sum[]=new int[arr.length];
+		 int s=0;
+		
+		 int i=0;
+		 int j=0;
+		 for(int k1=0;k1<arr.length;k1++){
+			 s=0;
+			 for(int k2=0;k2<arr[k1].length;k2++){
+				s=arr[k1][k2]+s;
+			 }
+			 
+				 sum[k1]=s;
+		 }
+		 
+			 this.BubbleSort(sum, arr.length);
+	//		 System.out.println(Arrays.toString(sum));
+	
+			 for(i=0;i<arr.length;i++){	
+				 temp1=0;
+				 for(j=0;j<arr[i].length;j++){
+					 temp1=arr[i][j]+temp1;
+					
+				 } 
+				 //如果算出来这一行的总和=合数的总和，那么这个行是最小的
+				 for(int n=0;n<sum.length;n++){
+					 if(temp1==sum[n]){
+						 //把这个数组按行排序
+						 for( i=0;i<arr.length;i++){	
+							 for(j=0;j<arr[i].length-1;j++){
+								 for(int k=j+1;k<arr[i].length;k++){
+									 if(arr[i][k]>arr[i][j]){
+										 temp=arr[i][j];
+										 arr[i][j]=arr[i][k];
+										 arr[i][k]=temp;
+									 }
+								 }
+								
+								
+							 }
+						 }
+						 
+					 }
+				 }
+				 
+			 }
+        
+		 for(int k=arr.length-1;k>=0;k--){
+            System.out.println(Arrays.toString(arr[k]));
+		 }	
+		
+
+
+		
+	
+    }
+    
+    /********** END **********/
+
+}
+	

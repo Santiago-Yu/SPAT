@@ -1,0 +1,40 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	  if(ferry.length == 0) {return 0;}
+		 int i ,j ,t ,k = 0;
+		 for(i = 0; i < ferry.length; i++) {
+			for(j = 0; j < ferry[i].length; j++) {
+					 if(ferry[i][j] == '+') {
+						 
+						 if(j + 1 < ferry[i].length && ferry[i][j+1] == '+') { //看同一行相邻的元素是否为+
+							for( j = j+1; j < ferry[i].length; j++) {    
+								if(ferry[i][j] != '+') {
+									break;
+								}
+							}
+						 }else if(i + 1 < ferry.length && ferry[i+1][j] == '+') {//看同一列相邻的元素是否为+
+							 t = i;
+							 for(t = t+1; t < ferry.length; t++) {
+								 if(ferry[t][j] != '+') {
+										break;
+								 }
+								 else {
+									 ferry[t][j] = 'o';
+								 }
+							 }
+						 }
+					 k++;
+					 }
+				}
+			}
+		 
+		 return k;
+	 
+         
+      /***********END ***************/
+	 }
+}

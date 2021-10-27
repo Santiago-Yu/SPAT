@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+#include<iostream>
+#define maxn 100
+using namespace std;
+int main(){
+	int a[maxn],num=0;
+	memset(a,0,sizeof(a));
+	int T;
+	for(num=0;;num++){
+		scanf("%d",&a[num]);
+		if(getchar()=='\n')
+		break;
+	}
+	num++;
+    scanf("%d",&T);
+	//printf("%d\n",num);
+	int i,j,k;
+	int count=0;
+	for(i=0;i<=num-3;i++){
+		for(j=i+1;j<=num-2;j++){
+			for(k=j+1;k<=num-1;k++){
+				if(a[i]+a[j]+a[k]<T)
+				count++;
+			}
+		}
+	}
+	printf("%d",count);
+	return 0;
+}

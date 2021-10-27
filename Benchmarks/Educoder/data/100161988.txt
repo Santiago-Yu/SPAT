@@ -1,0 +1,68 @@
+package task02;
+
+import java.util.Scanner;
+
+/*
+ * 说明：根据提示，补充完整 begin 和 end 之间的代码。
+ *     （其他代码可以不用改）
+ */
+
+/**************** begin *****************/
+// 在此定义学生类名
+class Student
+/**************** end *****************/
+{
+	/**************** begin *****************/
+	// 在此定义2个成员变量：姓名name和年龄age
+String name;
+    int age;
+	/**************** end *****************/
+
+	void speak() {
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+
+public class Task02{
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+
+		/**************** begin *****************/
+		/*
+		 * 创建Student类的第一个对象，其引用变量为s1，        
+		 * 使用s1分别为name和age赋值，值为运行时接收从键盘输入         
+		 * 然后调用speak()方法。
+		 */
+ Student s1=new Student();
+        s1.name=scan.next();
+        s1.age=scan.nextInt();
+        s1.speak();
+        /**************** end *****************/
+
+
+		/**************** begin *****************/
+		/*
+		 * 创建Student类的第二个对象，其引用变量为s2，
+		 * 使用s2分别为name和age赋值，值为运行时接收从键盘输入，
+		 * 然后调用speak()方法。
+		 */
+
+		/**************** end *****************/
+Student s2=new Student();
+        s2.name=scan.next();
+        s2.age=scan.nextInt();
+        s2.speak();
+
+		/**************** begin *****************/
+		/*
+		 * 创建Student类的第三个对象，其引用变量为s3，
+		 * 将s2的值赋给s3，
+		 * 然后使用s3调用speak()方法。
+		 */
+Student s3=new Student();
+        s3.name=s2.name;
+        s3.age=s2.age;
+        s3.speak();
+		/**************** end *****************/
+	}
+}

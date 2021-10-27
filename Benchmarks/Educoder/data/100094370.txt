@@ -1,0 +1,23 @@
+package chapter2.step1;
+
+public class DecomposeFactor {
+
+	public String decompose(int n) {
+		// TODO Auto-generated method stub
+         int k=2;
+        String result=n+"=";
+        while(k <= n) {
+            if(k == n) {
+                result=result+n;
+                break;}
+            else if( n % k == 0) {
+                result=result+k + "*";
+                n = n / k; }
+            else    
+                k++;
+        }
+        return result;
+		
+	}
+
+}

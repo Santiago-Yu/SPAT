@@ -1,0 +1,62 @@
+    public static boolean copyFileCover(String srcFileName, String descFileName, boolean coverlay) {
+        File srcFile = new File(srcFileName);
+        if (!srcFile.exists()) {
+            System.out.println("澶嶅埗鏂囦欢澶辫触锛屾簮鏂囦欢" + srcFileName + "涓嶅瓨鍦�!");
+            return false;
+        } else if (!srcFile.isFile()) {
+            System.out.println("澶嶅埗鏂囦欢澶辫触锛�" + srcFileName + "涓嶆槸涓�涓枃浠�!");
+            return false;
+        }
+        File descFile = new File(descFileName);
+        if (descFile.exists()) {
+            if (coverlay) {
+                System.out.println("鐩爣鏂囦欢宸插瓨鍦紝鍑嗗鍒犻櫎!");
+                if (!FileOperateUtils.delFile(descFileName)) {
+                    System.out.println("鍒犻櫎鐩爣鏂囦欢" + descFileName + "澶辫触!");
+                    return false;
+                }
+            } else {
+                System.out.println("澶嶅埗鏂囦欢澶辫触锛岀洰鏍囨枃浠�" + descFileName + "宸插瓨鍦�!");
+                return false;
+            }
+        } else {
+            if (!descFile.getParentFile().exists()) {
+                System.out.println("鐩爣鏂囦欢鎵�鍦ㄧ殑鐩綍涓嶅瓨鍦紝鍒涘缓鐩綍!");
+                if (!descFile.getParentFile().mkdirs()) {
+                    System.out.println("鍒涘缓鐩爣鏂囦欢鎵�鍦ㄧ殑鐩綍澶辫触!");
+                    return false;
+                }
+            }
+        }
+        int readByte = 0;
+        InputStream ins = null;
+        OutputStream outs = null;
+        try {
+            ins = new FileInputStream(srcFile);
+            outs = new FileOutputStream(descFile);
+            byte[] buf = new byte[1024];
+            while ((readByte = ins.read(buf)) != -1) {
+                outs.write(buf, 0, readByte);
+            }
+            System.out.println("澶嶅埗鍗曚釜鏂囦欢" + srcFileName + "鍒�" + descFileName + "鎴愬姛!");
+            return true;
+        } catch (Exception e) {
+            System.out.println("澶嶅埗鏂囦欢澶辫触锛�" + e.getMessage());
+            return false;
+        } finally {
+            if (outs != null) {
+                try {
+                    outs.close();
+                } catch (IOException oute) {
+                    oute.printStackTrace();
+                }
+            }
+            if (ins != null) {
+                try {
+                    ins.close();
+                } catch (IOException ine) {
+                    ine.printStackTrace();
+                }
+            }
+        }
+    }

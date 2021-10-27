@@ -1,0 +1,47 @@
+package step4;
+import java.util.ArrayList; 
+import java.util.List;
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+        List longerNum = new ArrayList<Integer>()
+        {
+            {
+                add(1);
+                add(3);
+                add(5);
+                add(7);
+                add(8);
+                add(10);
+                add(12);
+            }
+        };
+        List shorterNum = new ArrayList<Integer>()
+        {
+            {
+                add(4);
+                add(6);
+                add(9);
+                add(11);
+            }
+        };
+        int rank=0;
+		/********** Begin *********/
+        for(int i=1;i< month;i++)
+        {
+           if(longerNum.contains(i))
+               rank = rank + 31;
+           if(shorterNum.contains(i))
+               rank = rank + 30;
+        }
+        
+        if((year%4 == 0) && month > 2)
+            rank = rank + 29;
+        if((year%4 != 0) && month > 2)
+            rank = rank + 28;
+
+        rank  = rank + day;
+        System.out.print(rank);
+
+		/********** End *********/
+	}
+}

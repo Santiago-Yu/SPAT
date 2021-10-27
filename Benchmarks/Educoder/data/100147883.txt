@@ -1,0 +1,25 @@
+package step4;
+public class MyThread extends Thread {
+	private int num;	
+	public MyThread() {
+		this(0);
+	}	
+	public MyThread(int num) {
+		/***begin your code here***/ 
+			this.num=num;	
+	}	
+    @Override
+    public void run() {    	   	
+    	int result = 1;     
+		for(int i=1; i<=this.num;i++) {
+			result*=i;
+		}		
+        try   
+		{   
+			Thread.currentThread().sleep(4000);//毫秒   
+		}  catch(Exception e){}  
+    	System.out.println(result);
+    }
+}
+
+

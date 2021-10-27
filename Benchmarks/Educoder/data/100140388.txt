@@ -1,0 +1,37 @@
+package step3;
+import java.util.*;
+public class HelloWorld {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		String fileName=sc.nextLine();
+		String email=sc.nextLine();
+		judge(fileName,email);
+	}
+
+	public static void judge(String fileName, String email) {
+		fileName = fileName.trim();
+		int diannum = fileName.lastIndexOf(".java");
+		if (diannum == -1 || diannum==0)
+			System.out.println("Java文件名无效");
+		else {
+			int len = fileName.length();
+			if (len - 5 == diannum)
+				System.out.println("Java文件名正确");
+			else
+				System.out.println("Java文件名无效");
+		}
+		email = email.trim();
+		int atnum = email.lastIndexOf("@");
+		int dnum = email.lastIndexOf(".");
+		if (atnum == -1 || dnum == -1 || atnum==0 || dnum==email.length()-1)
+			System.out.println("邮箱名无效");
+		else {
+			if (dnum > atnum)
+				System.out.println("邮箱名正确");
+			else
+				System.out.println("邮箱名无效");
+		}
+	}
+	
+	
+}

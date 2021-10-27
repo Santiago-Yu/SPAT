@@ -1,0 +1,78 @@
+package task6;
+
+public class ScaleBox extends Box   {  //继承Box类
+
+    //TODO 定义私有变量unit
+	private String unit;
+    
+    public ScaleBox(int boxType) {
+        super(boxType);
+    }
+    
+    public void setUnit(String unit){
+        this.unit = unit;
+    }
+    public String getUnit(){return unit;
+ }
+    
+    public void printVolumn(){
+        double volumn = volume();
+        System.out.println("the volumn is:" + volumn +this.getUnit());
+    }
+}
+/*public class Box {
+
+    private double width;
+    private double height;
+    private double depth;
+    private int boxType;
+
+    public Box(int boxType) {
+        this.boxType = boxType;
+    }
+    public void setWidth(double width){
+        this.width = width;
+    }
+    public void setHeight(double height){
+        this.height = height;
+    }
+    public void setDepth(double depth){
+        this.depth = depth;
+    }
+    public double getWidth(){return width;}
+    public double getHeight(){return height;}
+    public double getDepth(){return depth;}
+    
+    public static final int RECTANGLE = 1;
+
+    public static final int CYLINDER = 2;
+
+    public double printVolumn() { 
+        double v = 0;
+		switch(boxType){
+            case 1:v = width*height*depth;break;
+            case 2:v = width*width*height*3.14;break;
+            default:break;
+        }
+        return v;     
+    }
+}
+    //实现 getUnit、setUnit方法
+
+	public static void main(String[] args){
+        ScaleBox box = new ScaleBox(Box.CYLINDER);
+        box.setWidth(10);
+        box.setHeight(20);
+        box.setUnit("㎡");
+        box.printVolumn();
+        System.out.print("the volumn is:" + box.printVolumn());
+        
+        
+    }
+}
+ 
+
+	//实现printVolumn()方法，在该方法中调用父类的方法计算体积 最后输出体积
+*/
+
+

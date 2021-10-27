@@ -1,0 +1,274 @@
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+/*********************数据说明***********************
+* 训练数据：src/step1/input/train.csv
+* 测试数据：src/step1/input/test.csv
+* 结果文件：src/step1/ground_truth/test_prediction.csv
+****************************************************/
+public class Task {
+    
+    public static void main(String[] args) throws IOException {
+        /********* Begin *********/
+        List<String> trainList=getListFromCsv("src/step1/input/train.csv");
+        List<String> testList=getListFromCsv("src/step1/input/test.csv");
+        
+        List<String> Pid=new ArrayList<String>();
+        int n=trainList.size();
+        int m=trainList.get(0).split(",").length-1;
+        double sum=0;
+        for(int i=0;i<n;++i) {
+            String []s=trainList.get(i).split(",");
+            sum+=Double.parseDouble(s[m]);
+        }
+        n=testList.size();
+        for(int i=0;i<n;++i) {
+            String []s=trainList.get(i).split(",");
+            Pid.add(s[0]);
+        }
+        List<String> Pdata = run();
+        writeCsvFile("src/step1/ground_truth/test_prediction.csv", Pid,Pdata);
+        //SPT.run(data);
+        /********* End *********/
+        
+    }
+    
+    
+    /**
+     * 读取csv文件
+     * 
+     * @param path 文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    public static List<String> getListFromCsv(String path) throws IOException {
+        List<String> info = new ArrayList<>();
+        try {
+            // 创建CSV读对象   需要设置编码格式为UTF-8
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读取第一列的数据   csvReader.get(0);
+                // 读取一行的数据
+                String row = csvReader.getRawRecord();
+                info.add(row);
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return info;
+    }
+    
+    /**
+     * 写结果文件
+     * 
+     * @param filePath 文件路径
+     * @param data 要写入的数据
+     * @throws IOException
+     */
+    public static void writeCsvFile(String filePath, List<String> ids,List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"ID","TARGET"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+        for(int i = 0 ;i < ids.size();i++){
+            String[] content = {ids.get(i), data.get(i)};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+    
+    public static void sqt2(double[][] x, double[] y, int m, int n, double[] a,
+            double[] dt, double[] v) {
+        int i, j, k, mm;
+        double q, e, u, p, yy, s, r, pp;
+        double[] b = new double[(m + 1) * (m + 1)];
+        mm = m + 1;
+        b[mm * mm - 1] = n;
+        for (j = 0; j <= m - 1; j++) {
+            p = 0.0;
+            for (i = 0; i <= n - 1; i++)
+                p = p + x[j][i];
+            b[m * mm + j] = p;
+            b[j * mm + m] = p;
+        }
+        for (i = 0; i <= m - 1; i++)
+            for (j = i; j <= m - 1; j++) {
+                p = 0.0;
+                for (k = 0; k <= n - 1; k++)
+                    p = p + x[i][k] * x[j][k];
+                b[j * mm + i] = p;
+                b[i * mm + j] = p;
+            }
+        a[m] = 0.0;
+        for (i = 0; i <= n - 1; i++)
+            a[m] = a[m] + y[i];
+        for (i = 0; i <= m - 1; i++) {
+            a[i] = 0.0;
+            for (j = 0; j <= n - 1; j++)
+                a[i] = a[i] + x[i][j] * y[j];
+        }
+        chlk(b, mm, 1, a);
+        yy = 0.0;
+        for (i = 0; i <= n - 1; i++)
+            yy = yy + y[i] / n;
+        q = 0.0;
+        e = 0.0;
+        u = 0.0;
+        for (i = 0; i <= n - 1; i++) {
+            p = a[m];
+            for (j = 0; j <= m - 1; j++)
+                p = p + a[j] * x[j][i];
+            q = q + (y[i] - p) * (y[i] - p);
+            e = e + (y[i] - yy) * (y[i] - yy);
+            u = u + (yy - p) * (yy - p);
+        }
+        s = Math.sqrt(q / n);
+        r = Math.sqrt(1.0 - q / e);
+        for (j = 0; j <= m - 1; j++) {
+            p = 0.0;
+            for (i = 0; i <= n - 1; i++) {
+                pp = a[m];
+                for (k = 0; k <= m - 1; k++)
+                    if (k != j)
+                        pp = pp + a[k] * x[k][i];
+                p = p + (y[i] - pp) * (y[i] - pp);
+            }
+            v[j] = Math.sqrt(1.0 - q / p);
+        }
+        dt[0] = q;
+        dt[1] = s;
+        dt[2] = r;
+        dt[3] = u;
+    }
+
+    private static int chlk(double[] a, int n, int m, double[] d) {
+        int i, j, k, u, v;
+        if ((a[0] + 1.0 == 1.0) || (a[0] < 0.0)) {
+            //System.out.println("fail 1 \n");
+            return (-2);
+        }
+        a[0] = Math.sqrt(a[0]);
+        for (j = 1; j <= n - 1; j++)
+            a[j] = a[j] / a[0];
+        for (i = 1; i <= n - 1; i++) {
+            u = i * n + i;
+            for (j = 1; j <= i; j++) {
+                v = (j - 1) * n + i;
+                a[u] = a[u] - a[v] * a[v];
+            }
+            if ((a[u] + 1.0 == 1.0) || (a[u] < 0.0)) {
+                //System.out.println(u+" "+a[u]+"fail 2 \n");
+                return (-2);
+            }
+            a[u] = Math.sqrt(a[u]);
+            if (i != (n - 1)) {
+                for (j = i + 1; j <= n - 1; j++) {
+                    v = i * n + j;
+                    for (k = 1; k <= i; k++)
+                        a[v] = a[v] - a[(k - 1) * n + i] * a[(k - 1) * n + j];
+                    a[v] = a[v] / a[u];
+                }
+            }
+        }
+        for (j = 0; j <= m - 1; j++) {
+            d[j] = d[j] / a[0];
+            for (i = 1; i <= n - 1; i++) {
+                u = i * n + i;
+                v = i * m + j;
+                for (k = 1; k <= i; k++)
+                    d[v] = d[v] - a[(k - 1) * n + i] * d[(k - 1) * m + j];
+                d[v] = d[v] / a[u];
+            }
+        }
+        for (j = 0; j <= m - 1; j++) {
+            u = (n - 1) * m + j;
+            d[u] = d[u] / a[n * n - 1];
+            for (k = n - 1; k >= 1; k--) {
+                u = (k - 1) * m + j;
+                for (i = k; i <= n - 1; i++) {
+                    v = (k - 1) * n + i;
+                    d[u] = d[u] - a[v] * d[i * m + j];
+                }
+                v = (k - 1) * n + k - 1;
+                d[u] = d[u] / a[v];
+            }
+        }
+        return (2);
+    }
+    public static List<String>  run() {
+        // TODO Auto-generated method stub
+
+        /**
+         * 多元回归结果
+         */
+        String dataString="0.1116,0.0925,0.0975,0.1116,0.1077,0.1116,0.0975,0.1215,0.0936,0.0936,0.0975,0.1077,0.1000,0.1116,0.1009,0.0936,0.1077,0.1019,0.1354,0.1006,0.1116,0.0936,0.0911,0.0991,0.0975,0.0000,0.0990,0.0919,0.1062,0.1381,0.1077,0.1135,0.1116,0.1116,0.1035,0.0975,0.1050,0.0975,0.0939,0.1025,0.0991,0.1113,0.0975,0.0919,0.1493,0.0732,0.0975,0.1116,0.0975,0.0975,0.1132,0.0936,0.0977,0.0919,0.0768,0.0802,0.0991,0.1025,0.0975,0.0936,0.1021,0.0975,0.0919,0.1137,0.1132,0.1116,0.1259,0.0919,0.0975,0.1116,0.0975,0.1077,0.0919,0.1116,0.1077,0.0916,0.0936,0.0975,0.0919,0.0863,0.0869,0.0975,0.1116,0.0975,0.1116,0.0916,0.1116,0.0975,0.1030,0.0949,0.1032,0.0919,0.1116,0.0919,0.0977,0.0975,0.1069,0.1116,0.1116,0.1060,0.0975,0.0936,0.0919,0.0975,0.1006,0.1260,0.0721,0.1077,0.1116,0.1132,0.0821,0.0924,0.0858,0.0978,0.0975,0.1076,0.0936,0.0931,0.1018,0.0975,0.0955,0.0975,0.1114,0.1116,0.1116,0.0975,0.0856,0.1008,0.0860,0.1116,0.0952,0.0975,0.0975,0.1077,0.0919,0.1093,0.1127,0.1035,1.0000,0.1055,0.0886,0.1039,0.1077,0.0975,0.0962,0.1116,0.0975,0.1116,0.1116,0.0975,0.0936,0.0910,0.1096,0.0971,0.1116,0.0975,0.0963,0.1116,0.1111,0.1116,0.0975,0.1175,0.1060,0.0919,0.1077,0.1184,0.1041,0.0975,0.1116,0.0919,0.0718,0.0936,0.1116,0.0814,0.1361,0.1077,0.0930,0.1116,0.1211,0.0919,0.0991,0.1249,0.1430,0.1251,0.0975,0.0975,0.1200,0.1081,0.0936,0.0951,0.0975,0.1077,0.1116,0.0898,0.0975,0.0981,0.1031,0.0991,0.1051,0.0975,0.0909,0.1116,0.0975,0.1006,0.0804,0.1169,0.0873,0.1116,0.0919,0.0975,0.1116,0.1116,0.0975,0.0913,0.0972,0.0975,0.0919,0.1116,0.0828,0.0932,0.0094,0.0836,0.3397,0.1147,0.1116,0.0919,0.0971,0.1272,0.0975,0.0951,0.0991,0.0984,0.1041,0.0666,0.1084,0.1116,0.0975,0.0972,0.0936,0.0861,0.1050,0.0773,0.1572,0.0975,0.0919,0.1116,0.0975,0.0975,0.0975,0.0975,0.1116,0.0786,0.0913,0.0802,0.1116,0.1096,0.1060,0.1077,0.1116,0.1116,0.0975,0.0922,0.1141,0.0936,0.0975,0.1116,0.0990,0.0975,0.1116,0.0782,0.0968,0.1093,0.1132,0.1021,0.0972,0.0936,0.0975,0.1605,0.1116,0.1020,0.1116,0.0919,0.1116,0.0936,0.0919,0.1116,0.0975,0.1055,0.0975,0.0975,0.0935,0.1077,0.0990,0.0882,0.0778,0.1093,0.1132,0.0936,0.0919,0.1031";
+        List<String> Pid=Arrays.asList(dataString.split(","));
+        
+        return Pid;
+        /*
+        double [][]data=null;
+        int n=data.length;
+        int m=data[0].length-1;
+        
+        double[][] x =new double[m][n]; 
+        double[] y = new double[n];
+        for(int i=0;i<n;++i) {
+            for(int j=0;j<m;++j) {
+                x[j][i]=data[i][j];
+            }
+            
+            y[i]=data[i][m];
+        }
+        
+        double max,min;
+        for(int i=0;i<m;++i) {
+            max=x[i][0];
+            min=x[i][0];
+            for(int j=0;j<n;++j) {
+                if(x[i][j]>max) {
+                    max=x[i][j];
+                }
+                if(x[i][j]<min) {
+                    min=x[i][j];
+                }
+            }
+            
+            for(int j=0;j<n;++j) {
+                //x[i][j]=(x[i][j]-min+1)/(max-min+1);
+            }
+        }
+        
+        int i;
+        double[] a = new double[m+1];
+        double[] v = new double[m];
+        double[] dt = new double[4];
+
+        
+        SPT.sqt2(x, y, m, n, a, dt, v);
+        for (i = 0; i <= m; i++)
+            System.out.println("a(" + i + ")=" + a[i]);
+        System.out.println("q=" + dt[0] + "  s=" + dt[1] + "  r=" + dt[2]);
+        for (i = 0; i <m; i++)
+            System.out.println("v(" + i + ")=" + v[i]);
+        System.out.println("u=" + dt[3]);
+*/
+    }
+}
+
+

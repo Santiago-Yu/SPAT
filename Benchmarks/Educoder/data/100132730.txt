@@ -1,0 +1,38 @@
+package step3;
+
+public class Task {
+
+    public int ShipCount = 0;
+    public int countOfShips(char[][] ferry) {
+        for (int i=0;i<ferry.length;++i){
+            for(int j=0;j<ferry[i].length;++j){
+                if(ferry[i][j] == '+'){
+                    FindShipBody(i,j,ferry);
+                }
+            }
+        }
+        return ShipCount;
+    }
+    public void FindShipBody(int StartX,int StartY,char[][] ferry){
+        //判断船头是向下还是向右
+        ShipCount++;
+        if(StartY+1<ferry[StartX].length&&ferry[StartX][StartY+1]=='+'){
+            //
+            int i=0;
+            for(;(StartY+i)<ferry[StartX].length&&ferry[StartX][StartY+i]=='+';++i){
+                ferry[StartX][StartY+i] = 'o';
+            }
+        }
+        else if(StartX+1<ferry.length&&ferry[StartX+1][StartY]=='+'){
+            //说明是向下延伸
+            int i=0;
+            for(;(StartX+i)<ferry.length&&ferry[StartX+i][StartY]=='+';++i){
+                ferry[StartX+i][StartY] = 'o';
+            }
+        }
+        else{
+            ferry[StartX][StartY] = 'o';//就一个点
+            return;
+        }
+    }
+}

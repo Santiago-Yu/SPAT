@@ -1,0 +1,23 @@
+package Q103;
+import java.util.*;
+public class Main {
+	public static int ceShi(int b){
+		int a[] = new int[10000];
+		a[0]=1;
+		a[1]=1;
+		a[2]=3;
+		a[3]=5;
+		for(int i = 4;i<b;i++)
+		{
+			a[i]=a[i-1]+a[i-2];
+		}
+		return a[b-1];
+	}
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		int test = in.nextInt();
+		int o = ceShi(test);
+		System.out.print(o);
+	}
+
+}

@@ -1,0 +1,35 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		  long[][] fmax = new long[selectedNum+1][numbers+1];
+       
+        long[][] fmin = new long[selectedNum+1][numbers+1];
+
+        /**
+         *  fmax[k][i]表示 : 当选中了k个学生，并且以第i个学生为结尾，所产生的最大乘积；
+         *  fmin[k][i]表示 : 当选中了k个学生，并且以第i个学生为结尾，所产生的最小乘积；
+         */
+
+        //初始化第一行
+        long  res = Integer.MIN_VALUE; // 记得用Long类型，考虑数值范围
+        for (int i = 1; i <=numbers; i++) {
+            fmax[1][i] = abilities[i];
+            fmin[1][i] = abilities[i];
+            for (int k = 2; k <=selectedNum; k++) {
+                for (int j = i-1 ; j > 0 &&  i-j<=distance ; j--) {
+                    fmax[k][i] = Math.max(fmax[k][i], Math.max(fmax[k-1][j] * abilities[i], fmin[k-1][j] * abilities[i]));
+                    fmin[k][i] = Math.min(fmin[k][i], Math.min(fmax[k-1][j] * abilities[i], fmin[k-1][j] * abilities[i]));
+                }
+            }
+            res = Math.max(res ,fmax[selectedNum][i]);
+        }
+        return res;
+    }
+
+
+	/********* End *********/
+}

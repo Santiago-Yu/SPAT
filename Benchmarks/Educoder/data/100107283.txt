@@ -1,0 +1,66 @@
+package step1;
+
+/**
+ * Created by sykus on 2018/1/15.
+ */
+public class MyCircleLinkedList {
+    private Node head;//头结点, 不存数据
+    private Node tail;//尾结点, 指向链表的最后一个节点
+    private int size;
+
+    public MyCircleLinkedList() {
+        head = new Node(Integer.MIN_VALUE, null);
+        head.next = head;
+        tail = head;
+        size = 0;
+    }
+
+    /**
+     * 添加到链表尾部
+     *
+     * @param item
+     */
+    public void add(int item) {
+        /********** Begin *********/
+		Node node=new Node(Integer.MIN_VALUE, null);
+        node.item=item;
+        node.next=tail.next;
+        tail.next=node;
+        tail=node;
+        /********** End *********/
+    }
+
+    /**
+     * 遍历链表并输出元素
+     */
+    public void output() {
+        /********** Begin *********/
+		Node p;
+        p=head.next;
+        while(p!=head)
+        {
+            System.out.println(p.item);
+            p=p.next;
+        }
+        /********** End *********/
+    }
+
+    public boolean isEmpty() {
+        return head.next == head;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    //结点内部类
+    private static class Node {
+        int item;
+        Node next;
+
+        Node(int item, Node next) {
+            this.item = item;
+            this.next = next;
+        }
+    }
+}

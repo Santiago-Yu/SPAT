@@ -1,0 +1,41 @@
+package step1;
+
+import java.util.Scanner;
+
+public class Task {
+
+	static int[] nums;
+	
+	public static void main(String[] args) {
+		Scanner sc =new Scanner(System.in);
+		int n = sc.nextInt();
+		nums = new int[n];
+		for(int i = 0 ; i < n ;i++){
+			nums[i] = sc.nextInt();
+		}
+		int T = sc.nextInt();
+		int result = search(T);
+		System.out.println(result);
+	}
+
+	public static int search(int T){
+		/********* Begin *********/
+		int low=0, mid;
+        int high=nums.length-1;
+        while(low<=high){
+          mid=(low+high)/2;
+            if(nums[mid]==T){
+             return mid;
+            }
+            else if(nums[mid]<T)
+                low=mid+1;
+            else
+                high=mid-1;
+            
+        }
+		return -1;
+		
+		/********* End *********/
+	}
+	
+}

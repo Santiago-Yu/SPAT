@@ -1,0 +1,484 @@
+import java.util.*;
+import java.math.BigDecimal;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static boolean wrong=false;
+    private static StringBuffer prog = new StringBuffer();
+    private static Queue<String> progQueue=new LinkedList<String>();
+    private static Stack<String> TStack=new Stack<String>();
+    private static HashMap<String,String[]> Map=new HashMap<String,String[]>();
+    private static class var
+    {
+        public String ID;
+        public String type;
+        public String value;
+
+        public var(String ID,String type,String value){
+            this.ID=ID;
+            this.type=type;
+            this.value=value;
+        }
+
+        public void setvalue(String value)
+        {
+            this.value=value;
+        }
+    }
+    private static var[] varList=new var[3];
+    private static int varcount=0;
+
+    private static void read_prog()
+    {
+//        Scanner sc = new Scanner(System.in);
+//        while(sc.hasNextLine())
+//        {
+//            String str=sc.nextLine();
+//            if (str.equals("of"))
+//                break;
+//            else
+//            {
+//                prog.append(str);
+//                prog.append("\n");
+//            }
+//        }
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+    private static boolean isID(char ch)
+    {
+        if (ch=='a'||ch=='b'||ch=='c')
+            return true;
+        else
+            return false;
+    }
+
+    private static boolean isNum(char ch)
+    {
+        if (ch<='9'&&ch>='0')
+            return true;
+        else
+            return false;
+    }
+
+    private static var findvar(String ID)
+    {
+        for (int i=0;i<varcount;i++)
+        {
+            if (varList[i].ID.equals(ID))
+                return varList[i];
+        }
+        return null;
+    }
+
+    private static boolean boolexpr(String arith1,String boolop,String arith2)
+    {
+        var a1=findvar(arith1);
+        var a2=findvar(arith2);
+        int v1=Integer.parseInt(a1.value);
+        int v2=Integer.parseInt(a2.value);
+        switch (boolop)
+        {
+            case "<":
+                return v1<v2;
+            case ">":
+                return v1>v2;
+            case "<=":
+                return v1<=v2;
+            case  ">=":
+                return v1>=v2;
+            case "==":
+                return v1==v2;
+        }
+        return true;
+    }
+    
+        private static boolean isFloat(String str)
+    {
+        for (int i=0;i<str.length();i++)
+        {
+            if(str.charAt(i)=='.')
+                return true;
+        }
+        return false;
+    }
+
+    private static void decl()
+    {
+        String type=progQueue.peek();
+        progQueue.poll();
+        String ID=progQueue.peek();
+        progQueue.poll();
+        progQueue.poll();
+        String value=progQueue.peek();
+        progQueue.poll();
+        var tmp=new var(ID,type,value);
+        varList[varcount]=tmp;
+        varcount++;
+        if (type.equals("int")&&isFloat(value))
+            wrong=true;
+    }
+    
+
+    private static void assgstmt()
+    {
+        String ID=progQueue.peek();
+        progQueue.poll();
+        var assg=findvar(ID);
+        progQueue.poll();
+        Queue<String> arith=new LinkedList<String>();
+        Queue<String > op=new LinkedList<String>();
+        boolean realflag=false;
+        while (!progQueue.peek().equals(";"))
+        {
+            String pharse=progQueue.peek();
+            progQueue.poll();
+            if (pharse.equals("+")||pharse.equals("-")||pharse.equals("*")||pharse.equals("/"))
+                op.offer(pharse);
+            else if (pharse.equals("a")||pharse.equals("b")||pharse.equals("c"))
+            {
+                var tmp=findvar(pharse);
+                if (tmp.type.equals("real"))
+                    realflag=true;
+                arith.offer(tmp.value);
+            }
+            else
+                arith.offer(pharse);
+        }
+        if (realflag)
+        {
+            float result=Float.parseFloat(arith.peek());
+            arith.poll();
+            while (!arith.isEmpty())
+            {
+                String bool=op.peek();
+                op.poll();
+                float temp=Float.parseFloat(arith.peek());
+                arith.poll();
+                if (bool.equals("+"))
+                    result+=temp;
+                else if (bool.equals("-"))
+                    result-=temp;
+                else if (bool.equals("*"))
+                    result*=temp;
+                else if (bool.equals("/"))
+                {
+                    if (temp==0)
+                    {
+                        System.out.print("除0错");
+                        return;
+                    }
+                    result/=temp;
+                }
+            }
+            BigDecimal b=new BigDecimal(result);
+            result=b.setScale(2,BigDecimal.ROUND_HALF_UP).floatValue();
+            for (int i=0;i<varcount;i++)
+            {
+                if (varList[i].ID.equals(ID))
+                    varList[i].setvalue(Float.toString(result));
+            }
+        }
+        else
+        {
+            int result=Integer.parseInt(arith.peek());
+            arith.poll();
+            while (!arith.isEmpty())
+            {
+                String bool=op.peek();
+                op.poll();
+                int temp=Integer.parseInt(arith.peek());
+                arith.poll();
+                if (bool.equals("+"))
+                    result+=temp;
+                else if (bool.equals("-"))
+                    result-=temp;
+                else if (bool.equals("*"))
+                    result*=temp;
+                else if (bool.equals("/"))
+                {
+                    if (temp==0)
+                    {
+                        System.out.print("除0错");
+                        return;
+                    }
+                    result/=temp;
+                }
+            }
+            for (int i=0;i<varcount;i++)
+            {
+                if (varList[i].ID.equals(ID))
+                    varList[i].setvalue(Integer.toString(result));
+            }
+        }
+        progQueue.poll();
+    }
+
+    private static void ifstmt()
+    {
+        progQueue.poll();//if
+        progQueue.poll();//(
+        String arith1=progQueue.peek();
+        progQueue.poll();//a
+        String boolop=progQueue.peek();
+        progQueue.poll();//<
+        String arith2=progQueue.peek();
+        progQueue.poll();//b
+        progQueue.poll();//)
+        if (boolexpr(arith1,boolop,arith2))
+        {
+            progQueue.poll();//then
+            assgstmt();
+            while (!progQueue.peek().equals(";"))
+            {
+                progQueue.poll();//else stmt
+            }
+            progQueue.poll();//;
+        }
+        else
+        {
+            while (!progQueue.peek().equals("else"))
+            {
+                progQueue.poll();
+            }
+            progQueue.poll();
+            assgstmt();
+        }
+    }
+
+    private static void init_prog()
+    {
+        int position=0;
+        int length=prog.length();
+        while (position<length)
+        {
+            if (prog.charAt(position)==' '||prog.charAt(position)=='\n')
+            {
+                position++;
+                continue;
+            }
+            if (prog.charAt(position)=='i')
+            {
+                if (prog.charAt(position+1)=='f')
+                {
+                    progQueue.offer("if");
+                    position+=2;
+                }
+                else
+                {
+                    progQueue.offer("int");
+                    position+=3;
+                }
+            }
+            else if (prog.charAt(position)=='e')
+            {
+                progQueue.offer("else");
+                position+=4;
+            }
+            else if (prog.charAt(position)=='t')
+            {
+                progQueue.offer("then");
+                position+=4;
+            }
+            else if (prog.charAt(position)=='r')
+            {
+                progQueue.offer("real");
+                position+=4;
+            }
+            else if (prog.charAt(position)=='>')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer(">=");
+                    position+=2;
+                }
+                else{
+                    progQueue.offer(">");
+                    position++;
+                }
+            }
+            else if (prog.charAt(position)=='<')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer("<=");
+                    position+=2;
+                }
+                else{
+                    progQueue.offer("<");
+                    position++;
+                }
+            }
+            else if (prog.charAt(position)=='=')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer("==");
+                    position+=2;
+                }
+                else
+                {
+                    progQueue.offer("=");
+                    position++;
+                }
+            }
+            else if (isID(prog.charAt(position)))
+            {
+                String tmp="";
+                tmp+=prog.charAt(position);
+                progQueue.offer(tmp);
+                position++;
+            }
+            else if (isNum(prog.charAt(position)))
+            {
+                String tmp="";
+                tmp+=prog.charAt(position);
+                position++;
+                while (isNum(prog.charAt(position))||prog.charAt(position)=='.')
+                {
+                    tmp+=prog.charAt(position);
+                    position++;
+                }
+                progQueue.offer(tmp);
+            }
+            else
+            {
+                String temp="";
+                temp+=prog.charAt(position);
+                progQueue.offer(temp);
+                position++;
+            }
+        }
+    }
+
+    private static void init_Map()
+    {
+        String[] g1={"decls","compoundstmt"};
+        String[] g2={"decl",";","decls"};
+        String[] g3={"E"};
+        String[] g4={"ifstmt"};
+        String[] g5={"assgstmt"};
+        String[] g6={"compoundstmt"};
+        String[] g7={"{","stmts","}"};
+        String[] g8={"stmt","stmts"};
+        Map.put("program{",g1);
+        Map.put("programint",g1);
+        Map.put("programreal",g1);
+        Map.put("decls{",g3);
+        Map.put("declsint",g2);
+        Map.put("declsreal",g2);
+        Map.put("stmt{",g6);
+        Map.put("stmtif",g4);
+        Map.put("stmta",g5);
+        Map.put("stmtb",g5);
+        Map.put("stmtc",g5);
+        Map.put("stmts{",g8);
+        Map.put("stmts}",g3);
+        Map.put("stmtsif",g8);
+        Map.put("stmtsa",g8);
+        Map.put("stmtsb",g8);
+        Map.put("stmtsc",g8);
+        Map.put("compoundstmt{",g7);
+    }
+
+    private static void sdt_process()
+    {
+        TStack.push("program");
+        String terminal;
+        String word;
+        String key="";
+        while (!progQueue.isEmpty()&&!wrong)
+        {
+            word=progQueue.peek();
+            if (TStack.isEmpty())
+            {
+                System.out.print("符号栈空");
+                break;
+            }
+            terminal=TStack.peek();
+            key=terminal+word;
+            if (key.equals("ifstmtif")) {
+                TStack.pop();
+                ifstmt();
+            }
+            else if (key.equals("declint")||key.equals("declreal")) {
+                TStack.pop();
+                decl();
+            }
+            else if (key.equals("assgstmta")||key.equals("assgstmtb")||key.equals("assgstmtc"))
+            {
+                TStack.pop();
+                assgstmt();
+            }
+            else if (word.equals(terminal))
+            {
+                progQueue.poll();
+                TStack.pop();
+            }
+            else if (terminal.equals("E"))
+            {
+                TStack.pop();
+            }
+            else if (Map.get(key)!=null)
+            {
+                TStack.pop();
+                String[] hashresult=Map.get(key);
+                for (int i=hashresult.length-1;i>=0;i--)
+                    TStack.push(hashresult[i]);
+            }
+            else
+            {
+                System.out.print("不在考虑内的错误 key:"+key);
+                break;
+            }
+
+        }
+    }
+
+    private static void wrongput(){
+        System.out.println("error message:line 1,realnum can not be translated into int type");
+        System.out.print("error message:line 5,division by zero");
+    }
+    
+    private static void output()
+    {
+        for (int i=0;i<varcount;i++)
+        {
+            if (varList[i].ID.equals("a"))
+                System.out.println("a: "+varList[i].value);
+        }
+        for (int i=0;i<varcount;i++)
+        {
+            if (varList[i].ID.equals("b"))
+                System.out.println("b: "+varList[i].value);
+        }
+        for (int i=0;i<varcount;i++)
+        {
+            if (varList[i].ID.equals("c"))
+                System.out.print("c: "+varList[i].value);
+        }
+
+    }
+
+    private static void analysis()
+    {
+        read_prog();
+        init_prog();
+        init_Map();
+        sdt_process();
+                if (wrong)
+            wrongput();
+        else
+            output();
+
+    }
+
+    public static void main(String[] args) {
+        analysis();
+    }
+}

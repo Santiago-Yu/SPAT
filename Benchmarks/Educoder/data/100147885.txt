@@ -1,0 +1,18 @@
+package step4;
+
+//注意文件名，这里应该写ThreadHelper类
+/***begin your code here***/
+public class ThreadHelper{
+    static public void calcOnNewThread(int n){
+        new Thread(new Runnable(){
+            public void run(){
+                int result=1;
+                for(int i=1;i<=n;i++){
+                    result=result*i;
+                }
+                System.out.println(result);
+            }
+        }).start();
+    }
+}
+/***end your code***/

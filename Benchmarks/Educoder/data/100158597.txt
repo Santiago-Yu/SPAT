@@ -1,0 +1,37 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+int main()
+{
+    char a[100],b[100],c[100];
+    char x;
+    int as,i,k,j;
+    int max=0;
+    int m=0;
+    int flag;
+    scanf("%s",a);
+    scanf("%s",b);
+    int a1=strlen(a);
+    int b1=strlen(b);
+int c1;
+    
+    
+  
+	for( i=0;i<a1;i++)
+    {
+    m=0;
+        for( j=0;j<b1;j++)
+        {
+            
+            if(a[i]==b[j]){
+            m=1;
+                while(a[i+m]==b[j+m]&&i+m<a1&&j+m<b1){m++;}
+            }
+        
+		if(m>max)  max=m;
+    }
+    }
+    
+    
+    printf("%d",max);
+}

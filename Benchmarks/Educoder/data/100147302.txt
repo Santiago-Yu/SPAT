@@ -1,0 +1,36 @@
+package task1;
+
+import java.util.*;
+
+public class Task1 {
+	public static void main(String[] args) {
+		int day = 0;
+		int month = 0;
+		int year = 0;
+		int sum = 0;
+		int leap = 0;
+		Scanner input = new Scanner(System.in);
+		year = input.nextInt();
+		month = input.nextInt();
+		day = input.nextInt();
+		for(int i=1;i<month;i++){
+			switch(i){
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:leap=leap+31;break;
+			case 2:if(year%4==0&&year%100!=0||year%400==0){
+				leap=leap+29;
+			}else{
+				leap=leap+28;
+			};break;
+			default: leap=leap+30;break;
+			}
+		}
+		leap=leap+day;
+		System.out.println(year+"年"+month+"月"+day+"日是这一年的第"+leap+"天");
+	}
+}

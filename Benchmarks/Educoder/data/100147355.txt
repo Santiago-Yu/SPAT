@@ -1,0 +1,30 @@
+package task2;
+
+public class Task2 {
+	public static void main(String[] args) {
+		/********* Begin *********/
+		int a[] = {1,2,3,4,5,6,7,8,9,10,11};
+		for(int i=0;i<OddArray(a).length;i++) {
+			if(OddArray(a)[i]!=0) {
+				System.out.print(OddArray(a)[i]+" ");
+			}
+		}
+		/********* End *********/
+	}
+
+	// 在这里编写返回值类型为数组的 OddArray 函数
+	/********* Begin *********/
+	public static int[] OddArray(int[] a) {
+		int n = a.length;
+		int k = 0;
+		int b[] = new int[n];
+		for(int i=0;i<n;i++) {
+			if(a[i]%2!=0) {
+				b[k] = a[i];
+				k++;
+			}
+		}
+		return b;
+	}
+	/********* End *********/
+}

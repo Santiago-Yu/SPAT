@@ -1,0 +1,37 @@
+package step2;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateExceptionTest {
+
+	public static void main(String[] args) throws ParseException{
+		/*****Begin*****/
+		DateException de;
+        Date newdate;
+        Scanner s=new Scanner(System.in);
+        int year,month,day;
+        try{
+        	year=s.nextInt();
+            month=s.nextInt();
+            day=s.nextInt();
+            de=new DateException(year,month,day);
+            newdate=de.getDate();
+            SimpleDateFormat sdfl=new SimpleDateFormat("yyyy-mm-dd");
+            System.out.println(sdfl.format(newdate));
+            
+        }
+        catch(DateException e){
+        	System.out.println(e.toString());
+        }
+        catch(Exception e){
+        	e.printStackTrace();
+        }
+		
+		/******End******/
+	}
+
+}

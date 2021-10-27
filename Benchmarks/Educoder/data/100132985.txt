@@ -1,0 +1,26 @@
+package step1;
+
+public class Task {
+	
+	public void sortArray(int[] arr){
+        for (int i = 0; i < arr.length-1; i++) {
+			//每次对一个数进行判断，然后向前检测
+			
+			for(int w=i;w>=0;w--) {
+				if(arr[w]>arr[w+1]) {
+					int temp;
+					temp=arr[w];
+					arr[w]=arr[w+1];
+					arr[w+1]=temp;
+				}
+				else break;
+			}		
+			//打印输出
+			System.out.print(""+arr[0]);
+			for (int j = 1; j < arr.length; j++) {
+				System.out.print(" "+arr[j]);
+			}
+			System.out.println(" ");
+		}
+	}
+}

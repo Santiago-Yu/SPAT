@@ -1,0 +1,83 @@
+package step1;
+import java.util.List;
+public class Task {
+
+        public static String solver(String s, int p, List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuilder sb = sb = new StringBuilder(s);
+        for (Operation a : ops
+        ) {
+         //   System.out.println("" + sb + "光标：" + p);
+            String flag = a.t;
+            String flag_s = a.s;
+            int flag_n = a.l;
+
+            if (flag.equals("I")) {
+                sb.insert(p, flag_s);
+                p += flag_s.length();
+            } else if (flag.equals("B")) {
+                if (p - flag_n < 0) {
+                    sb.delete(0, p);
+                    p = 0;
+                } else {
+                    if (flag_n > 0) {
+                        sb.delete(p - flag_n, p);
+                        p -= flag_n;
+                    } else {
+                        flag_n = -flag_n;
+                        if (p + flag_n > sb.length()) {
+                            sb.delete(p, sb.length());
+                            p = sb.length();
+                        } else {
+                                sb.delete(p, p + flag_n);
+                            }
+                    }
+                }
+
+            } else if (flag.equals("D")) {
+                if (p + flag_n > sb.length()) {
+                    sb.delete(p, sb.length());
+                    p = sb.length();
+                } else {
+                    if (flag_n > 0) {
+                        sb.delete(p, p + flag_n);
+                    } else {
+                        flag_n = -flag_n;
+                        if (p - flag_n < 0) {
+                            sb.delete(0, p);
+                            p = 0;
+                        } else {
+                            sb.delete(p - flag_n, p);
+                            p -= flag_n;
+                        }
+                    }
+
+
+                }
+            } else if (flag.equals("L")) {
+                if (p - flag_n > -1) {
+                    p -= flag_n;
+                } else {
+                    p =0;
+                }
+            } else if (flag.equals("R")) {
+                if (p + flag_n < sb.length()) {
+                    p += flag_n;
+                } else {
+                    p = sb.length();
+                }
+            } 
+
+        }
+
+        return "" + sb;
+        /**********   End  **********/
+    }
+
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

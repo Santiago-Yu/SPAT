@@ -1,0 +1,37 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+  SimpleDateFormat sdfd =new SimpleDateFormat("yyy-MM-dd");
+		Calendar c=new GregorianCalendar();
+        Date date=null;
+		try {
+			date = sdfd.parse(releaseDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+       c.setTime(date);
+       c.add(Calendar.DATE, day);
+        return sdfd.format(c.getTime());
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

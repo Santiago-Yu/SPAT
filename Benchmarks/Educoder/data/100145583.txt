@@ -1,0 +1,98 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String[] Date = releaseDate.split("-");
+        int year = Integer.parseInt(Date[0]);
+        int month = Integer.parseInt(Date[1]);
+        int days = Integer.parseInt(Date[2]);
+		days += day;
+        while(true){
+            //判断闰年
+        	if((year%4 == 0 && year%100 != 0) || year%400 == 0){
+            	//判断月份
+                if(month == 2){
+                	if(days > 29){
+                    	month++;
+                        days -= 29;
+                    }else{
+                    	break;
+                    }
+                }else if(month==4 || month==6 || month==9 || month==11){
+                	if(days > 30){
+                    	month++;
+                        days -= 30;
+                    }else{
+                    	break;
+                    }
+                }else{
+                	if(days > 31){
+                    	month++;
+                        days -= 31;
+                        if(month > 12){
+                        	year++;
+                            month -= 12;
+                        }
+                    }else{
+                    	break;
+                    }
+                }
+            }else{
+                //这时为平年
+            	if(month == 2){
+                	if(days >28){
+                    	month++;
+                        days -= 28;
+                    }else{
+                    	break;
+                    }
+                }else if(month==4 || month==6 || month==9 || month==11){
+                	if(days > 30){
+                    	month++;
+                        days -= 30;
+                    }else{
+                    	break;
+                    }
+                }else{
+                	if(days > 31){
+                    	month++;
+                        days -= 31;
+                        if(month > 12){
+                        	year++;
+                            month -= 12;
+                        }
+                    }else{
+                    	break;
+                    }
+                }
+            }
+        }
+        
+        String year1,month1,day1;
+        year1 = Integer.toString(year);
+        
+        if(month <10){
+        	month1 = "0" + Integer.toString(month);
+        }else{
+        	month1 = Integer.toString(month);
+        }
+        
+        if(days < 10){
+        	day1 = "0" + Integer.toString(days);
+        }else{
+        	day1 = Integer.toString(days);
+        }
+        
+        
+        String result;
+        result = year1 + "-" + month1 + "-" + day1;
+        
+        return result;
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,39 @@
+
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+       Scanner in =new Scanner(System.in);
+		int x=in.nextInt();
+		int b=getshu(x);
+		for(int i=0;i<1000;i++){
+			if(b==1){
+				System.out.print("YES");break;
+			}
+			else
+				b=getshu(b);
+            if(i==999)  System.out.print("NO");
+		}
+		
+
+	}
+
+   	public static int getshu(int a){
+		int sum=0,c=0;
+		while(a!=0){
+			c=a%10;
+			a=a/10;
+			sum=sum+c*c;
+		}
+		return sum;
+    }     
+        
+        
+        
+        
+        
+		// write your code here
+	
+	
+
+}

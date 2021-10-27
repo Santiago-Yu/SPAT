@@ -1,0 +1,42 @@
+package step4;
+
+import java.io.*;
+
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+        File file = new File("src/step4/output/output.txt");
+        if(!file.exists())
+        {
+            file.createNewFile();
+        }
+		FileInputStream fis = new FileInputStream("src/step4/input/input.txt");
+        FileOutputStream fos = new FileOutputStream("src/step4/output/output.txt");
+        int len = 0;
+        byte []str = new byte[1024]; 
+		while((len = fis.read(str)) != -1)
+        {
+            fos.write(str,0,len);
+        }
+        fis.close();
+        fos.close();
+        
+        File file1 = new File("src/step4/output/output.jpg");
+        if(!file1.exists())
+        {
+            file1.createNewFile();
+        }
+		fis = new FileInputStream("src/step4/input/input.jpg");
+        fos = new FileOutputStream("src/step4/output/output.jpg");
+        while((len = fis.read(str)) != -1)
+        {
+            fos.write(str,0,len);
+        }
+        fis.close();
+        fos.close();
+		
+		/********* End *********/		
+	}
+}

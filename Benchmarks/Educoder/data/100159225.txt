@@ -1,0 +1,39 @@
+package step3;
+
+public class CatAndDog {
+    public static void main(String[] args) {
+        /********** Begin *********/
+        Cat p1=new Cat();
+        Dog p2=new Dog();
+        /********** End *********/
+        p1.eat();
+        p1.work();
+        p2.eat();
+        p2.work();
+    }
+}
+
+abstract class Animal {
+    abstract void eat();
+    abstract void work();
+}
+
+/********** Begin *********/
+class Cat extends Animal {
+	void eat() {
+		System.out.println("吃鱼");
+	}
+	void work() {
+		System.out.println("抓老鼠");
+	}
+}
+
+class Dog extends Animal {
+	void eat() {
+		System.out.println("吃骨头");
+	}
+	void work() {
+		System.out.println("看家");
+	}
+}
+/********** End *********/

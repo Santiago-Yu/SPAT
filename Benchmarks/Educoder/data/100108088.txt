@@ -1,0 +1,126 @@
+package step3;
+
+/**
+ * Created by zengpeng on 2017/12/25.
+ */
+public class MyLinkedList {
+
+    private Node first;//头结点，不存数据
+    private Node last;//指向链表的最后一个节点
+    private int size;
+
+    public MyLinkedList() {
+        size = 0;
+        first = new Node(0, null);
+        last = null;
+    }
+
+    /**
+     * 添加到链表尾部
+     *
+     * @param item
+     */
+    public void add(int item) {
+        /********** Begin *********/
+				Node current;
+		current = first;
+		while(current.next != null){
+			current = current.next;
+		}
+		current.next =  new Node(item,null);
+		size++;
+
+
+        /********** End *********/
+    }
+
+    /**
+     * 添加数据item到指定位置index
+     * index从0开始
+     * @param index
+     * @param item
+     */
+    public void add(int index, int item) {
+        checkPosIndex(index);
+
+        /********** Begin *********/
+				Node newnode = new Node(item,null);
+		Node current;
+		Node previous;
+		current = first;
+		previous = null;
+		if(index == 0){
+			newnode.next = first.next;
+			first.next = newnode;
+		}
+		else{
+			int j = -1;
+			while(j!=index){
+				previous = current;
+				current=current.next;
+				j++;
+			}
+			if(j==index){
+				previous.next = newnode;
+				newnode.next = current;
+			}
+			
+		}
+
+		size++;
+
+
+        /********** End *********/
+    }
+
+    /**
+     * 删除指定位置index处的元素并返回, index从0开始
+     * @param index
+     * @return
+     */
+    public int remove(int index) {
+        checkPosIndex(index);
+
+        /********** Begin *********/
+				Node p=new Node(0,null);
+        Node c=new Node(0,null);
+        p=first;
+        c=first.next;
+          int i=0;
+          while(i<index){
+            p=p.next;
+            c=c.next;
+            i++;
+          }
+          int j=c.item;
+          p.next=c.next;
+          size--;
+          return j;
+
+		
+
+
+        /********** End *********/
+    }
+
+    public int size() {
+        return size;
+    }
+
+    private void checkPosIndex(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+    }
+
+    //结点内部类
+    private static class Node {
+        int item;
+        Node next;
+
+        Node(int item, Node next) {
+            this.item = item;
+            this.next = next;
+        }
+    }
+}

@@ -1,0 +1,57 @@
+#include <iostream>
+#include <stdio.h> 
+#include <algorithm>
+
+using namespace std;
+int main()
+{
+	int a[1000];
+    int n=0;
+    int in;
+    int s=1;
+    int l=0;
+    int sum = 0;
+   while(1)
+    { 
+        cin>>in;
+        if(getchar()=='\n')
+        s=0;
+        
+        a[l]=in;
+        l++;
+        
+        if(s==0)
+        break;
+    }
+   
+    
+    scanf("%d",&n);
+    sort(a,a+l);
+    
+   
+   
+    int x,y,z;
+    for(x=0;x<l-2;x++)
+    {
+    	for(y=x+1;y<l-1;y++)
+    	{
+    		for(z=y+1;z<l;z++)
+    		{
+    			if(a[x]+a[y]+a[z]<n){
+    			
+    			
+    			sum++;
+    		}
+    		}
+    	}
+    }
+    
+  
+	printf("%d",sum);
+    
+        
+      	
+    	
+    	
+    
+}

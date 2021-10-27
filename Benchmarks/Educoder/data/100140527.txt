@@ -1,0 +1,19 @@
+package step3;
+
+public class HelloWorld {
+    boolean flag1;
+    int index1,index2,index3;
+	public void judge(String fileName,String email){
+		  flag1 = fileName.endsWith(".java");
+          if(flag1&&fileName.length()>5) System.out.println("Java文件名正确");
+          else System.out.println("Java文件名无效");
+          index1 = email.indexOf("@");
+          index2 = email.indexOf(".");
+          index3 = email.indexOf("@",index1+1);
+          if(index1<index2&&index1>0&&index3==-1) System.out.println("邮箱名正确");
+          else System.out.println("邮箱名无效");
+	}
+	
+
+	
+}

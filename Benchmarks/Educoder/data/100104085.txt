@@ -1,0 +1,58 @@
+package step3;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+
+public class Client {
+	private Socket socket;
+	private OutputStream socketOutputStream;
+	private InputStream socketInputStream;
+	public void relation() {
+		try{
+			/********** Begin *********/
+            // socket = new Socket("localhost",6000);
+            //if(socketInputStream==null)
+            socketInputStream=socket.getInputStream();
+			byte [] b=new byte[10000];
+			int pos=socketInputStream.read(b);
+			
+			System.out.print("Client has recevied: "+new String(b,0,pos));
+	//		socketInputStream.close();
+
+
+			//System.out.print("Client has recevied: ");
+			/********** End *********/
+			socket.shutdownInput();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void start() {
+		try {
+			socket = new Socket("localhost",6000);
+			/********** Begin *********/
+			socketOutputStream=socket.getOutputStream();
+			socketOutputStream.write("I am Client!".getBytes());
+			socketOutputStream.flush();
+			//socketOutputStream.close();
+
+
+			/********** End *********/
+			socket.shutdownOutput();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void stop() {
+		try {
+			socket.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

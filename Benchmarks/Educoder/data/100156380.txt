@@ -1,0 +1,38 @@
+package step1;
+import java.util.Scanner;
+
+//根据用户输入的年份和月份得到该月份的天数，用方法完成。
+public class TestJava23_9 {
+
+		public static void main(String[] args) {
+			Scanner sc=new Scanner(System.in);
+			System.out.println("请输入年份：");
+			int year=sc.nextInt();
+			System.out.println("请输入月份：");
+			int month=sc.nextInt();
+			//此处调用JudgeDays方法，根据用户指定的年份和月份得到该月份的天数
+			int s=JudgeDays(year,month); 
+            if(s!=1){
+            System.out.printf("%d年%d月的天数是：%d\n",year,month,s);}
+			else { System.out.println("输入的月份错误！");}
+			
+		}
+		/*******Start*********/
+		//此处定义一个方法，名为JudgeDays，实现得到某年某月的天数的功能，并返回该天数，如果月份错误，则返回-1
+		public static int JudgeDays(int year,int month ){
+            int day;
+        switch(month%13){
+            case 1:case 3:case 5:case 7:case 8:case 10:case 12: day=31;break;
+            case 4:case 6:case 9:case 11: day=30;break;
+            case 2:{if(year%4==0&&year%100!=0||year%400==0)day=29;
+            else day=28;}break;
+            default: day=1; break;
+         }
+            return day;
+        
+        }
+		
+		
+		
+		/*******End*********/
+	}

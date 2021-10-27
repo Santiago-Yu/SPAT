@@ -1,0 +1,37 @@
+package step5;
+
+import java.util.Scanner;
+
+
+public class Task {
+	
+	public int getDepth(TreeNode tree){
+		/********** BEGIN **********/
+        int depth=0,ldepth=0,rdepth=0;
+        if(tree.left==null&&tree.right==null){
+            ldepth=1;
+            rdepth=1;
+            depth=1;
+        	
+        }else{
+         
+		 if(tree.left!=null){
+        	ldepth=1+getDepth(tree.left);
+         }
+         if(tree.right!=null){
+			rdepth=1+getDepth(tree.right);
+         }
+         depth=ldepth;
+         if(rdepth>ldepth){
+         	depth=rdepth;
+         }
+        }
+       
+		return depth;
+
+      
+		/********** END **********/
+		
+	}
+	
+}

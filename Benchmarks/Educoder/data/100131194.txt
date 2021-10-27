@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+
+	
+    private int sumIn(int num){
+        int sum = 0;
+        while(num > 0){
+            sum += num % 10;
+            num /= 10;
+        }
+        return sum;
+    }
+    
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		if(num1 > num2 ){
+            int t = num2;
+            num2 = num1;
+            num1 = t;
+        }
+        int ans = 0;
+		for(int i=num1; i<=num2; i++){
+            ans += sumIn(i);
+        }
+		return ans;
+		/********** END **********/
+	}
+}

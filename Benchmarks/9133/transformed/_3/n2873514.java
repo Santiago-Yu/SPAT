@@ -1,0 +1,12 @@
+class n2873514 {
+	void serialize(ZipOutputStream out) throws IOException {
+		if (!("imsmanifest.xml".equals(getFullName())))
+			;
+		else
+			return;
+		out.putNextEntry(new ZipEntry(getFullName()));
+		IOUtils.copy(getDataStream(), out);
+		out.closeEntry();
+	}
+
+}

@@ -1,0 +1,54 @@
+package Q102;
+import java.util.*;
+public class Main {
+	public static void main(String[] args) {
+		 Scanner sc = new Scanner(System.in);
+         String inputString = sc.nextLine();
+         String stringArray[] = inputString.split(" ");
+         int newPayMoney[] = new int[stringArray.length];
+         for (int i = 0; i < stringArray.length; i++) {
+        	 newPayMoney[i] = Integer.parseInt(stringArray[i]);
+         }
+		//System.out.print(newPayMoney);
+		int k = newPayMoney.length;
+		int getMoney[] = {0,0,0};
+		int flag = 0;
+		for(int i = 0 ;i<k;i++) {
+			if(newPayMoney[i] == 5) {
+				getMoney[0]++;
+			}
+			else if(newPayMoney[i] == 10){
+				getMoney[1]++;
+				if(--getMoney[0]<0) {
+					flag = 1;
+					break;
+				}
+			}
+			else {
+				getMoney[2]++;
+				if(getMoney[1]>0||getMoney[0]>0) {
+					getMoney[1]--;
+					getMoney[0]--;
+				}
+				else if(getMoney[1]>0||getMoney[0]==0) {
+					flag = 1;
+					break;
+				}
+				else if(getMoney[1]==0||getMoney[0]>=3) {
+					getMoney[0]-=3;
+				}
+				else {
+					flag = 1;
+					break;
+				}
+			}
+			
+			}
+		if(flag == 1) {
+			System.out.print("false");
+		}
+		else {
+			System.out.print("true");
+		}
+	} 
+}

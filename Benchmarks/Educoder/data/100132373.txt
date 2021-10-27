@@ -1,0 +1,23 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+	  int[] predict = new int[temperatures.length];
+
+        for (int i = 0; i < temperatures.length; i++) {
+            int counter = 0;
+            for (int j = i + 1; j < temperatures.length; j++) {
+                if (temperatures[j] > temperatures[i]) {
+                    counter = j - i;
+                    break;
+                }
+            }
+            predict[i] = counter;
+        }
+
+
+        return predict;
+		/********** END **********/
+	}
+}

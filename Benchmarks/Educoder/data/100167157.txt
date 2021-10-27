@@ -1,0 +1,334 @@
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class Java_LexAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<Integer, String> key = new HashMap<Integer, String>();
+    private static int myCount = 1;
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine());
+        }
+    }
+
+
+    // add your method here!!
+    private static void read_key() {
+        key.put(1, "auto");
+        key.put(2, "break");
+        key.put(3, "case");
+        key.put(4, "char");
+        key.put(5, "const");
+        key.put(6, "continue");
+        key.put(7, "default");
+        key.put(8, "do");
+        key.put(9, "double");
+        key.put(10, "else");
+        key.put(11, "enum");
+        key.put(12, "extern");
+        key.put(13, "float");
+        key.put(14, "for");
+        key.put(15, "goto");
+        key.put(16, "if");
+        key.put(17, "int");
+        key.put(18, "long");
+        key.put(19, "register");
+        key.put(20, "return");
+        key.put(21, "short");
+        key.put(22, "signed");
+        key.put(23, "sizeof");
+        key.put(24, "static");
+        key.put(25, "struct");
+        key.put(26, "switch");
+        key.put(27, "typedef");
+        key.put(28, "union");
+        key.put(29, "unsigned");
+        key.put(30, "void");
+        key.put(31, "volatile");
+        key.put(32, "while");
+        key.put(33, "-");
+        key.put(34, "--");
+        key.put(35, "-=");
+        key.put(36, "->");
+        key.put(37, "!");
+        key.put(38, "!=");
+        key.put(39, "%");
+        key.put(40, "%=");
+        key.put(41, "&");
+        key.put(42, "&&");
+        key.put(43, "&=");
+        key.put(44, "(");
+        key.put(45, ")");
+        key.put(46, "*");
+        key.put(47, "*=");
+        key.put(48, ",");
+        key.put(49, ".");
+        key.put(50, "/");
+        key.put(51, "/=");
+        key.put(52, ":");
+        key.put(53, ";");
+        key.put(54, "?");
+        key.put(55, "[");
+        key.put(56, "]");
+        key.put(57, "^");
+        key.put(58, "^=");
+        key.put(59, "{");
+        key.put(60, "|");
+        key.put(61, "||");
+        key.put(62, "|=");
+        key.put(63, "}");
+        key.put(64, "~");
+        key.put(65, "+");
+        key.put(66, "++");
+        key.put(67, "+=");
+        key.put(68, "<");
+        key.put(69, "<<");
+        key.put(70, "<<=");
+        key.put(71, "<=");
+        key.put(72, "=");
+        key.put(73, "==");
+        key.put(74, ">");
+        key.put(75, ">=");
+        key.put(76, ">>");
+        key.put(77, ">>=");
+        key.put(78, "\"");
+        key.put(79, "/*注释*/");
+        key.put(80, "常数");
+        key.put(81, "标识符");
+        key.put(82, "/*");
+        key.put(83, "*/");
+        key.put(84, "//");
+
+    }
+
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static int search(StringBuffer s) {
+        for (int i = 1; i < 85; i++) {
+            if (s.toString().equals(key.get(i))) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private static int getType(int k) {
+        if (k >= 33) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    private static void printInfo(StringBuffer s, int h) {
+        if (s.length() == 0)
+        {
+            return;
+        }
+        int index = search(s);
+        if(h == 0) {
+            if (index >= 1 && index < 79) {
+                System.out.println(myCount + ": " + "<" + s + "," + index + ">");
+                myCount++;
+
+            } else if (index == 0) {
+                if (s.charAt(0) - '0' >= 0 && s.charAt(0) - '0' <= 9) {
+                    System.out.println(myCount + ": " + "<" + s + ",80>");
+                    myCount++;
+                    //   常数 80
+
+                } else {
+                    System.out.println(myCount + ": " + "<" + s + ",81>");
+                    myCount++;
+                    // 标识符 81
+
+                }
+            }
+        }
+        else {
+            if (index >= 1 && index < 79) {
+                System.out.print(myCount + ": " + "<" + s + "," + index + ">");
+                myCount++;
+
+            } else if (index == 0) {
+                if (s.charAt(0) - '0' >= 0 && s.charAt(0) - '0' <= 9) {
+                    System.out.print(myCount + ": " + "<" + s + ",80>");
+                    myCount++;
+                    //   常数 80
+
+                } else {
+                    System.out.print(myCount + ": " + "<" + s + ",81>");
+                    myCount++;
+                    //   标识符 81
+
+                }
+            }
+        }
+    }
+
+    private static void analysis() {
+        read_prog();
+        read_key();
+
+        int state = 0;
+        StringBuffer s = new StringBuffer();
+        int h = 0;
+        for (int i = 0; i < prog.length(); i++) {
+
+            if (state == 0)
+            //正常状态
+            {
+                char a = prog.charAt(i);
+                if (a == ' ' || a == 10 || a == 13 || a == '\t') {
+                    if (s.length() > 0) {
+                        printInfo(s,h);
+                        s.setLength(0);
+                        //直接输出当前字符
+                    }
+                } else {
+                    StringBuffer temps = new StringBuffer();
+                    temps.append(a);
+                    int flag = search(temps);
+
+                    //输入了一个界符
+                    if (getType(flag) == 0) {
+                        if (flag == 78) {
+                            //输入了“
+                            state = 2;
+                            printInfo(s,h);
+                            //输出前面的字符，换入状态2
+                            s.setLength(0);
+                            s.append(a);
+                            printInfo(s,h);
+                            s.setLength(0);
+
+                        } else {
+                            //输出前面的字符，换入状态1
+                            state = 1;
+                            if (s.length() > 0) {
+                                printInfo(s,h);
+                                s.setLength(0);
+                            }
+                            s.append(a);
+                            if (i == prog.length() - 1) {
+                                h = 1 ;
+                                printInfo(s,h);
+                            }
+
+                        }
+                    }//输入的不是界符
+                    else {
+                        s.append(a);
+                    }
+                }
+
+            } else if (state == 1) {
+                char a = prog.charAt(i);
+                StringBuffer temps = new StringBuffer(s);
+                temps.append(a);
+                int flag = search(temps);
+                if (flag == 0) {
+                    printInfo(s,h);
+                    s.setLength(0);
+                    s.append(a);
+                    //把之前的界符输出，再处理输入的字符
+                    int t = search(s);
+                    if (getType(t) == 0) {
+                        if (t == 78) {
+                            //遇到“
+                            state = 2;
+                            printInfo(s,h);
+                            s.setLength(0);
+
+                        }
+                        else if(i == prog.length() -1){
+                            h = 1;
+                            printInfo(s,h);
+                        }
+                    } else if (a == ' ' || a == 10 || a == 13 || a == '\t') {
+                        s.setLength(0);
+                        state = 0;
+                    } else {
+                        state = 0;
+
+                        if (i == prog.length() - 1) {
+                            h = 1;
+                            printInfo(s,h);
+                        }
+
+                    }
+                }
+                //假如能连上前面的界符
+                else {
+                    s.append(a);
+                    if (flag == 84)
+                    //假如是//
+                    {
+                        state = 3;
+                    } else if (flag == 82) {
+                        state = 4;
+                    }
+
+
+                }
+            } else if (state == 2) {
+                //处理“”
+                char a = prog.charAt(i);
+                if (a == '"') {
+                    System.out.println(myCount + ": " + "<" + s + ",81>");
+                    myCount++;
+                    s.setLength(0);
+                    s.append(a);
+                    printInfo(s,h);
+                    s.setLength(0);
+                    state = 0;
+
+                } else {
+                    s.append(a);
+
+                }
+
+            } else if (state == 3) {
+                //处理//
+                char a = prog.charAt(i);
+                if (a == 10 || a == 13 || a == '\t') {
+                    System.out.println(myCount + ": " + "<" + s + ",79>");
+                    myCount++;
+                    state = 0;
+                    s.setLength(0);
+                } else {
+                    s.append(a);
+                }
+
+            } else {
+                StringBuffer tempm = new StringBuffer();
+                char a = prog.charAt(i);
+                tempm.append(s.charAt(s.length() - 1));
+                tempm.append(a);
+                s.append(a);
+                if (search(tempm) == 83) {
+                    System.out.println(myCount + ": " + "<" + s + ",79>");
+                    myCount++;
+                    state = 0;
+                    s.setLength(0);
+                }
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

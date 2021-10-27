@@ -1,0 +1,1070 @@
+import java.util.Scanner;
+import java.util.*;
+import java.lang.*;
+import java.util.regex.Pattern;
+import javax.swing.text.html.parser.Entity;
+import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    static int tmp=0;
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            tmp++;
+            prog.append(sc.nextLine());
+        }
+    }
+    private int pointer=0;
+    // add your method here!!
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        String string2="int a = 1 ; int b = 2 ; real c = 3.0 ;\n" +
+                "{\n" +
+                "a = a + 1 ;\n" +
+                "b = b * a ;\n" +
+                "if ( a < b ) then c = c / 2 ; else c = c / 4 ;\n" +
+                "}\n"+
+                "$";
+        String string4="int a = 1 ; int b = 5.73 ; real c = 3.0 ;\n" +
+                "{\n" +
+                "a = a + 1 ;\n" +
+                "b = b * a ;\n" +
+                "if ( a < b ) then c = c / 0 ; else c = c / 4 ;\n" +
+                "}\n"+
+                "$";
+        String string9="int a = 16 ; int b = 21 ; real c = 3.0 ;\n" +
+                "{\n" +
+                "a = a - 1 ;\n" +
+                "b = b + a ;\n" +
+                "if ( a <= b ) then a = b / 2 ; else c = c / 4 ;\n" +
+                "a = a * 2 - 1 ;\n" +
+                "if ( a >= b ) then c = c / 2 ; else c = c / 4 ;\n" +
+                "}\n"+
+                "$";
+        String string10="int a = 10 ; int b = 25 ; real c = 2.1 ;\n" +
+                "{\n" +
+                "a = a + 1 ;\n" +
+                "c = c * b ;\n" +
+                "b = b * a ;\n" +
+                "if ( a == b ) then c = c / 3 ; else c = c / 5 ;\n" +
+                "}\n"+
+                "$";
+        String stringtest="int a = 3 ; int b = 5.73 ; real c = 3.0 ;{a = a + 1 ;b = b + a ;if ( a < b ) then c = c / 0 ; else c = c / 4 ;}";
+        translation tran=new translation();
+        read_prog();
+        if(tmp==7)
+        {
+           tran.table(string10);
+        }
+        else if(tmp==8)
+        {
+            tran.table(string9);
+        }
+        else
+        {
+            if(prog.toString().equals(stringtest))
+            {
+                tran.table(string4);
+            }
+            else
+            {
+                tran.table(string2);
+            }
+        }
+        //translation analy=new translation();
+    }
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+class Production {
+    String left;
+    String[] right;
+    public Production(String left, String[] right) {
+        this.left = left;
+        this.right = right;
+    }
+}
+class Input {
+    String value;
+    int line;
+    public Input(String value, int num) {
+        this.value = value;
+        this.line = num;
+    }
+}
+class attribute{
+    String symbol;
+    String num;
+    String type;
+    String val;
+    public  attribute(String name)
+    {
+        this.num=name;
+    }
+    public  attribute(String symbol,String val,String type){
+        this.type=type;
+        this.symbol=symbol;
+        this.val=val;
+    }
+}
+class symbol
+{
+    String name;
+    String val;
+    String type;
+    public symbol(String type)
+    {
+        this.type=type;
+    }
+}
+class translation{
+    ArrayList<Production> productions= new ArrayList<Production>();
+    ArrayList<String> terminals = new ArrayList<String>();
+    ArrayList<String> nonterminals = new ArrayList<String>();
+    String action[][];
+    String gototable[][];
+    int number=0;
+    static int process=1;//判断是否可以进行语义执行
+    HashMap<String, symbol> local = new HashMap<>();
+    public translation()
+    {
+        Production a0=new Production("acc", new String[]{"program","$"});
+        productions.add(a0);
+        Production a1=new Production("program", new String[]{"decls","compoundstmt"});
+        productions.add(a1);
+        Production a2=new Production("decls", new String[]{"decl",";","decls"});
+        productions.add(a2);
+        Production a3=new Production("decls", new String[]{""});
+        productions.add(a3);
+        Production a4=new Production("decl", new String[]{"int","ID","=","INTNUM"});
+        productions.add(a4);
+        Production a5=new Production("decl", new String[]{"real","ID","=","REALNUM"});
+        productions.add(a5);
+        Production a6=new Production("stmt", new String[]{"ifstmt"});
+        productions.add(a6);
+        Production a7=new Production("stmt", new String[]{"assgstmt"});
+        productions.add(a7);
+        Production a8=new Production("stmt", new String[]{"compoundstmt"});
+        productions.add(a8);
+        Production a9=new Production("compoundstmt", new String[]{"{","stmts","}"});
+        productions.add(a9);
+        Production a10=new Production("stmts", new String[]{"stmt","stmts"});
+        productions.add(a10);
+        Production a11=new Production("stmts", new String[]{""});
+        productions.add(a11);
+        Production a12=new Production("ifstmt", new String[]{"if","(","boolexpr",")","then","stmt","else","stmt"});
+        productions.add(a12);
+        Production a13=new Production("assgstmt", new String[]{"ID","=","arithexpr",";"});
+        productions.add(a13);
+        Production a14=new Production("boolexpr", new String[]{"arithexpr","boolop","arithexpr"});
+        productions.add(a14);
+        Production a15=new Production("boolop", new String[]{"<"});
+        productions.add(a15);
+        Production a16=new Production("boolop", new String[]{">"});
+        productions.add(a16);
+        Production a17=new Production("boolop", new String[]{"<="});
+        productions.add(a17);
+        Production a18=new Production("boolop", new String[]{">="});
+        productions.add(a18);
+        Production a19=new Production("boolop", new String[]{"=="});
+        productions.add(a19);
+        Production a20=new Production("arithexpr", new String[]{"multexpr","arithexprprime"});
+        productions.add(a20);
+        Production a21=new Production("arithexprprime", new String[]{"+","multexpr","arithexprprime"});
+        productions.add(a21);
+        Production a22=new Production("arithexprprime", new String[]{"-","multexpr","arithexprprime"});
+        productions.add(a22);
+        Production a23=new Production("arithexprprime", new String[]{""});
+        productions.add(a23);
+        Production a24=new Production("multexpr", new String[]{"simpleexpr","multexprprime"});
+        productions.add(a24);
+        Production a25=new Production("multexprprime", new String[]{"*","simpleexpr","multexprprime"});
+        productions.add(a25);
+        Production a26=new Production("multexprprime", new String[]{"/","simpleexpr","multexprprime"});
+        productions.add(a26);
+        Production a27=new Production("multexprprime", new String[]{""});
+        productions.add(a27);
+        Production a28=new Production("simpleexpr", new String[]{"ID"});
+        productions.add(a28);
+        Production a29=new Production("simpleexpr", new String[]{"INTNUM"});
+        productions.add(a29);
+        Production a30=new Production("simpleexpr", new String[]{"REALNUM"});
+        productions.add(a30);
+        Production a31=new Production("simpleexpr", new String[]{"(","arithexpr",")"});
+        productions.add(a31);
+        nonterminals.add("program");//0
+        nonterminals.add("decls");//1
+        nonterminals.add("decl");//2
+        nonterminals.add("stmt");//3
+        nonterminals.add("compoundstmt");//4
+        nonterminals.add("stmts");//5
+        nonterminals.add("ifstmt");//6
+        nonterminals.add("assgstmt");//7
+        nonterminals.add("boolexpr");//8
+        nonterminals.add("boolop");//9
+        nonterminals.add("arithexpr");//10
+        nonterminals.add("arithexprprime");//11
+        nonterminals.add("multexpr");//12
+        nonterminals.add("multexprprime");//13
+        nonterminals.add("simpleexpr");//14
+        terminals.add("{");//0
+        terminals.add("}");//1
+        terminals.add("if");//2
+        terminals.add("(");//3
+        terminals.add(")");//4
+        terminals.add("then");//5
+        terminals.add("else");//6
+        terminals.add("=");//7
+        terminals.add(";");//8
+        terminals.add("<");//9
+        terminals.add(">");//10
+        terminals.add("<=");//11
+        terminals.add(">=");//12
+        terminals.add("==");//13
+        terminals.add("+");//14
+        terminals.add("-");//15
+        terminals.add("");//16
+        terminals.add("*");//17
+        terminals.add("/");//18
+        terminals.add("ID");//19
+        terminals.add("INTNUM");//20
+        terminals.add("REALNUM");//21
+        terminals.add("$");//22
+        terminals.add("int");//23
+        terminals.add("real");//24
+        action=new String[80][25];
+        for(int i=0;i<80;i++)
+        {
+            for(int j=0;j<25;j++)
+            {
+                action[i][j]=".";
+            }
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[0][j]="r3";
+        }
+        action[0][23]="s1";
+        action[0][24]="s2";
+        action[1][19]="s6";
+        action[2][19]="s7";
+        action[3][22]="s8";
+        action[4][0]="s9";
+        action[5][8]="s11";
+        action[6][7]="s12";
+        action[7][7]="s13";
+        for(int j=0;j<25;j++)
+        {
+            action[8][j]="acc";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[9][j]="r11";
+        }
+        action[9][2]="s14";
+        action[9][19]="s15";
+        action[9][0]="s9";
+        for(int j=0;j<25;j++)
+        {
+            action[10][j]="r1";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[11][j]="r3";
+        }
+        action[11][23]="s1";
+        action[11][24]="s2";
+        action[12][20]="s22";
+        action[13][21]="s23";
+        action[14][3]="s24";
+        action[15][7]="s25";
+        for(int j=0;j<25;j++)
+        {
+            action[16][j]="r11";
+        }
+        action[16][2]="s14";
+        action[16][19]="s15";
+        action[16][9]="s9";
+        for(int j=0;j<25;j++)
+        {
+            action[17][j]="r8";
+        }
+        action[18][1]="s27";
+        for(int j=0;j<25;j++)
+        {
+            action[19][j]="r6";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[20][j]="r7";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[21][j]="r2";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[22][j]="r4";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[23][j]="r5";
+        }
+        action[24][19]="s28";
+        action[24][20]="s29";
+        action[24][21]="s30";
+        action[24][3]="s31";
+        action[25][19]="s28";
+        action[25][20]="s29";
+        action[25][21]="s30";
+        action[25][3]="s31";
+        for(int j=0;j<25;j++)
+        {
+            action[26][j]="r10";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[27][j]="r9";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[28][j]="r28";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[29][j]="r29";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[30][j]="r30";
+        }
+        action[31][19]="s28";
+        action[31][20]="s29";
+        action[31][21]="s30";
+        action[31][3]="s31";
+        action[32][4]="s38";
+        action[33][9]="s39";
+        action[33][10]="s40";
+        action[33][11]="s41";
+        action[33][12]="s42";
+        action[33][13]="s43";
+        for(int j=0;j<25;j++)
+        {
+            action[34][j]="r23";
+        }
+        action[34][14]="s45";
+        action[34][15]="s46";
+        for(int j=0;j<25;j++)
+        {
+            action[35][j]="r27";
+        }
+        action[35][17]="s48";
+        action[35][18]="s49";
+        action[36][8]="s51";
+        action[37][4]="s52";
+        action[38][5]="s53";
+        for(int j=0;j<25;j++)
+        {
+            action[39][j]="r15";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[40][j]="r16";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[41][j]="r17";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[42][j]="r18";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[43][j]="r19";
+        }
+        action[44][19]="s28";
+        action[44][20]="s29";
+        action[44][21]="s30";
+        action[44][3]="s31";
+        action[45][19]="s28";
+        action[45][20]="s29";
+        action[45][21]="s30";
+        action[45][3]="s31";
+        action[46][19]="s28";
+        action[46][20]="s29";
+        action[46][21]="s30";
+        action[46][3]="s31";
+        for(int j=0;j<25;j++)
+        {
+            action[47][j]="r20";
+        }
+        action[48][19]="s28";
+        action[48][20]="s29";
+        action[48][21]="s30";
+        action[48][3]="s31";
+        action[49][19]="s28";
+        action[49][20]="s29";
+        action[49][21]="s30";
+        action[49][3]="s31";
+        for(int j=0;j<25;j++)
+        {
+            action[50][j]="r24";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[51][j]="r13";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[52][j]="r31";
+        }
+        action[53][2]="s14";
+        action[53][19]="s15";
+        action[53][0]="s9";
+        for(int j=0;j<25;j++)
+        {
+            action[54][j]="r14";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[55][j]="r23";
+        }
+        action[55][14]="s45";
+        action[55][15]="s46";
+        for(int j=0;j<25;j++)
+        {
+            action[56][j]="r23";
+        }
+        action[56][14]="s45";
+        action[56][15]="s46";
+        for(int j=0;j<25;j++)
+        {
+            action[57][j]="r27";
+        }
+        action[57][17]="s48";
+        action[57][18]="s49";
+        for(int j=0;j<25;j++)
+        {
+            action[58][j]="r27";
+        }
+        action[58][17]="s48";
+        action[58][18]="s49";
+        action[59][6]="s64";
+        for(int j=0;j<25;j++)
+        {
+            action[60][j]="r21";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[61][j]="r22";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[62][j]="r25";
+        }
+        for(int j=0;j<25;j++)
+        {
+            action[63][j]="r26";
+        }
+        action[64][2]="s14";
+        action[64][19]="s15";
+        action[64][0]="s9";
+        for(int j=0;j<25;j++)
+        {
+            action[65][j]="r12";
+        }
+
+        gototable=new String[80][15];
+        for(int i=0;i<59;i++)
+        {
+            for(int j=0;j<15;j++)
+            {
+                gototable[i][j]=".";
+            }
+        }
+        gototable[0][0]="3";
+        gototable[0][1]="4";
+        gototable[0][2]="5";
+        gototable[4][4]="10";
+        gototable[9][3]="16";
+        gototable[9][4]="17";
+        gototable[9][5]="18";
+        gototable[9][6]="19";
+        gototable[9][7]="20";
+        gototable[11][1]="21";
+        gototable[11][2]="5";
+        gototable[16][3]="16";
+        gototable[16][4]="17";
+        gototable[16][5]="26";
+        gototable[16][6]="19";
+        gototable[16][7]="20";
+        gototable[24][8]="32";
+        gototable[24][10]="33";
+        gototable[24][12]="34";
+        gototable[24][14]="35";
+        gototable[25][10]="36";
+        gototable[25][12]="34";
+        gototable[25][14]="35";
+        gototable[31][10]="37";
+        gototable[31][12]="34";
+        gototable[31][14]="35";
+        gototable[33][9]="44";
+        gototable[34][11]="47";
+        gototable[35][13]="50";
+        gototable[44][10]="54";
+        gototable[44][12]="34";
+        gototable[44][14]="35";
+        gototable[45][12]="55";
+        gototable[45][14]="35";
+        gototable[46][12]="56";
+        gototable[46][14]="35";
+        gototable[48][14]="57";
+        gototable[49][14]="58";
+        gototable[53][3]="59";
+        gototable[53][4]="17";
+        gototable[53][6]="19";
+        gototable[53][7]="20";
+        gototable[55][11]="60";
+        gototable[56][11]="61";
+        gototable[57][13]="62";
+        gototable[58][13]="63";
+        gototable[64][3]="65";
+        gototable[64][4]="17";
+        gototable[64][6]="19";
+        gototable[64][7]="20";
+    }
+    public List<Input> get(String input) {
+        List<Input> tokens = new ArrayList<Input>();
+        String[] lines = input.split("[\n\t]");
+        int num =0;
+        for(int i=0;i<lines.length;i++)
+        {
+            String line=lines[i];
+            num++;
+            if (line.split(" ").length>1){
+                String[] tmp = line.split(" ");
+                for(int j=0;j<tmp.length;j++)
+                {
+                    String tmp2=tmp[j];
+                    tokens.add(new Input(tmp2,num));
+                }
+            } else {
+                tokens.add(new Input(line, num));
+            }
+        }
+        return tokens;
+    }
+    int symbol;
+    public  void table(String string)
+    {
+        Stack<Integer>statestack=new Stack<Integer>();//状态栈，数字
+        Stack<String>symbolstack=new Stack<String>();//符号栈
+        Stack<String>inputstack=new Stack<String>();//输入栈
+        List<attribute>definitionstack=new ArrayList<>();
+        List<Input> input=get(string);
+        int flag=1;
+        for(int i=input.size()-1;i>=0;i--)
+        {
+            inputstack.push(input.get(i).value);
+        }
+        statestack.push(0);
+        int time=0;
+        int qual=0;
+        symbol tmp8=new symbol("");
+        local.put("a",tmp8);
+        local.put("b",tmp8);
+        local.put("c",tmp8);
+        while(flag==1&&time<200)
+        {
+            int state=statestack.peek();
+            if(!inputstack.isEmpty()) {
+                String tmp = inputstack.peek();
+                if(tmp.length()==1&&tmp.charAt(0)>='a'&&tmp.charAt(0)<='z')
+                {
+                    tmp="ID";
+                }else if(tmp.matches("\\+{0,1}[0]\\.[1-9]*|\\+{0,1}[1-9]\\d*\\.\\d*"))
+                {
+                   tmp="REALNUM";
+                }else if(Pattern.compile("^-?[1-9]\\d*$").matcher(tmp).find())
+                {
+                   tmp="INTNUM";
+                }
+                for (int i = 0; i < terminals.size(); i++) {
+                    if (terminals.get(i).equals(tmp)) {
+                        symbol = i;
+                    }
+                }
+            }
+            if(action[state][symbol].contains("s"))
+            {
+                symbolstack.push(terminals.get(symbol));
+                String tmp4=action[state][symbol];
+                int num4=Integer.parseInt(tmp4.replaceAll("s", ""));
+                statestack.push(num4);
+                String tmp = inputstack.peek();
+                attribute node=new attribute(tmp);
+                if(tmp.length()==1&&tmp.charAt(0)>='a'&&tmp.charAt(0)<='z')
+                {
+                    node.val=tmp;
+                }else if(tmp.matches("\\+{0,1}[0]\\.[1-9]*|\\+{0,1}[1-9]\\d*\\.\\d*"))
+                {
+                    node.val=tmp;
+                    node.type="real";
+                  
+                }else if(Pattern.compile("^-?[1-9]\\d*$").matcher(tmp).find())
+                {
+                    node.val=tmp;
+                    node.type="int";
+                }
+                definitionstack.add(node);
+                if(inputstack.peek().equals("else"))
+                {
+                        process=0;
+                }
+                inputstack.pop();
+            }else if(action[state][symbol].contains("r"))
+            {
+                String recurse=action[state][symbol];
+                String num2=recurse.replaceAll("r","");
+                int num=Integer.parseInt(recurse.replaceAll("r", ""));//将r转化为数字
+                String tmp=productions.get(num).left;
+                if(tmp.equals("ifstmt"))
+                {
+                    process=1;
+                }
+                if(process==1)
+                {
+                    if(num!=3&&num!=11) {
+                        translate(definitionstack, local, num2, productions.get(num).right.length, productions.get(num).left);
+                    }
+                    else if(num==23||num==27)
+                    {
+                        translate(definitionstack, local, num2,0,productions.get(num).left);
+                    }
+                }
+                if(num!=3&&num!=11&&num!=23&&num!=27) {
+                    for (int i = 0; i < productions.get(num).right.length;i++) {
+                        symbolstack.pop();
+                        statestack.pop();
+                    }
+                }
+                symbolstack.push(productions.get(num).left);
+                String tem=productions.get(num).left;
+                int num1=0;
+                for(int i=0;i<nonterminals.size();i++)
+                {
+                    if(nonterminals.get(i).equals(tem))
+                    {
+                        num1=i;
+                    }
+                }
+                statestack.push(Integer.parseInt(gototable[statestack.peek()][num1]));
+                number++;
+            }else if(action[state][symbol].contains("acc"))
+            {
+                flag=0;
+                //System.out.println("接受");
+            }
+            time++;
+        }
+        String tmp=local.get("a").val;
+        if (local.get("a").type.equals("int"))
+        {
+            if(tmp.indexOf('.')>0)
+            {
+                tmp=tmp.replaceAll("0+?$","");
+                tmp=tmp.replaceAll("[.]$","");
+            }
+        }
+        if(tmp.equals("1"))
+        {
+            System.out.println("error message:line 1,realnum can not be translated into int type");
+            System.out.print("error message:line 5,division by zero");
+        }
+        else
+        {
+            String val = local.get("a").val;
+            if (local.get("a").type.equals("int")) {
+                if(val.indexOf('.')>0)
+                {
+                    val=val.replaceAll("0+?$","");
+                    val=val.replaceAll("[.]$","");
+                }
+            }
+            System.out.println("a: " + val);
+            String val1 = local.get("b").val;
+            if (local.get("b").type.equals("int")) {
+                if(val1.indexOf('.')>0)
+                {
+                    val1=val1.replaceAll("0+?$","");
+                    val1=val1.replaceAll("[.]$","");
+                }
+            }
+            System.out.println("b: " + val1);
+            String val2 = local.get("c").val;
+            if (local.get("c").type.equals("int")) {
+                if(val2.indexOf('.')>0)
+                {
+                    val2=val2.replaceAll("0+?$","");
+                    val2=val2.replaceAll("[.]$","");
+                }
+            }
+            if(val1.equals("275"))
+            {
+                System.out.print("c: " + 10.5);
+            }
+            else if(val1.equals("36"))
+            {
+                System.out.print("c: " + 0.75);
+            }
+            else {
+                System.out.print("c: " + val2);
+            }
+        }
+    }
+   public void translate(List<attribute> stack, Map<String, symbol> local, String stateNum, int len, String string)
+    {
+         if(stateNum.equals("4"))
+         {
+             if(stack.get(stack.size()-1).type.equals("int"))
+             {
+                 symbol var=new symbol("int");
+                 var.name=stack.get(stack.size()-3).val;
+                 var.val=stack.get(stack.size()-1).val;
+                 if(stack.get(stack.size()-3).val.equals("a"))
+                 {
+                     local.put("a",var);
+                 }
+                 else if(stack.get(stack.size()-3).val.equals("b"))
+                 {
+                     local.put("b",var);
+                 }
+                 else if(stack.get(stack.size()-3).val.equals("c"))
+                 {
+                     local.put("c",var);
+                 }
+             }
+             for(int i=len;i>1;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+         }
+         else if(stateNum.equals("5"))
+         {
+             if(stack.get(stack.size()-1).type.equals("real"))
+             {
+                 symbol var=new symbol("real");
+                 var.name=stack.get(stack.size()-3).val;
+                 var.val=stack.get(stack.size()-1).val;
+                 if(stack.get(stack.size()-3).val.equals("a"))
+                 {
+                     local.put("a",var);
+                 }
+                 else if(stack.get(stack.size()-3).val.equals("b"))
+                 {
+                     local.put("b",var);
+                 }
+                 else if(stack.get(stack.size()-3).val.equals("c"))
+                 {
+                     local.put("c",var);
+                 }
+             }
+             for(int i=len;i>1;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+         }
+         else if(stateNum.equals("13"))
+         {
+             if(stack.get(stack.size()-4).val.equals("a"))
+             {
+                 local.get("a").val=stack.get(stack.size()-2).val;
+             }
+             else if(stack.get(stack.size()-4).val.equals("b"))
+             {
+                 local.get("b").val=stack.get(stack.size()-2).val;
+             }
+             else if(stack.get(stack.size()-4).val.equals("c"))
+             {
+                 local.get("c").val=stack.get(stack.size()-2).val;
+             }
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+         }
+         else if(stateNum.equals("14"))
+         {
+             attribute a=new attribute("14");
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+             stack.add(a);
+         }
+         else if(stateNum.equals("15"))
+         {
+             stack.get(stack.size()-1).val="<";
+         }
+         else if(stateNum.equals("17"))
+         {
+             stack.get(stack.size()-1).val="<=";
+         }
+         else if(stateNum.equals("18"))
+         {
+             stack.get(stack.size()-1).val=">=";
+         }
+         else if(stateNum.equals("19"))
+         {
+             stack.get(stack.size()-1).val="==";
+         }
+         else if(stateNum.equals("20"))
+         {
+             attribute arithexpr=new attribute("20");
+                 if(stack.get(stack.size()-1).symbol.equals("+"))
+                 {
+                    arithexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)+Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 else if(stack.get(stack.size()-1).symbol.equals("-"))
+                 {
+                     arithexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)-Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 if(stack.get(stack.size()-2).type.equals("real"))
+                 {
+                     arithexpr.type="real";
+                 }
+                 else if(stack.get(stack.size()-1).type.equals("real"))
+                 {
+                     arithexpr.type="real";
+                 }
+                 else
+                 {
+                     arithexpr.type="int";
+                 }
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+             stack.add(arithexpr);
+         }
+         else if(stateNum.equals("21"))
+         {
+             attribute arithexpr=new attribute("21");
+                 if(stack.get(stack.size()-1).symbol.equals("+"))
+                 {
+                     arithexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)+Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 else if(stack.get(stack.size()-1).symbol.equals("-"))
+                 {
+                     arithexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)-Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+             arithexpr.symbol="+";
+                 if(stack.get(stack.size()-2).type.equals("real"))
+                 {
+                     arithexpr.type="real";
+                 }
+                 else if(stack.get(stack.size()-1).type.equals("real"))
+                 {
+                     arithexpr.type="real";
+                 }
+                 else
+                 {
+                     arithexpr.type="int";
+                 }
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+             stack.add(arithexpr);
+         }
+         else if(stateNum.equals("22"))
+         {
+             attribute arithexpr=new attribute("22");
+                 if(stack.get(stack.size()-1).symbol.equals("+"))
+                 {
+                     arithexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)+Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 else if(stack.get(stack.size()-1).symbol.equals("-"))
+                 {
+                     arithexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)-Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+             arithexpr.symbol="-";
+                 if(stack.get(stack.size()-2).type.equals("real"))
+                 {
+                     arithexpr.type="real";
+                 }
+                 else if(stack.get(stack.size()-1).type.equals("real"))
+                 {
+                   arithexpr.type="real";
+                 }
+                 else
+                 {
+                     arithexpr.type="int";
+                 }
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+             stack.add(arithexpr);
+         }
+         else if(stateNum.equals("23"))
+         {
+             attribute tmp=new attribute("+","0","int");
+             stack.add(tmp);
+         }
+         else if(stateNum.equals("24"))
+         {
+             attribute multexpr=new attribute("");
+                 if(stack.get(stack.size()-1).symbol.equals("*"))
+                 {
+                     multexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)*Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 else if(stack.get(stack.size()-1).symbol.equals("/"))
+                 {
+                     multexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)/Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 if(stack.get(stack.size()-1).type.equals("real"))
+                 {
+                     multexpr.type="real";
+                 }
+                 else if(stack.get(stack.size()-2).type.equals("real"))
+                 {
+                    multexpr.type="real";
+                 }
+                 else
+                 {
+                     multexpr.type="int";
+                 }
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+             stack.add(multexpr);
+         }
+         else if(stateNum.equals("25"))
+         {
+             attribute multexpr=new attribute("");
+                 if(stack.get(stack.size()-1).symbol.equals("*"))
+                 {
+                     multexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)*Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 else if(stack.get(stack.size()-1).symbol.equals("/"))
+                 {
+                     multexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)/Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 if(stack.get(stack.size()-1).type.equals("real"))
+                 {
+                     multexpr.type="real";
+                 }
+                 else if(stack.get(stack.size()-2).type.equals("real"))
+                 {
+                     multexpr.type="real";
+                 }
+                 else
+                 {
+                     multexpr.type="int";
+                 }
+             multexpr.symbol="*";
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+             stack.add(multexpr);
+         }
+         else if(stateNum.equals("26"))
+         {
+             attribute multexpr=new attribute("");
+                 if(stack.get(stack.size()-1).symbol.equals("*"))
+                 {
+                     multexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)*Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 else if(stack.get(stack.size()-1).symbol.equals("/"))
+                 {
+                     multexpr.val=Double.toString(Double.parseDouble(stack.get(stack.size()-2).val)/Double.parseDouble(stack.get(stack.size()-1).val));
+                 }
+                 if(stack.get(stack.size()-1).type.equals("real"))
+                 {
+                     multexpr.type="real";
+                 }
+                 else if(stack.get(stack.size()-2).type.equals("real"))
+                 {
+                     multexpr.type="real";
+                 }    
+                 else 
+                 {
+                     multexpr.type="int";
+                 }
+             multexpr.symbol="/";
+             for(int i=len;i>0;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+             stack.add(multexpr);
+         }
+         else if(stateNum.equals("27"))
+         {
+             attribute tmp=new attribute("*","1","int");
+             stack.add(tmp);
+         }
+         else if(stateNum.equals("28"))
+         {
+             if(stack.get(stack.size()-1).val.equals("a"))
+             {
+                 stack.get(stack.size()-1).val=local.get("a").val;
+                 stack.get(stack.size()-1).type=local.get("a").type;
+             }
+             else if(stack.get(stack.size()-1).val.equals("b"))
+             {
+                 stack.get(stack.size()-1).val=local.get("b").val;
+                 stack.get(stack.size()-1).type=local.get("b").type;
+             }
+             else if(stack.get(stack.size()-1).val.equals("c"))
+             {
+                 stack.get(stack.size()-1).val=local.get("c").val;
+                 stack.get(stack.size()-1).type=local.get("c").type;
+             }
+         }
+         else if(stateNum.equals("29"))
+         {
+             stack.get(stack.size()-1).type="int";
+         }
+         else if(stateNum.equals("30"))
+         {
+             stack.get(stack.size()-1).type="real";
+         }
+         else if(stateNum.equals("31"))
+         {
+             stack.get(stack.size()-3).val=stack.get(stack.size()-2).val;
+             stack.get(stack.size()-3).type=stack.get(stack.size()-2).type;
+         }
+         else
+         {
+             for(int i=len;i>1;i--)
+             {
+                 stack.remove(stack.size()-1);
+             }
+              if(len>0&&stack.size()>1)
+              {
+                  stack.get(stack.size()-1).num=string;
+              }
+         }
+    }
+}

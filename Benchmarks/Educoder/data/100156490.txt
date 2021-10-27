@@ -1,0 +1,79 @@
+package step4;
+
+import java.util.Scanner;
+
+
+
+//根据输入的秒数，输出对应的分钟数和小时数，用方法完成。
+
+public class TestJava25_4 {
+
+
+
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("请输入秒数：");
+
+		int seconds = sc.nextInt();
+
+		//此处调用方法，输出对应的分钟数和小时数
+
+        int i=ppp(seconds);
+
+        int j=pp(i,seconds);
+
+        System.out.println(seconds+"秒对应的小时数是"+i+"，分钟数是："+j);
+
+
+
+		
+
+	}
+
+	/*******Start*********/
+
+	//此处定义方法
+
+	public static int ppp(int seconds)
+
+    {int i=1;
+
+    for(;i<=24;i++)
+
+       if(i*3600>seconds)
+
+           break;
+
+              return i-1;
+
+          }
+
+    
+
+    
+
+	public static int pp(int i,int seconds)
+
+    {int j=0;seconds-=i*3600;
+
+    for(;j<=60;j++)
+
+        if(j*60>seconds)
+
+           break;
+
+            return j-1; 
+
+    }
+
+    
+
+	
+
+	
+
+	/*******End*********/
+
+}

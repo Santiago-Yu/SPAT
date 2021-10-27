@@ -1,0 +1,29 @@
+package Pid_104;
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner sc = new Scanner(System.in);
+		String s1=sc.nextLine();
+		String[] s2=s1.split(" ");
+		int a = sc.nextInt();
+		int count = 0;
+		for(int i =0;i<s2.length;i++){
+			for(int j = i+1;j<s2.length;j++){
+				for(int k= j+1;k<s2.length;k++){
+					int x=Integer.parseInt(s2[i]);
+					int y=Integer.parseInt(s2[j]);
+					int z=Integer.parseInt(s2[k]);
+					if(x+y+z<a){
+						count++;
+					}
+				}
+			}
+		}
+		
+		System.out.print(count);
+	}
+
+}

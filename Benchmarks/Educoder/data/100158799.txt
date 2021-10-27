@@ -1,0 +1,27 @@
+package Q103;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+		long n = sc.nextInt();
+		long sum = 1;
+		for(long i=n-1,j=1;i>=n-n/2&&j<=n/2;i--,j++)
+		{
+			long y = 1;
+			long x = 1;    //阶乘
+			for(long l=i;l>=i-j+1;l--)
+			{
+				y = y*l;
+			}
+			for(long m=1;m<=j;m++)
+			{
+				x = x*m;
+			}
+			sum = sum+y/x;
+		}
+		System.out.print(sum);
+	}
+
+}

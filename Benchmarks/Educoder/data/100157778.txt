@@ -1,0 +1,49 @@
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) {
+		 Scanner sc = new Scanner(System.in);
+		 String s=sc.nextLine();//读入一行string
+		 String[] c=s.split("\\s+");//根据空格进行分割
+		 int[] yb=new int[c.length];
+		 for(int i=0;i<c.length;i++) {
+			 yb[i]=Integer.parseInt(c[i]);//将string转为int型
+		 }
+
+        
+        
+        //样本确定数据存入数组yb[]
+        int rmb5=0,rmb10=0;
+        for(int i=0;i<yb.length;i++){//对每个样本数据进行遍历，core
+        	if(yb[i]==5){
+        		rmb5++;
+        	}
+        	else if(yb[i]==10){
+        		if(rmb5>=1){
+        			rmb5--;
+        			rmb10++;
+        		}
+        		else{
+        			System.out.print("false");
+        			break;
+        		}
+        	}
+        	else if(yb[i]==20){
+        		if(rmb10>=1&&rmb5>=1){
+        			rmb5--;
+        			rmb10--;
+        		}
+        		else if(rmb5>=3){
+        			rmb5-=3;
+        		}
+        		else{
+        			System.out.print("false");
+        			break;
+        		}
+        	}
+        	if(i==yb.length-1){
+        		System.out.print("true");
+        	}
+        }//样本循环检测结束        
+        }
+}

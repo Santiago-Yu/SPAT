@@ -1,0 +1,107 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+
+public class BackPack {
+    public static List<String> putThings(int vol, int wei, Map<String, Integer> resMap) {
+        List<String> putResult = new ArrayList<>();
+
+        /********** BEGIN **********/
+ //：1.存储类型的体积，重量到两个一维数组,将货物数目分别保存和求取总和
+	        int[] weight = {2,8,16,32,16,32,64};
+	        int[] volume = {2,2,4,8,16,16,16};
+	        int[] rest = {0,0,0,0,0,0,0};
+	        int[] Trest = {0,0,0,0,0,0,0};
+	        int sum = 0;
+	        int n = 7;
+	      	Iterator it = resMap.entrySet().iterator();
+			while (it.hasNext()) {
+				
+				Map.Entry entry = (Map.Entry) it.next();
+				String key = (String) entry.getKey();
+				int value = (int) entry.getValue();
+				sum+=value;
+				switch(key) {
+					case "type1":rest[0] += value;break;
+					case "type2":rest[1] += value;break;
+					case "type3":rest[2] += value;break;
+					case "type4":rest[3] += value;break;
+					case "type5":rest[4] += value;break;
+					case "type6":rest[5] += value;break;
+					case "type7":rest[6] += value;break;
+					
+				}
+			}
+			
+			//2.遍历条件：若仍有剩余货物
+			while(sum>0) {
+				
+				//新建一个集装箱
+				int WBox = 0;//重量
+				int VBox = 0;//体积
+				int k = 0;//集装箱遍历开始序号
+				List<Integer> reBox = new ArrayList<Integer>();//装箱结果
+				while(k!=-1&&sum>0) {
+					
+					for(int q = 0;q<n;q++)
+						Trest[q] = 0;
+					double[] TR = new double[7];//所有比率
+					double Rate = 0.0;//利用率
+					//计算所有比率，并对不合法比率置0
+					for(int i = 0;i < n;i++) {
+						if(rest[i]>0&&WBox+weight[i]<wei&&VBox+volume[i]<vol) {
+							TR[i] = 0.5*((WBox+weight[i])/(double)wei+(VBox+volume[i])/(double)vol);
+						}
+						else
+							TR[i] = 0.0;
+					}
+					//获取最大值
+					k = 0;
+					for(int i = 0;i < n ;i++) {
+						if(TR[i]>Rate)
+						{
+							k = i;
+							Rate = TR[i];
+						}
+					}
+					if(Rate==0)
+						k = -1;
+					else {
+						reBox.add(k);
+						WBox += weight[k];
+						VBox += volume[k];
+						sum--;
+						rest[k]--;
+					}
+				}
+				//加入一个集装箱信息，获取各类商品数目
+				for(Integer num:reBox) {
+					Trest[num]++;
+				}
+				// 
+				String result="";
+				for(int q = 0;q < n;q++) {
+					if(Trest[q]==0)
+						continue;
+					if(result.length()!=0)
+						result+=" ";
+					result+="type";
+                    int p = q+1;
+					result+=p;
+					result+=" ";
+					result+=Trest[q];
+				}
+//				result+="'";
+				putResult.add(result);
+			}
+
+
+
+        /*********** END ***********/
+        return putResult;
+    }
+}

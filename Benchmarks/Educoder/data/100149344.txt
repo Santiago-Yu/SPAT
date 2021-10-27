@@ -1,0 +1,53 @@
+package step4;
+
+public class Task {
+    private static int sentenceIndex = 0;
+	private static final String LOVE_SENTENCE = "I love you!";
+	private static final double THRESHOLD = 1;
+    public boolean func(double e, double d) {
+	    return (Math.pow(d, 2)+Math.pow(5.0*e/4.0-Math.sqrt(Math.abs(d)), 2)<THRESHOLD);
+	}
+	private char getSentenceChar() {
+        while(true) {
+            if (sentenceIndex >= LOVE_SENTENCE.length()) {
+                sentenceIndex = 0;
+            }
+            char c = LOVE_SENTENCE.charAt(sentenceIndex++);
+            
+            return c;
+        }
+    }
+	public void love(int n){
+		/********* Begin *********/
+		if(n==1) {
+			for(double y = 1.3;y>-1.16;y -=0.06)              
+		{                     
+			for(double x=  -1.2;x<1.2;x+= 0.025)                     
+			{                 
+				//System.out.print(x);
+				double a = x*x+y*y-1;   
+				if((a*a*a-x*x*y*y*y)>=0.0)                                                                                 
+				{ 
+					System.out.print("$"); 
+				}                           
+				/*else if(x==0.9750000000000005&&y==0.9999999999999998)                                
+					System.out.print("$");*/
+				else 
+					System.out.print(" ");
+			}                     
+			System.out.print("\n");              
+		}
+		}
+		else if(n==2) {
+			for (double y = 1.3; y >=-1.1; y = y-0.06) {
+	            for (double x = 1.1; x>= -1.1; x = x-0.025) {
+	                System.out.print(func(y, x) ? getSentenceChar() : ' ');
+	            }
+	            sentenceIndex = 0;
+	            System.out.println();
+	        }
+		}
+	
+		/********* End *********/	
+	}
+}

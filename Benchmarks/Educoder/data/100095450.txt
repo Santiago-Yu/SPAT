@@ -1,0 +1,111 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int flag=0;
+        if (year%4 == 0&& year%100  != 0 || year%400 == 0){
+            flag=1;
+        }
+      if(flag==1)
+      {
+        switch(month){
+            case 1:
+              System.out.print(day);
+                break;
+            case 2:
+                day=day+31;
+               System.out.print(day);
+                break;
+            case 3:
+                day=day+31+29;
+                System.out.print(day);
+                break;
+            case 4:
+                System.out.print(day+31*2+29);
+                 break;
+            case 5:
+                System.out.print(day+31*2+29+30);
+                break;
+            case 6:
+                System.out.print(day+31*3+29+30);
+                break;
+            case 7:
+                System.out.print(day+31*3+29+30*2);
+                break;
+            case 8:
+                System.out.print(day+31*4+29+30*2);
+                break;
+            case 9:
+                System.out.print(day+31*5+29+30*2);
+                break;
+            case 10:
+                System.out.print(day+31*5+29+30*3);
+                break;
+            case 11:
+                 System.out.print(day+31*6+29+30*3);
+                break;
+            case 12:
+                System.out.print(day+31*6+29+30*4);
+                break; 
+           
+      }
+      }
+         if(flag==0)
+          {
+            switch(month){
+            case 1:
+              System.out.print(day);
+                break;
+            case 2:
+                    day=day+31;
+               System.out.print(day);
+                break;
+            case 3:
+                   day=day+31+28;
+                System.out.print(day);
+                break;
+            case 4:
+                    day=day+31*2+28;
+                System.out.print(day);
+                    break;
+            case 5:
+                day=day+31*2+28+30;
+                System.out.print(day);
+                break;
+            case 6:
+                    day=day+31*3+28+30;
+                System.out.print(day+31*3+28+30);
+                break;
+            case 7:
+                    day=day+31*3+28+30*2;
+                System.out.print(day);
+                break;
+            case 8:
+                    day=day+31*4+28+30*2;
+                System.out.print(day);
+                break;
+            case 9:
+                    day=day+31*5+28+30*2;
+                System.out.print(day);
+                break;
+            case 10:
+                    day=day+31*5+28+30*3;
+                System.out.print(day);
+                break;
+            case 11:
+                    day=day+31*6+28+30*3;
+                 System.out.print(day);
+                break;
+            case 12:
+                    day=day+31*6+28+30*4;
+                System.out.print(day);
+                break; 
+          }
+
+                         }
+		/********** End *********/
+	
+}
+
+}

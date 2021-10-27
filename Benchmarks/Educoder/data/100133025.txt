@@ -1,0 +1,31 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+		int len = 92;
+		int[] sum = new int[len];
+		int k = 0;
+		for(int i = 0;i<len;i++) {
+			sum[i] = 0;
+		}
+		for(int i = 0;i<len;i+=(k+1)) {
+			sum[i] = 1;
+			k++;
+		}
+		int m = 0;
+		int n = 0;
+		String temp = (String) date.subSequence(2, date.length());
+		m = Integer.parseInt(temp)-1;
+		if(date.startsWith("8"))
+			m+=31;
+		if(date.startsWith("9"))
+			m+=62;
+		if(sum[m]==1)
+			return true;
+		else
+			return false;
+		
+		
+	}
+}

@@ -1,0 +1,173 @@
+package step3;
+
+/**
+ * Created by zengpeng on 2018/3/14.
+ */
+public class BSTree {
+    private TreeNode root;//根结点
+
+    public BSTree() {
+        root = null;
+    }
+
+    /**
+     * 向树root中插入a
+     *
+     * @param key    要插入的值
+     */
+    public void insert(int key) {
+        TreeNode x = root;
+        TreeNode p = null;//始终指向x的父结点
+        while (x != null) {
+            p = x;
+            if (key < x.item) {
+                x = x.leftChild;
+            } else {
+                x = x.rightChild;
+            }
+        }
+        if (null == p) {//空树
+            root = new TreeNode(key);
+        } else if (key < p.item) {
+            p.leftChild = new TreeNode(key);
+        } else {
+            p.rightChild = new TreeNode(key);
+        }
+    }
+
+    /**
+     * 判断树root中是否包含key，包含则返回true，不包含返回false
+     *
+     * @param key
+     * @return
+     */
+    public boolean search(int key) {
+        
+ TreeNode p = root;
+            while (p != null && key != p.item) {
+                if (key < p.item) {
+                    p = p.leftChild;
+                } else {
+                    p = p.rightChild;
+                }
+            }
+            if (p == null) {
+                return false;
+            } else {
+                return true;
+            }
+
+    }
+
+    
+
+
+    /**
+     * 在树root中删除结点key
+     *
+     * @param key
+     * @return
+     */
+    public void delete(int key) {
+        root = delete(root, key);
+    }
+
+    private TreeNode delete(TreeNode x, int key) {
+        if (x == null) {
+            return null;
+        }
+
+        if (key < x.item) {
+            x.leftChild = delete(x.leftChild, key);
+        } else if (key > x.item) {
+            x.rightChild = delete(x.rightChild, key);
+        } else {
+            if (x.leftChild == null) return x.rightChild;
+            if (x.rightChild == null) return x.leftChild;
+            TreeNode t = x;
+            x = min(t.rightChild);
+            x.rightChild = deleteMin(t.rightChild);
+            x.leftChild = t.leftChild;
+        }
+
+        return x;
+    }
+
+    /**
+     * 删除树x中的最小结点
+     * @param x
+     * @return
+     */
+    private TreeNode deleteMin(TreeNode x) {
+        if (x.leftChild == null) return x.rightChild;
+        x.leftChild = deleteMin(x.leftChild);
+        return x;
+    }
+
+    /**
+     * 查找树x中的最小结点
+     *
+     * @param x
+     * @return
+     */
+    private TreeNode min(TreeNode x) {
+        TreeNode p = x;
+        while (p.leftChild != null) {
+            p = p.leftChild;
+        }
+        return p;
+    }
+
+    public void preOrder() {
+        preOrder(root);
+    }
+
+    public void inOrder() {
+        inOrder(root);
+    }
+
+    public void postOrder() {
+        postOrder(root);
+    }
+
+    private void preOrder(TreeNode node) {
+        if (node != null) {
+            System.out.print(node.item + " ");
+            preOrder(node.leftChild);
+            preOrder(node.rightChild);
+        }
+    }
+
+    private void inOrder(TreeNode node) {
+        if (node != null) {
+            inOrder(node.leftChild);
+            System.out.print(node.item + " ");
+            inOrder(node.rightChild);
+        }
+    }
+
+    private void postOrder(TreeNode node) {
+        if (node != null) {
+            postOrder(node.leftChild);
+            postOrder(node.rightChild);
+            System.out.print(node.item + " ");
+        }
+    }
+
+
+    public static class TreeNode {
+        private TreeNode leftChild;
+        private TreeNode rightChild;
+        private int item;
+
+        public TreeNode(int item) {
+            this(null, null, item);
+        }
+
+        public TreeNode(TreeNode leftChild, TreeNode rightChild, int item) {
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
+            this.item = item;
+        }
+    }
+}

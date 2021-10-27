@@ -1,0 +1,33 @@
+package Q201;
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+    int a= in.nextInt();
+    boolean flag = false;
+  for(int j =0;j<100;j++)
+  {
+	  int b;
+	    int sum=0;
+	    while(a!=0)
+	    {
+	    	b=a%10;
+	    	sum=sum+b*b;
+	    	a=a/10;
+	    }
+	    a=sum;
+	    if(a==1)
+	    {
+	    	flag= true;
+	    }
+  }
+  if(flag==true)
+	  System.out.print("YES");
+  else
+	  System.out.print("NO");
+        
+	}
+
+}

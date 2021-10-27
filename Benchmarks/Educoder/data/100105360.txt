@@ -1,0 +1,22 @@
+package step3;
+
+import java.util.Scanner;
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        String[] array = data.split (" ");
+        for(int i=0;i<array.length;i++){
+        	StringBuffer stringBuffer = new StringBuffer(array[i]);
+        	StringBuffer str1 = stringBuffer.reverse();
+        	String str2 = stringBuffer.toString();
+        	array[i] = str2;
+        	ans.append (str2+" ");
+        }
+        /********** End *********/
+        return ans;
+    }
+}
+
+
+

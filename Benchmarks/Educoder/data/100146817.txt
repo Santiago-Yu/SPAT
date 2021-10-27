@@ -1,0 +1,55 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       // System.out.println(Integer.valueOf(99)%11);
+       //请在此补全你的代码
+    	String num = "";
+        int count = 0;
+      //  nums = sortArry(nums);
+        //排序
+        for(int i = 0; i < nums.length; i ++){
+        	for(int j = 0; j < nums.length - 1; j ++){
+            	if(nums[j] > nums[j +1]){
+                	int tem = nums[j];
+                    nums[j] = nums[j +1];
+                    nums[j+1] = tem;
+                }
+            }
+        }
+        // for(int i = 0; i < nums.length; i ++){
+        // 	System.out.print(nums[i] + ",");
+       //  }
+    
+        for(int i = 0; i < nums.length; i ++){
+             
+            if( (i+count) != (nums[i] -1)){
+            	num = num + String.valueOf(nums[i]  -1);
+               // System.out.print( nums[i] - 2 + ",");
+                count ++;
+                if(count == 3)
+                	break;
+            }
+           
+        }
+        //System.out.println(Integer.valueOf(num)%11);
+        return Integer.parseInt(String.valueOf(Long.parseLong(num)%11));
+	
+	}
+
+    public static int[] sortArry(int[] nums){
+    	for(int i = 0; i < nums.length; i ++){
+        	for(int j = 0; j < nums.length - 1; j ++){
+            	if(nums[j] > nums[j +1]){
+                	int tem = nums[j];
+                    nums[j] = nums[j +1];
+                    nums[j+1] = tem;
+                }
+            }
+        }
+        return nums;
+    }
+	/********* End *********/
+}

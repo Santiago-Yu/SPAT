@@ -1,0 +1,37 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+ 	public int space= 0;
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+        for(int i=space;i>0;i--){
+        	System.out.print("  ");
+        }
+        if(file.isFile()) 
+        { 
+            
+            System.out.print(("--" + file.getName()+"\n"));
+        	return ;
+        }
+		File [] sonFiles = file.listFiles();
+        String result = "+--" + file.getName() + "\n" ;
+        System.out.print(result);  
+        space ++;
+        for(File son : sonFiles ){         
+        	showDirStructure(son);
+        }
+        space --;
+	
+
+
+
+
+	}
+	
+
+
+	/********** END **********/
+}

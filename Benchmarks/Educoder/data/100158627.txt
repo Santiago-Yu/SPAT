@@ -1,0 +1,32 @@
+#include <iostream>
+#include<string.h>
+using namespace std;
+int main()
+{
+    char a[20];
+    char b[20];
+    char c;
+    int i=0,j,k,res=0;
+    int alength;
+    int blength;
+    scanf("%s",a);
+    scanf("%s",b);
+    alength=strlen(a);
+    blength=strlen(b);
+        for(i=0;i<alength;i++){
+        	for(j=0;j<blength;j++){
+        		if(a[i]==b[j]){
+        			int num=1;
+        			k=1;
+        			while((i+k)<alength&&(j+k)<blength&&a[i+k]==b[j+k]){
+        				k++;
+        				num++;
+        			}
+        			if(res<num)
+        				res=num;
+        		}
+        	}
+        }
+    printf("%d",res);
+    return 0;
+}

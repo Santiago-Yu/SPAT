@@ -1,0 +1,20 @@
+package step5;
+
+import java.util.Scanner;
+
+
+public class Task {
+    
+    	// 树的高度
+	
+public int getDepth(TreeNode tree) {
+		if (tree == null)
+			return 0;// 递归结束：空树高度为0
+		else {
+			int i = getDepth(tree.left);
+			int j = getDepth(tree.right);
+			return (i < j) ? (j + 1) : (i + 1);
+		}
+	}
+	
+}

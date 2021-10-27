@@ -1,0 +1,30 @@
+package Pid_203;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in = new Scanner(System.in);
+		int k = in.nextInt();
+		int max = 1;
+		int length = k/2;
+		
+		for(int i=1;i<=length;i++){
+			double temp1=0,temp2=0;
+			if(k%i >0){
+				temp1 = Math.pow(i, k/i) * (k%i);
+				temp2 = Math.pow(i, k/i-1) * (k%i+i);
+				max = Math.max((int)temp1, max);
+				max = Math.max(max, (int)temp2);
+				
+			}
+			else
+				max = Math.max(max,(int)Math.pow(i, k/i));
+			
+			
+		}
+		
+		System.out.print(max);
+	}
+
+}

@@ -1,0 +1,83 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		StringBuffer str=new StringBuffer(releaseDate);
+        StringBuffer temp=new StringBuffer();
+        for(int i=0;i<4;i++){
+            temp.append(str.charAt(i));
+        }
+        int year,mon,day_d,pool=0,now_mon,now_day;
+        year=Integer.parseInt(temp.toString());
+        temp.delete(0,4);
+        for(int i=5;i<7;i++){
+            temp.append(str.charAt(i));
+        }
+        mon=Integer.parseInt(temp.toString());
+        temp.delete(0,2);
+        for(int i=8;i<10;i++){
+            temp.append(str.charAt(i));
+        }
+        day_d=Integer.parseInt(temp.toString());
+        temp.delete(0,2);
+        int [] mon_flag={31,28,31,30,31,30,31,31,30,31,30,31};
+        while (day>0)
+        {
+            if(year%4==0&&year%100!=0||year%400==0)
+            {
+                pool=1;
+            }
+            else
+            {
+                pool=0;
+            }
+
+            now_day=mon_flag[mon-1];
+            if(mon==2&&pool==1)
+            {
+                now_day++;
+            }
+            now_day=now_day-day_d;
+            if(day<=now_day)
+            {
+                day_d+=day;
+                break;
+            }
+            else
+            {
+                day_d=0;
+                mon++;
+                day-=now_day;
+                if(mon>12)
+                {
+                    mon=1;
+                    year++;
+                }
+
+            }
+
+
+        }
+
+        temp.append(year);
+        temp.append("-");
+        if(mon<10) {
+            temp.append("0");
+        }
+        temp.append(mon);
+
+        temp.append("-");
+        if(day<10)
+        {
+            temp.append("0");
+        }
+        temp.append(day_d);
+
+        //System.out.println(year+"-"+mon+"-"+day_d);
+        return temp.toString();
+	}
+	
+	
+}

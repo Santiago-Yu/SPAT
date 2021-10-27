@@ -1,0 +1,35 @@
+package case3;
+
+import java.util.Scanner;
+
+public class StringTest {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String str = sc.next();
+		// String substring(int start,int end)
+		// 截取字符串，传入的两个参数分别为要截取边界的下标
+		// 在java api 中,通常使用两个数字表示范围时,都是含头不含尾,即包含起始下标对应的内容,但不包含结束下标的处对应的内容
+		// String toUpperCase() 将当前字符串中的英文部分转换为全大写
+		/********* Begin *********/
+		
+		char[] buffer = str.toCharArray();
+
+		int domainStart=0;
+		int domainEnd=0;
+		boolean isDomainStart = false;
+		for(int i=3;i<buffer.length;i++) {
+			if((buffer[i-2]=='w')&&(buffer[i-3]=='w')&&(buffer[i-4]=='w')) {
+				domainStart = i;
+				isDomainStart = true;
+			}
+			if((isDomainStart) && (buffer[i] == '.')) {
+				domainEnd = i;
+				break;
+			}
+		}
+		String s1 = str.substring(domainStart, domainEnd);
+        String s2 = s1.toUpperCase();
+        System.out.println(s1);
+        System.out.println(s2);
+	}
+}

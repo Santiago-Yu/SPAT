@@ -1,0 +1,364 @@
+import java.util.Scanner;
+
+
+public class Java_LexAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+    private static String[] keyword = {"auto", "break", "case", "char", "const", "continue",
+            "default", "do", "double", "else", "enum", "extern",
+            "float", "for", "goto", "if", "int", "long", "register",
+            "return", "short", "signed", "sizeof", "static", "struct",
+            "switch", "typedef", "union", "unsigned", "void", "volatile",
+            "while"};
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine()).append('\n');
+        }
+    }
+
+
+    // add your method here!!
+    private static int isKey(String buf)
+    {
+        for(int i=0; i<keyword.length; i++){
+            if(buf.equals(keyword[i])){
+                return i+1;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean isLetter(char buf)
+    {
+        return (buf >= 'a' && buf <= 'z') || (buf >= 'A' && buf <= 'Z');
+    }
+
+    private static boolean isDigital(char buf)
+    {
+        return buf >= '0' && buf <= '9';
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //System.out.print(prog);
+        String access = "";
+        char word;
+        int count = 1;
+        int yinhao = 0;
+        for(int i=0; i<prog.length()-2; i++)
+        {
+            access = "";
+            word = prog.charAt(i);
+            if(word == ' '||word == '\t'||word == '\n'||word == '\r'){}
+            else if(isLetter(word))
+            {
+                while(isLetter(word)||isDigital(word))
+                {
+                    access += word;
+                    word = prog.charAt(++i);
+                }
+                --i;
+                if(isKey(access) != -1)
+                {
+
+                    System.out.println((count++)+": <"+access+","+isKey(access)+">");
+                }
+                else {System.out.println((count++)+": <"+access+","+81+">");}
+            }
+            else if(isDigital(word))
+            {
+                while(isDigital(word)||(word == '.')&&isDigital(prog.charAt(i+1)))
+                {
+                    access += word;
+                    word = prog.charAt(++i);
+                }
+                --i;
+                System.out.println((count++)+": <"+access+","+80+">" );
+            }
+            else
+                {
+                switch (word)
+                {
+                    case '-':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '-'||prog.charAt(i+1) == '='||prog.charAt(i+1) == '>')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("-")) System.out.println((count++)+": <"+access+","+33+">");
+                            if(access.equals("--")) System.out.println((count++)+": <"+access+","+34+">");
+                            if(access.equals("-=")) System.out.println((count++)+": <"+access+","+35+">");
+                            if(access.equals("->")) System.out.println((count++)+": <"+access+","+36+">");
+                        }break;
+                    case '!':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '=')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("!")) System.out.println((count++)+": <"+access+","+37+">");
+                            if(access.equals("!=")) System.out.println((count++)+": <"+access+","+38+">");
+                        }break;
+                    case '%':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '=')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("%")) System.out.println((count++)+": <"+access+","+39+">");
+                            if(access.equals("%=")) System.out.println((count++)+": <"+access+","+40+">");
+                        }break;
+                    case '&':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '='||prog.charAt(i+1) == '&')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("&")) System.out.println((count++)+": <"+access+","+41+">");
+                            if(access.equals("&&")) System.out.println((count++)+": <"+access+","+42+">");
+                            if(access.equals("&=")) System.out.println((count++)+": <"+access+","+43+">");
+                        }break;
+                    case '(':
+                        {
+                            System.out.println((count++)+": <"+'('+","+44+">");
+                        }break;
+                    case ')':
+                        {
+                            System.out.println((count++)+": <"+')'+","+45+">");
+                        }break;
+                    case '*':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '=')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("*")) System.out.println((count++)+": <"+access+","+46+">");
+                            if(access.equals("*=")) System.out.println((count++)+": <"+access+","+47+">");
+                        }break;
+                    case ',':
+                        {
+                            System.out.println((count++)+": <"+','+","+48+">");
+                        }break;
+                    case '.':
+                        {
+                            System.out.println((count++)+": <"+'.'+","+49+">");
+                        }break;
+                    case '/':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '=')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(prog.charAt(i+1)=='/')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                                while(prog.charAt(i+1)!='\n')
+                                {
+                                    word = prog.charAt(++i);
+                                    access += word;
+                                }
+                            }
+                            if(prog.charAt(i+1)=='*')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                                while(true)
+                                {
+                                    if((prog.charAt(i+1)=='*')&&(prog.charAt(i+2)=='/'))
+                                    {
+                                        access += '*';
+                                        access += '/';
+                                        i = i+2;
+                                        break;
+                                    }
+                                    else 
+                                    {
+                                         word = prog.charAt(++i);
+                                         access += word;
+                                    }
+                                }
+                            }
+                            if(access.equals("/")) System.out.println((count++)+": <"+access+","+50+">");
+                            if(access.equals("/=")) System.out.println((count++)+": <"+access+","+51+">");
+                            else System.out.println((count++)+": <"+access+","+79+">");
+                        }break;
+                    case ':':
+                        {
+                            System.out.println((count++)+": <"+':'+","+52+">");
+                        }break;
+                    case ';':
+                        {
+                            System.out.println((count++)+": <"+';'+","+53+">");
+                        }break;
+                    case '?':
+                        {
+                            System.out.println((count++)+": <"+'?'+","+54+">");
+                        }break;
+                    case '[':
+                        {
+                            System.out.println((count++)+": <"+'['+","+55+">");
+                        }break;
+                    case ']':
+                        {
+                            System.out.println((count++)+": <"+']'+","+56+">");
+                        }break;
+                    case '^':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '=')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("^")) System.out.println((count++)+": <"+access+","+57+">");
+                            if(access.equals("^=")) System.out.println((count++)+": <"+access+","+58+">");
+                        }break;
+                    case '{':
+                        {
+                            System.out.println((count++)+": <"+'{'+","+59+">");
+                        }break;
+                    case '|':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '='||prog.charAt(i+1)=='|')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("|")) System.out.println((count++)+": <"+access+","+60+">");
+                            if(access.equals("||")) System.out.println((count++)+": <"+access+","+61+">");
+                            if(access.equals("|=")) System.out.println((count++)+": <"+access+","+62+">");
+                        }break;
+                    case '}':
+                        {
+                            System.out.println((count++)+": <"+'}'+","+63+">");
+                        }break;
+                    case '~':
+                        {
+                            System.out.println((count++)+": <"+'~'+","+64+">");
+                        }break;
+                    case '+':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '='||prog.charAt(i+1)=='+')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("+")) System.out.println((count++)+": <"+access+","+65+">");
+                            if(access.equals("++")) System.out.println((count++)+": <"+access+","+66+">");
+                            if(access.equals("+=")) System.out.println((count++)+": <"+access+","+67+">");
+                        }break;
+                    case '<':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '=')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if (prog.charAt(i+1) == '<')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                                if(prog.charAt(i+1) == '=')
+                                {
+                                    word = prog.charAt(++i);
+                                    access += word;
+                                }
+                            }
+                            if(access.equals("<")) System.out.println((count++)+": <"+access+","+68+">");
+                            if(access.equals("<<")) System.out.println((count++)+": <"+access+","+69+">");
+                            if(access.equals("<<=")) System.out.println((count++)+": <"+access+","+70+">");
+                            if(access.equals("<=")) System.out.println((count++)+": <"+access+","+71+">");
+                        }break;
+                    case '=':
+                        {
+                            access += word;
+                            if(prog.charAt(i+1) == '=')
+                            {
+                               word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if(access.equals("=")) System.out.println((count++)+": <"+access+","+72+">");
+                            if(access.equals("==")) System.out.println((count++)+": <"+access+","+73+">");
+                            
+                        }
+                    case '>':
+                        {
+                            access += word;
+                            if (prog.charAt(i+1) == '=')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                            }
+                            if (prog.charAt(i+1) == '>')
+                            {
+                                word = prog.charAt(++i);
+                                access += word;
+                                if(prog.charAt(i+1) == '=')
+                                {
+                                    word = prog.charAt(++i);
+                                    access += word;
+                                }
+                            }
+                            if(access.equals(">")) System.out.println((count++)+": <"+access+","+74+">");
+                            if(access.equals(">=")) System.out.println((count++)+": <"+access+","+75+">");
+                            if(access.equals(">>")) System.out.println((count++)+": <"+access+","+76+">");
+                            if(access.equals(">>=")) System.out.println((count++)+": <"+access+","+77+">");
+                        }break;
+                    case '"':
+                        {
+                            yinhao++;
+                            System.out.println((count++)+": <"+'"'+","+78+">");      
+                            if(yinhao%2 == 1) while(prog.charAt(i+1) != '"')
+                            {
+                               word = prog.charAt(++i);
+                               access += word;
+                            }
+                            if(access!="")
+                            {
+                                System.out.println((count++)+": <"+access+","+81+">");                            
+                            }
+                            
+                        }break;
+
+                }
+                }
+            }
+          System.out.print((count++)+": <"+'}'+","+63+">");
+
+        }
+
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

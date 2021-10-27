@@ -1,0 +1,32 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+		int []dplength=new int [arr.length];//以arr[i]为峰谷的长度
+		for(int i=0;i<dplength.length;++i)
+			dplength[i]=0;
+		for(int i=0;i<arr.length;++i){
+			int left=0,right=0;
+			int m=i;
+			while(m>=1&&(arr[m-1]-arr[m]>0)){
+				++left;
+				m--;
+			}
+			int n=i;
+			while(n<arr.length-1&&(arr[n+1]-arr[n]>0)){
+				++right;
+				++n;
+			}
+			if(left>0&&right>0)
+				dplength[i]=left+right+1;
+		}
+		int max=0;
+		for(int i=0;i<dplength.length;++i)
+			max=Math.max(max, dplength[i]);
+		return max;
+		
+		/********* End *********/	
+	}
+}

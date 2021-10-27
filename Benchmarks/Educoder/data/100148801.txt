@@ -1,0 +1,55 @@
+package step1;
+
+public class Task {
+    static void swap(Integer[] v, int a, int b) {
+    	int temp = v[a];
+		v[a] = v[b];
+		v[b] = temp;
+    }
+    static void print(Integer[] s) {
+    	for (int i = 0; i < s.length; i++) {
+                System.out.print(s[i] + " ");
+            
+		}
+        System.out.println();
+    }
+	static void cock(Integer[] s) {
+    	int n = s.length;
+    int left=0;
+    int k = 0;
+    int right=n-1;
+    while(left<right){
+        for(int i=left;i<right;i++, k++){
+            if(s[i]>s[i+1]){
+                swap(s, i, i+1);
+                print(s);
+            }
+        }
+        right--;
+        k = 0;
+        for(int i=right;i>left;i--, k++){
+            if(s[i]<s[i-1]){
+                swap(s, i, i-1);
+                print(s);
+            }
+        }
+        left++;
+    }
+    }
+    
+    public static boolean method(Integer[] arr) {
+        for(int i = 0;i<arr.length-1;i++) {
+            if(arr[i]>arr[i+1])return false;
+        }
+        return true;
+    }
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        if (!method(arr))
+			cock(arr);
+        else
+            print(arr);
+		
+		/********* End *********/
+	}
+}

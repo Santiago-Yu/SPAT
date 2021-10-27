@@ -1,0 +1,33 @@
+package step1;
+
+public class Test {
+	public static void main(String[] args) {
+		//创建Dog对象
+        dog penghao=new dog();
+		//设置Dog对象的属性
+		penghao.name="五花肉";
+        penghao.color="棕色";
+        penghao.race="阿拉斯加";
+        penghao.food="骨头";
+		//输出小狗的属性
+		System.out.println("名字：" +penghao.name+ "，毛色：" +penghao.color+ "，品种：" +penghao.race);
+		
+		//调用方法
+		penghao.eat();
+        penghao.act();
+	}
+}
+
+//在这里定义Dog类
+class dog{
+    String name;
+    String color;
+    String race;
+    String food;
+    void eat(){
+        System.out.println("啃"+food);
+    }
+    void act(){
+        System.out.println("叼着"+food+"跑");
+    }
+}

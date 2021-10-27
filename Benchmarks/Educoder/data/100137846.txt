@@ -1,0 +1,35 @@
+package case5;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
+
+public class DateTest {
+	public static void main(String[] args) throws ParseException {
+        Scanner sc = new Scanner(System.in);
+		String line = sc.nextLine();
+		// 键盘录入你的出生年月日 格式为yyyy-MM-dd
+        Date date = new Date();
+        SimpleDateFormat st = new SimpleDateFormat("yyyy-MM-dd");
+		// 把该字符串转换为一个日期
+        date = st.parse(line);
+		// 通过该日期得到一个毫秒值
+        long s = date.getTime();
+		// 获取2020年10月1日的毫秒值
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd");
+        String time1 = "2020-10-01";
+        Date time2 = time.parse(time1);
+        long time3 = time2.getTime();
+		// 两者想减得到一个毫秒值
+		// 把该毫秒值转换为天 打印输出
+        float day = (((((time3-s)/1000)/60)/60)/24);
+        int day1 = (int)day;
+        System.out.println("你的出生日期距离2020年10月1日:"+day1+"天");
+       
+		
+		/********* Begin *********/
+
+		/********* End *********/
+	}
+}

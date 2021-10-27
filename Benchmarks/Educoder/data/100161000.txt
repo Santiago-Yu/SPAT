@@ -1,0 +1,34 @@
+package step2;
+import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+	public Document getDoc1(String url) throws IOException{
+    File input = new File("./backups/www.ctrip.com.txt"); 
+    Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+   
+    return doc;
+}
+public Document getDoc2(String url) throws IOException{
+    File input = new File("./backups/you.ctrip.com.txt"); 
+    Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+    
+    return doc;
+}
+public Elements getLinks(Document doc){
+    return doc.select("link[href]");
+}
+public Element getDiv(Document doc){
+    Element element = doc.getElementsByClass("pop_attention").first();
+    //Element element = doc.select("div.pop_attention").first();
+    return element;
+}
+public Elements getI(Document doc){
+    return doc.select("li > i");
+}
+	
+}

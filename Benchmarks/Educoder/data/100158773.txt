@@ -1,0 +1,51 @@
+package Q102;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner scanner = new Scanner(System.in);
+		String s = scanner.nextLine();
+		String[] ss = s.split(" ");
+		int[] a = new int[ss.length];
+		boolean pay = false;
+		for(int i=0;i<ss.length;i++)
+		{
+			a[i] = Integer.parseInt(ss[i]);
+		}
+		int m=0,n=0;
+		if(a[0]==5) {
+			pay = true;
+			m++;
+		}else {
+			pay = false;
+		}
+		if(pay) {
+			for(int i=1;i<ss.length;i++)
+			{
+				if(a[i]==10) {
+					if(a[i]-5<=m*5) {
+						n++;
+						m--;
+						pay = true;
+					}else {
+						pay = false;
+					}
+				}else if(a[i]==20) {
+					if(a[i]-5<=m*5+n*10) {
+						m--;
+						n--;
+						pay = true;
+					}else {
+						pay = false;
+					}
+				}else {
+					m++;
+					pay = true;
+				}
+			}
+		}
+		System.out.print(pay);
+	}
+
+}

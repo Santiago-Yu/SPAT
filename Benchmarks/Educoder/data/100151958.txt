@@ -1,0 +1,27 @@
+package step3;
+import java.util.Scanner;
+
+public class TestJava10_4 {
+	public static void main(String[] args) {
+		/******Begin******/
+		int  y=0,m=0,d=0;
+        Scanner sc=new Scanner(System.in);
+        System.out.println("请输入年份：");
+            y=sc.nextInt();
+        System.out.println("请输入月份：");
+		m=sc.nextInt();
+        if(y%4==0&&y%100!=0||y%400==0){
+         if(m==2){
+             d=28;}
+            else if(m==1||m==3||m==5||m==7||m==8||m==10||m==12){
+                d=31;}
+            else{d=30;}}
+            else  if(m==2){
+             d=29;}
+            else if(m==1||m==3||m==5||m==7||m==8||m==10||m==12){
+                d=31;}
+            else{d=30;}
+        System.out.println(y+"年"+m+"月的天数是："+d+"天");
+        /******End******/
+	}
+}

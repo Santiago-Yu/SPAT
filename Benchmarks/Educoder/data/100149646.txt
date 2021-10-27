@@ -1,0 +1,56 @@
+package step1;
+
+import java.sql.*;
+import java.text.DecimalFormat;
+
+public class QueryPass {
+	
+	// 查询数据代码不用上实验报告
+	public static void queryDB() {
+		
+		/********* Begin *********/
+        Connection conn = null;
+        Statement st = null;
+        ResultSet rs = null;
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            //conn = DriverManager.getConncetion("jdbc:mysql://127.0.0.1:3306/tsgc?useUnicode=true&characterEncoding=utf-8","root","123123");
+             conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/tsgc?useUnicode=true&characterEncoding=utf-8","root","123123");
+            st = conn.createStatement();
+            rs = st.executeQuery("select * from employee");
+            while(rs.next()){
+                Double d= Double.parseDouble(rs.getString("salary")); 
+                DecimalFormat df = new DecimalFormat("#.0"); 
+                System.out.println("no:" + rs.getString("no") + "	name:" + rs.getString("name") + "	password:" + rs.getString("password")+ "	sex:" + rs.getString("sex") + "	salary" + df.format(d) );
+            }
+        }
+       catch(Exception e){
+       }finally{
+           try{
+               conn.close();
+               st.close();
+               rs.close();
+           }catch(SQLException e){}
+       }
+        ///tsgc?useUnicode=true&characterEncoding=utf-8"
+		// 第一步：加载驱动
+		// 第二步：建立连接, "root"和"123123"是针对MySQL设置了用户名(root)和密码(123123)的情况
+		// 127.0.0.1:3306是mysql服务器地址及端口   数据库编码格式设置为utf-8
+			
+		
+
+		// 第三步：建立statement对象
+		
+		
+
+		// 第四步：查询数据
+		
+		
+
+		// 第五步：关闭statement对象和连接对象
+		
+		
+
+		/********* End *********/
+	}
+}

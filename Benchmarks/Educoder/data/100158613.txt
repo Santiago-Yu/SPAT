@@ -1,0 +1,31 @@
+#include<stdio.h>
+#include<string.h>
+int main(){
+	char a[1002];
+	char b[1002];
+	scanf("%s %s",a,b);
+	int x,y,z;
+	x=strlen(a);
+	y=strlen(b);
+	z=x>y?x:y;
+	y=x<y?x:y;
+	int m,max=0;
+	for(int i=0;i<z;i++){
+		for(int j=0;j<y;j++){
+			m=1;
+			if(a[i]==b[j]){
+				while(1){
+					if(a[i+m]==b[j+m]){
+						m++;
+					}
+				    else 
+					  break;
+				}
+			}
+			if(max<m)
+		      max=m;
+		}
+	}
+	printf("%d",max);
+	return 0;
+}

@@ -1,0 +1,23 @@
+package Pid_107;
+
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner s=new Scanner(System.in);
+		int nextInt = s.nextInt();
+		long trailingZeros = trailingZeros(nextInt);
+		System.out.print(trailingZeros);
+	}
+	
+	
+	public static long trailingZeros(long n) {
+		long sum = 0;
+		while (n != 0) {
+			sum += n / 5;
+			n /= 5;
+		}
+		return sum;
+	}
+}

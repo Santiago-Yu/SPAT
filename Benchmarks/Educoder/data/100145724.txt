@@ -1,0 +1,42 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+			int months[]= {0,31,28,31,30,31,30,31,31,30,31,30,31};
+		int year = Integer.valueOf(releaseDate.substring(0,4));
+		int month = Integer.valueOf(releaseDate.substring(5,7));
+		int nowday = Integer.valueOf(releaseDate.substring(8,10))+day;
+		if(year%400==0||(year%4==0&&year%100!=0)) {
+			months[2]=29;
+		}
+		while(nowday>months[month]) {
+			nowday-=months[month];
+			month++;
+			if(month>12) {
+				month=1;
+				year++;
+				if(year%400==0||(year%4==0&&year%100!=0)) {
+					months[2]=29;
+				}else {
+					months[2]=28;
+				}
+			}
+		}
+		return year+"-"+(month>9?"":"0")+month+"-"+(nowday>9?"":"0")+nowday;
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

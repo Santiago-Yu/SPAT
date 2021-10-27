@@ -1,0 +1,65 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+
+		int maxlength = 0;
+			int sign = 0;
+			int mathmin = arr[0].intValue();
+			int mathmax = arr[0].intValue();
+			for (int i = 1;  i<arr.length; i++){
+		            if ( mathmin > arr[i].intValue() ) {
+						mathmin = arr[i].intValue();
+					}
+		            else if(i == arr.length-1 &&  mathmin == arr[0].intValue()){
+		                
+		                return 0;
+		  
+		            }
+		        }
+	        mathmin = arr[0].intValue();
+			for ( int i = 1; i<arr.length; i++ ) {
+				//判断谷底
+				if ( mathmin > arr[i].intValue() ) {
+					mathmin = arr[i];
+//					System.out.println("谷底值"+arr[i]);
+				}
+				else {
+					mathmax = arr[i];
+//					System.out.println("谷顶值:"+arr[i]);
+	             
+					if ( i != arr.length - 1 && arr[i+1] < mathmax) {
+						if (maxlength < i - sign) {
+							maxlength = i - sign;
+							sign = i;
+						}
+						mathmin = arr[i];
+						mathmax = arr[i];
+	 
+					}
+					if ( i != arr.length - 1 && arr[i+1].intValue() == mathmax ) {
+						if (maxlength < i - sign) {
+							maxlength = i - sign;
+							sign = i+1;
+						}
+						//下一组开始
+						mathmin = arr[i+1];
+						mathmax = arr[i+1];
+	        
+					}
+					else if ( i == arr.length - 1 && mathmin != arr[0].intValue()) {
+						if (maxlength < i - sign) {
+							maxlength = i - sign;
+	                       
+						}
+					}
+				}
+
+			}
+			
+			return maxlength + 1;
+		/********* End *********/	
+	}
+}

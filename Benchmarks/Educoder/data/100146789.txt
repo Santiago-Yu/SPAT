@@ -1,0 +1,28 @@
+package step1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class GetScores {
+    
+    public int getLostScores(int[] num){
+       //请在此补全你的代码
+       	Map<Integer,Boolean> map = new HashMap<>();
+        int[] arr = new int[3];
+        for (int i = 1; i <= 10000 ; i++) {
+            map.put(i,true);
+        }
+        for (int n : num) {
+            map.put(n,false);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i <= 10000 ; i++) {
+            if (map.get(i)){
+                sb.append(i);
+            }
+        }
+        int result = (int) (Long.valueOf(sb.toString())%11);
+        return result;
+    }
+
+}

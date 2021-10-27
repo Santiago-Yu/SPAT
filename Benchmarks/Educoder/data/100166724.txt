@@ -1,0 +1,52 @@
+package step1;
+import java.util.*;
+public class Test_Figure {
+  public static void main(String args[]){
+	  Scanner sc=new Scanner(System.in);
+	  double x=sc.nextDouble();
+	  Circle c=new Circle(x);
+	  
+	  double l,w;
+	  l=sc.nextDouble();
+	  w=sc.nextDouble();
+	  Rectangle r1=new Rectangle(l,w);
+	  
+	  System.out.println(c.area());
+	  System.out.println(r1.area());	
+   }
+}
+
+interface Figure{
+	double PI=3.14;
+	public double area(); //求面积
+}
+/*********Begin***********/
+class Rectangle implements Figure{
+    double w,l;
+    public Rectangle(double a,double b)
+    {
+        l=a;
+        w=b;
+    }
+    public double area()
+    {
+        return w*l;
+    }
+}
+
+class Circle implements Figure{
+    double r;
+    public Circle(double x)
+    {
+        r=x;
+    }
+    public double area()
+    {
+        return r*r*PI;
+    }
+}
+
+
+
+/*********End***********/
+

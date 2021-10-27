@@ -1,0 +1,54 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	 /********** BEGIN **********/
+    public void sortArray(int[][] arr){
+        for (int i = 0; i < arr.length; i++) {
+            Arrays.sort(arr[i]);
+            //数组颠倒
+            for (int j = 0; j < arr[i].length / 2; j++) {
+                int t = arr[i][j];
+                arr[i][j]=arr[i][arr[i].length-j-1];
+                arr[i][arr[i].length-j-1]=t;
+            }
+        }
+
+        int[] vis = new int[arr.length];
+        int[] sum = new int[arr.length];
+
+        Arrays.fill(vis, 0);
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr.length; j++) {
+                sum[i] += arr[i][j];
+            }
+        }
+
+        Arrays.sort(sum);
+
+        for (int i = arr.length - 1; i >= 0; i--) {
+            int t = 0;
+            for (int j = arr.length - 1; j >= 0; j--) {
+                t += arr[i][j];
+            }
+
+
+            for (int k = sum.length - 1; k >= 0; k--) {
+                if (t == sum[k] && vis[k] == 0) {
+                    System.out.println(Arrays.toString(arr[i]));
+                    vis[i] = 1;
+                }
+            }
+
+        }
+
+
+
+
+    }
+
+    /********** END **********/
+}
+	

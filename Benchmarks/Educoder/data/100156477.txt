@@ -1,0 +1,36 @@
+package step4;
+import java.util.Scanner;
+
+//根据输入的秒数，输出对应的分钟数和小时数，用方法完成。
+public class TestJava25_4 {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入秒数：");
+		int seconds = sc.nextInt();
+		//此处调用方法，输出对应的分钟数和小时数
+		TestJava25_4 hello=new TestJava25_4();
+		int h=hello.xiaoshi(seconds);
+		int c=hello.feng(seconds,h);
+		System.out.println(seconds+"秒对应的小时数是"+h+"，分钟数是："+c);
+		
+	}
+	/*******Start*********/
+	//此处定义方法
+	public static int xiaoshi(int k) {
+			int n=k;
+			int j=0;
+			for(;n>=3600;n=n-3600) {
+				j++;
+			}
+			return j;
+		}
+		public static int feng (int b,int x) {
+		int y=(b-x*3600)/60;
+		return y;
+		}
+	
+	
+	
+	/*******End*********/
+}

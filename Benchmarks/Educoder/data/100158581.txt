@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    char x[100];
+    char y[100];
+    int num = 0;
+    scanf("%s",&x);
+    scanf("%s",&y);
+    int tmp = 0;
+    int xlen = strlen(x);
+    int ylen = strlen(y);
+    for(int i = 0;i < xlen;i++)
+        for(int j = 0;j < ylen;j++)
+        {
+            tmp = 0;
+            if(x[i] == y[j])
+            {
+                int tmpx = i;
+                int tmpy = j;
+                while(x[tmpx]==y[tmpy])
+                {
+                    tmp++;
+                    tmpx++;
+                    tmpy++;
+                }
+                if(tmp > num) num = tmp;
+             }
+                
+        }
+        cout<<num;
+}

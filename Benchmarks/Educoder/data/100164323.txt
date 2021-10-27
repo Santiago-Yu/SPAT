@@ -1,0 +1,85 @@
+package step4;
+import java.util.Scanner;
+public class Josephus {
+
+   public static void main(String args[]){
+	   /**
+		* 数组解决约瑟夫环问题
+		* @param total   总人数（如41）
+		* @param number  要报的数（如3）
+		* Josecount()算法，显示最后一个的编号
+		*/
+		   int total,number;
+		   Scanner scan=new Scanner(System.in);
+		   total=scan.nextInt();  //输入参与游戏的总人数
+		   number=scan.nextInt(); //输入要报的数字
+	       Josecount(total,number);
+
+   }
+    
+	public static void Josecount(int personNumber ,int number) { //显示最后那个人的原始编号
+		    //显示最后那个人的原始编号
+        	int k=0;//最后一人编号
+        	int[] persons = new int[personNumber]; //建立数组，存放所有人的原始编号，从1开始.....personNumber最后一人
+        	for (int i = 0; i < personNumber; i++) {
+            	persons[i] = i+1;
+        	}
+	 
+	        /*************begin***************/
+	int x = personNumber;
+        	int[] person = new int[personNumber+personNumber];
+        	for (int i = 0; i < 2*personNumber; i++) {
+            	
+            	if(i >= personNumber) person[i] = 0;
+            	else person[i] =persons[i];
+        	}
+        	while(x != 1) {
+        		int e = x%number;
+        		int c = x/number;
+        	
+            	x = x - c;
+        		int a = 1;
+        		if(x>=number) {
+        		for(int b = number-1; b<=x; b=b+number-1 )
+        		{
+        			
+        			for(int d =0; d<number-1;d++) 
+        			{
+        				if(b+d>=x) break;
+        				person[b+d] = person[b+d+a];
+        			}
+        			a++;
+        		}
+        		if(e!=0) 
+        		{
+        			for(int b = 0;b<x-1;b++)
+        			{
+        				person[x -2-b+e] = person[x-2-b];
+        			}
+        			for(int b = 0;b<e;b++)
+        			{
+        				person[b] = person[x-1+b];
+        			}
+        		
+        		}
+        		}
+        		else {
+        			int f = number%x;
+        			int g = f-1;
+        		
+        			for(int i = g; i<x - g;i++)
+        			{
+        				person[i] = person[i+1];
+        			}
+        			x--;
+        			}
+        			}
+        			k = person[1];
+        			System.out.print("最后一个人编号："+k);
+	
+
+
+	        /*************end***************/
+	}
+
+}

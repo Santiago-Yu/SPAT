@@ -1,0 +1,20 @@
+class n19172377 {
+	public static void appendFile(String namePrefix, File baseDir, File file, ZipOutputStream zipOut)
+			throws IOException {
+		Assert.Arg.notNull(baseDir, "baseDir");
+		Assert.Arg.notNull(file, "file");
+		Assert.Arg.notNull(zipOut, "zipOut");
+		String path = FileSystemUtils.getRelativePath(baseDir, file);
+		if (namePrefix == null)
+			namePrefix = "";
+		ZipEntry zipEntry = new ZipEntry(namePrefix + path);
+		zipOut.putNextEntry(zipEntry);
+		InputStream fileInput = FileUtils.openInputStream(file);
+		try {
+			org.apache.commons.io.IOUtils.copyLarge(fileInput, zipOut);
+		} finally {
+			fileInput.close();
+		}
+	}
+
+}

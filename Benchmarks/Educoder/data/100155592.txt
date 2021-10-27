@@ -1,0 +1,46 @@
+package task5;
+
+public class Box {
+
+    private double width;
+    private double height;
+    private double depth;
+    private int boxType;
+
+    public Box(int boxType) {
+        this.boxType = boxType;
+    }
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+     public double volume() {
+        switch (boxType) {
+            case 1:
+                return width * height * depth;
+            case 2:
+                return width * width * 3.14 * height;
+            default:
+                return 0;
+        }
+    }
+public void setWidth(double Width1){
+                this.width=Width1;
+                }
+public void  setHeight(double Height1){
+                this.height=Height1;
+                }
+public void setDepth(double Depth1){
+				this.depth=Depth1;
+				}
+public double     getWidth(){return width;}
+public double   getHeight(){return height;}
+public double getDepth(){return depth;}
+}

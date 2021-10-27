@@ -1,0 +1,26 @@
+package step2;
+
+public class Task {
+    
+	 public int virusArea(int n,int m,char[][] area){
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(area[i][j] == 'o') {
+                    ans++;
+                    setX(area, i, j);
+                }
+            }
+        }
+        return ans;
+    }
+    public void setX(char[][] area, int i, int j) {
+        if(i > -1 && i < area.length && j > -1 && j < area[0].length && area[i][j] == 'o') {
+            area[i][j] = 'x';
+            setX(area, i + 1, j);
+            setX(area, i, j + 1);
+            setX(area, i - 1, j);
+            setX(area, i , j - 1);
+        }
+    }
+}

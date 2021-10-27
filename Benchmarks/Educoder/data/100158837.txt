@@ -1,0 +1,43 @@
+package Q205;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+	Scanner in = new Scanner(System.in);
+  	int m = in.nextInt();
+  	int n = 0;
+  	int food[] = new int[100];
+  	while(in.hasNext()){
+  		food[n] = in.nextInt();
+  		n++;
+  	}
+  	food = sort(food,n);
+  	int weight[] = new int[m+1];
+  	weight[0] = 1;
+  	int s = 0;
+  	for(int i = 0;i < n;i++){
+  		for(int j = m;j >= 0;j--){
+  			if(weight[j] == 1 && j+food[i] <= m){
+  				weight[j+food[i]] = 1;
+  				s = s>(j+food[i])?s:(j+food[i]);
+  			}
+  		}
+  	}
+  	System.out.print(s);
+  	in.close();
+	}
+	public static int[] sort(int arr[],int leng){
+		int i,j,temp;
+		for(i = 0;i < leng-1;i++){
+			for(j = 0;j < leng-i-1;j++){
+				if(arr[j] > arr[j+1]){
+					temp = arr[j];
+					arr[j] = arr[j+1];
+					arr[j+1] = temp;
+				}
+			}
+		}
+		return arr;
+	}
+}

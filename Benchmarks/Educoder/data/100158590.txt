@@ -1,0 +1,25 @@
+#include<stdio.h>
+#define N 1001
+int main(void){
+	char a[N],b[N];
+	scanf("%s",a);
+	scanf("%s",b);
+	int max=0;
+	for(int i=0;a[i]!='\0';i++){
+		for(int j=0;b[j]!='\0';j++){
+			int count=0;
+			if(a[i]==b[j]){
+				for(int k=i,m=j;a[k]!='\0'&&b[m]!='\0';k++,m++){
+					if(a[k]==b[m]){
+						count++;
+					}else {
+						break;
+					}
+				}
+				if(count>max)max=count;
+			}
+		}
+	}
+	printf("%d",max);
+	return 0;
+} 

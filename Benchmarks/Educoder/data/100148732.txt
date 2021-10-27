@@ -1,0 +1,70 @@
+package step1;
+import java.util.ArrayList;
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        int count=0;
+        int preIndex=0;
+        int backIndex=arr.length-1;
+        while(preIndex<backIndex)
+        {
+        	for(int i=preIndex+1;i<arr.length;i++)
+        	{
+        		if(arr[i-1]>arr[i])
+        		{
+        			int temp=arr[i-1];
+        			arr[i-1]=arr[i];
+        			arr[i]=temp;
+        			String a="";
+        	for(int j=0;j<arr.length;j++)
+        	{
+        		a+=arr[j];	
+        		a+=" ";
+        	count++;
+        	}
+        	System.out.println(a);
+        		}
+        	}
+        	preIndex++;
+        	if(preIndex>=backIndex)
+        		{
+        		break;
+        		}
+        	
+        	for(int i=backIndex-1;i>=0;i--)
+        	{
+        		if(arr[i]>arr[i+1])
+        		{
+        			int temp=arr[i+1];
+        			arr[i+1]=arr[i];
+        			arr[i]=temp;
+        			String a="";
+                	for(int j=0;j<arr.length;j++)
+                	{
+                		a+=arr[j];
+                		a+=" ";
+                		count++;
+                	}
+                System.out.println(a);
+        		}
+        			
+        	}
+        	backIndex--;
+        	
+        	
+        }
+        if(count==0)
+            {String k="";
+                   	for(int j=0;j<arr.length;j++)
+                   	{
+                   		k+=arr[j];
+                   		k+=" ";
+                   		count++;
+                   	}
+                   System.out.println(k);
+            }
+        
+		/********* End *********/
+	}
+}

@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args)
+	{
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt(); // 长
+		int width = sc.nextInt(); // 宽
+		int commen = f(length, width);
+		System.out.println(commen);
+		System.out.println(length*width/commen/commen);
+
+	}
+
+	public static int f(int a, int b)
+	{
+		while(a != b)
+		{
+			if(a < b)
+			{
+				int temp = a;
+				a = b;
+				b = temp;
+			}
+			a -= b;
+		}
+		return b;
+	}
+}

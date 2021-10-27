@@ -1,0 +1,53 @@
+package step5;
+
+/**
+ * Created by sykus on 2018/3/20.
+ */
+public class HeapSort {
+
+    public static void sort(int arr[]) {
+        /********** Begin *********/
+
+        int n = arr.length;
+        for (int k = n / 2; k >= 1; k--) {
+            int l = k;
+            while (2 * l <= n) {
+                int j = 2 * l;
+                if (j < n && arr[j - 1] < arr[j + 1 - 1]) j++;
+                if (arr[l - 1] > arr[j - 1]) break;
+                int tmp = arr[l - 1];
+                arr[l - 1] = arr[j - 1];
+                arr[j - 1] = tmp;
+                l = j;
+            }
+        }
+
+        while (n > 1) {
+            int tmp = arr[0];
+            arr[0] = arr[n - 1];
+            arr[n - 1] = tmp;
+            int k = 1;
+            n--;
+            while (2 * k <= n) {
+                int j = 2 * k;
+                if (j < n && arr[j - 1] < arr[j]) j++;
+                if (arr[k - 1] > arr[j - 1]) break;
+                tmp = arr[k - 1];
+                arr[k - 1] = arr[j - 1];
+                arr[j - 1] = tmp;
+                k = j;
+            }
+            print(arr);
+        }
+        /********** End *********/
+    }
+
+    private static void print(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+
+}
+

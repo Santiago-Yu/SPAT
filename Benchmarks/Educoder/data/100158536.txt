@@ -1,0 +1,50 @@
+package Pid_104;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in = new Scanner(System.in);
+        String a = in.nextLine();
+        int t = in.nextInt();
+        String b[] = a.split(" ");
+        int ab[] = new int[b.length];
+        for(int i=0; i<b.length;i++){
+		   ab[i] = Integer.parseInt(b[i]);
+        }
+        //main
+        int sum =0;
+        int x=0;
+        int d=0;
+        int f=1;
+        int g=2;
+        int qw=0;
+        int m[] = new int[1000000];
+        for(int i=d;i<ab.length-2;i++){
+           for(int j=f;j<ab.length-1;j++){
+              for(int p=g;p<ab.length;p++){
+                 m[x] = ab[i]+ab[j]+ab[p];
+                 x++; 
+              }
+              g++;
+              qw++;
+           }
+            f++;
+            g = f+1;
+        }
+        for(int y=0;y<x;y++){
+           if(m[y]<t){
+           sum++;
+           }
+        }
+        System.out.print(sum);
+        
+        
+        
+        
+        
+        
+        
+        
+	}
+}

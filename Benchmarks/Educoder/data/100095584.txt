@@ -1,0 +1,54 @@
+package step4;
+import java.util.*;
+public class DayCount {
+		public static void dayCount(int year, int month, int day) {
+			/********** Begin *********/
+    int d=0;
+    int days=0;
+			for(int i=1;i<month;i++) {
+			switch (i) {
+	case 1:
+	case 3:
+	case 5:
+	case 7:
+	case 8:
+	case 10:
+	case 12:
+		d=31;
+		
+		break;
+	case 2:
+		if((year % 100 !=0 &&year % 4 == 0) || (year % 100 == 0 && year%400==0))
+		{
+			d=29;
+		}
+		else {
+			d=28;
+		}
+		break;
+	case 4:
+	case 6:
+	case 9:
+	case 11:
+		d=30;
+		break;
+	default:
+		break;
+	}
+			days=days+d;
+    }
+			
+System.out.print(days+day);
+			/********** End *********/
+		}
+public static void main(String[] args) {
+	System.out.println("请分别输入年，月，日(分别用空格隔开)");
+    Scanner scanner =new Scanner(System.in);
+  String all=scanner.nextLine();
+  String [] Count =all.split(" ");
+  int year=Integer.parseInt(Count[0]);
+  int month=Integer.parseInt(Count[1]);
+  int day=Integer.parseInt(Count[2]);
+  dayCount(year, month, day);
+}
+}

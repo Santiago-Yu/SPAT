@@ -1,0 +1,60 @@
+package step3;
+import java.util.Scanner;
+public class Main{
+    public static void main(String[]args){
+        Scanner cin = new Scanner(System.in);
+        /***Begin your code here***/
+		int h =cin.nextInt();
+		if(h>=100&&h<=999){
+ int a=h%10;
+ int b=(h-a)/100;
+ int c=(h-b*100)/10;
+ if(h==a*a*a+b*b*b+c*c*c){
+	 System.out.println("narcissistic");
+ }
+ else
+ System.out.println("neither");
+}
+
+if(h>=1000&&h<=9999){
+
+	int a=h%10;
+	int b=h/1000;
+	int c=(h-b*1000)/100;
+	int d=(h-b*1000-c*100)/10;
+	if(h==a*a*a*a+b*b*b*b+c*c*c*c+d*d*d*d){
+		System.out.println("rose");
+	}
+	else{
+		System.out.println("neither");
+	}
+}
+if(h>=0&&h<=10){
+	System.out.println("neither");
+}
+if(h>9999){
+	System.out.println("neither");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /***End your code here***/
+        cin.close();
+    }
+}

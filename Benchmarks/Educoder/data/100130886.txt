@@ -1,0 +1,52 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+        int i,j,m,max,temp;
+		for( i=0;i<arr.length;i++){
+            for( j=0;j<arr[i].length-1;j++){
+                max=j;
+                for( m=j+1;m<arr[i].length;m++){
+                    if(arr[i][max]<arr[i][m])
+                        max=m;
+                }
+                if(max!=j){
+                    temp=arr[i][max];
+                    arr[i][max]=arr[i][j];
+                    arr[i][j]=temp;
+                }
+            }
+        }
+        int b[]=new int[arr.length];
+        int a[][]=new int [arr.length][arr.length];
+        for(i=0;i<arr.length;i++){
+            for(j=0;j<arr[i].length;j++){
+                b[i]+=arr[i][j];
+            }
+        }
+        for(i=0;i<arr[i].length-1;i++){
+            max=i;
+            for(j=i+1;j<arr.length;j++){
+                if(b[max]<b[j]){
+                    max=j;
+                }
+                if(max!=i){
+                  for(m=0;m<arr.length;m++){
+                      a[max][m]=arr[max][m];
+                      arr[max][m]=arr[i][m];
+                      arr[i][m]=a[max][m];
+                }}
+            }
+        }
+        for( i=0;i<arr.length;i++){
+            System.out.println(Arrays.toString(arr[i]));
+        }
+    }
+    
+    /********** END **********/
+}
+	

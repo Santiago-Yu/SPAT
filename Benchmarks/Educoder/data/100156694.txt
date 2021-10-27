@@ -1,0 +1,30 @@
+package step2;
+
+public class Task {
+	
+	public int mySqrt(int x){
+		/********* Begin *********/
+		int left=1,right=(x+1)/2;
+        while(left<right){
+        int mid=(left+right)/2;
+        int result= mid*mid;
+        int result2=(mid+1)*(mid+1);
+if(result==x){
+	return mid;
+	}
+else if(result>x){
+	 right=mid-1;
+	}
+else if(result<x){
+	 left=mid+1;
+	}
+     }
+int temp=right*right;
+if(temp>x)
+         return right-1;
+else return right;
+
+		/********* End *********/
+	};
+	
+}

@@ -1,0 +1,27 @@
+package step2;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+	private Document doc;
+	public Task(Document doc) {
+		this.doc=doc;
+	}
+
+	//获取所有链接
+	public Elements getLinks(){
+		return doc.select("link[href]");
+	}
+	
+	//获取第一个class为“pop_attention”的div
+	public Element getDiv(){
+		Element e=doc.getElementsByClass("pop_attention").first();
+		return e;
+	}
+	
+	//获取所有li之后的i标签
+	public Elements getI(){
+		return doc.select("li>i");
+	}
+	
+}

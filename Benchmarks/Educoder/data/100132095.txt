@@ -1,0 +1,23 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temps){
+		/********** BEGIN **********/
+		int Q=temps.length;
+		int w[]=new int[Q];
+		for(int i=0;i<Q;i++){
+			for(int j=i+1;j<Q;j++){
+				if(temps[i]-temps[j]<0){
+					w[i]=j-i;
+                    break;
+				}else{
+					w[i]=0;
+				}
+				
+			}
+		}
+		return w;
+	
+		/********** END **********/
+	}
+}

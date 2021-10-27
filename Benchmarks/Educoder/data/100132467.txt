@@ -1,0 +1,46 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        int s=0;//正方形的面积
+        int m=0;//长方形的面积
+        if(length>=width){
+          for(int i=width;i>0;i--){
+              m=length*width;
+              s=i*i;
+              if(m%s==0&&length%i==0&&width%i==0){
+                int x=m/s;
+                 System.out.println(i);
+                 System.out.println(x);
+                  break;
+              }
+          }
+        }
+        else{
+          for(int i=length;i>0;i--){
+              m=length*width;
+              s=i*i;
+              if(m%s==0&&length%i==0&&width%i==0){
+                int x=m/s;
+                 System.out.println(i);
+                 System.out.println(x);
+                  break;
+              }
+          }
+        }
+		
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

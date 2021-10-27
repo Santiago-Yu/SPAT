@@ -1,0 +1,53 @@
+package step1;
+import java.util.LinkedList;
+import java.util.List;
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+         StringBuilder sb = new StringBuilder(s);
+        for (int i = 0; i < ops.size(); i++) {
+            Operation o = ops.get(i);
+            if (o.t.equals("I")) {
+                sb.insert(p, o.s);
+                p += o.s.length();
+            } else if (o.t.equals("B")) {
+                int index1 = p - o.l;
+                if (index1 <= 0) {
+                    sb.delete(0, p);
+                    p = 0;
+                } else {
+                    sb.delete(index1, p);
+                    p = index1;
+                }
+            } else if (o.t.equals("D")) {
+                int index2 = p + o.l;
+                if (index2 >= sb.length()) {
+                    sb.delete(p, sb.length());
+                } else {
+                    sb.delete(p, index2);
+                }
+            } else if (o.t.equals("L")) {
+                p -= o.l;
+                if (p < 0) {
+                    p = 0;
+                }
+            } else if (o.t.equals("R")){
+                p += o.l;
+                if (p > sb.length()) {
+                    p = sb.length();
+                }
+            }
+        }
+        return sb.toString();
+
+
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

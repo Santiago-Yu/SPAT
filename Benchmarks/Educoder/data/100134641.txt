@@ -1,0 +1,41 @@
+package case6;
+
+public class finalTest {
+	public static void main(String args[]) {
+		Bike1 obj = new Bike1();
+		obj.r();
+
+		Bike2 honda = new Bike2();
+		honda.ru();
+
+		Bike3 yamaha = new Bike3();
+		yamaha.run();
+	}
+}
+//不可以修改 final 变量的值
+// final方法,不可以重写
+//// 不可以扩展 final 类
+class Bike1 {
+	final int SPEEDLIMIT= 90;
+    
+	void r() {
+		int speedlimit = 120; 
+		System.out.println("speedlimit=120");
+	}
+
+}
+
+class Bike2 {
+	final void ru() {
+		System.out.println("running safely with 100kmph");
+	}
+}
+
+
+final class Bike3 {
+    void run() {
+		System.out.println("running safely with 100kmph");
+	}
+}
+
+

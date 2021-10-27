@@ -1,0 +1,21 @@
+package Step4;
+
+import java.util.Scanner;
+
+public class regex {
+	 public static void main(String[] args) {
+		 Scanner sc=new Scanner(System.in);
+		 String w = sc.nextLine();
+         checkQQ (w);
+         sc.close();
+	 }
+	 public static void checkQQ(String qq) {
+		 /********** Begin *********/
+          boolean flag=qq.matches("[1-9][0-9]{4,14}");
+         if(!flag)
+             System.out.println("非法qq");
+         else
+             System.out.println("合法qq");
+         /********** End *********/
+	 }
+}

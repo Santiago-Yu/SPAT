@@ -1,0 +1,32 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		
+		copy("src/step4/input/input.txt","src/step4/output/output.txt");
+		copy("src/step4/input/input.jpg","src/step4/output/output.jpg");
+		
+		/********* End *********/		
+	}
+    
+    public void copy(String src, String dest)throws IOException{
+    	FileReader fr = new FileReader(src);
+        FileWriter fw = new FileWriter(dest);
+        char[] buf  =  new char[1024];
+        int len = 0;
+        while((len=fr.read(buf))!=-1){
+        	fw.write(buf,0,len);
+        }
+        fw.flush();
+        fw.close();
+    }
+}

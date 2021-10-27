@@ -1,0 +1,42 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        int j;
+    	for(int i=1;i<nums.length;i++){
+            int temp=nums[i];
+            for(j=i;j>0&&nums[j-1]>temp;j--){
+                nums[j]=nums[j-1];
+            }
+            nums[j]=temp;
+        }
+        int x=0;
+        int[] a=new int[3];
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]!=i+x+1){
+               a[x]=i+x+1;
+               x++;
+            }
+        }
+        for(int i=1;i<a.length;i++){
+            int temp=a[i];
+            for(j=i;j>0&&a[j-1]>temp;j--){
+                a[j]=a[j-1];
+            }
+            a[j]=temp;
+        }
+       //System.out.println(a[0]+" "+a[1]+" "+a[2]);
+       
+        String s=a[0]+""+a[1]+a[2];
+        //System.out.println(s);
+        long m=Long.parseLong(s);
+        long k=m%11;
+       // System.out.println(m%11);
+        
+        return (int)k;
+    }
+	/********* End *********/
+}

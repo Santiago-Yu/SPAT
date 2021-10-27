@@ -1,0 +1,33 @@
+package step1;
+import java.util.Scanner;
+
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		/******Begin******/
+			Scanner sc=new Scanner(System.in);
+		
+
+		double x,y=0,b;
+		System.out.println("请输入西瓜重量：");
+		x=sc.nextDouble();
+		System.out.println("请输入顾客所付钱数：");
+		y=sc.nextDouble();
+		if(x>20){
+			b=x*0.85;
+		}else if(x>15&&x<=20){
+			b=x*0.90;
+		}else if(x>10&&x<=15){
+			b=x*0.95;
+		}else if(x>5&&x<=10){
+			b=x*1.00;
+		}else {
+			b=x*1.05;
+		}
+		System.out.println("西瓜应付钱数："+String.format("%.2f",b));
+		
+		System.out.println("应找钱数："+String.format("%.2f",(y-b)));
+		// TODO 自动生成的方法存根
+
+	}
+
+}

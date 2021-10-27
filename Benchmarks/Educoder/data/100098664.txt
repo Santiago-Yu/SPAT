@@ -1,0 +1,43 @@
+package step1;
+//import java.util.Scanner;
+
+public class Yard {
+    private int length;
+    private int width;
+    private double area;
+    private double perimeter;
+    public Yard(){
+    	length = 0;
+        width = 0;
+        area = calcuArea();
+        perimeter = calcuPerimeter();
+    }
+    public Yard( int length, int width ){
+    	this.length = length;
+        this.width = width;
+        area = calcuArea();
+        perimeter = calcuPerimeter();
+    }
+    public void setLength( int length ){
+    	this.length = length;
+        area = calcuArea();
+        perimeter = calcuPerimeter();
+    }
+	public void setWidth( int width ){
+    	this.width = width;
+        area = calcuArea();
+        perimeter = calcuPerimeter();
+    }
+    public double calcuArea(){
+        return length * width;
+    }
+    public double calcuPerimeter(){
+    	return (length + width)*2;
+    }
+	public double getAcreage(){
+    	return area;
+    }
+    public double getPerimeter(){
+    	return perimeter;
+    }
+}

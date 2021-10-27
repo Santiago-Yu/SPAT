@@ -1,0 +1,101 @@
+package step2;
+
+import java.awt.font.TextMeasurer;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BestTeam {
+
+	/********* Begin *********/
+    
+    private static ArrayList<Item> tmpArr = new ArrayList<>();
+	private static List<List<Item>> result = new ArrayList<>();
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		combine(0, selectedNum, abilities);
+		long max = 0;
+		for (List<Item> list : result) {
+
+			// 是否超出范围
+			boolean flag = true;
+			List<Integer> sort = new ArrayList<>();
+			for (Item it : list) {
+				sort.add(it.getIndex());
+			}
+			for (int i = 0; i < sort.size() - 1; i++) {
+				if (sort.get(i + 1) - sort.get(i) > distance)
+					flag = false;
+			}
+
+			if (flag) {
+				int ji = 1;
+				for (Item it : list) {
+					ji = ji * it.getValue();
+				}
+				if (ji > max)
+					max = ji;
+			}
+
+		}
+		return max;
+    }
+    
+    public static void combine(int index, int k, int[] arr) {
+		if (k == 1) {
+			for (int i = index; i < arr.length; i++) {
+				List<Item> list = new ArrayList<>();
+				Item it = new Item(arr[i], i);
+				// tmpArr.add(arr[i]);
+				tmpArr.add(it);
+				for (Item item : tmpArr) {
+					// System.out.println(item.getValue());
+					list.add(item);
+				}
+				result.add(list);
+				// System.out.println(tmpArr.toString());
+				// tmpArr.remove((Object)arr[i]);
+				tmpArr.remove((Object) it);
+			}
+		} else if (k > 1) {
+			for (int i = index; i <= arr.length - k; i++) {
+				Item it = new Item(arr[i], i);
+				// tmpArr.add(arr[i]);
+				tmpArr.add(it);
+				combine(i + 1, k - 1, arr);
+				// tmpArr.remove((Object)arr[i]);
+				tmpArr.remove((Object) it);
+			}
+		} else {
+			return;
+		}
+
+	}
+
+	/********* End *********/
+}
+
+class Item {
+	public Item(int value, int index) {
+		this.value = value;
+		this.index = index;
+	}
+
+	private int value;
+	private int index;
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+}

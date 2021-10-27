@@ -1,0 +1,36 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int r = 1;
+        int length1 = length, width1 = width;
+        int a = 0,num = 0,max = 0;
+        if(length1<width1){
+            a = length1;
+            length1 = width1;
+            width1 = a;
+        }
+        for(;r != 0;){
+            r = length1 % width1;
+            if(width1 < r)
+            {
+                a = width1;
+                width1 = r;
+                r = a;
+            }
+            length1 = width1;
+            width1 = r;
+        }
+        max = length1;
+        num = (length/max)*(width/max);
+        System.out.println(max);
+        System.out.println(num);
+        /********** END **********/
+	}
+}

@@ -1,0 +1,47 @@
+package step4;
+
+import java.util.Scanner;
+public class DayCount {
+	public static void dayCount(int year, int month, int day) {
+		switch(month)
+			{
+			case 1:System.out.print(day);break;
+			case 2:System.out.print(31+day);break;
+			case 3:if(year%4==0&&year%100!=0)System.out.print(60+day);
+			         else System.out.print(59+day);break;
+			case 4:if(year%4==0&&year%100!=0)System.out.print(91+day);
+	         			else System.out.print(90+day);break;
+			case 5:if(year%4==0&&year%100!=0)System.out.print(121+day);
+	         			else System.out.print(120+day);break;
+			case 6:if(year%4==0&&year%100!=0)System.out.print(152+day);
+	         			else System.out.print(151+day);break;
+			case 7:if(year%4==0&&year%100!=0)System.out.print(182+day);
+	         			else System.out.print(181+day);break;
+			case 8:if(year%4==0&&year%100!=0)System.out.print(213+day);
+	         			else System.out.print(212+day);break;
+			case 9:if(year%4==0&&year%100!=0)System.out.print(244+day);
+	         			else System.out.print(243+day);break;
+			case 10:if(year%4==0&&year%100!=0)System.out.print(274+day);
+	         			else System.out.print(273+day);break;
+			case 11:if(year%4==0&&year%100!=0)System.out.print(305+day);
+	         			else System.out.print(304+day);break;
+			case 12:if(year%4==0&&year%100!=0)System.out.print(335+day);
+	         			else System.out.print(334+day);break;
+			default :break;
+
+			
+			}
+	}
+    
+public static void main(String[] args){
+
+	Scanner scanner = new Scanner(System.in);
+    
+	int year=scanner.nextInt();
+    int month=scanner.nextInt();
+	int day=scanner.nextInt();
+	dayCount(year,month,day);
+}
+    
+
+}

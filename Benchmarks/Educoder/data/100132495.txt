@@ -1,0 +1,45 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int m=0;
+        int n=0;
+        int y=0;
+        if(length<width){
+            m=width;
+            n=length;
+        }else{
+            m=length;
+            n=width;
+        }
+        while(m%n!=0){
+            y=m%n;
+            m=n;
+            n=y; 
+        }
+        int bianchang=n;
+        int o=length/n;
+        int p=width/n;
+        int number=o*p;
+        System.out.println(bianchang);
+        System.out.println(number);
+    
+            
+      
+    
+    
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

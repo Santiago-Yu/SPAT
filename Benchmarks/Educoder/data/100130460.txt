@@ -1,0 +1,35 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		/********** BEGIN **********/
+		if(n==0) {
+			System.out.println("false");
+		}
+		double out=0;
+		int judge=0;
+		if(n%2!=0) judge=1;
+		if(judge==0) {//此时为偶数
+			for(int i=2;i<=n;i+=2) {
+				out+=3.0/(double)i;
+			}
+		}
+		else {
+			for(int i=1;i<=n;i+=2) {
+				out+=4.0/(double)i;
+			}
+		}
+		System.out.println(""+out);
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

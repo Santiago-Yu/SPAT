@@ -1,0 +1,25 @@
+package step2;
+
+public class AdditionCalculator {
+	public void addition(int a, int n) {
+		/********** Begin *********/
+        
+        int sum = 0;
+        while(n > 0)
+        {
+            int s = a;
+            int power = 1;
+            
+            for(int j = 1; j < n; j++)
+            {
+                power *= 10;
+                s = s + a * power;
+            }
+            sum = sum + s;
+            n--;
+        }
+        
+        System.out.print(sum);
+		/********** End *********/
+	}
+}

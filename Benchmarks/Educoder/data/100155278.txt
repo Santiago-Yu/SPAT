@@ -1,0 +1,39 @@
+package task3;
+import java.util.Scanner;
+
+public class Box {
+    double  width;
+	double  height;
+	double depth;
+	int boxType;
+	
+	public static final int RECTANGLE = 1;
+	public static final int CYLINDER = 2;
+	
+	public double volume (int boxType)
+	{
+		double volume = 0;
+		
+		if(boxType==1)
+		{
+			volume = width * height * depth;
+		}
+		if (boxType == 2)
+		{
+			volume = 3.14 * width * width * height;
+			}
+		return volume;
+	}
+		
+	
+	public static void main(String [] args)
+	{
+		Box box=new Box();
+		box.width = 10;
+		box.height = 20;
+		Scanner input = new Scanner(System.in);
+	    int boxType =  input.nextInt();
+		double volume= box.volume(boxType);
+		System.out.println("the volumn is:"+ volume);
+	}
+}

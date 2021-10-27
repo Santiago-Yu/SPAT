@@ -1,0 +1,24 @@
+package step1;
+import java.util.Scanner;
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int i,p,sum2=0;
+        if((num1<1||num1>999)||(num2<1||num2>999)){
+            System.out.println("OVERFLOADING");
+        }
+        if(num1>num2) {
+            p=num1;
+            num1=num2;
+            num2=p;
+        }
+		for (i=num1;i<=num2;i++){
+            int sum=i/100+(i%100)/10+(i%10);
+            sum2=sum2+sum;
+        }
+        return sum2;
+		/********** END **********/
+	}
+}

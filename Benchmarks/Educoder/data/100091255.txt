@@ -1,0 +1,23 @@
+package step2;
+import java.util.*;
+public class TriangleJudge{
+	  public static void main(String[] args) {
+
+        // 从命令行读入三个正整数
+        // 这三个数取自测试集的输入
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+        int c = sc.nextInt();
+
+        TriangleJudge triangle = new TriangleJudge();
+        System.out.println(triangle.TriangleJudge(a,b,c));
+    }
+    // 判断三条边能否构成一个三角形
+    public boolean TriangleJudge(int a, int b, int c) {
+        // 请在此添加实现代码
+   	boolean f;
+        f = (a+b>c&&a+c>b&&b+c>a)?true:false;
+        return f;
+}
+}

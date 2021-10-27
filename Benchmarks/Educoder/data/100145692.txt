@@ -1,0 +1,82 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+        String result="";
+		String[] split=releaseDate.split("\\-");
+		//print(split);
+		//把每一个月的天数用数组存起来
+		int day1=Integer.parseInt(split[2]);//dd
+		int month=Integer.parseInt(split[1]);//dd
+		int year=Integer.parseInt(split[0]);//dddd
+		int status=day;//?
+		//第一位用0补充，可以用下标代表位数
+		int Month1[]= {0,31,28,31,30,31,30,31,31,30,31,30,31};//非闰月的
+		int Month2[]= {0,31,29,31,30,31,30,31,31,30,31,30,31};//闰月的
+		int Month[];//?
+		while(status!=0) {
+			if(year%4 ==0 || year%400 ==0 && year %100!=0) {
+				Month=Month2;
+			}else {
+				Month=Month1;
+			}
+			if(status>Month[month]-day1) {//说明保质期超过这个月
+				status=status-Month[month]+day1-1;//-1？
+				day1=1;
+				if(month<12) {
+					month++;
+				}else {
+					month=1;
+					year++;
+				}
+				
+			}
+			else {
+				day1=day1+status;
+				status=0;
+			}
+		}
+		result=result+year+"-";
+		if(!isDouble(month)) {
+			result+="0"+month+"-";
+		}else {
+			result+=month+"-";
+		}
+		if(!isDouble(day1)) {
+			result+="0"+day1;
+		}else {
+			result+=day1;
+		}
+
+
+
+
+
+
+		//System.out.println(result);
+       return result;
+		
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+    public  boolean isDouble(int a) {
+		boolean flag=false;
+		if(a/10!=0) {
+			flag=true;
+		}
+		return flag;
+	}
+	
+	
+}

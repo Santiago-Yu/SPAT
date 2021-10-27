@@ -1,0 +1,34 @@
+package step2;
+
+public class Task {
+
+	public int getNum(int n){
+		/********* Begin *********/
+		int dropsum = 1;
+		int sum = n;
+		while(true){
+			if(isoushu(sum)){
+				sum = sum/2;
+			}else{
+				sum = (sum-1)/2;
+				dropsum++;
+			}
+			if(sum==1){
+				break;
+			}
+		}
+		return dropsum;
+		
+		
+		
+		
+		/********* End *********/
+	}
+    public  boolean isoushu(int num){
+		if(num%2==0){
+			return true;
+		}
+		return false;
+	}
+	
+}

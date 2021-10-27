@@ -1,0 +1,55 @@
+package step1;
+
+import java.sql.*;
+
+public class QueryPass {
+	
+	// 查询数据代码不用上实验报告
+	public static void queryDB() {
+		
+		/********* Begin *********/
+		Connection connection = null;
+        Statement statement = null;
+        ResultSet resultset = null;
+		// 第一步：加载驱动
+		try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }		
+		// 第二步：建立连接, "root"和"123123"是针对MySQL设置了用户名(root)和密码(123123)的情况
+		// 127.0.0.1:3306是mysql服务器地址及端口   数据库编码格式设置为utf-8
+		try{
+			connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/tsgc?useUnicode=true&characterEncoding=utf-8", "root", "123123");
+		// 第三步：建立statement对象
+			 statement = connection.createStatement();
+		// 第四步：查询数据
+		resultset = statement.executeQuery("select * from employee"); 
+            while (resultset.next()) { 
+                System.out.println("no:" + resultset.getString("no") + "\t" + "name:" + resultset.getString("name") + "\t" + "password:" + resultset.getString("password") + "\t" + "sex:"+ resultset.getString("sex") + "\t" + "salary" + resultset.getFloat("salary"));
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+		// 第五步：关闭statement对象和连接对象
+		finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+		/********* End *********/
+	}
+}

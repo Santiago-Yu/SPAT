@@ -1,0 +1,30 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] martix){
+        int n=martix.length;
+	for(int layer = 0; layer < n/2; ++layer)
+	{
+		int first = layer;
+		int last = n - 1- layer;
+		for(int i = first; i < last; ++i)
+		{
+			int offset = i - first;
+			int top = martix[first][i];
+			
+			
+			martix[first][i] = martix[last-offset][first];
+			
+			
+			martix[last-offset][first] = martix[last][last-offset];
+			
+			
+			martix[last][last-offset] = martix[i][last];
+			
+			
+			martix[i][last] = top;
+		}
+	}
+
+
+    }}

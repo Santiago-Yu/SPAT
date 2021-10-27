@@ -1,0 +1,66 @@
+package step1;
+
+//p55  队列
+public class Queue<T> {
+
+	// 队列的默认大小
+	final int MaxSize = 10;
+	private T queueArray[];
+	private int front, rear;
+
+	// 队列的初始化
+	public Queue() {
+		front = rear = 0;
+
+		// 初始化的队列
+		queueArray = (T[]) new Object[MaxSize];
+
+	}
+
+	// 入队
+	public void EnQueue(T obj) {
+		/********** Begin *********/
+		
+		 if((rear+1)%queueArray.length==front){
+		   T[] p=(T[])new Object[queueArray.length*2];
+		   if(rear==((T[])queueArray).length-1)
+           {
+			   for(int i=1;i<=rear;i++)
+				   p[i]=queueArray[i];
+		   }
+            else{
+			    int i,j=1;
+			    for(i=front+1;i<queueArray.length;i++,j++)
+				     p[j]=queueArray[i];
+			    for(i=0;i<rear;i++,j++)
+				     p[j]=queueArray[i];
+			    front=0;
+			    rear=queueArray.length-1;
+		   }
+		   queueArray=p;
+	   }
+	   rear=(rear+1)%queueArray.length;
+	   queueArray[rear]=obj;
+		
+
+
+
+		/********** End *********/
+	}
+
+	// 出队
+	public T DeQueue() {
+
+		/********** Begin *********/
+
+		 if(front==rear){
+		   System.out.println("列队已空，无法出队！");
+		   return null;
+	   }
+	   front=(front+1)%queueArray.length;
+        return queueArray[front];
+		/********** End *********/
+
+	}
+
+}

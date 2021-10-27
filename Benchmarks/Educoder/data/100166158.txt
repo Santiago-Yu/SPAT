@@ -1,0 +1,35 @@
+package step1;
+import java.util.*;
+public class Person {
+    private String name; //姓名
+    private String number; //身份证号
+    private Date birthday; //出生日期
+    
+   /************Begin*************/
+	public Person(){
+        birthday=new Date();
+    }
+	public Person(String name,String number,Date birthday){
+    	this.name=name;
+        this.number=number;
+        this.birthday=birthday;
+    }
+    public Person(String name,String number,int year,int month,int day){
+    	this.name=name;
+        this.number=number;
+        birthday=new Date(year,month,day);
+    }
+    public String toString(){
+    	return "name="+name+" number="+number+" birthday:"+birthday;
+    }
+  /************End*************/
+    public String getname(){
+    	return name;
+    }
+    public String getnum(){
+    	return number;
+    }
+    public Date getBirthday(){
+    	return birthday;
+    }
+}

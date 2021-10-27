@@ -1,0 +1,50 @@
+package step4;
+
+import java.util.Scanner;
+
+public class DayCount {
+	public static void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int logal;
+        int sum=0;
+        int[] sb={31,28,31,30,31,30,31,31,30,31,30,31};
+        if(( year%4==0&& year % 100 != 0 )|| (year%400==0&&year%100!=0))
+        {
+            logal=1;
+        }
+        else
+        {
+            logal=2;
+        }
+       switch(logal){
+           case 1:
+               sb[1]=29;
+               for(int i=0;i<month-1;i++)
+               {
+                   sum=sum+sb[i];
+               }
+               sum=sum+day;
+               System.out.print(sum);
+               break;
+           case 2:
+               for(int j=0;j<month-1;j++)
+               {
+                   sum=sum+sb[j];
+               }
+               sum=sum+day;
+               System.out.print(sum);
+               break;
+      }
+/********** End *********/
+        	
+    }
+	public static void main(String []args){
+        Scanner scan=new Scanner(System.in);
+        int year=scan.nextInt();
+            int month=scan.nextInt();  
+            int day=scan.nextInt(); 
+           scan.close();
+           dayCount(year,month,day);
+   }
+}
+

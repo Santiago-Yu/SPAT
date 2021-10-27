@@ -1,0 +1,61 @@
+
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //获取“http://hotels.ctrip.com/”Docment对象
+	public Document getDoc1(String url) throws IOException{
+        File input = new File("./backups/hotel.ctrip.com.txt"); 
+        Document doc = Jsoup.parse(input,"UTF-8",url);
+		return doc;
+    }
+
+	//获取“http://hotels.ctrip.com/domestic-city-hotel.html”的Docment对象
+	public Document getDoc2(String url) throws IOException{
+        File input = new File("./backups/hotels.ctrip.com_domestic-city-hotel.txt"); 
+        Document doc = Jsoup.parse(input,"UTF-8",url);
+		return doc;
+	}
+
+		//获取所有链接
+	public List<String> getLinks(Document doc){
+		Elements links= doc.select("a[href]");
+        List<String> ls = new ArrayList<String>();
+        for(Element e:links){
+        String lf=e.attr("abs:href");
+        ls.add("a$"+lf+"("+e.text()+")");
+        }
+		return ls;
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		Elements img = doc.select("img");
+        List<String> ls = new ArrayList<String>();
+        for(Element e:img){
+			String ih=e.attr("abs:src");
+			ls.add("img$"+ih);
+        }
+        return ls;
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		Elements links = doc.select("link[href]");
+        List<String> ls = new ArrayList<String>();
+        for(Element e:links){
+			String lh=e.attr("abs:href");
+			String rel=e.attr("rel");
+			ls.add("link$"+lh+"("+rel+")");
+        }
+        return ls;
+	}
+	
+}

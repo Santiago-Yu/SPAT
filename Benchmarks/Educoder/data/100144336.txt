@@ -1,0 +1,66 @@
+package step4;
+
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+    
+    public void showDirStructure(File file)	{
+
+	System.out.println("+--"+file.getName());
+        add(file," "); //让下级前加空格
+        
+     
+}
+    public void add(File file,String i){
+            FileFilter filter = file1 ->{
+    if(file1.isFile()){
+    String fileName = file1.getName().toLowerCase();
+        if(fileName.endsWith(".jpg")){
+        return true;
+        }
+        if(fileName.endsWith(".png")){
+        return true;
+        }
+        if(fileName.endsWith(".bmp")){
+        return true;
+        }
+        
+    }
+                if(file1.isDirectory()){
+                return true;
+                }
+        return false;
+    };
+		
+    File[] listFiles = file.listFiles(filter); //获得目录下所有文件，并赋给数组
+        i+=" "; //让下级前加空格
+        for(File files : listFiles){ //循环遍历数组
+            if(files.isDirectory()){
+            System.out.println(i+"+--"+files.getName());
+                add(files,i+" ");
+            }
+            
+              
+                if(files.isFile()){
+                
+              System.out.println(i+"--"+files.getName());  
+     
+    }
+        }
+    }
+
+
+
+
+
+
+
+	
+	
+
+	/********** End **********/
+}

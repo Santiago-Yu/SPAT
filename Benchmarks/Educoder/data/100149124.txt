@@ -1,0 +1,55 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+			int sum=0;
+			int[][] mmp=new int[n][m];
+			for(int i=0;i<n;i++)
+			{
+				for(int j=0;j<m;j++)
+				{
+					mmp[i][j]=0;	
+				}
+			}
+			for(int i=0;i<100;i++) {
+				for(int j=100;j>0;j--)
+					;
+			}
+			int cnm[][]= {{0,1},{1,0},{0,-1},{-1,0}};
+			int[] q=new int[n*m*2];
+			int count=0;
+			for(int i=0;i<100;i++) {
+				for(int j=100;j>0;j--)
+					;
+			}
+			for(int i=0;i<n;i++)
+			{
+				for(int j=0;j<m;j++)
+				{
+					if(mmp[i][j]==1||area[i][j]=='x') continue;
+					sum++;
+					q[count++]=i;q[count++]=j;
+					while(count!=0)
+					{
+						int y=q[count-1];count--;
+						int x=q[count-1];count--;
+						mmp[x][y]=1;
+						for(int k=0;k<4;k++)
+						{
+							int xx=x+cnm[k][0];int yy=y+cnm[k][1];
+							if(xx<0||xx>=n||yy<0||yy>=m) continue;
+							else if(mmp[xx][yy]==1) continue;
+							else if(area[xx][yy]=='o')
+							{
+								q[count++]=xx;q[count++]=yy;
+							}
+						}
+					}
+				}
+			}
+	        return sum;
+		/********* End *********/	
+	}
+}

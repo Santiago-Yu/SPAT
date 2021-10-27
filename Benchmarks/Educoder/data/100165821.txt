@@ -1,0 +1,70 @@
+
+package step4;
+//java.util.Arrays；
+import step1.Date;
+import step2.Student;
+import step3.Course;
+
+public class Report {
+    private Student s;//学生基本信息
+    private String major; //所学专业  
+    private Course[] selCourse;//所选课程
+   /************Begin****************/
+    public Report(){
+        
+    }
+    
+    public Report(Student s, String major, Course[] selCourse)
+    {
+        this.s = s;
+        this.major = major;
+        this.selCourse = selCourse;
+    }
+    
+    public void setStudent(Student s)
+    {
+        this.s = s;
+    }
+    public Student getStudent()
+    {
+       
+        return this.s;
+    }
+    
+    public void setMajor(String major)
+    {
+        this.major = major;
+    }
+    public String getMajor()
+    {
+        return this.major;
+    }
+    
+    public void setSelCourse(Course[] selCourse)
+    {
+        this.selCourse = selCourse;
+    }
+    public Course[] getselCourse()
+    {
+        return this.selCourse;
+    }
+    
+    
+    
+    public String toString()
+    {
+        String s = "";
+        for(int i=0; i< selCourse.length;i++)
+        {
+            s += selCourse[i].toString() + "\n";
+        }
+        return "name=" + this.s.getName() + " number=" + this.s.getNumber() + " birthday:" + this.s.getBirthday() + "reg_num:" + this.s.getreg_num() + "reg_day:" + this.s.getreg_day() + " major:" + this.major + "\n" + s;
+    }
+
+
+
+
+    /************End****************/
+
+  
+}

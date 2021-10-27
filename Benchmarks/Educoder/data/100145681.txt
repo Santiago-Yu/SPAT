@@ -1,0 +1,28 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date newDate = new Date();
+		try{
+            Date date = dateFormat.parse(releaseDate); // 指定日期
+            newDate = addDate(date, day);
+        }catch (ParseException e){
+            
+        }
+       
+        return dateFormat.format(newDate);
+        /********* End *********/
+	}
+	public static Date addDate(Date date,long day){
+        long time = date.getTime(); // 得到指定日期的毫秒数
+        day = day*24*60*60*1000; // 要加上的天数转换成毫秒数
+        time+=day; // 相加得到新的毫秒数
+        return new Date(time); // 将毫秒数转换成日期
+    }
+	
+}

@@ -1,0 +1,54 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void selectSort(int [] arr){
+        for(int i=0;i<arr.length-1;i++){
+            int max=i;
+            for(int j=i+1;j<arr.length;j++){
+                if(arr[max]<arr[j]){
+                    max=j;
+                }
+            }
+            if(max!=i){
+                int temp=arr[max];
+                arr[max]=arr[i];
+                arr[i]=temp;
+            }
+        }
+    }
+    public void exchangeArray(int []a,int []b){
+        for(int i=0;i<a.length;i++){
+            int temp=a[i];
+            a[i]=b[i];
+            b[i]=temp;
+        }
+    }
+    
+    public void sortArray(int[][] arr){
+		for(int i=0;i<arr.length;i++){
+            selectSort(arr[i]);
+        }
+        for(int i=0;i<arr.length-1;i++){
+            int max=i;
+            for(int j=i+1;j<arr.length;j++){
+                if(arr[j][0]>arr[max][0]){
+                    max=j;
+                }
+            }
+            if(max!=i){
+                exchangeArray(arr[max],arr[i]);
+            }
+        }
+        for(int i=0;i<arr.length;i++){
+            System.out.println(Arrays.toString(arr[i]));
+        }
+
+    }
+    
+    /********** END **********/
+}
+	

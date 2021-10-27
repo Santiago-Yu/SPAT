@@ -1,0 +1,44 @@
+package case2;
+
+public class extendsTest {
+	public static void main(String args[]) {
+		Cat c=new Cat();
+        c.name="大花猫";
+        c.age=6;
+        c.voice();
+        c.eat();
+        System.out.println(c.name+c.age+"岁");
+        Dog d=new Dog();
+        d.name="大黑狗";
+        d.age=8;
+        d.voice();
+        d.eat();
+        System.out.println(d.name+d.age+"岁");
+	}
+}
+
+class Animal {
+	/********* begin *********/
+    String name;
+    int age;
+	/********* end *********/
+
+}
+
+class Cat extends Animal {
+    void voice(){
+        System.out.println(name+"喵喵叫");
+    }
+    void eat(){
+        System.out.println(name+"吃鱼");
+    }
+}
+
+class Dog extends Animal {
+    void voice(){
+        System.out.println(name+"汪汪叫");
+    }
+    void eat(){
+        System.out.println(name+"吃骨头");
+    }
+}

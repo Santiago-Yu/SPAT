@@ -1,0 +1,34 @@
+package step4;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+       
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+                Date date = null;
+                try {
+                    date = simpleDateFormat.parse(releaseDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                long timestamp = date.getTime();
+
+                long days = (long)day*24*3600*1000;
+
+                long temp = timestamp+days;
+
+                String res = simpleDateFormat.format(new Date(temp));
+                return res;         
+        }
+ 
+        /********* End *********/
+	}
+	
+	

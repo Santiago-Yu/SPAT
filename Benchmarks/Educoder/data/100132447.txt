@@ -1,0 +1,53 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+    public static int gcd(int a,int b) {
+		int count=0;
+		int x;
+		int r;
+		if(a<b) {
+			x=a;
+			a=b;
+			b=x;//保证a>b
+		}
+		if(a%b==0||a==b) {
+			count=b;
+		}
+		else {
+			while(a%b!=0) {
+				r=a%b;
+				a=b;
+				b=r;
+				
+			}
+			count=b;
+		}
+		return count;
+	}
+	public static void last(int a,int b) {
+		int count=0;
+		int number=0;
+	    count=gcd(a,b);
+	    number=a*b/(count*count);
+	    System.out.println(count);
+	    System.out.println(number);
+				
+	}
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+		last(length,width);
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

@@ -1,0 +1,32 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+        MyThread th=new MyThread();
+		System.out.println("子线程计算结果为："+th.run(num));
+		
+		
+	}
+}
+
+
+class MyThread     {
+    int num;
+    int x1=1,x2=1,x3;
+    public int run(int num){
+        if(num==1||num==2){
+            return 1;}
+          else{
+              for(int i=2;i<num;i++){
+                  x3=x2;
+                  x2=x1+x2;
+                  x1=x3;}
+                  return x2;
+              }
+          }
+}

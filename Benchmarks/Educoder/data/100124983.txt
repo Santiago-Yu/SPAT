@@ -1,0 +1,39 @@
+package step1;
+
+public class Rectangle{
+	private double width;
+	private double length;
+	
+	/*********begin*********/
+	public Rectangle(){
+        this.length=6.0;
+        this.width=5.0;
+    }
+    public Rectangle(double length, double width){
+        this.length=length;
+        this.width=width;
+    }
+    public void perimeter(double length, double width,int n){
+        System.out.printf("r%d的周长：%.1f\n",n,2*(width+length));
+    }
+    public void area(double length, double width,int n){
+        System.out.printf("r%d的面积：%.1f\n",n,width*length);
+    }
+
+        
+	/*********end*********/
+
+
+	public static void main(String[] args) {
+		/*********begin*********/
+		Rectangle rec1=new Rectangle();
+        rec1.perimeter(rec1.length,rec1.width,1);
+        rec1.area(rec1.length,rec1.width,1);
+        Rectangle rec2=new Rectangle(20.0,10.0);
+        rec2.perimeter(rec2.length,rec2.width,2);
+        rec2.area(rec2.length,rec2.width,2);
+
+		/*********end*********/
+	}
+
+}

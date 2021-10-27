@@ -1,0 +1,43 @@
+package step2;
+
+import java.util.Scanner;
+import java.util.ArrayList;
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int side = maxSide(length, width);
+		int count = length * width / (side * side);
+		System.out.println(side);
+		System.out.println(count);
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+    public static int maxSide(int length, int width) {
+		ArrayList<Integer> list = gcd(width);
+		for (int i = list.size() - 1; i >= 0; i--) {
+			if (length % list.get(i) == 0) {
+				return list.get(i);
+			}
+		}
+		return 0;
+	}
+
+	public static ArrayList<Integer> gcd(int n) {
+		ArrayList<Integer> list = new ArrayList<>();
+		for (int i = 1; i < n / 2 + 1; i++) {
+			if (n % i == 0) {
+				list.add(i);
+			}
+		}
+		list.add(n);
+		return list;
+	}
+}

@@ -1,0 +1,25 @@
+#include <iostream>
+#include<stdio.h>
+#include<string.h>
+using namespace std;
+int maxn = 1e5+5;
+int main(){
+	int a[maxn];
+	int num = 1;
+	while(num){
+		scanf("%d",&a[num]);
+	//	printf("%d\n",num);
+		
+		if(getchar()=='\n') break;
+		num++;
+	}
+	int n;
+	int count =0;
+	scanf("%d",&n);
+	for(int i=1;i<=num;i++)
+		for(int j=i+1;j<=num;j++)
+			for(int k=j+1;k<=num;k++)
+				if(a[i]+a[j]+a[k]<n) count++;
+	printf("%d",count);
+	
+}

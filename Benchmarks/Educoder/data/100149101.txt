@@ -1,0 +1,30 @@
+package step2;
+
+public class Task {
+    
+		public int bfs(int i,int j,int n,int m,char[][] area){
+		if(i<0||j<0||i>=n||j>=m||area[i][j]=='x') {
+			return 0;
+		}
+		int s=1;
+		area[i][j]='x';
+		s=s+bfs(i-1,j,n,m,area);
+		s=s+bfs(i+1,j,n,m,area);
+		s=s+bfs(i,j-1,n,m,area);
+		s=s+bfs(i,j+1,n,m,area);
+		return s;
+	}
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int s=0;
+		int k=0;
+		for(int i=0;i<n;++i) {
+			for(int j=0;j<m;++j) {
+				k=bfs(i,j,n,m,area);
+				s=s+(k>0?1:k);
+			}
+		}
+		return s;
+		/********* End *********/	
+	}
+}

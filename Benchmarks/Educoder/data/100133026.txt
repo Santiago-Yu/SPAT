@@ -1,0 +1,33 @@
+package step3;
+
+public class Task {
+    
+public boolean isPowerCut(String date){
+		String time[]=date.split("-");
+		int month=Integer.valueOf(time[0]);
+		int day=Integer.valueOf(time[1]);
+		int tim=0;
+		if(month==7)
+		{
+			tim=day;
+		}
+		else if(month==8)
+		{
+			tim=day+31;
+		}
+		else if(month==9)
+		{
+			tim=day+62;
+		}
+	    int distance=1;
+	    int flag[]=new int[93];
+		for(int i=1;i<=tim;)
+		{
+		    flag[i]=1;
+		    i=i+1+distance;
+		    distance++;
+		}
+		if(flag[tim]==1) return true;
+		else return false;
+	}
+}

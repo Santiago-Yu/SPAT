@@ -1,0 +1,67 @@
+package jdbc;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class jdbcInsert {
+    public static void insert(){
+		/**********   Begin  **********/
+        try {
+            //加载驱动
+Class.forName("com.mysql.jdbc.Driver");
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+
+
+
+		Connection conn = null;
+		PreparedStatement statement = null;
+		/**********   Begin  **********/
+        //连接并插入数据
+		try{
+		String url = "jdbc:mysql://localhost:3306/mysql_db";
+conn = DriverManager.getConnection(url, "root", "123123");
+statement = conn.prepareStatement("insert into student(id,name,sex,age) values(?,?,?,?)");//使用占位符来先占个位置
+statement.setInt(1,1);//占位符顺序从1开始，根据数据库中字段相应的类型存入数据
+statement.setString(2, "张三");//也可以使用setObject
+            statement.setString(3, "男");
+            statement.setInt(4,19);
+statement.executeUpdate();
+            statement.setInt(1,2);//占位符顺序从1开始，根据数据库中字段相应的类型存入数据
+statement.setString(2, "李四");//也可以使用setObject
+            statement.setString(3, "女");
+            statement.setInt(4,18);
+statement.executeUpdate();
+            statement.setInt(1,3);//占位符顺序从1开始，根据数据库中字段相应的类型存入数据
+statement.setString(2, "王五");//也可以使用setObject
+            statement.setString(3, "男");
+            statement.setInt(4,20);
+statement.executeUpdate();
+
+		statement = conn.prepareStatement("select * from student");
+ResultSet resultSet = statement.executeQuery();//将执行结果给ResultSet
+while (resultSet.next()) {//循环判断表中是否还有数据
+    int id = resultSet.getInt(1);//通过列的索引查询
+    System.out.println(resultSet.getInt("id")+" "+resultSet.getString("name")+" "+resultSet.getString("sex")+" "+resultSet.getInt("age"));
+}
+		
+		} catch (SQLException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+		finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

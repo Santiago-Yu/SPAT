@@ -1,0 +1,255 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+
+    // add your method here!!
+    
+    private static Map<String, Integer> zhengshu = new HashMap<>();
+    private static Map<String, Double> xiaoshu = new HashMap<>();
+    private static List<String> outputSequence = new ArrayList<>();
+    private static StringBuilder error = new StringBuilder();
+    private static int line = 1;
+    
+    private static boolean isName(String s) {
+    	char c = s.charAt(0);
+    	return c>='a' && c<='z'; 
+    }
+
+    private static void func() {
+    	int start = 0;
+    	int end = prog.indexOf(";");
+    	int statmentStart = prog.indexOf("{");
+    	while(end < statmentStart) {
+    		String s = prog.substring(start,end);
+    		String[] split = s.split(" ");
+    		String type = split[0];
+    		String name = split[1];
+    		String value = split[3];
+//    		System.out.println(type + " " + name + " " + value);
+    		if(type.equals("int")) {
+    			if(value.contains(".")) {
+    				error.append("error message:line " + line + ",realnum can not be translated into int type\n");
+    				double d = Double.parseDouble(value);
+    				zhengshu.put(name, (int)d);
+    			}
+    			else {
+    				zhengshu.put(name, Integer.parseInt(value));
+    			}
+    		}
+    		else if(type.equals("real")) {
+    			if(value.contains(".")) {
+    				xiaoshu.put(name, Double.valueOf(value));
+    			}
+    			else {
+    				error.append("error message:line " + line + ",intnum can not be translated into real type\n");
+    				xiaoshu.put(name, (double)Integer.parseInt(value));
+    			}
+    		}
+    		outputSequence.add(name);
+    		start = end+2;
+    		end = prog.indexOf(";",start);
+    	}
+    	line+=2;
+    	
+    	start = statmentStart+2;
+    	end = prog.indexOf("\n",start);
+    	int statementEnd = prog.indexOf("}");
+    	while(end < statementEnd) {
+    		String s = prog.substring(start, end-1);
+//    		System.out.println(s);
+    		String[] split = s.split(" ");
+    		if(split[0].equals("if")) {
+    			int conditionLeft = zhengshu.get(split[2]);
+    			String conditionMiddle = split[3];
+    			int conditionRight = zhengshu.get(split[4]);
+    			boolean isIf = false;
+    			switch (conditionMiddle) {
+				case "<":
+					if(conditionLeft < conditionRight)
+						isIf = true;
+					break;
+				case "<=":
+					if(conditionLeft <= conditionRight)
+						isIf = true;
+					break;
+				case "==":
+					if(conditionLeft == conditionRight)
+						isIf = true;
+					break;
+				case ">":
+					if(conditionLeft > conditionRight)
+						isIf = true;
+					break;
+				case ">=":
+					if(conditionLeft >= conditionRight)
+						isIf = true;
+					break;
+
+				default:
+					break;
+				}
+    			
+    			if(isIf) {
+    				start = prog.indexOf("then",start)+5;
+    				end = prog.indexOf("else",start)-3;
+    			}
+    			else {
+    				start = prog.indexOf("else",start)+5;
+    				end = end-2;
+    			}
+    			s = prog.substring(start, end);
+				split = s.split(" ");
+    		}
+    		
+    		String left = split[0];
+			if(zhengshu.containsKey(left)) {
+				String right = split[2];
+				int value = zhengshu.get(right);
+				for(int i = 4; i < split.length; i+=2) {
+					String operation = split[i-1];
+					right = split[i];
+					int value1;
+					if(isName(right)) {
+						value1 = zhengshu.get(right);
+					}
+					else {
+						value1 = Integer.parseInt(right);
+					}
+					switch (operation) {
+					case "+":
+						value = value + value1;
+						break;
+					case "-":
+						value = value - value1;
+						break;
+					case "*":
+						value = value * value1;
+						break;
+					case "/":
+						if(value1 == 0) {
+							error.append("error message:line " + line + ",division by zero\n");
+						}
+						else {
+							value = value / value1;
+						}
+						break;
+
+					default:
+						break;
+					}
+				}
+//				System.out.println(left + " " + value);
+				zhengshu.put(left, value);
+			}
+			else if(xiaoshu.containsKey(left)) {
+				String right = split[2];
+				double value = xiaoshu.get(right);
+				for(int i = 4; i < split.length; i++) {
+					String operation = split[i-1];
+					right = split[i];
+					double value1;
+					if(isName(right)) {
+						if(zhengshu.containsKey(right))
+							value1 = zhengshu.get(right);
+						else
+							value1 = xiaoshu.get(right);
+					}
+					else {
+						value1 = Double.parseDouble(right);
+					}
+					switch (operation) {
+					case "+":
+						value = value + value1;
+						break;
+					case "-": 
+						value = value - value1;
+						break;
+					case "*":
+						value = value * value1;
+						break;
+					case "/":
+						if(value1 == 0.0) {
+							error.append("error message:line " + line + ",division by zero\n");
+						}
+						else {
+							value = value / value1;
+						}
+						break;
+
+					default:
+						break;
+					}
+				}
+//				System.out.println(left + " " + value);
+				xiaoshu.put(left, value);
+			}
+			start = prog.indexOf("\n",start)+1;
+			end = prog.indexOf("\n",start);
+			line++;
+    	}
+    	
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+//        System.out.print(prog);
+        func();
+        if(error.length() != 0) {
+        	System.out.print(error.substring(0,error.length()-1));
+        }
+        else {
+        	for(int i = 0; i < outputSequence.size(); i++) {
+            	String name = outputSequence.get(i);
+            	System.out.print(name + ": ");
+            	if(zhengshu.containsKey(name)) {
+            		System.out.print(zhengshu.get(name));
+            	}
+            	else {
+            		System.out.print(xiaoshu.get(name));
+            	}
+            	if(i < outputSequence.size()-1)
+            		System.out.println();
+            }
+        }
+        
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+//    	String s = "int a = 0";
+//    	String[] split = s.split(" ");
+//    	for(int i = 0; i < split.length; i++)
+//    	System.out.println(split[i]);
+//    	System.out.println(Double.parseDouble(split[3]));
+    }
+}
+

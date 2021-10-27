@@ -1,0 +1,45 @@
+package jdbc;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class jdbcInsert {
+   public static void insert(){
+        try {
+       		 Class.forName("com.mysql.jdbc.Driver" );
+        } catch (ClassNotFoundException e) {
+        	e.printStackTrace();
+        }
+        Connection conn = null;
+        String url = "jdbc:mysql://localhost:3306/mysql_db";
+       	Statement statement = null;
+        try {
+            conn = DriverManager.getConnection (url,"root","123123" );
+            statement = conn.createStatement();
+            statement.executeUpdate("insert into student(id,name,sex,age) values(1,'张三','男',19)");
+            statement.executeUpdate("insert into student(id,name,sex,age) values(2,'李四','女',18)");
+            statement.executeUpdate("insert into student(id,name,sex,age) values(3,'王五','男',20)");
+            ResultSet resultSet = statement.executeQuery("select * from student");
+        while (resultSet.next()) {
+            int id = resultSet.getInt(1);
+            String name = resultSet.getString("name");
+            String sex = resultSet.getString("sex");
+            int age = resultSet.getInt("age");
+            System.out.println(id + " " + name + " " + sex + " " + age);
+        }
+        }catch (SQLException e) {
+        	e.printStackTrace();
+        }
+        finally {
+        	try {
+       			 if (statement != null)
+       				 statement.close();
+       			 if (conn != null)
+       				 conn.close();
+       		}catch (SQLException e) {
+       			 e.printStackTrace();
+        	}
+        }
+     } 
+}

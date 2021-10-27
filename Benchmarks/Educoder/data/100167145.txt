@@ -1,0 +1,782 @@
+import java.util.*;
+
+public class Java_LexAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine());
+            prog.append(System.lineSeparator());
+        }
+    }
+
+    // add your method here!!
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() throws Lexer.TokenNotFoundException {
+        read_prog();
+        Lexer lexer = new Lexer(prog.toString());
+        lexer.printTokens();
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) throws Lexer.TokenNotFoundException {
+        analysis();
+    }
+}
+
+class Lexer {
+    private final ProgramIterator program;
+    private List<Token> tokens;
+    private int currentLine;
+    private int currentColumn;
+
+    public Lexer(String text) throws TokenNotFoundException {
+        program = new ProgramIterator(text);
+        tokens = new ArrayList<Token>();
+        currentLine = 0;
+        currentColumn = 0;
+        tokenize();
+    }
+
+    private void tokenize() throws TokenNotFoundException {
+        Token token = nextToken();
+        boolean insideStringLiteralDelimiter = false;
+        while (!token.isEndOfFile()) {
+            insideStringLiteralDelimiter ^= token.isStringLiteralDelimiter();
+            tokens.add(token);
+            if (insideStringLiteralDelimiter) {
+                tokens.add(getToken(Token.TokenType.StringLiteral));
+                token = getToken(Token.TokenType.Delimiter);
+                if (!token.isStringLiteralDelimiter())
+                    throw new TokenNotFoundException(Token.TokenType.Delimiter);
+                insideStringLiteralDelimiter = false;
+                tokens.add(token);
+            }
+            token = nextToken();
+        }
+    }
+
+    public void printTokens() {
+        final int size = tokens.size();
+        if (size == 0)
+            return;
+        int i = 0;
+        while (i < size - 1) {
+            System.out.print(i + 1);
+            System.out.print(": ");
+            System.out.print(tokens.get(i));
+            System.out.println();
+            ++i;
+        }
+        System.out.print(i + 1);
+        System.out.print(": ");
+        System.out.print(tokens.get(i));
+    }
+
+    private Token nextToken() throws TokenNotFoundException {
+        if (StringUtilities.listContains(Token.WHITESPACE_CHARACTERS,
+                program.current()))
+            skipWhitespace();
+
+        if (!program.hasNext())
+            return getToken(Token.TokenType.EndOfFile);
+
+        final String character = program.current();
+        if (StringUtilities.listContains(Token.IDENTIFIERS_START_CHARACTERS,
+                character))
+            return getToken(Token.TokenType.Identifier);
+
+        if (character.equals("/")) {
+            String nextCharacter = program.next();
+            program.previous();
+            if (nextCharacter.equals("/"))
+                return getToken(Token.TokenType.SingleLineComment);
+            else if (nextCharacter.equals("*"))
+                return getToken(Token.TokenType.MultiLineComment);
+            else
+                return getToken(Token.TokenType.Operator);
+        } else {
+            if (StringUtilities.listContainsPrefix(Token.OPERATORS, character))
+                return getToken(Token.TokenType.Operator);
+            else if (StringUtilities.listContainsPrefix(Token.DELIMITERS, character))
+                return getToken(Token.TokenType.Delimiter);
+            else if (Character.isDigit(program.currentCodePoint()))
+                return getToken(Token.TokenType.Number);
+        }
+        throw new RuntimeException("Unmatched string pattern");
+    }
+
+    private Token getToken(Token.TokenType type) throws TokenNotFoundException {
+        String lexeme;
+        switch (type) {
+            default:
+                lexeme = matchCharacters(Token.IDENTIFIERS_START_CHARACTERS);
+                break;
+            case SingleLineComment:
+                lexeme =
+                        matchFind(Arrays.asList(Token.SINGLE_LINE_COMMENTS_OPEN_DELIMITER));
+                if (lexeme.equals(Token.SINGLE_LINE_COMMENTS_OPEN_DELIMITER))
+                    lexeme += matchTill(Token.SINGLE_LINE_COMMENTS_CLOSE_DELIMITERS);
+                else
+                    for (int i = 0; i < lexeme.length(); ++i)
+                        program.previous();
+                break;
+            case MultiLineComment:
+                lexeme =
+                        matchFind(Arrays.asList(Token.MULTI_LINE_COMMENTS_OPEN_DELIMITER));
+                if (lexeme.equals(Token.MULTI_LINE_COMMENTS_OPEN_DELIMITER))
+                    lexeme +=
+                            matchFind(Arrays.asList(Token.MULTI_LINE_COMMENTS_CLOSE_DELIMITER));
+                else
+                    for (int i = 0; i < lexeme.length(); ++i)
+                        program.previous();
+                break;
+            case Operator:
+                lexeme = matchLongestPattern(Token.OPERATORS);
+                break;
+            case Delimiter:
+                lexeme = matchLongestPattern(Token.DELIMITERS);
+                break;
+            case Number:
+                lexeme = matchNumber();
+                break;
+            case StringLiteral:
+                lexeme = matchTill(Arrays.asList(Token.STRING_LITERAL_DELIMITER),
+                        Token.STRING_LITERAL_ESCAPE_CHARACTER);
+                break;
+            case EndOfFile:
+                return new Token(type, null, currentLine, currentColumn);
+        }
+        if (lexeme.isEmpty())
+            throw new TokenNotFoundException(type);
+        switch (type) {
+            default:
+                lexeme += matchCharacters(Token.IDENTIFIERS_CHARACTERS);
+                if (StringUtilities.listContains(Token.KEYWORDS, lexeme))
+                    return new Token(Token.TokenType.Keyword, lexeme, currentLine,
+                            currentColumn);
+                else
+                    return new Token(Token.TokenType.Identifier, lexeme, currentLine,
+                            currentColumn);
+            case SingleLineComment:
+            case MultiLineComment:
+            case Operator:
+            case Delimiter:
+            case Number:
+            case StringLiteral:
+                return new Token(type, lexeme, currentLine, currentColumn);
+            case EndOfFile:
+                throw new RuntimeException("Unexpected token type EndOfFile");
+        }
+    }
+
+    private void skipWhitespace() {
+        String character = program.current();
+        while (character != program.DONE) {
+            if (StringUtilities.listContains(Token.NEWLINE_STRINGS, character)) {
+                currentColumn = 0;
+                currentLine += 1;
+            } else if (StringUtilities.listContains(Token.WHITESPACE_CHARACTERS,
+                    character)) {
+                currentColumn += 1;
+            } else {
+                break;
+            }
+            character = program.next();
+        }
+    }
+
+    private String matchCharacters(List<String> validCharacters) {
+        StringBuilder matchedPart = new StringBuilder();
+        String character = program.current();
+        while (character != program.DONE &&
+                StringUtilities.listContains(validCharacters, character)) {
+            matchedPart.append(character);
+            character = program.next();
+        }
+        return matchedPart.toString();
+    }
+
+    private String matchLongestPattern(List<String> patterns) {
+        StringBuilder matchedString = new StringBuilder();
+        String character = program.current();
+        while (character != program.DONE) {
+            matchedString.append(character);
+            if (StringUtilities.listContainsPrefix(patterns,
+                    matchedString.toString())) {
+                character = program.next();
+            } else {
+                matchedString.setLength(matchedString.length() - character.length());
+                break;
+            }
+        }
+        return matchedString.toString();
+    }
+
+    private String matchFind(List<String> patterns, String escapeCharacter) {
+        StringBuilder matchedPart = new StringBuilder();
+        String matchedPattern = match(patterns, escapeCharacter, matchedPart);
+        matchedPart.append(matchedPattern);
+        return matchedPart.toString();
+    }
+
+    private String matchFind(List<String> patterns) {
+        return matchFind(patterns, null);
+    }
+
+    private String matchTill(List<String> patterns, String escapeCharacter) {
+        StringBuilder matchedPart = new StringBuilder();
+        String matchedPattern = match(patterns, escapeCharacter, matchedPart);
+        for (int i = 0; i < matchedPattern.length(); ++i)
+            program.previous();
+        return matchedPart.toString();
+    }
+
+    private String matchTill(List<String> patterns) {
+        return matchTill(patterns, null);
+    }
+
+    private String match(List<String> patterns, String escapeCharacter,
+                         StringBuilder matchedPart) {
+        boolean afterEscapeCharacter = false;
+        String matchedPattern = matchLongestPattern(patterns);
+        String character = program.current();
+        while (true) {
+            if (matchedPattern.isEmpty()) {
+                matchedPart.append(character);
+                afterEscapeCharacter = character.equals(escapeCharacter);
+                character = program.next();
+            } else {
+                if (!afterEscapeCharacter)
+                    break;
+                matchedPart.append(matchedPattern);
+                afterEscapeCharacter = false;
+                character = program.current();
+            }
+            matchedPattern = matchLongestPattern(patterns);
+        }
+        return matchedPattern;
+    }
+
+    private String matchNumber() {
+        StringBuilder matchedPart = new StringBuilder();
+        String character = program.current();
+        boolean hasIntegralPart = false;
+        boolean afterDecimalSeparator = false;
+        boolean hasFractionalPart = false;
+        while (character != program.DONE) {
+            if (Character.isDigit(program.currentCodePoint())) {
+                if (hasIntegralPart) {
+                    if (afterDecimalSeparator) {
+                        afterDecimalSeparator = false;
+                        hasFractionalPart = true;
+                        matchedPart.append(program.previous());
+                        program.next();
+                    }
+                } else {
+                    hasIntegralPart = true;
+                }
+                matchedPart.append(character);
+                character = program.next();
+            } else if (character.equals(Token.NUMBER_DECIMAL_SEPARATOR)) {
+                if (hasIntegralPart) {
+                    if (hasFractionalPart)
+                        throw new NumberFormatException();
+                    afterDecimalSeparator = true;
+                    character = program.next();
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        return matchedPart.toString();
+    }
+
+    public class TokenNotFoundException extends Exception {
+        Token.TokenType type;
+
+        public TokenNotFoundException(Token.TokenType type) {
+            super();
+            this.type = type;
+        }
+    }
+}
+
+class ProgramIterator implements ListIterator {
+    public final String DONE = "";
+    private final String text;
+    private final int[] codePoints;
+    private final int beginIndex = 0;
+    private final int endIndex;
+    private int currentIndex;
+
+    public ProgramIterator(String text) {
+        this.text = text;
+        codePoints = text.codePoints().toArray();
+        endIndex = codePoints.length;
+        currentIndex = 0;
+    }
+
+    public int currentCodePoint() {
+        if (currentIndex >= beginIndex || currentIndex < endIndex)
+            return codePoints[currentIndex];
+        else
+            return -1;
+    }
+
+    public String current() {
+        if (currentIndex < beginIndex)
+            return DONE;
+        else if (currentIndex >= endIndex)
+            return DONE;
+        else
+            return StringUtilities.fromCodePoint(currentCodePoint());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return currentIndex < endIndex;
+    }
+
+    @Override
+    public String next() {
+        if (current() != DONE)
+            currentIndex += 1;
+        return current();
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return currentIndex > beginIndex;
+    }
+
+    @Override
+    public String previous() {
+        if (current() != DONE)
+            currentIndex -= 1;
+        return current();
+    }
+
+    @Override
+    public int nextIndex() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int previousIndex() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void set(Object o) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void add(Object o) {
+        throw new UnsupportedOperationException();
+    }
+}
+
+class Token {
+    public static final Map<String, Integer> TAGS =
+            new HashMap<String, Integer>() {
+                {
+                    put("auto", 1);
+                    put("break", 2);
+                    put("case", 3);
+                    put("char", 4);
+                    put("const", 5);
+                    put("continue", 6);
+                    put("default", 7);
+                    put("do", 8);
+                    put("double", 9);
+                    put("else", 10);
+                    put("enum", 11);
+                    put("extern", 12);
+                    put("float", 13);
+                    put("for", 14);
+                    put("goto", 15);
+                    put("if", 16);
+                    put("int", 17);
+                    put("long", 18);
+                    put("register", 19);
+                    put("return", 20);
+                    put("short", 21);
+                    put("signed", 22);
+                    put("sizeof", 23);
+                    put("static", 24);
+                    put("struct", 25);
+                    put("switch", 26);
+                    put("typedef", 27);
+                    put("union", 28);
+                    put("unsigned", 29);
+                    put("void", 30);
+                    put("volatile", 31);
+                    put("while", 32);
+                    put("-", 33);
+                    put("--", 34);
+                    put("-=", 35);
+                    put("->", 36);
+                    put("!", 37);
+                    put("!=", 38);
+                    put("%", 39);
+                    put("%=", 40);
+                    put("&", 41);
+                    put("&&", 42);
+                    put("&=", 43);
+                    put("(", 44);
+                    put(")", 45);
+                    put("*", 46);
+                    put("*=", 47);
+                    put(",", 48);
+                    put(".", 49);
+                    put("/", 50);
+                    put("/=", 51);
+                    put(":", 52);
+                    put(";", 53);
+                    put("?", 54);
+                    put("[", 55);
+                    put("]", 56);
+                    put("^", 57);
+                    put("^=", 58);
+                    put("{", 59);
+                    put("|", 60);
+                    put("||", 61);
+                    put("|=", 62);
+                    put("}", 63);
+                    put("~", 64);
+                    put("+", 65);
+                    put("++", 66);
+                    put("+=", 67);
+                    put("<", 68);
+                    put("<<", 69);
+                    put("<<=", 70);
+                    put("<=", 71);
+                    put("=", 72);
+                    put("==", 73);
+                    put(">", 74);
+                    put(">=", 75);
+                    put(">>", 76);
+                    put(">>=", 77);
+                    put("\"", 78);
+                }
+            };
+
+    public static final List<String> WHITESPACE_CHARACTERS =
+            new ArrayList<String>() {
+                {
+                    add("\u0009"); // character tabulation
+                    add("\n");     // line feed
+                    add("\u000B"); // line tabulation
+                    add("\u000C"); // form feed
+                    add("\r");     // carriage return
+                    add("\u0020"); // space
+                    add("\u0085"); // next line
+                    add("\u00A0"); // no-break space
+                    add("\u1680"); // ogham space mark
+                    add("\u2000"); // en quad
+                    add("\u2001"); // em quad
+                    add("\u2002"); // en space
+                    add("\u2003"); // em space
+                    add("\u2004"); // three-per-em space
+                    add("\u2005"); // four-per-em space
+                    add("\u2006"); // six-per-em space
+                    add("\u2007"); // figure space
+                    add("\u2008"); // punctuation space
+                    add("\u2009"); // thin space
+                    add("\u200A"); // hair space
+                    add("\u2028"); // line separator
+                    add("\u2029"); // paragraph separator
+                    add("\u202F"); // narrow no-break space
+                    add("\u205F"); // medium mathematical space
+                    add("\u3000"); // ideographic space
+                    add("\t");     // horizontal tabulation
+                    add("\u000B"); // vertical tabulation
+                    add("\f");     // form feed
+                    add("\u001C"); // file separator
+                    add("\u001D"); // group separator
+                    add("\u001E"); // record separator
+                    add("\u001F"); // unit separator
+                }
+            };
+    public static final List<String> NEWLINE_STRINGS = new ArrayList<String>() {
+        {
+            add("\n");   // LF
+            add("\r");   // CR
+            add("\r\n"); // CR LF
+            add("\n\r"); // LF+CR
+        }
+    };
+
+    public static final List<String> KEYWORDS = new ArrayList<String>() {
+        {
+            add("auto");
+            add("break");
+            add("case");
+            add("char");
+            add("const");
+            add("continue");
+            add("default");
+            add("do");
+            add("double");
+            add("else");
+            add("enum");
+            add("extern");
+            add("float");
+            add("for");
+            add("goto");
+            add("if");
+            add("int");
+            add("long");
+            add("register");
+            add("return");
+            add("short");
+            add("signed");
+            add("sizeof");
+            add("static");
+            add("struct");
+            add("switch");
+            add("typedef");
+            add("union");
+            add("unsigned");
+            add("void");
+            add("volatile");
+            add("while");
+        }
+    };
+
+    public static final List<String> IDENTIFIERS_START_CHARACTERS =
+            new ArrayList<String>() {
+                {
+                    add("_");
+                    add("A");
+                    add("B");
+                    add("C");
+                    add("D");
+                    add("E");
+                    add("F");
+                    add("G");
+                    add("H");
+                    add("I");
+                    add("J");
+                    add("K");
+                    add("L");
+                    add("M");
+                    add("N");
+                    add("O");
+                    add("P");
+                    add("Q");
+                    add("R");
+                    add("S");
+                    add("T");
+                    add("U");
+                    add("V");
+                    add("W");
+                    add("X");
+                    add("Y");
+                    add("Z");
+                    add("a");
+                    add("b");
+                    add("c");
+                    add("d");
+                    add("e");
+                    add("f");
+                    add("g");
+                    add("h");
+                    add("i");
+                    add("j");
+                    add("k");
+                    add("l");
+                    add("m");
+                    add("n");
+                    add("o");
+                    add("p");
+                    add("q");
+                    add("r");
+                    add("s");
+                    add("t");
+                    add("u");
+                    add("v");
+                    add("w");
+                    add("x");
+                    add("y");
+                    add("z");
+                }
+            };
+    public static final List<String> IDENTIFIERS_CHARACTERS =
+            new ArrayList<String>() {
+                {
+                    addAll(IDENTIFIERS_START_CHARACTERS);
+                    add("0");
+                    add("1");
+                    add("2");
+                    add("3");
+                    add("4");
+                    add("5");
+                    add("6");
+                    add("7");
+                    add("8");
+                    add("9");
+                }
+            };
+
+    public static final String SINGLE_LINE_COMMENTS_OPEN_DELIMITER = "//";
+    public static final List<String> SINGLE_LINE_COMMENTS_CLOSE_DELIMITERS =
+            NEWLINE_STRINGS;
+    public static final String MULTI_LINE_COMMENTS_OPEN_DELIMITER = "/*";
+    public static final String MULTI_LINE_COMMENTS_CLOSE_DELIMITER = "*/";
+
+    public static final List<String> OPERATORS = new ArrayList<String>() {
+        {
+            add("-");
+            add("--");
+            add("-=");
+            add("->");
+            add("!");
+            add("!=");
+            add("%");
+            add("%=");
+            add("&");
+            add("&&");
+            add("&=");
+            add("*");
+            add("*=");
+            add(".");
+            add("/");
+            add("/=");
+            add(":");
+            add("?");
+            add("^");
+            add("^=");
+            add("|");
+            add("||");
+            add("|=");
+            add("~");
+            add("+");
+            add("++");
+            add("+=");
+            add("<");
+            add("<<");
+            add("<<=");
+            add("<=");
+            add("=");
+            add("==");
+            add(">");
+            add(">=");
+            add(">>");
+            add(">>=");
+        }
+    };
+
+    public static final String STRING_LITERAL_DELIMITER = "\"";
+    public static final String STRING_LITERAL_ESCAPE_CHARACTER = "\\";
+    public static final List<String> DELIMITERS = new ArrayList<String>() {
+        {
+            add("(");
+            add(")");
+            add(",");
+            add(";");
+            add("[");
+            add("]");
+            add("{");
+            add("}");
+            add(STRING_LITERAL_DELIMITER);
+        }
+    };
+
+    public static final String NUMBER_DECIMAL_SEPARATOR = ".";
+
+    private TokenType type;
+    private String lexeme;
+    private int line;
+    private int column;
+
+    public Token(TokenType type, String lexeme, int line, int column) {
+        this.type = type;
+        this.lexeme = lexeme;
+        this.line = line;
+        this.column = column;
+    }
+
+    public boolean isEndOfFile() {
+        return type == TokenType.EndOfFile;
+    }
+
+    public boolean isStringLiteralDelimiter() {
+        return type == TokenType.Delimiter &&
+                STRING_LITERAL_DELIMITER.contains(lexeme);
+    }
+
+    public boolean isEmpty() {
+        return lexeme.isEmpty();
+    }
+
+    private int getTag() {
+        switch (type) {
+            case Keyword:
+            case Operator:
+            case Delimiter:
+                return TAGS.get(lexeme);
+            case Identifier:
+            case StringLiteral:
+                return 81;
+            case SingleLineComment:
+            case MultiLineComment:
+                return 79;
+            case Number:
+                return 80;
+            default:
+                throw new RuntimeException("Unknown token type");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "<" + lexeme + "," + getTag() + ">";
+    }
+
+    public enum TokenType {
+        Keyword,
+        Identifier,
+        SingleLineComment,
+        MultiLineComment,
+        Operator,
+        Delimiter,
+        Number,
+        StringLiteral,
+        EndOfFile
+    }
+}
+
+class StringUtilities {
+    public static boolean listContains(List<String> list, String string) {
+        return list.stream().parallel().anyMatch(string::equals);
+    }
+
+    public static boolean listContainsPrefix(List<String> list, String prefix) {
+        return list.stream().parallel().anyMatch((item) -> item.startsWith(prefix));
+    }
+
+    public static String fromCodePoint(int codePoint) {
+        return new String(Character.toChars(codePoint));
+    }
+}

@@ -1,0 +1,49 @@
+package step2;
+import step1.Person;
+import step1.Date;
+public class Student extends Person{
+    private int reg_num; //学号
+    private Date reg_day; //注册日期
+   // TO DO YOU CODE HERE
+public Student(String name,String number,Date birthday,int reg_num,Date reg_day)
+    {
+        super(name,number,birthday);
+        this.reg_num=reg_num;
+        this.reg_day=reg_day;
+    }
+    public Student(String name,String number,int year,int month,int day,int reg_num,int y,int m,int d)
+    {
+        super(name,number,year,month,day);
+        Date D=new Date(y,m,d);
+        reg_day=D;
+        this.reg_num=reg_num;
+    }
+    public Student()
+    {
+        super();
+        Date D=new Date(1999,9,9);
+        reg_day=D;
+        reg_num=0;
+
+    }
+    public String toString()
+    {
+        String s = "name=" + getName() + " number=" + getNum() + " birthday:" + getBirthday().toString() + "reg_num:" + reg_num + "reg_day:" + reg_day.toString();
+        return s;
+    }
+
+    public Date getreg_day()
+    {
+        return reg_day;
+    }
+
+    public int getReg_num()
+    {
+        return reg_num;
+    }
+
+
+
+
+}
+

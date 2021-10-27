@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long LL;
+const int  maxn = 1e6+10;
+LL a[maxn];
+LL sum[maxn];
+int main()
+{
+    int len = 0;
+    scanf("%lld",&a[len++]);
+    while(1)
+    {
+        if(getchar() == '\n')
+            break;
+        scanf("%lld",&a[len++]);
+    }
+    LL t;
+    scanf("%lld",&t);
+    int p = 0;
+    for(int i = 0; i < len; ++i)
+    {
+        for(int j = i+1; j < len; ++j)
+        {
+            for(int k = j+1; k < len; ++k)
+            {
+              sum[p++] = a[i]+a[j]+a[k];
+            }
+        }
+    }
+    int maxn = 0;
+    //printf("%d\n",p);
+    for(int i = 0; i < p; ++i)
+    {
+        if(sum[i] < t)
+         maxn++;
+    }
+    printf("%d",maxn);
+    return 0;
+}

@@ -1,0 +1,38 @@
+    private int create() throws SQLException {
+        Connection conn = null;
+        Statement st = null;
+        ResultSet rs = null;
+        String query = null;
+        try {
+            conn = dataSource.getConnection();
+            st = conn.createStatement();
+            query = "insert into " + DB.Tbl.users + "(" + col.name + "," + col.login + "," + col.pass + "," + col.passHash + "," + col.email + "," + col.role + "," + col.addDate + ") values('" + name + "','" + login + "','" + pass + "','" + pass.hashCode() + "','" + email + "'," + role + ",now())";
+            st.executeUpdate(query, new String[] { col.id });
+            rs = st.getGeneratedKeys();
+            while (rs.next()) {
+                int genId = rs.getInt(1);
+                conn.commit();
+                return genId;
+            }
+            throw new SQLException("袧械 褍写邪械褌褋褟 锌芯谢褍褔懈褌褜 generatedKey 锌褉懈 褋芯蟹写邪薪懈懈 锌芯谢褜蟹芯胁邪褌械谢褟.");
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception e1) {
+            }
+            throw e;
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+            }
+            try {
+                st.close();
+            } catch (Exception e) {
+            }
+            try {
+                conn.close();
+            } catch (Exception e) {
+            }
+        }
+    }

@@ -1,0 +1,93 @@
+package step4;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Task {
+    
+	public void love(int n){
+		/********* Begin *********/
+        if(n == 1){
+        List<List<Character>> resultList = new ArrayList<>();
+        for(float y = (float) 1.3;y>-1.1;y -=0.06)
+        {
+            List<Character> temp = new ArrayList<>();
+            for(float x= (float) -1.2;x<1.2;x+= 0.025)
+            {
+                float a = x*x+y*y-1;
+                if((a*a*a-x*x*y*y*y)<0.0)
+                {
+                    temp.add(' ');
+                    //System.out.print(" ");
+                }
+                else
+                    temp.add('$');
+                    //System.out.print("$");
+            }
+					resultList.add(temp);
+
+            //System.out.print("\n");
+        }
+          for (int i = 0; i < resultList.size(); i++) {
+            List<Character> characterList = resultList.get(i);
+            for (int j = 0; j < characterList.size(); j++) {
+                Character character = characterList.get(j);
+                if (i==5 && j==88){
+                    System.out.print('$');
+                }
+                else {
+                    System.out.print(character);
+                }
+            }
+            System.out.println();
+        	}
+        }else{
+         	List<List<Character>> resultList = new ArrayList<>();
+            StringBuffer sb = new StringBuffer();
+            sb.append("I love you!");
+            int mark = 0;
+            for(float y = (float) 1.3;y>-1.1;y -=0.06)
+            {
+                List<Character> temp = new ArrayList<>();
+				
+                for(float x= (float) -1.2;x<1.2;x+= 0.025)
+                {
+                    double a = 5.0*y / 4.0 - Math.sqrt(Math.abs(x));
+                    if((x*x + a*a)<=1.0)
+                    {
+                        if(mark == 11){
+                            mark = 0;
+                        }
+                        
+                        char tempChar = sb.charAt(mark);
+                        
+                        temp.add(tempChar);
+                        mark++;
+                        //System.out.print(" ");
+                    }
+                    else
+                        temp.add(' ');
+                        //System.out.print("$");
+                }
+                	mark = 0;
+                    resultList.add(temp);
+
+                //System.out.print("\n");
+            }
+              for (int i = 0; i < resultList.size()-1; i++) {
+                List<Character> characterList = resultList.get(i);
+                for (int j = 4; j < characterList.size()-5; j++) {
+                    Character character = characterList.get(j);
+                    //if (i==5 && j==88){
+                    //    System.out.print('$');
+                    //}
+                    //else {
+                        System.out.print(character);
+                    //}
+                }
+                System.out.println();
+            }
+
+        }
+		/********* End *********/	
+	}
+}

@@ -1,0 +1,30 @@
+package task2;
+
+public class Task2 {
+	public static void main(String[] args) {
+		/********* Begin *********/
+		int arry1[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+		int arry2[] = OddArray(arry1);
+		for (int i = 0; i < arry2.length; i++) {
+			System.out.print(arry2[i] + " ");
+		}
+		/********* End *********/
+	}
+
+	// 在这里编写返回值类型为数组的 OddArray 函数
+	/********* Begin *********/
+	private static int[] OddArray(int[] arry1) {
+		int len = 0;
+		if (arry1.length % 2 == 0) {
+			len = arry1.length / 2;
+		} else {
+			len = arry1.length / 2 + 1;
+		}
+		int[] arry2 = new int[len];
+		for (int i = 0, j = 0; j < len; i = i + 2, j++) {
+			arry2[j] = arry1[i];
+		}
+		return arry2;
+	}
+	/********* End *********/
+}

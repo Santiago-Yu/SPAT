@@ -1,0 +1,18 @@
+class n23115934 {
+	private String fetch(URL url) {
+		StringBuilder body = new StringBuilder();
+		try {
+			String inputLine;
+			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+			while ((inputLine = in.readLine()) != null) {
+				body.append(inputLine);
+			}
+			in.close();
+			return body.toString();
+		} catch (Exception e) {
+			debug("Error: fetch: Exception reading URL: " + e);
+		}
+		return null;
+	}
+
+}

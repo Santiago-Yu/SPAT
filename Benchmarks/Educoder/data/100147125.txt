@@ -1,0 +1,48 @@
+package step2;
+import java.nio.channels.NonWritableChannelException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BestTeam {
+	
+	public  static long score = 0;
+	
+	public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		Long biggestScore = 0L;
+		int[] result = new int[selectedNum];
+ 
+		biggestScore = combine_increase(abilities, 0, abilities.length -1, result, selectedNum, selectedNum, numbers + 1, distance);
+        return biggestScore;
+
+    }
+
+	public static long combine_increase(int[] arr, int start, int end, int[] result, int count, int NUM, int arr_len, int distance)
+	{
+	  int i = 0;
+	  for (i = start; i <= end; i++)
+	  {
+	    result[count - 1] = arr[i];
+	    if (count - 1 == 0)
+	    {
+	      int j;
+	      long thisScore = 1;
+	      for (j = NUM - 1; j >= 0; j--)
+	        {
+	    	  thisScore *= result[j];
+	    	  if(thisScore > score) {
+	    		  score = thisScore;
+	    	  }
+	        }
+	    }
+	    else {
+	     	int newEnd = i+distance;
+	     	if(i+distance>arr_len - 1) {
+	     		newEnd = arr_len - 1;
+	     	}
+	    	combine_increase(arr, i + 1,newEnd, result, count - 1, NUM, arr_len,distance);
+	      }
+	  }
+	  return score;
+	}
+	
+}

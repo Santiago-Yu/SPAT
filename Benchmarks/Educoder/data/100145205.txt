@@ -1,0 +1,32 @@
+package step2;
+
+public class Task {
+	int count=0;
+	public int getNum(int n){
+		/********* Begin *********/
+		count=0;
+		myGetNum(n);
+		return count;
+		/********* End *********/
+	}
+    private int myGetNum(int i) {
+		if(i==1){
+			count++;
+			return 0;
+		}
+		
+		if(i==0){
+			return 0;
+		}
+		
+		if(i%2==0){
+			myGetNum(i/2);
+		}else{
+			count++;
+			i-=1;
+			myGetNum(i/2);
+		}
+		return 0;
+	}
+	
+}

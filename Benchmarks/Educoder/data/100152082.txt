@@ -1,0 +1,47 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		   double result=0;
+		  double s1,s2;
+		  s1 = Math.PI * r1 * r1;
+		  s2 = Math.PI * r2 * r2;
+		  double last = s12s2(r1, r2,x1, x2, y1, y2);
+		  if(last == 1)	result = s1 + s2;
+		  else if(last == -1){
+			  if(r1 > r2) result = s1;
+			  else result = s2;
+		  }
+		  else{
+			  double d=Math.sqrt(Math.pow(Math.abs(x1-x2), 2) + Math.pow(Math.abs(y1-y2), 2));
+		      double ang1=Math.acos((r1*r1+d*d-r2*r2)/(2*r1*d));
+		      double ang2=Math.acos((r2*r2+d*d-r1*r1)/(2*r2*d));
+			  double sames = ang1*r1*r1 + ang2*r2*r2 - r1*d*Math.sin(ang1);
+			  result = s1 + s2 - sames;
+		  }
+		  return result;
+		  
+		  
+		  /********* End *********/
+	  }
+    	public double s12s2(double r1, double r2,double x1, double x2, double y1, double y2){
+		double result = 0;//1分开，0叠加，-1包含
+		double r;
+		r = r1 + r2;
+		double d = Math.sqrt(Math.pow(Math.abs(x1-x2), 2) + Math.pow(Math.abs(y1-y2), 2));
+		if(r <= d) return 1.0;
+		else {
+			if(r1 > r2){
+				if(d + r2 > r1) return 0.0;
+				else return -1.0;
+			}
+			else{
+				if(d + r1 > r2) return 0.0;
+				else return -1.0;
+			}
+		}
+	}
+}

@@ -1,0 +1,24 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int temp;
+        int sum = 0;
+	if(num1 > num2){
+            temp = num1;
+            num1 = num2;
+            num2 = temp;
+        }
+        for(Integer i = num1; i < num2 + 1; i++){
+            String s = i.toString();
+            for(Integer t = 0; t < s.length(); t++){
+                sum += Integer.parseInt(String.valueOf(s.charAt(t)));
+            }
+        }
+        return sum;
+		/********** END **********/
+	}
+}

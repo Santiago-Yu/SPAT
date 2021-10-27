@@ -1,0 +1,51 @@
+class n18898823 {
+	public String getHttpText() {
+		URL url = null;
+		StringBuffer sb = new StringBuffer();
+		try {
+			url = new URL(getUrl());
+		} catch (MalformedURLException e) {
+			log.error(e.getMessage());
+		}
+		HttpURLConnection conn = null;
+		try {
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod(getRequestMethod());
+			conn.setDoOutput(true);
+			if (getRequestProperty() != null && "".equals(getRequestProperty())) {
+				conn.setRequestProperty("Accept", getRequestProperty());
+			}
+			PrintWriter out = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), getCharset()));
+			out.println(getParam());
+			out.close();
+			String inputLine;
+			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), getCharset()));
+			int i = 1;
+			while ((inputLine = in.readLine()) != null) {
+				if (getStartLine() == 0 && getEndLine() == 0) {
+					sb.append(inputLine).append("\n");
+				} else {
+					if (getEndLine() > 0) {
+						if (i >= getStartLine() && i <= getEndLine()) {
+							sb.append(inputLine).append("\n");
+						}
+					} else {
+						if (i >= getStartLine()) {
+							sb.append(inputLine).append("\n");
+						}
+					}
+				}
+				i++;
+			}
+			in.close();
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		} finally {
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+		return sb.toString();
+	}
+
+}

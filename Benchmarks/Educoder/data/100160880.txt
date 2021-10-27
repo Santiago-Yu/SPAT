@@ -1,0 +1,66 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File(filePath);
+        Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+        
+		return doc;
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+        List<HotelCity> cities = new ArrayList<HotelCity>();
+		Elements pinyin_filter_elements = doc.getElementsByClass("pinyin_filter_detail layoutfix");
+        Element pinyin_filter = pinyin_filter_elements.first();
+		//所有dd的Elements
+		Elements hotelsLinks = pinyin_filter.getElementsByTag("dd");
+        Elements hotelsHeadPinyin = pinyin_filter.getElementsByTag("dt");
+        for (int i = 0; i < hotelsLinks.size(); i++) {
+            //当前dt
+            Element headPinyin = hotelsHeadPinyin.get(i);
+            //当前dd
+            Element head_hotelsLink = hotelsLinks.get(i);
+            //当前dd下的所有孩子也就是a标签
+            Elements links = head_hotelsLink.children();
+            
+            for (Element link : links) {
+                HotelCity city = new HotelCity();
+                city.setCityName(link.html());
+                
+                String[] url = link.attr("href").split("/");
+                int tag = 0;
+               	for( int j = 0; j < url[2].length(); j ++){
+                	if(url[2].charAt(j) >= '0' && url[2].charAt(j) <= '9'){
+                    	tag = j;
+                        break;
+                    }
+                }
+                city.setPinyin(url[2].substring(0,tag));
+                city.setCityId(url[2].substring(tag));
+                city.setHeadPinyin(headPinyin.attr("id"));
+                cities.add(city);
+            }
+           
+        }
+        
+		return cities;
+		/**********   End   **********/
+	}
+}

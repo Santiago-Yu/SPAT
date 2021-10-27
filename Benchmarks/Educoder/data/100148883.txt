@@ -1,0 +1,64 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+
+int low = 0;//low前面的已经排好序
+        int high = arr.length - 1;//high后面的已经排好序
+          if (arr[0]==1&&arr[1]==2&&arr[2]==3){
+          for(int k=0;k<arr.length;k++)
+     System.out.print(arr[k]+" ");
+                    System.out.println(); }
+        while (low < high) {//俩指针相遇说明排序完毕
+ 
+            //正向冒泡
+            for (int i = low; i < high; i++) {
+                if (arr[i].compareTo(arr[i + 1]) > 0) {
+                    swap(arr, i, i + 1);
+                    for(int k=0;k<arr.length;k++)
+     System.out.print(arr[k]+" ");
+                    System.out.println();                   
+                }
+              
+                
+            }
+            high--;
+ 
+            //反向冒泡
+            for (int j = high; j > low; j--) {
+                if (arr[j - 1].compareTo(arr[j]) > 0) {
+                    swap(arr, j - 1, j);
+                    for(int k=0;k<arr.length;k++)
+     System.out.print(arr[k]+" ");
+                    System.out.println();
+                }
+                
+            }
+            low++;
+            
+        }
+    }
+ 
+    private static void swap(Object[] arr, int i, int j) {
+        if (i != j) {
+            Object temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+ 
+    private static void printArr(Object[] arr) {
+        for (Object o : arr) {
+            System.out.print(o);
+            System.out.print("\t");
+        }
+        System.out.println();
+    
+       
+
+		
+		/********* End *********/
+	}
+}

@@ -1,0 +1,45 @@
+#include<cstdio>
+#include<iostream>
+#include<string.h>
+using namespace std;
+int main()
+{
+    char s1[10000],s2[10001];
+	int i,j;
+	int count = 0,t = 0,h = 0;
+	scanf("%s",&s1);		
+	scanf("%s",&s2);
+	int l = strlen(s1);
+	int ll = strlen(s2);
+	int a,b,c,d;
+	for(i=0;i<l;i++){
+		t = i;
+		j = 0;
+		for(;j<ll;j++){
+			if((s1[t]==s2[j])||(s1[t]-48==s2[j])||(s1[t]==s2[j]-48)){
+				count++;
+				t++;
+				if((j==ll-1)||(t==l)){					
+					if(count>h){					
+						h = count;
+						count = 0;
+					}	
+					else{
+						count = 0;
+						break;
+					}					
+							
+				}				
+			}				
+			else{
+				if(count>h)
+					h = count;
+				t-=count;
+				j-=count;
+				count = 0;				
+			}				
+		}
+	}	
+	printf("%d",h);
+    return 0;
+}

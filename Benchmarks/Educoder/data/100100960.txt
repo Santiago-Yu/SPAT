@@ -1,0 +1,53 @@
+package step1;
+
+import java.util.Scanner;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+        System.out.println(circle.getAcreage());
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape {
+	abstract double getAcreage();
+}
+
+class Circle extends Shape {
+    private double radius;
+    double PI=3.1415926;
+    public Circle(double radius2) {
+		this.radius=radius2;
+	}
+
+	public double getAcreage() {
+		// TODO 自动生成的方法存根
+		double S;
+		S=PI*radius*radius;
+		return S;
+	}
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+    public Rectangle(double length2, double width2) {
+		// TODO 自动生成的构造函数存根
+		this.length=length2;
+		this.width=width2;
+	}
+	public double getAcreage() {
+		// TODO 自动生成的方法存根
+		double S;
+		S=length*width;
+		return S;
+	}
+}
+/********** End *********/

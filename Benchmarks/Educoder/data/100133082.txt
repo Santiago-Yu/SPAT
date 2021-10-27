@@ -1,0 +1,43 @@
+package step2;
+
+import java.util.Arrays;
+
+public class Task {
+	int i,cnt=0;
+    int res=0;
+	public int getTheWay(int num,long bagCapacity,long[] snacks){
+        long sumW=0;
+      
+        int n = snacks.length;
+        for ( i=0;i<snacks.length;i++)
+        {
+        sumW += snacks[i];
+        }
+	 if(sumW<=bagCapacity)
+    {
+         res= 2;
+     for (i=1;i<n;i++){
+     res = res * 2;
+     }
+    }
+    else
+    {
+  
+        dfs(0,0,num,snacks,bagCapacity);
+    }
+    return res;
+
+	}
+
+  public  void dfs(int k,long s,int num,long[] snacks,long bagCapacity){
+ 
+    if(k==num){
+        res+=1;
+        return ;
+    }
+    if(s+snacks[k]<=bagCapacity){
+        dfs(k+1,s+snacks[k],num,snacks,bagCapacity);
+    }
+    dfs(k+1,s,num,snacks,bagCapacity);
+}
+}

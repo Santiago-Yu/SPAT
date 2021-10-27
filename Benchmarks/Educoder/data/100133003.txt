@@ -1,0 +1,27 @@
+package step1;
+
+public class Task {
+	
+	public void sortArray(int[] arr){
+        int temp;
+        int n = arr.length;
+        for(int i = 1;i < n; i++){
+            for(int j = i; j > 0 ; j--)
+            {
+                if(arr[j]<arr[j-1])
+                {
+                    temp = arr[j];
+                    arr[j] = arr[j-1];
+                    arr[j-1] = temp;
+                }
+                else break;
+            }
+            for(int k = 0;k <n;k++)System.out.print(arr[k] + " ");
+            System.out.println();
+        }
+		
+		
+	}
+}
+
+

@@ -1,0 +1,40 @@
+package step3;
+
+public class Task {
+    
+	public int getBlockNum(int n,int m,char[][] arr){
+        int x = 0;
+		for(int i=0;i<n;i++){
+         for(int j=0;j<m;j++)   
+         {
+           if(arr[i][j]=='x'){
+             x++;
+             
+             getOne(arr,i,j,n,m); 
+              
+           }
+         }
+        }
+        
+		return x;
+	}
+    public void getOne(char[][] arr,int i,int j,int n,int m) {
+      if(i>=0&&i<n&&j<m&&j>=0){
+           
+     
+        if(arr[i][j]=='x'){
+        arr[i][j]='*';
+        getOne(arr,i-1,j-1,n,m);
+        getOne(arr,i-1,j,n,m);  
+        getOne(arr,i-1,j+1,n,m); 
+        getOne(arr,i,j-1,n,m);
+        getOne(arr,i,j+1,n,m);
+        getOne(arr,i+1,j-1,n,m);
+        getOne(arr,i+1,j,n,m);
+        getOne(arr,i+1,j+1,n,m);
+        }
+      }
+    }
+    
+    
+}

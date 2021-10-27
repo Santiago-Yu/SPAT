@@ -1,0 +1,27 @@
+package step1;
+import static java.lang.StrictMath.acos;
+import static java.lang.StrictMath.sin;
+public class Task {
+	public final double PI=3.1415926535;
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		double S;
+        double d=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+		if(d>=r1&&d>=r2){
+            S=PI*(r1*r1+r2*r2);
+          }
+        if(d<=r1&&d<=r2){
+            if(r1>r2) S=PI*(r1*r1);
+            else S=PI*(r2*r2);
+          }
+        else{
+        double ang1=acos((r1*r1+d*d-r2*r2)/(2*r1*d));
+        double ang2=acos((r2*r2+d*d-r1*r1)/(2*r2*d));
+        double JS=ang1*r1*r1 + ang2*r2*r2 - r1*d*sin(ang1);
+       S=PI*(r1*r1+r2*r2)-JS;
+        }
+		  return S;
+		  /********* End *********/
+	  }
+}

@@ -1,0 +1,51 @@
+
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+
+		int m=0;
+	Scanner sc = new Scanner(System.in);
+	
+	if(sc.hasNextLine()){
+		String input = sc.nextLine();
+		String temp[] = input.split(" ");
+		int a[] = new int[temp.length];
+		
+		for(int i=0;i<temp.length;i++)
+			a[i] = Integer.parseInt(temp[i]);
+		                            
+        int sum[]={0,0,0};
+        boolean hasChange = true;
+    	for(int j=0; j<a.length; j++){
+        	if(a[j]==5){
+         		sum[0]++;}
+       		else if(a[j] == 10){
+            	sum[1]++;
+            	sum[0]--;
+            	if(sum[0]<0){
+           			hasChange = false;
+       	   			break;}
+            }
+       		else if(a[j] == 20){ 
+       			if(sum[1]>0 && sum[0]>0){
+               		sum[0]=sum[0]-1;
+                	sum[1]=sum[1]-1;
+       			}
+       			else if(sum[0]>=3){
+       				sum[0]=sum[0]-3;
+       			}
+       			else{
+       		       hasChange=false;
+                   break;
+                }
+        	}   
+     	} 
+        System.out.print(hasChange);
+  	}
+        
+	}
+}
+
+

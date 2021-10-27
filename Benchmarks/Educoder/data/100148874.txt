@@ -1,0 +1,54 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        int temp,j;
+		for(j=0;j<arr.length-1;j++) {
+			if(arr[j]>arr[j+1]) {
+				break;
+			}
+		}
+		if(j==arr.length-1) {
+			for (int k = 0; k < arr.length; k++) {
+	            System.out.print(arr[k]+" ");
+	        }
+			System.out.println();
+			return;
+		}
+		for(int i=0;i<arr.length-1;i++) {
+			if(arr[i]>arr[i+1]) {
+				temp=arr[i];
+				arr[i]=arr[i+1];
+				arr[i+1]=temp;
+				for (int k = 0; k < arr.length; k++) {
+		            System.out.print(arr[k]+" ");
+		        }
+				System.out.println();
+			}
+		}
+		for(int i=arr.length-1;i>1;i--) {
+			if(arr[i]<arr[i-1]) {
+				temp=arr[i];
+				arr[i]=arr[i-1];
+				arr[i-1]=temp;
+				for (int k = 0; k < arr.length; k++) {
+		            System.out.print(arr[k]+" ");
+		        }
+				System.out.println();
+			}
+		}
+		for(j=0;j<arr.length-1;j++) {
+			if(arr[j]>arr[j+1]) {
+				break;
+			}
+		}
+		if(j==arr.length-1) {
+			return;
+		}else {
+			sort(arr);
+		}
+		/********* End *********/
+	}
+}

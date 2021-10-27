@@ -1,0 +1,94 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 
+	 int k = 0;
+		 int p = 0;
+		 boolean flag = false;//按行排列；
+         if(!(ferry==null)) {
+		 for(int i = 0;i<ferry.length;i++) 
+		 {
+			 for(int j = 0;j<ferry[i].length;j++) 
+			 {
+				 String s = String.valueOf(ferry[i][j]);
+				 if(s.equals("+")) 
+				 {
+					 k++;
+				 }
+			 }
+			 if(k==ferry[i].length) 
+			 {
+				 flag=true;//按行排列
+			 }
+			 k=0;
+			 
+		 }
+             if(!(ferry.length==0)) {
+		 if(ferry[0].length==1) 
+		 {
+			 int j = 0;
+			 for(int i = 0;i<ferry.length;i++) 
+			 {
+				 String s = String.valueOf(ferry[i][0]);
+				 if(s.equals("+")) 
+				 {
+					 j++;
+				 }
+			 }
+			 if(j==ferry.length) 
+			 {
+				 flag=false;
+			 }
+			 
+		 }
+             }
+		 if(flag)
+		 {
+//按列排列，判断有几列有+
+			 for(int i = 0;i<ferry.length;i++) 
+			 {
+				 for(int j = 0;j<ferry[i].length;j++) 
+				 {
+					 String s = String.valueOf(ferry[i][j]);
+					 if(s.equals("+")) 
+					 {
+//						说明这一列有+，可以跳出这个循环
+						 p++;
+						 break;
+						 
+					 }
+				 }
+				
+			 }
+		 }
+		 else
+		 {
+            if(!(ferry.length==0)){
+			 for(int i = 0;i<ferry[0].length;i++) 
+			 {
+                 
+				 for(int j = 0;j<ferry.length;j++) 
+				 {
+					 String s = String.valueOf(ferry[j][i]);
+					 if(s.equals("+")) 
+					 {
+//						说明这一列有+，可以跳出这个循环
+						 p++;
+						 break;
+						 
+					 }
+				 }
+             }
+				
+			 }
+                
+		 }
+          }
+		 return p;
+         
+      /***********END ***************/
+	 }
+}

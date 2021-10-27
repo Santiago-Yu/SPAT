@@ -1,0 +1,42 @@
+package step4;
+
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int s=day;
+		if(year%4==0){
+			for(int i=1;i<month;i++){
+				if(i%2==0){
+					if(i==2)
+						s+=29;
+					else
+						s+=30;
+				}
+					
+				else 
+					s+=31;
+			}
+			
+		}
+		else{
+			for(int i=1;i<month;i++){
+				if(i%2==0){
+					if(i==2)
+						s+=28;
+					else
+						s+=30;
+				}
+					
+				else 
+					s+=31;
+			}
+		}
+		System.out.print(s);
+		/********** End *********/
+	}
+	public static void main(String[] args){
+		DayCount a=new DayCount();
+		a.dayCount(2017,3,1);
+	}
+}

@@ -1,0 +1,62 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Scanner;
+public class Task {
+	 public  static void main(String[] args) {
+      String path;
+        Scanner input=new Scanner(System.in);
+        path=input.nextLine();
+        File dir = new File(path);
+        showDirStructure(dir);
+    }
+	
+	/********** Bgin **********/
+	public static void showDirStructure(File file)	{
+		
+         
+      int set=1;
+        System.out.println("+--"+file.getName());
+          getfile(file,set);
+
+	}
+	public static void getfile(File file,int set)
+    {
+     if(file.exists())
+     {
+       File[] files=file.listFiles();
+        for(int i=0;i<files.length;i++)
+        {
+          if(files[i].isDirectory())
+          {  
+              for(int j=0;j<set;j++)
+                   System.out.print("  ");
+               System.out.println("+--"+files[i].getName());
+              
+              getfile(files[i],set+1);
+              }
+          
+            else if(files[i].isFile()) 
+            {    
+               
+                if(ispuctrie(files[i]))
+                {for(int j=0;j<set;j++)
+                     System.out.print("  ");
+                    System.out.println("--"+files[i].getName());
+                }
+            }
+        }
+     }
+    }
+public  static  boolean  ispuctrie(File file)
+{
+    String fileName=file.getName().toLowerCase();
+    if(fileName.endsWith(".jpg"))return true;
+     if(fileName.endsWith(".bmp"))return true;
+     if(fileName.endsWith(".png"))return true;
+    return false;
+}
+	/********** End **********/
+}
+

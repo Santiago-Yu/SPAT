@@ -1,0 +1,25 @@
+package step4;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
+import java.text.ParseException;
+
+public class Task {
+	
+	public String getDate(String releaseDate, int day) {
+		String result = "";
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date d;
+		try {
+			d = formatter.parse(releaseDate);
+			Calendar cal=Calendar.getInstance();
+			cal.setTime(d);
+			cal.add(Calendar.DATE, day);  //操作天数
+			result = formatter.format(cal.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+}

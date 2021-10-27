@@ -1,0 +1,66 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		int temp;
+		int k=1;
+		int p=0;
+        int m=0;
+        	for(int q=0;q<arr.length-1;q++){
+            	if(arr[q]>arr[q+1])
+                    m++;
+                    
+            }
+            if(m==0){
+            	for(int s=0;s<arr.length;s++){
+                                        System.out.print(arr[s]+" ");
+                                    }
+                                    System.out.println();
+            }
+       		else{
+                for(int i=0;i<arr.length;i++){
+                    while(k!=0){
+                        k=0;
+                        if(p>=0){
+                            for(int j=0;j<arr.length-1;j++){
+                                if(arr[j]>arr[j+1]){
+                                    temp=arr[j];
+                                    arr[j]=arr[j+1];
+                                    arr[j+1]=temp;
+                                    k=k+1;
+                                    for(int s=0;s<arr.length;s++){
+                                        System.out.print(arr[s]+" ");
+                                    }
+                                    System.out.println();
+                                }
+                            }
+                            p=p-1;
+
+                        }
+                        else{
+                            for(int j=arr.length-1;j>0;j--){
+                                if(arr[j]<arr[j-1]){
+                                    temp=arr[j];
+                                    arr[j]=arr[j-1];
+                                    arr[j-1]=temp;
+                                    k=k+1;
+                                    for(int s=0;s<arr.length;s++){
+                                        System.out.print(arr[s]+" ");
+                                    }
+                                    System.out.println();
+                                }
+                            }
+                            p=p+1;
+                        }
+                    }
+                    break;
+                }
+               
+            }
+            
+        
+		/********* End *********/
+	}
+}

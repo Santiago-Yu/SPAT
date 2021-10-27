@@ -1,0 +1,35 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class HelloWorld {
+	
+	public static void main(String[] args) {
+		//获取输入的数据并添加至集合
+		Scanner sc = new Scanner(System.in);
+		ArrayList<String> list = new ArrayList<String>();
+        int length = sc.nextInt();
+		for(int i =0 ; i< length; i++){
+			list.add(sc.next());
+		}
+		/********** Begin *********/
+		list.remove(0);
+        list.remove(list.size()-1);
+        list.add(list.size(),"list");
+        list.add("educoder");
+        if (list.get(0).equals("张三丰")){
+            list.add(1,"hello");
+            list.remove(list.size()-1);
+        }
+        for (int i=0;i<list.size();i++){
+            System.out.println(list.get(i));
+        }
+        
+		
+		
+		
+		
+		/********** End **********/
+	}
+}

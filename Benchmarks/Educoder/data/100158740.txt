@@ -1,0 +1,153 @@
+#include<bits/stdc++.h>
+using namespace std;
+struct state
+{
+	int x,y;
+	int step;
+}p[100];
+int dx[4]={0,1,0,-1};
+int dy[4]={1,0,-1,0};
+int vst[6][6];
+int a[5][5]={0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,0};
+bool check(state s)
+{
+	if (s.x>=0&&s.x<5&&s.y<5&&s.y>=0&&a[s.x][s.y]!=1&&vst[s.x][s.y]==0)
+	return true;
+	else
+	return false;
+}
+bool check1(int x,int y)
+{
+	if (x>=0&&x<5&&y<5&&y>=0&&a[x][y]==0)
+	return true;
+	else
+	return false;
+}
+bool check2(state s)
+{
+	if (s.x>=0&&s.x<5&&s.y<5&&s.y>=0&&vst[s.x][s.y]==1)
+	return true;
+	else
+	return false;
+}
+int bfs()
+{
+	queue<state> q;
+	state now,next;
+	now.x=now.y=0;
+	now.step=0;
+	vst[now.x][now.y]=1;
+	q.push(now);
+	while (q.size())
+	{
+		now=q.front();
+		if (now.x==4&&now.y==4)
+		{
+			return now.step;
+		}
+		for (int i=0;i<4;i++)
+		{
+			next.x=now.x+dx[i];
+			next.y=now.y+dy[i];
+			next.step=now.step+1;
+			if (check(next))
+			{
+				q.push(next);
+				vst[next.x][next.y]=1;
+			}
+		}
+		q.pop();
+	}
+	return -1;
+}
+bool bfs2(int x,int y,int n)
+{
+	queue<state> q;
+	state now,next;
+	now.x=x;
+	now.y=y;
+	now.step=0;
+	vst[now.x][now.y]=1;
+	q.push(now);
+	while (q.size())
+	{
+		now=q.front();
+		if (now.x==4&&now.y==4&&now.step==n)
+		{
+			return true;
+		}
+		for (int i=0;i<4;i++)
+		{
+			next.x=now.x+dx[i];
+			next.y=now.y+dy[i];
+			next.step=now.step+1;
+			if (check2(next))
+			{
+				q.push(next);
+				vst[next.x][next.y]=2;
+			}
+		}
+		q.pop();
+	}
+	return false;
+}
+int main()
+{
+	for (int i=0;i<5;i++)
+	{
+		for (int j=0;j<5;j++)
+		{
+			scanf("%d",&a[i][j]);
+		}
+	}
+	int n=bfs();
+	int t=1;
+	p[0].x=p[0].y=0;
+	int x=0,y=0;
+	int xx,yy;
+	int i;
+	while (1)
+	{
+		for (i=0;i<4;i++)
+		{
+			xx=dx[i]+x;
+			yy=dy[i]+y;
+			if (check1(xx,yy)==false)
+			continue;
+			if (bfs2(xx,yy,n-1))
+			{
+				p[t].x=xx;
+				p[t].y=yy;
+				t++;
+				n--;
+				x=xx;
+				y=yy;
+				break;
+			}
+			for (int j=0;j<5;j++)
+			{
+				for (int k=0;k<5;k++)
+				{
+					if (vst[j][k]==2)
+					vst[j][k]=1;
+				}
+			}
+		}
+		if (x==4&&y==4)
+		{
+			break;
+		}
+		for (int j=0;j<5;j++)
+		{
+			for (int k=0;k<5;k++)
+			{
+				if (vst[j][k]==2)
+				vst[j][k]=1;
+			}
+		}
+	}
+	for (i=0;i<t;i++)
+	{
+		cout<<"("<<p[i].x<<","<<p[i].y<<")"<<endl;
+	}
+}

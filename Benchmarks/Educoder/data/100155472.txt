@@ -1,0 +1,35 @@
+package task4;
+import java.util.Scanner;
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+    
+    int boxType;
+   
+    public Box( int bt){
+        boxType = bt;
+    } 
+    
+     /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE= 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+   
+    public double volume() {
+       double sum=-1;
+        if(boxType==1){
+            sum = width*height*depth;
+        }
+        else if(boxType==2){
+            sum = width*width*height*3.14;
+        } 
+	return sum;
+    }
+}

@@ -1,0 +1,35 @@
+package Step4;
+import java.util.Scanner;
+
+public class regex {
+	 public static void main(String[] args) {
+		 Scanner sc=new Scanner(System.in);
+		 String w = sc.nextLine();
+         checkQQ (w);
+         sc.close();
+	 }
+	 public static void checkQQ(String qq) {
+		 /********** Begin *********/
+		char a[]=qq.toCharArray();
+		int m=0;
+		if(a[0]=='0')
+			m++;
+         if(a.length>11)
+             m++;
+		for(int i=0;i<a.length;i++)
+		{
+			if(a[i]<'0'||a[i]>'9')
+			{
+				m++;
+			}
+		}
+		if(m!=0)
+		System.out.println("非法qq");
+		else
+			System.out.println("合法qq");
+			
+			
+			
+		}
+         /********** End *********/
+	 }

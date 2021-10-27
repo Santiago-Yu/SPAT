@@ -1,0 +1,39 @@
+package step1;
+
+public class Task {
+	 public double solve(double x1, double y1, double r1,double x2, double y2, double r2) {
+		  /********* Begin *********/		   
+         double max=r2;
+         double t,temp,p,s;
+         t=r2-r1;
+         if(r1>r2)
+           {
+             max=r1;
+             t=r1-r2;
+           }
+         double len=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+		if(r1+r2<=len)
+            {               
+              return Math.PI*(r1*r1+r2*r2); 
+            }              
+         else if(t>=len)
+          { 
+             return max*max*Math.PI;
+          }
+         else
+         {           
+        p=(len+r1+r2)/2;
+		s=2*Math.sqrt(p*(p-len)*(p-r1)*(p-r2));
+		if(r1>r2){
+			temp=x1;x1=x2;x2=temp;
+			temp=y1;y1=y2;y2=temp;
+            temp=r1;r1=r2;r2=temp;
+		}
+		double ans=Math.acos((r1*r1+len*len-r2*r2)/(2*r1*len))*r1*r1+Math.acos((r2*r2+len*len-r1*r1)/(2*r2*len))*r2*r2-s;
+	    double ss=Math.PI*(r1*r1+r2*r2);
+           return (ss-ans);  
+         }	  
+		  /********* End *********/
+	  }
+
+}

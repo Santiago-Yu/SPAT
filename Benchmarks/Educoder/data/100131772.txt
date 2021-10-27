@@ -1,0 +1,37 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		showDirStructure2(file,"");
+
+	}
+	
+	public void showDirStructure2(File file,String tab)	{
+		if( file.isDirectory() ) {
+			System.out.println(tab+"+--"+file.getName());
+			
+			File[] fs = file.listFiles();
+			for(File f : fs) {
+				showDirStructure2(f,tab+"  ");
+			}
+		} else {
+			String[] fa = file.getName().split("\\.");
+			if(fa.length>1 && isImg(fa[fa.length-1])) {
+				System.out.println(tab+"--"+file.getName());
+			}
+		}
+
+		
+	}
+	
+	public boolean isImg(String suffix) {		
+		return suffix.equals("jpg") || suffix.equals("png") || suffix.equals("bmp");
+	}
+	
+
+	/********** END **********/
+}

@@ -1,0 +1,24 @@
+package step3;
+
+public class HelloWorld {
+
+public void judge(String fileName,String email){
+    int flag=0;
+    //长度大于5
+    if(fileName.length()>5){ 
+        //截取文件名最后五位与.java比较
+if(fileName.substring(fileName.length()-5).equals(".java")) {
+System.out.println("Java文件名正确");
+            flag=1;
+}}
+if(flag==0) System.out.println("Java文件名无效");
+//存在@  且@位置比.小
+if(email.indexOf("@")!=-1&&email.lastIndexOf("@")<email.indexOf(".")) {
+System.out.println("邮箱名正确");
+}else {
+System.out.println("邮箱名无效");
+}
+}
+
+
+}

@@ -1,0 +1,31 @@
+package step1;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] num){
+       //请在此补全你的代码
+    Arrays.sort(num);
+		int[] a = new int[3];
+
+		for(int i=0,j = num.length,k = 0;i<j; i++){
+			if((i+k+1)!=num[i]){
+				for(int m = num[i]-(i+k+1),n=i+k+1;m-->0;){
+					a[k]=n;
+					k++;
+					n++;
+				}
+			}
+		}
+		String string = ""+a[0]+a[1]+a[2];
+		BigInteger b = new BigInteger(string);
+		BigInteger c = new BigInteger("11");
+		return b.mod(c).intValue();
+	
+	}
+
+	/********* End *********/
+}

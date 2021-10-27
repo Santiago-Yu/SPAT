@@ -1,0 +1,26 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+					Scanner sc = new Scanner(System.in);
+			int length = sc.nextInt();	//长
+			int width = sc.nextInt();	//宽
+			int length1=length;
+			int width1=width;
+			int middle=0;
+			while(length%width!=0){
+				middle=length%width;
+				if(middle>=width) length=middle;
+				else {
+					length=width;
+					width=middle;
+				}
+			}
+			int x=width;
+			int y=(length1/x)*(width1/x);
+			System.out.println(x);
+			System.out.println(y);
+	}
+}

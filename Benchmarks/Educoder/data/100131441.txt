@@ -1,0 +1,43 @@
+package step2;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	private String indent = "";
+    private boolean backword = false;
+    public void showDirStructure(File file)	{
+        if (file.isDirectory()) {
+            if (backword) {
+                
+            }
+            //backword = false;
+            System.out.println(indent + "+--" + file.getName());
+            List<File> files = Arrays.asList(file.listFiles());
+            files.sort(new Comparator<File>(){
+                @Override
+                public int compare(File o1, File o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }					
+            });							
+            indent += "  ";
+            for(File f : files) {
+                this.showDirStructure(f);
+            }
+            //backword = true;
+            indent = indent.substring(0, indent.length() - 2);
+        } else if ( file.isFile() ) {
+            System.out.println(indent + "--" + file.getName());
+        }
+    }
+	
+
+
+	/********** END **********/
+}

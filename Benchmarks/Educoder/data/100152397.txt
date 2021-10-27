@@ -1,0 +1,38 @@
+package step1;
+import java.util.Scanner;
+
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		/******Begin******/
+	    float y;
+        int x,monry;
+        Scanner sc=new Scanner(System.in);
+        System.out.println("请输入西瓜重量：");
+        x=sc.nextInt();
+        System.out.println("请输入顾客所付钱数：");
+        monry=sc.nextInt();
+        if(x<=5)
+        {
+            y=(float)(1.05*x);
+        }
+        else if(x>5&&x<=10)
+        {
+            y=(float)(1.00*x);
+        }
+        else if(x>10&&x<=15)
+        {
+            y=(float)(0.95*x);
+        }
+        else if(x>15&&x<=20)
+        {
+            y=(float)(0.90*x);       
+        }
+        else
+        {
+            y=(float)(0.85*x);
+        }
+        System.out.printf("西瓜应付钱数：%.2f\n",y);
+        System.out.printf("应找钱数：%.2f\n",monry-y);
+	} 
+
+}

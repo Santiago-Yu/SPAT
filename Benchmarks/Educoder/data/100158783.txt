@@ -1,0 +1,19 @@
+package Q103;
+import  java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        long[] shuzu = new long [1000] ;
+        int n;
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        shuzu[0] = shuzu[1] = 1;
+        int i;
+        for(i = 2; i<= n; i++){
+            shuzu[i] = shuzu[i-1] + shuzu[i-2];
+        }
+        System.out.print(shuzu[n]);
+	}
+
+}

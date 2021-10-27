@@ -1,0 +1,48 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	    /**************BEGIN************/
+        if(ferry.length==0)
+        {
+            return 0;
+        }
+
+        int counter = 0;
+        //out of length exception！
+        int[][] remember = new int[ferry.length][ferry[0].length];
+
+
+        for (int i = 0; i < ferry.length; i++) {
+            for (int j = 0; j < ferry[i].length; j++) {
+                if (remember[i][j] == 1) {
+                    continue;
+                } else {
+                    if (ferry[i][j] == '+') {
+                        remember[i][j]=1;
+                        int ii = i;
+                        int jj = j;
+                        //System.out.println("enter the recycle"+i+j);
+                        while (true) {
+                            if (ii+1<ferry.length&&ferry[ii + 1][jj] == '+') {
+                                remember[ii+1][jj]=1;
+                                ii++;
+                            } else if (jj+1<ferry[ii].length&&ferry[ii][jj + 1] == '+') {
+                                remember[ii][jj+1]=1;
+                                jj++;
+                            } else {
+                                counter++;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return counter;
+
+
+        /***********END ***************/
+	 }
+}

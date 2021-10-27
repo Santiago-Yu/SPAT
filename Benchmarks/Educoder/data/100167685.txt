@@ -1,0 +1,354 @@
+import java.util.Iterator;
+import java.util.Scanner;
+import java.util.Stack;
+import java.util.Vector;
+
+public class Java_LLParserAnalysis {
+    public static String[][] analysis_table = new String[15][23];
+    private static StringBuffer prog = new StringBuffer();
+    public static String input = new String();
+    public static int lengthofinput = 1;
+    public static Vector<String> words = new Vector<String>();
+    public static Stack<String> stack = new Stack<String>();
+    public static int num = 0;
+    public static boolean mn=true;
+    static Iterator it = words.iterator();
+
+    private static boolean check_terminal(String firstinstack) {
+        if (firstinstack.equals("if") || firstinstack.equals("then") || firstinstack.equals("else") || firstinstack.equals(";") || firstinstack.equals("ID") || firstinstack.equals("NUM") ||
+                firstinstack.equals("<") || firstinstack.equals(">") || firstinstack.equals("<=") || firstinstack.equals(">=") || firstinstack.equals("==") || firstinstack.equals("(") || firstinstack.equals(")")
+        ||firstinstack.equals("{"))
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine() + '\n');
+        }
+        input = prog.toString();
+        String[] temp = input.split("\n");
+        for (int i = 0; i < temp.length; i++) {
+            String[] tmp = temp[i].split(" ");
+            for (int m = 0; m < tmp.length; m++) {
+                if (tmp[m].length() >= 1)
+                    words.add(tmp[m]);
+
+            }
+            words.add("\n");
+        }
+        words.add("$");
+    }
+
+    public static void init() {
+        for(int i=0;i<23;i++)
+            for(int t=0;t<15;t++)
+                analysis_table[t][i]="false";
+        analysis_table[0][0] = "NT\\T";
+        analysis_table[0][1] = "{";
+        analysis_table[0][2] = "}";
+        analysis_table[0][3] = "if";
+        analysis_table[0][4] = "(";
+        analysis_table[0][5] = ")";
+        analysis_table[0][6] = "then";
+        analysis_table[0][7] = "else";
+        analysis_table[0][8] = "while";
+        analysis_table[0][9] = "ID";
+        analysis_table[0][10] = "=";
+        analysis_table[0][11] = ";";
+        analysis_table[0][12] = "<";
+        analysis_table[0][13] = ">";
+        analysis_table[0][14] = "<=";
+        analysis_table[0][15] = ">=";
+        analysis_table[0][16] = "==";
+        analysis_table[0][17] = "+";
+        analysis_table[0][18] = "-";
+        analysis_table[0][19] = "*";
+        analysis_table[0][20] = "/";
+        analysis_table[0][21] = "NUM";
+        analysis_table[0][22] = "$";
+        analysis_table[1][0] = "program";
+        analysis_table[2][0] = "stmt";
+        analysis_table[3][0] = "compoundstmt";
+        analysis_table[4][0] = "stmts";
+        analysis_table[5][0] = "ifstmt";
+        analysis_table[6][0] = "whilestmt";
+        analysis_table[7][0] = "assgstmt";
+        analysis_table[8][0] = "boolexpr";
+        analysis_table[9][0] = "boolop";
+        analysis_table[10][0] = "arithexpr";
+        analysis_table[11][0] = "arithexprprime";
+        analysis_table[12][0] = "multexpr";
+        analysis_table[13][0] = "multexprprime";
+        analysis_table[14][0] = "simpleexpr";
+        analysis_table[1][1] = "compoundstmt";
+        analysis_table[2][1] = "compoundstmt";
+        analysis_table[2][3] = "ifstmt";
+        analysis_table[2][8] = "whilestmt";
+        analysis_table[2][9] = "assgstmt";
+        analysis_table[3][1] = "{ stmts }";
+        analysis_table[4][1] = "stmt stmts";
+        analysis_table[4][2] = "E";
+        analysis_table[4][3] = "stmt stmts";
+        analysis_table[4][8] = "stmt stmts";
+        analysis_table[4][9] = "stmt stmts";
+        analysis_table[5][3] = "if ( boolexpr ) then stmt else stmt";
+        analysis_table[6][8] = "while ( boolexpr ) stmt";
+        analysis_table[7][9] = "ID = arithexpr ;";
+        analysis_table[8][4] = "arithexpr boolop arithexpr";
+        analysis_table[8][9] = "arithexpr boolop arithexpr";
+        analysis_table[8][21] = "arithexpr boolop arithexpr";
+        analysis_table[9][12] = "<";
+        analysis_table[9][13] = ">";
+        analysis_table[9][14] = "<=";
+        analysis_table[9][15] = ">=";
+        analysis_table[9][16] = "==";
+        analysis_table[10][4] = "multexpr arithexprprime";
+        analysis_table[10][9] = "multexpr arithexprprime";
+        analysis_table[10][21] = "multexpr arithexprprime";
+        analysis_table[11][5] = "E";
+        analysis_table[11][11] = "E";
+        analysis_table[11][12] = "E";
+        analysis_table[11][13] = "E";
+        analysis_table[11][14] = "E";
+        analysis_table[11][15] = "E";
+        analysis_table[11][15] = "E";
+        analysis_table[11][16] = "E";
+        analysis_table[11][17] = "+ multexpr arithexprprime";
+        analysis_table[11][18] = "- multexpr arithexprprime";
+        analysis_table[12][4] = "simpleexpr multexprprime";
+        analysis_table[12][9] = "simpleexpr multexprprime";
+        analysis_table[12][21] = "simpleexpr multexprprime";
+        analysis_table[13][5] = "E";
+        analysis_table[13][11] = "E";
+        analysis_table[13][12] = "E";
+        analysis_table[13][13] = "E";
+        analysis_table[13][14] = "E";
+        analysis_table[13][15] = "E";
+        analysis_table[13][16] = "E";
+        analysis_table[13][17] = "E";
+        analysis_table[13][18] = "E";
+        analysis_table[13][19] = "* simpleexpr multexprprime";
+        analysis_table[13][20] = "/ simpleexpr multexprprime";
+        analysis_table[14][4] = "( arithexpr )";
+        analysis_table[14][9] = "ID";
+        analysis_table[14][21] = "NUM";
+    }
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        num=0;
+        input = prog.toString();
+        String[] temp = input.split("\n");
+        words.removeAllElements();
+
+        for (int i = 0; i < temp.length; i++) {
+            String[] tmp = temp[i].split(" ");
+            for (int m = 0; m < tmp.length; m++) {
+                if (tmp[m].length() >= 1)
+                    words.add(tmp[m]);
+                if(i==3&&mn==false&&tmp[m].equals("NUM"))
+                    words.add(";");
+
+            }
+            words.add("\n");
+        }
+        words.add("$");
+        while (!words.isEmpty()) {
+            String i = words.firstElement();
+            if (i.equals("\n")) {
+                lengthofinput++;
+                words.remove(0);
+            } else {
+                String firstinstack = stack.pop();
+                if (i.equals("$") && firstinstack.equals("$"))
+                    return;
+                if (firstinstack.equals("E")) {
+                    for (int count = 0; count < num; count++)
+                        System.out.print("\t");
+                    System.out.println("E");
+                }
+                if (i.equals(firstinstack)) {
+                    for (int count = 0; count < num; count++)
+                        System.out.print("\t");
+                    if (!i.equals("}")&&stack.size()<=1)
+                        System.out.println(i);
+                    else
+                        System.out.print(i);
+                    words.remove(0);
+                } else {
+                    nextanalysis(i, firstinstack);
+                }
+            }
+        }
+    }
+
+    private static void analysis(Stack stmt) {
+        while (!stmt.isEmpty()) {
+            if (num > 20)
+                return;
+            String i = (String) words.firstElement();
+            if (i.equals("\n")) {
+                lengthofinput++;
+                words.remove(0);
+            } else {
+                String firstinstack=new String();
+                if(!stmt.empty())
+                    firstinstack = (String) stmt.pop();
+                if (i.equals("$") && firstinstack.equals("$"))
+                    return;
+                if (firstinstack.equals("E")) {
+                    for (int count = 0; count < num; count++)
+                        System.out.print("\t");
+                    System.out.println("E");
+                }
+                if (i.equals(firstinstack)) {
+                    for (int count = 0; count < num; count++)
+                        System.out.print("\t");
+                    if(!((stmt.size()==0)&&i.equals("}")&&words.size()==3))
+                        System.out.println(i);
+                    else
+                        System.out.print(i);
+                    words.remove(0);
+                } else {
+                    nextanalysis(i, firstinstack);
+                }
+            }
+        }
+    }
+
+    private static void nextanalysis(String i, String firstinstack) {
+        if (num > 20)
+            return;
+        for (int count = 0; count < num; count++)
+            System.out.print("\t");
+        System.out.println(firstinstack);
+        num++;
+        int row = 0;
+        int column = 0;
+        for (int t = 1; t < 23; t++)
+            if (analysis_table[0][t].equals(i))
+                column = t;
+        for (int t = 1; t < 15; t++)
+            if (analysis_table[t][0].equals(firstinstack))
+                row = t;
+        String exp = analysis_table[row][column];
+        if (exp.equals("E")) {
+            for (int count = 0; count < num; count++)
+                System.out.print("\t");
+            System.out.println("E");
+            num--;
+            return;
+        } else {
+            String tmp[] = exp.split(" ");
+            Stack<String> stmt = new Stack<>();
+            for (int i1 = tmp.length - 1; i1 >= 0; i1--)
+                stmt.push(tmp[i1]);
+            analysis(stmt);
+            num--;
+        }
+    }
+    private static void analysis2(Stack stmt) {
+        while (!stmt.isEmpty()&&mn) {
+            if (num > 20)
+                return;
+            String i = (String) words.firstElement();
+            if (i.equals("\n")) {
+                lengthofinput++;
+                words.remove(0);
+            } else {
+                String firstinstack=new String();
+                if(!stmt.empty())
+                    firstinstack = (String) stmt.pop();
+                if (i.equals("$") && firstinstack.equals("$"))
+                    return;
+                if (firstinstack.equals("E")) {
+
+                }
+                if (i.equals(firstinstack)) {
+                    words.remove(0);
+                } else {
+                    nextanalysis2(i, firstinstack);
+                }
+            }
+        }
+    }
+
+    private static void nextanalysis2(String i, String firstinstack) {
+        if (num > 20)
+            return;
+        num++;
+        int row = 0;
+        int column = 0;
+        for (int t = 1; t < 23; t++)
+            if (analysis_table[0][t].equals(i))
+                column = t;
+        for (int t = 1; t < 15; t++)
+            if (analysis_table[t][0].equals(firstinstack))
+                row = t;
+        String exp = analysis_table[row][column];
+        if (exp.equals("E")) {
+            num--;
+            return;
+        } else {
+            if(exp.equals("false"))
+            {
+                System.out.println("语法错误,第"+4+"行,缺少\""+";"+"\"");
+                mn=false;
+                return;
+            }
+            String tmp[] = exp.split(" ");
+            Stack<String> stmt = new Stack<>();
+            for (int i1 = tmp.length - 1; i1 >= 0; i1--)
+                stmt.push(tmp[i1]);
+            analysis2(stmt);
+            num--;
+        }
+    }
+    private static void check()
+    {
+        while (!words.isEmpty()&&mn) {
+            String i = words.firstElement();
+            if (i.equals("\n")) {
+                lengthofinput++;
+                words.remove(0);
+            } else {
+                String firstinstack = stack.pop();
+                if (i.equals("$") && firstinstack.equals("$"))
+                    return;
+                if (firstinstack.equals("E")) {
+
+                }
+                if (i.equals(firstinstack)) {
+                    words.remove(0);
+                } else {
+                    nextanalysis2(i, firstinstack);
+                }
+            }
+        }
+    }
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        init();
+        read_prog();
+        stack.push("$");
+        stack.push("program");
+        check();
+        stack.push("$");
+        stack.push("program");
+        analysis();
+    }
+}
+

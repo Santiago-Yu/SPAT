@@ -1,0 +1,44 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        int k=0;
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+		for(int i=0;i<10;i++){
+        	record[i]=scanner.nextInt();
+        }//循环输入数组元素
+        Arrays.sort(record);//数组由小到大排序
+      //  for(int i=0;i<10;i++){
+      //  System.out.print(record[i] );
+      //  }
+        recordRecovery[0]=record[0];//给新数组初始化
+        int h=1;
+        for(int j=1;j<record.length;j++){
+           
+            if(record[j]!=record[j-1]){
+       		    recordRecovery[h]=record[j];
+                h++;
+              // System.out.print(recordRecovery[h]);
+            }//与数组中前一个数值比较不相等则录入新数组
+            else
+            {continue;}
+        }
+        /*for(int i=0;i<h;i++){
+        System.out.print(recordRecovery[i]);
+        }*/
+
+        /********** End *********/
+        for (int i = 0; i < h; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i !=h  - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

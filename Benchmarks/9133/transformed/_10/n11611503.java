@@ -1,0 +1,23 @@
+class n11611503 {
+	public static void readDefault() {
+		URL url;
+		ClassLoader l = Skeleton.class.getClassLoader();
+		if (l != null) {
+			url = l.getResource(DEFAULT_LOC);
+		} else {
+			url = ClassLoader.getSystemResource(DEFAULT_LOC);
+		}
+		if (url == null) {
+			Out.error(ErrorMessages.SKEL_IO_ERROR_DEFAULT);
+			throw new GeneratorException();
+		}
+		try {
+			InputStreamReader reader = new InputStreamReader(url.openStream());
+			readSkel(new BufferedReader(reader));
+		} catch (IOException e) {
+			Out.error(ErrorMessages.SKEL_IO_ERROR_DEFAULT);
+			throw new GeneratorException();
+		}
+	}
+
+}

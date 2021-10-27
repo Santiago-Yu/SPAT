@@ -1,0 +1,20 @@
+package step1;
+
+import java.io.File;
+
+public class FileDir {
+    public static void start() {
+        File mkdir = new File("src/step1/mkdir");
+        /********** Begin *********/
+		System.out.println(mkdir.mkdir());    //若使用此方法创建folder文件夹，如果src或step1文件夹不存在，则folder文件夹无法创建，方法返回false
+		   //若使用此方法创建folder文件夹，无论src和step1文件夹存在与否，folder文件夹均可以成功创建，方法返回true
+
+
+        /********** End *********/
+
+        File mkdirs = new File("src/step1/mkdirs/folder");
+        /********** Begin *********/
+		System.out.println(mkdirs.mkdirs()); 
+        /********** End *********/
+    }
+}

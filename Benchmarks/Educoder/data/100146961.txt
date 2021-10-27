@@ -1,0 +1,33 @@
+package step1;
+
+import java.util.Arrays;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+       int a[] = new int[3];
+    	int j = 0, m = 0;
+    	Arrays.sort(nums);
+    	for(int i = 1; i <=10000; i++) {
+    		if(nums[j] == i) {
+    			j++;
+    		} else {
+    			a[m] = i;
+    			m++;
+    		}
+    	}
+    	String str = "";
+    	for(int k = 0; k < 3; k++) {
+    		str += String.valueOf(a[k]);
+    	}
+        long r = Long.parseLong(str);
+        r = r%11;
+    	//System.out.println((int)r);
+    	return (int)r;
+    
+	}
+
+	/********* End *********/
+}

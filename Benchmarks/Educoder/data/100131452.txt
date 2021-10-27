@@ -1,0 +1,37 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/	
+
+ private static void getFile(File file,int deep){
+	File[] array = file.listFiles();
+	//将file下的文件目录存入array 
+	for(int i=0;i<array.length;i++)
+	{ if(array[i].isFile()) {
+		for (int j = 0; j < deep; j++)
+			//输出空格
+			System.out.print("  "); 
+		System.out.println( "--"+array[i].getName());
+		//输入空格与文件名  
+		} 
+	else if(array[i].isDirectory()) {
+		for (int j = 0; j < deep; j++)
+			//输出空格
+			System.out.print("  ");
+			System.out.println( "+--"+array[i].getName());
+			//输入空格与文件夹名
+			getFile(array[i],deep+1);
+			//递归深度遍历
+			}
+			} 
+	
+	} public void showDirStructure(File file)	{ 
+		int deep = 1;
+		//设置深度
+		System.out.println( "+--"+file.getName());
+		getFile(file,deep);
+		}
+}

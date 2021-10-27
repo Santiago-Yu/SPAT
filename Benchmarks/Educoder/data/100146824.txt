@@ -1,0 +1,102 @@
+package step1;
+import java.util.*;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        Arrays.sort(nums);
+ 		int as[]=new int [3];
+ 		for( int i = 0; i < 3; i ++) {
+ 			as[i] = 0;
+ 		}
+ 		int count=1;
+ 		int i=0;
+ 		int z=0;
+ 		while(i<9997) {
+ 			if(count==nums[i]) {
+ 				i++;
+ 				count++;
+ 			}
+ 			else {
+ 				as[z]=count;
+ 				z++;
+ 				count++;
+ 			}
+ 		}
+ 		if( as[0] == 0) {
+ 			as[0] = 9998;
+ 			as[1] = 9999; as[2] = 10000;
+ 		}else if( as[1] == 0) {
+ 			as[1] = 9999; as[2] = 10000;
+ 		}else if(as[2] == 0) {
+ 			as[2] = 10000;
+ 		}
+ 	
+ 		String str = String.valueOf(as[0]) + String.valueOf(as[1]) + String.valueOf(as[2]);
+ 		long sum = Long.parseLong(str);
+ 		
+ 		return (int)(sum%11);
+
+ 		
+   /*
+        int px[]=new int [10001];
+ 		int l=  9997;//nums.length;
+ 		int i=0;
+ 		
+ 		for(int j=1;j<10001;j++) {
+ 			px[j]=0;
+ 		}
+ 		
+ 		while(l>0 ) {
+ 			px[nums[i]]=1;
+ 			l--;
+ 			i++;
+ 		}
+ 		int n[]=new int [3];
+ 		int k=0;
+ 		for(int j=1;j<10000;j++) {
+ 			if(px[j]==0) {
+ 				n[k]=j;
+ 				k++;
+ 				//System.out.println(px[j]+"---klk----"+j);
+ 			}
+ 		}
+ 		for(int z=0;z<3;z++) {
+ 			for(int j=1;j<3;j++) {
+ 	 			if(n[z]>n[j]) {
+ 	 				int t=n[z];
+ 	 				n[z]=n[j];
+ 	 				n[j]=t;
+ 	 			}
+ 	 		}
+ 		}
+ 		int sum=0;
+ 		for(int j=0;j<3;j++) {
+ 			//sum=sum*100+n[j];
+            if(n[j]>0&&n[j]<10) {
+ 				sum=sum*10+n[j];
+ 			}
+ 			else {
+ 				if(n[j]>=10&&n[j]<100) {
+ 		 			sum=sum*100+n[j];
+ 		 			}
+ 				else {
+ 		 				if(n[j]>=100&&n[j]<1000) {
+ 		 		 			sum=sum*1000+n[j];
+ 		 		 			}
+ 		 				else {
+ 		 		 				sum=sum*10000+n[j];
+ 		 		 			}
+ 		 			}
+ 			}
+ 		}
+ 		//System.out.println(sum%11);
+ 		return sum%11;
+	
+	}
+
+	/********* End *********/
+    }
+}

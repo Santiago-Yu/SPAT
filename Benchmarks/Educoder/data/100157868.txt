@@ -1,0 +1,41 @@
+package step1;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+public class Task<T> {
+
+	
+	/**
+	 * 
+	 * @param list  已经排好序的待处理列表
+	 * @param x		待插入的元素
+	 */
+	public void insert(List<T> list, T x){
+		/********** Begin **********/
+		String []aa=new String[list.size()+1]; 
+		int tt=0;
+		int kk=0;
+		for(int i=0;i<list.size();i++)
+		{
+			if(tt==0&&((String) list.get(i)).compareTo((String) x)>=0)
+			{
+				tt=1;
+				aa[kk++]=(String) x;
+				aa[kk++]=(String) list.get(i);
+				continue;
+			}
+			aa[kk++]=(String) list.get(i);
+		}
+		list.removeAll(list); 
+		for (int i = 0; i < aa.length; i++) {
+			list.add((T)(aa[i]));
+		}
+		
+		
+		/********** End **********/
+	}
+	
+}

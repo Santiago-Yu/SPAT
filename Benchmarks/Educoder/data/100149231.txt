@@ -1,0 +1,69 @@
+package step2;
+
+public class Task {
+    public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int all = 0;
+		int[] vtemp = new int[m];
+		int tc=1;
+		for(int i=0; i<area[0].length; i++) {
+			if(area[0][i]=='o') {
+				if(i==0) {
+					vtemp[i] = tc;
+					tc++;
+					all++;
+				} else {
+					if(area[0][i-1]=='o') {
+						vtemp[i] = vtemp[i-1];
+					} else {
+						vtemp[i] = tc;
+						tc++;
+						all++;
+					}
+				}
+			} else {
+				vtemp[i]=0;
+			}
+		}
+		
+		for(int i=1; i<n; i++) {
+			int[] ktemp = new int[m];
+			for(int j=0; j<area[0].length; j++) {
+				if(area[i][j]=='o') {
+					if(j==0) {
+						if(area[i-1][j]=='o') {
+							ktemp[j]=vtemp[j];
+						} else {
+							ktemp[j] = tc;
+							tc++;
+							all++;
+						}
+					} else {
+						if(area[i][j-1]=='o') {
+							ktemp[j] = ktemp[j-1];
+							if(area[i-1][j]=='o' && vtemp[j]!=ktemp[j]) {
+								int yuan = vtemp[j];
+								for(int k=j; (k<m) && (vtemp[k]!=0); k++) {
+									vtemp[k] = ktemp[j];
+								}
+								all--;
+							}
+						} else if(area[i-1][j]=='o'){
+							ktemp[j] = vtemp[j];
+						} else {
+							ktemp[j] = tc;
+							tc++;
+							all++;
+						}
+					}
+				} else {
+					ktemp[j]=0;
+				}
+			}
+			vtemp = ktemp;
+		}
+		
+		return all;	
+		/********* End *********/	
+	}
+}

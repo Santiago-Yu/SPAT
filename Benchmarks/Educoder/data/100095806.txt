@@ -1,0 +1,35 @@
+package step1;
+
+import java.util.Scanner;
+
+public class CandyDelivery {
+    public static void main(String[] args) {
+     
+        int sumCandies = 0;
+		int[] candyArray = new int[10]; 
+		Scanner scanner = new Scanner(System.in); //用于读入测试数据 
+		
+		/********** Begin *********/
+		for (int i = 0; i < 10; i++) {
+           
+        candyArray[i] = scanner.nextInt();   // 给数组元素分配随机数
+			// 请在此处补全循环代码
+            if(i<9){
+		System.out.print(candyArray[i]+" ");}
+            else{
+        System.out.print(candyArray[i]+'\0');}
+           
+        }    
+        for(int x:candyArray){
+        sumCandies+=x;			//求和
+        }
+		 // sumCandies+=candyArray[i];        // 求和
+		// 请在此处添加遍历数组相关代码
+	
+		/********** End *********/	
+				
+		System.out.println();
+        System.out.print(sumCandies);  
+    }
+}
+

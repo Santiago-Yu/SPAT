@@ -1,0 +1,98 @@
+package step4;
+
+import java.util.NoSuchElementException;
+
+/**
+ * Created by sykus on 2017/12/29.
+ */
+public class MyQueue<T> {
+
+    private Node<T> head;// 头结点，不存数据
+    private Node<T> front;//指向队头结点
+    private Node<T> tail;//指向队尾结点
+    private int size;
+
+
+    public MyQueue() {
+        head = new Node<T>();
+        front = tail = null;
+        size = 0;
+    }
+
+    /**
+     * 入队
+     *
+     * @param item
+     */
+    public void enqueue(T item) {
+        /********** Begin *********/
+
+        Node<T> m = tail;
+        Node<T> n = new Node<T>();
+        n.item = item;
+        n.next = null;
+        if (null == front) {//空队列
+            head.next = n;
+            front = n;
+        } else {
+            m.next = n;
+        }
+        tail = n;
+        ++size;
+
+        /********** End *********/
+
+    }
+
+    /**
+     * 出队
+     *
+     * @return
+     */
+    public T dequeue() {
+        if (isEmpty())
+            throw new NoSuchElementException("队列为空！");
+
+        /********** Begin *********/
+
+        T m = front.item;
+        head.next = front.next;
+        front.next = null;
+        front = head.next;//此时队头为后继结点
+        --size;
+        if (null == head.next) {//出队的是队列中的最后一个元素
+            front = tail = null;
+        }
+        return m;
+
+        /********** End *********/
+
+    }
+
+    /**https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=visual%20c%2B%2B%20&oq=visual%2520c%252B%252B%25206.0%25E5%25AE%2598%25E6%2596%25B9%25E4%25B8%258B%25E8%25BD%25BD&rsv_pq=8b787a9d0000ab78&rsv_t=dac3yAfsmcHGJML8klmB4m3uDCcMo0o%2BxTWqGR3GRMb7lWf7X4uOjHF%2FKso&rqlang=cn&rsv_enter=0&rsv_sug3=20&rsv_sug1=13&rsv_sug7=100&rsv_sug2=0&inputT=2750&rsv_sug4=3512&rsv_sug=1
+     * 返回队列中元素数量
+     *
+     * @return
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * 判断一个队列是否为空
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        return (front == null);
+    }
+
+    /**
+     * 链表结点内部类
+     */
+    private static class Node<E> {
+        private E item;
+        private Node<E> next;
+    }
+}
+

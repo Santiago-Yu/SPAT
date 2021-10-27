@@ -1,0 +1,63 @@
+package step1;
+
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+        Object a = new Object();   
+        Object b = new Object();   
+        Object c = new Object();
+        Thread t1 = new MyThread("AA",b,a);
+        Thread t2 = new MyThread("BB",a,c);
+        Thread t3 = new MyThread("CC",c,b);
+        // 设置线程优先级
+		t1.setPriority(Thread.MAX_PRIORITY);
+		t2.setPriority(Thread.NORM_PRIORITY);
+		t3.setPriority(Thread.MIN_PRIORITY);
+        
+        t1.start();
+        t1.sleep(100);
+        t2.start();
+        t2.sleep(100);
+        t3.start();
+        t3.sleep(100);
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	
+	String threadName;
+    private Object prev; 
+	private Object self; 
+
+    public MyThread(String threadName,Object prev, Object self) {
+        this.threadName = threadName;
+        this.prev = prev; 
+    	this.self = self; 
+    }
+	public  void run () {
+	
+		int count = 5;
+		while(count > 0){
+            synchronized (prev) { 
+         	synchronized (self) { 
+			System.out.println("Java Thread" + this.threadName);
+			count--;
+            self.notify();
+            }
+           	try { 
+         	     prev.wait(); 
+            } catch (InterruptedException e) { 
+        	e.printStackTrace();  
+          } 	
+         }
+            
+        }
+        System.exit(0);//退出jvm           
+
+	/********* End *********/
+}
+}

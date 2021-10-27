@@ -1,0 +1,66 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+		for(int i=0;i<10;i++){
+        	record[i]=scanner.nextInt();
+            recordRecovery[i]=record[i];
+        }
+    /*   outer:
+       for(int i=0;i<10;i++){
+            recordRecovery[j]=record[i];        
+            int z;
+            if(j>0){
+            	for(z=j-1;j>=0;j--){
+                    if(recordRecovery[z]==recordRecovery[j]){
+                       continue outer;
+                    }
+          		 }           
+            }          
+           	j++;          		 
+        }*/
+        int j=0;
+        for(int i=0;i<10;i++){
+        	if(i==0){
+                recordRecovery[j]=record[i];
+            }
+            else{
+            	for(int z=0;z<=j;z++){
+                	if(record[i]==recordRecovery[z])
+                		break;
+                    if(z==j){
+                      j++;
+                      recordRecovery[j]=record[i]; 
+                    }
+                }
+            
+            }
+        
+        }
+      	for(int i=0;i<=j;i++){
+        	for(int z=i;z<=j;z++){
+            	if(recordRecovery[i]>recordRecovery[z]){
+                	int temp=recordRecovery[i];
+                    recordRecovery[i]=recordRecovery[z];
+                    recordRecovery[z]=temp;
+                
+                }
+            }
+        }
+        int num=j+1;
+        /********** End *********/
+        for (int i = 0; i < num; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i != num - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

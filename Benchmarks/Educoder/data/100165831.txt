@@ -1,0 +1,39 @@
+package step4;
+import step1.Date;
+import step2.Student;
+import step3.Course;
+class Report {
+    private Student student = new Student();
+    private String major;
+    private Course[] selCourse = new Course[10];
+
+    public Student getStudent(){
+        return student;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public Course[] getCourse(){
+        return selCourse;
+    }
+
+    public Report(){
+
+    }
+
+    public Report(Student student, String major, Course[] selCourse){
+        this.student = student;
+        this.major = major;
+        this.selCourse = selCourse;
+    }
+
+    public String toString(){
+        String a = student.toString() + " major:" + major + "\n";
+        for(Course c : selCourse){
+            a += c.toString() + "\n";
+        }
+        return a;
+    }
+}

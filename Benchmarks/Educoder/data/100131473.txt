@@ -1,0 +1,33 @@
+package step2;
+
+import java.io.File;
+ 
+public class Task {
+	
+	/********** BEGIN **********/
+	public static void showDirStructure(File file) {
+		if (file.isDirectory()) {		//判断是否有下一层，没有直接输出
+			System.out.println("+--" + file.getName());
+		}
+		int Blank = 2;				//接着进行下面的运算
+		haha(file, Blank);		//调用haha方法
+	}
+ 
+	public static void haha(File file, int Blank ) {	//写一个haha方法，设file ，blank方法
+		File[] files = file.listFiles();	//将子文件放到一个数组里
+		for (int i = 0; i < files.length; i++) {	//将子文件进行一个一个的检测
+			if (files[i].isDirectory()) {	//当file有子文件时
+				for (int k = 0; k < Blank; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("+--" + files[i].getName());
+				haha(files[i], Blank+2);//通过迭代不断调用文件,用blank控制前面的空格数
+			} else {						//当他没有子文件时
+				for (int k = 0; k < Blank; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("--" + files[i].getName());
+			}
+		}
+    }
+}

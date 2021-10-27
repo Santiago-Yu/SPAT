@@ -1,0 +1,44 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcConn {
+    public static void getConn() {
+        /**********    Begin   **********/
+        try {
+			//1.注册驱动
+			Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        /**********    End   **********/
+
+
+        /**********    Begin   **********/
+        Connection conn = null;
+        Statement statement = null;
+        //2.建立连接并创建数据库和表
+		try{
+            conn = DriverManager.getConnection ("jdbc:mysql://localhost:3306/","root","123123" );
+            
+            statement = conn.createStatement();
+            statement.executeUpdate("CREATE DATABASE IF NOT EXISTS `mysql_db`;");
+            statement.executeUpdate("USE `mysql_db`;");
+            statement.executeUpdate("CREATE TABLE `student` (`id` INT(11),`name` VARCHAR(20), `sex` VARCHAR(4), `age` INT(11));");
+        	
+            
+        }catch(SQLException e){
+        	e.printStackTrace();
+        }finally {
+            try {
+                if(statement!=null)
+                    statement.close();
+                if(conn!=null && !conn.isClosed())
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}

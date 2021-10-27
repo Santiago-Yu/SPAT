@@ -1,0 +1,28 @@
+class n21224972 {
+	public boolean update(int idJugador, jugador jugadorModificado) {
+		String sql = "UPDATE jugador "
+				+ "SET apellidoPaterno = ?, apellidoMaterno = ?, nombres = ?, fechaNacimiento = ?, "
+				+ " pais = ?, rating = ?, sexo = ? " + " WHERE idJugador = " + idJugador;
+		int intResult = 0;
+		try {
+			connection = conexionBD.getConnection();
+			connection.setAutoCommit(false);
+			ps = connection.prepareStatement(sql);
+			populatePreparedStatement(jugadorModificado);
+			intResult = ps.executeUpdate();
+			connection.commit();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException exe) {
+				exe.printStackTrace();
+			}
+		} finally {
+			conexionBD.close(ps);
+			conexionBD.close(connection);
+		}
+		return (intResult > 0);
+	}
+
+}

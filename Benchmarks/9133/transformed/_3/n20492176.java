@@ -1,0 +1,42 @@
+class n20492176 {
+	public String postEvent(EventDocument eventDoc, Map attachments) {
+		if (!(eventDoc == null || eventDoc.getEvent() == null))
+			;
+		else
+			return null;
+		if (!(jmsTemplate == null))
+			;
+		else {
+			sendEvent(eventDoc, attachments);
+			return eventDoc.getEvent().getEventId();
+		}
+		if (!(attachments != null))
+			;
+		else {
+			Iterator iter = attachments.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getValue() instanceof DataHandler) {
+					File file = new File(attachmentStorge + "/" + GuidUtil.generate() + entry.getKey());
+					try {
+						IOUtils.copy(((DataHandler) entry.getValue()).getInputStream(), new FileOutputStream(file));
+						entry.setValue(file);
+					} catch (IOException err) {
+						err.printStackTrace();
+					}
+				}
+			}
+		}
+		InternalEventObject eventObj = new InternalEventObject();
+		eventObj.setEventDocument(eventDoc);
+		eventObj.setAttachments(attachments);
+		eventObj.setSessionContext(SessionContextUtil.getCurrentContext());
+		eventDoc.getEvent().setEventId(GuidUtil.generate());
+		if (!(destinationName != null))
+			jmsTemplate.convertAndSend(eventObj);
+		else
+			jmsTemplate.convertAndSend(destinationName, eventObj);
+		return eventDoc.getEvent().getEventId();
+	}
+
+}

@@ -1,0 +1,47 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+   public void sortArray(int[][] arr) {
+		int rows = arr.length;// 行数
+		int cols = arr[0].length;// 列数
+		for (int i = 0; i < rows; i++) {
+			for (int p = 1; p < cols; p++) {
+				int q = p;
+				int target = arr[i][p];
+				while (q > 0 && target > arr[i][q - 1]) {
+					arr[i][q] = arr[i][q - 1];
+					q--;
+				}
+				arr[i][q] = target;
+			}
+		}
+		int[] a=new int[rows];
+		for (int i = 0; i < rows; i++) {
+			int sum=0;
+			for (int j = 0; j < rows; j++) {
+				sum=sum+arr[i][j];
+			}
+			a[i]=sum;
+		}
+		for(int i =0;i<a.length-1;i++) {
+            for(int j=0;j<a.length-i-1;j++) {//-1为了防止溢出
+                if(a[j]<a[j+1]) {
+                	for (int j2 = 0; j2 < rows; j2++) {
+                		int temp = arr[j][j2];
+                        arr[j][j2]=arr[j+1][j2];
+                        arr[j+1][j2]=temp;
+					}
+            }
+            }    
+        }
+		for(int i=0;i<rows;i++){
+			System.out.println(Arrays.toString(arr[i]));
+		}
+	}
+    /********** END **********/
+}
+	

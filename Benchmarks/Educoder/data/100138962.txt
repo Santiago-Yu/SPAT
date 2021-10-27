@@ -1,0 +1,23 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task 
+{
+
+	public static void main(String[] args) 
+    {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+        int a = 1,b = 1;
+        while(num != 2 && num != 1)
+        {
+            int c = b;
+            b = a;
+            a = a+c;
+            
+            num--;
+        }
+        System.out.println("子线程计算结果为："+a);
+	}
+}

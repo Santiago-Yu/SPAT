@@ -1,0 +1,36 @@
+package step3;
+
+public class Task {
+    
+	private int[][] dir  = new int[][] {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+	
+	private void markLocal(int row, int col, boolean[][] vis, char[][] arr) {
+		for(int i=0; i<dir.length; i++) {
+			int nextRow = row + dir[i][0];
+			int nextCol = col + dir[i][1];
+			if(nextRow < 0 || nextRow >= vis.length)
+				continue;
+			if(nextCol < 0 || nextCol >= vis[0].length)
+				continue;
+			if(!vis[nextRow][nextCol] && arr[nextRow][nextCol] != '*') {
+				vis[nextRow][nextCol] = true;
+				markLocal(nextRow, nextCol, vis, arr);
+			}
+		}
+	}
+	
+	public int getBlockNum(int n,int m,char[][] arr){
+		boolean[][] vis  = new boolean[n][m];
+		int  ans = 0;
+		for(int i=0; i<n; i++) {
+			for(int j=0; j<m; j++) {
+				if(!vis[i][j] && arr[i][j] != '*') {
+					vis[i][j] = true;
+					ans++;
+					markLocal(i, j, vis, arr);
+				}
+			}
+		}
+		return ans;
+	}
+}

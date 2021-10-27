@@ -1,0 +1,29 @@
+package step3;
+import java.util.Scanner; 
+
+public class MaoPao {
+	public static void main(String[] args) {
+		int[] num=new int[7];
+		int k,i,j,c;
+		Scanner sc=new Scanner(System.in); 
+		for(k=0;k<num.length;k++){
+            System.out.println("请输入第"+(k+1)+"个数：");
+        	num[k]=sc.nextInt();  
+        }	
+		 System.out.println("冒泡排序前的数组：");
+        for(i=0;i<num.length;i++){
+            System.out.print(num[i]+"\t");}
+         System.out.printf("\n冒泡排序后的数组：\n");
+        for(i=0;i<num.length-1;i++){
+        for(j=1;j<num.length-i;j++){
+        	if(num[j]<num[j-1]){
+                c=num[j];
+            	num[j]=num[j-1];
+            	num[j-1]=c;}
+        }
+        }
+		  for(i=0;i<num.length;i++){
+            System.out.print(num[i]+"\t");}
+System.out.println();
+	}
+}

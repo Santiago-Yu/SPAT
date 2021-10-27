@@ -1,0 +1,64 @@
+package step4;
+import java.util.Scanner;
+public class DayCount {
+	public static void main(String[] args) {
+        int year, month, day;;
+        Scanner input = new Scanner(System.in);
+        String temp = input.nextLine();
+        String strArray[] = temp.split(" ");
+        year = Integer.parseInt(strArray[0]);
+        month = Integer.parseInt(strArray[1]);
+        day = Integer.parseInt(strArray[2]);
+        DayCount test = new DayCount();
+		test.dayCount(year, month, day);
+    }
+    public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int days = 0;		
+		switch(month){
+	  	  case 1:
+			days = day;
+			break;
+		  case 2:
+			days = 31+day;
+			break;
+		  case 3:
+			days = 31+28+day;
+			break;
+		  case 4:
+			days = 31+28+31+day;
+			break;
+		  case 5:
+			days = 31+28+31+30+day;
+			break;
+		  case 6:
+			days = 31+28+31+30+31+day;
+			break;
+		  case 7:
+			days = 31+28+31+30+31+30+day;
+			break;
+		  case 8:
+			days = 31+28+31+30+31+30+31+day;
+			break;
+		  case 9:
+			days = 31+28+31+30+31+30+31+31+day;
+			break;
+		  case 10:
+			days = 31+28+31+30+31+30+31+31+30+day;
+			break;	
+		  case 11:
+			days = 31+28+31+30+31+30+31+31+30+31+day;
+			break;
+		  case 12:
+			days = 31+28+31+30+31+30+31+31+30+31+30+day;
+			break;
+		}
+		if(((year%4==0 && year%100!=0) || (year%400==0)) && month>=3){
+			days = days+1;
+			System.out.print(days);
+		}else{
+			System.out.print(days);
+		}
+		/********** End *********/
+	}
+}

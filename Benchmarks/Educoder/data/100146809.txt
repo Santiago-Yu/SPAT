@@ -1,0 +1,77 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+     boolean []judge=new boolean[10000];
+		for(int i=0;i<10000;i++) {
+			judge[i]=false;
+		}
+		for(int i=0;i<9997;i++) {
+			judge[(int)(nums[i]-1)]=true;
+		}
+		/*int flag=4;
+		int sum=0;*/
+		long []arr=new long[3];
+		int inter=0;
+		for(int i=0;i<10000;i++) {
+			if(judge[i]==false) {
+				/*if(flag==4) {
+					
+				}
+				if(flag==2) {
+					
+				}
+				if(flag==0) {
+					
+				}*/
+				arr[inter++]=i+1;
+			}
+		}
+		//for (int i = 0; i < 3; i ++) System.err.println(arr[i]);
+		long returnValue = arr[2];
+		//System.err.println(returnValue);
+		returnValue += arr[1] * this.cifang(arr[2]);
+		//System.err.println(returnValue);
+		long temp = returnValue;
+		//System.err.println(temp * 1000);
+        returnValue += arr[0] * this.cifang(arr[1]) * this.cifang(arr[2]);
+        //System.err.println(returnValue);
+		return (int)(returnValue % 11);
+	}
+	
+	public long cifang(long num) {
+		if (num < 10) return 10;
+        else if (num < 100) return 100;
+        else if (num < 1000) return 1000;
+       	else if (num < 10000) return 10000;
+        else return 100000;
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+        /*
+		long []nums=new long[10000];
+		for(int i=0;i<10000;) {
+			if(i==9999 || i==9997 || i==9996) {
+				nums[i]=-1;
+				i++;
+			}else {
+				nums[i]=i+1;
+				i++;
+			}
+		}
+		long []num=new long[9997];
+		int j=0;
+		for(int i=0;i<10000;i++) {
+			if(nums[i]!=-1) {
+				num[j++]=nums[i];
+			}
+		}
+		GetScores d=new GetScores();
+		System.out.println(d.getLostScores(num));
+        */
+	}
+
+}

@@ -1,0 +1,71 @@
+package step1;
+
+import java.util.List;
+
+public class Task {
+
+    public static  String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuffer ls=new StringBuffer();
+        ls.append(s.substring(0 , p));
+        StringBuffer rs=new StringBuffer();
+        rs.append(s.substring(p,s.length()));
+
+        int m = ops.size();
+        for (int i = 0; i < m; ++i) {
+            Operation  op = ops.get(i);
+            switch (op.t) {
+                case "I":
+                    ls.append(op.s);
+                    break;
+                case "B":
+                    for (int j = 0; j < op.l; ++j) {
+                        if (ls.length()>0) {
+                            ls.deleteCharAt(ls.length()-1);
+                        } else {
+                            break;
+                        }
+                    }
+                    break;
+                case "D":
+                    for (int j = 0; j < op.l; ++j) {
+                        if (rs.length()>0) {
+                            rs.deleteCharAt(0);
+                        } else {
+                            break;
+                        }
+                    }
+                    break;
+                case "L":
+                    for (int j = 0; j < op.l; ++j) {
+                        if (ls.length()>0) {
+                            rs.insert(0,ls.charAt(ls.length()-1));
+                            ls.deleteCharAt(ls.length()-1);
+                        } else {
+                            break;
+                        }
+                    }
+                    break;
+                case "R":
+                    for (int j = 0; j < op.l; ++j) {
+                        if (rs.length()>0) {
+                            ls.append(rs.charAt(0));
+                            rs.deleteCharAt(0);
+                        } else {
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+        StringBuffer result=new StringBuffer();
+        result.append(ls).append(rs);
+        return result.toString();
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}

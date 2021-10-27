@@ -1,0 +1,39 @@
+package step2;
+import java.util.Scanner;
+
+public class TestJava12_3 {
+
+	public static void main(String[] args) {
+		/******Begin******/
+		float X ,Y;
+		char ysfh;
+		Scanner input=new Scanner(System.in);
+		System.out.println("请输入第一个数字：");
+		X=input.nextFloat();
+		System.out.println("请输入运算符（+、-、*、/、%）：");
+		ysfh=input.next().toUpperCase().charAt(0);
+		System.out.println("请输入第二个数字：");
+		Y=input.nextFloat();
+		switch(ysfh){
+		case'+':
+			
+			System.out.println(X+" + "+Y+"="+(X+Y));break;
+		case'-':
+			
+			System.out.println(X+"-"+Y+"="+(X-Y));break;
+		case'*':
+			
+			System.out.println(X+" * "+Y+"="+(X*Y));break;
+		case'/':
+			
+			System.out.println(X+" / "+Y+"="+(X/Y));break;
+		case'%':
+			
+			System.out.println(X+" % "+Y+"="+(X%Y));break;
+			default:
+				System.out.println("输入的运算符有误！");
+		}
+		/******End******/
+	}
+
+}

@@ -1,0 +1,81 @@
+package step1;
+
+import java.util.NoSuchElementException;
+
+/**
+ * Created by sykus on 2018/1/26.
+ */
+public class MyStack<T> {
+    private T[] S;
+    private int top;//栈顶元素下标，初始为-1
+
+    public MyStack() {
+        this(1);
+    }
+
+    public MyStack(int capacity) {
+        S = (T[]) new Object[capacity];
+        top = -1;
+    }
+
+
+    /**
+     * 入栈操作，把item压入栈中
+     *
+     * @param item
+     */
+    public void push(T item) {
+
+        int len = S.length;
+        if (top == len - 1) {
+            resize(2 * len);
+        }
+        /********** Begin *********/
+		top++;
+        S[top] = item;
+        /********** End *********/
+    }
+
+
+    /**
+     * 返回栈顶元素并从栈中移除
+     *
+     * @return
+     */
+    public T pop() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("栈为空！");
+        }
+        /********** Begin *********/
+		else{
+        	return this.S[top--];
+        }
+        /********** End *********/
+    }
+
+    /**
+     * 判断栈是否为空
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        if (top < 0)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 动态扩展数组大小
+     *
+     * @param capacity
+     */
+    private void resize(int capacity) {
+        assert capacity > top;
+        T[] tmp = (T[]) new Object[capacity];
+        for (int i = 0; i <= top; i++) {
+            tmp[i] = S[i];
+        }
+        S = tmp;
+    }
+}

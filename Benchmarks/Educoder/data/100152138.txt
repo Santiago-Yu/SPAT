@@ -1,0 +1,99 @@
+package step2;
+
+import java.util.List;
+
+public class Task {
+
+    private static final long mod = (long) (1e9 + 7);
+    /**
+     * 通过将公式分解，结合前缀和，得出需要维护两个数组A[i]和A[i]*(n-i+1)
+     * 
+     */
+    private static long[] t1 = new long[100001];
+    private static long[] t2 = new long[100001];
+
+    /**
+     * 原数组长度
+     */
+    private static int length;
+
+    public int solve(List<Integer> data, List<Operation> operations) {
+        length = data.size();
+        long[] a = new long[100001];
+
+        for (int i = 1; i <= length; i++) {
+            a[i] = data.get(i - 1);
+            update1(i, a[i]);
+            update2(i, a[i] * (length - i + 1));
+        }
+
+        long sumL = 0;
+        long sumR = 0;
+        for (Operation operation : operations) {
+            int start = operation.x + 1;
+            int end = operation.y + 1;
+            String op = operation.op;
+
+            if (op.equals("C")) {
+                update1(start, end - 1 - a[start]);
+                update2(start, (end - 1 - a[start]) * (length - start + 1));
+                a[start] = end - 1;
+            }
+            if (op.equals("L")) {
+                long sum1 = getSum1(end) - getSum1(start - 1);
+                long sum2 = getSum2(end) - getSum2(start - 1);
+                sumL += (length - start + 2) * sum1 - sum2;
+            }
+            if (op.equals("R")) {
+                long sum1 = getSum1(end) - getSum1(start - 1);
+                long sum2 = getSum2(end) - getSum2(start - 1);
+                sumR += (sum2 - (length - end) * sum1);
+            }
+        }
+
+        return (int) ((sumL + sumR) % mod);
+    }
+
+    public int lowbit(int index) {
+        return index & (-index);
+    }
+
+    public void update1(int index, long value) {
+        while (index <= length) {
+            t1[index] += value;
+            index += lowbit(index);
+        }
+    }
+
+    public void update2(int index, long value) {
+        while (index <= length) {
+            t2[index] += value;
+            index += lowbit(index);
+        }
+    }
+
+    public long getSum1(int index) {
+        long sum = 0;
+        while (index > 0) {
+            sum += t1[index];
+            index -= lowbit(index);
+        }
+        return sum;
+    }
+
+    public long getSum2(int index) {
+        long sum = 0;
+        while (index > 0) {
+            sum += t2[index];
+            index -= lowbit(index);
+        }
+        return sum;
+    }
+
+}
+
+class Operation {
+	String op;
+	int x;
+	int y;
+}

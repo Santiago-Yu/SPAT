@@ -1,0 +1,32 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 
+	 int boat = 0;
+		for (int i = 0; i < ferry.length; i++) {
+			for (int j = 0; j < ferry[i].length; j++) {	//全套循环遍历数组,i:行,j:列
+				if (ferry[i][j] == '+') {	//如果发现"*"
+					for (int k = i + 1; k < ferry.length; k++) {	//遍历*所在的行，从i+1行开始
+						if (ferry[k][j] == 'o') {	//如果*的下方是 o，结束遍历*所在的行
+							break;
+						} else {
+							ferry[k][j] = 'o';	//否则将该位置修改为 0
+						}
+					}
+					for (int k = j + 1; k < ferry[i].length; k++) {	//遍历*所在的列，从j+1列开始
+						j = k;	//正在遍历的j列+1
+						if (ferry[i][k] == 'o') {	//如果*的右方是 o，结束遍历*所在的列
+							break;
+						}
+					}
+					boat++;
+				}
+			}
+		}
+         return boat;
+      /***********END ***************/
+	 }
+}

@@ -1,0 +1,47 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+       // int i = 0;
+        int i;
+        int temp;
+        int sum = 0;
+		for(i = num1;i <= num2;i ++){
+            temp=i;
+            while(temp>0){
+           		if(temp/100==0){
+                    if(temp/10==0){
+                        sum+=temp;
+                        //System.out.println(temp);
+                        temp=temp-temp;
+                        //System.out.println(sum);
+                        
+                    }else{
+                        sum+=(temp/10);
+                        temp=temp-((temp/10)*10);
+                        //System.out.println(temp);
+                        //System.out.println(sum);
+                    }
+                }else{
+                    sum+=(temp/100);
+                    temp=temp-((temp/100)*100);
+                    //System.out.println(temp);
+                    //System.out.println(sum);
+                }
+            }
+            
+                    
+                    
+  
+        }
+        //System.out.println(sum);
+        return sum;
+     
+		
+		
+		/********** END **********/
+	}
+}

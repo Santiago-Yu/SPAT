@@ -1,0 +1,35 @@
+package step3;
+public class NarcissisticNumber {
+
+    //判断一个三位数是否是水仙花数
+    public boolean NarcissisticNumber(int n){
+        // 请在此添加实现代码
+        int k=0,sum=0,i,m,a,l,x=1;
+        
+        for(i=n;i>0;)
+        {
+        i=i/10;
+            k++;
+        }
+        
+        sum=0;
+        for(m=n;m>0;)
+        {
+        a=m%10;
+            l=k;
+            x=1;
+            while(l>0)
+            {
+               
+            x=a*x;
+                l--;
+            }
+            sum=sum+x;
+            m=m/10;
+        }
+    if(sum==n)
+        return true;
+    else
+        return false;
+    }
+}

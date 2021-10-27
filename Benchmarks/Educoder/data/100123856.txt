@@ -1,0 +1,22 @@
+package step1;
+public class MaxMin{
+	public static void main(String[] args){
+    	double[] arr = new double[100];
+        int i,s=0;
+        int max=0,min=100,temp;
+        double d;
+        for(i=0;i<100;i++){
+            d=100*Math.random();
+	    arr[i] = d;
+            temp = (int)d;
+       /*********begin*********/   
+           max=Math.max(max,temp);
+            min=Math.min(min,temp);
+            if(temp>50)
+                s++;
+       
+	/*********end*********/
+        }
+        judgeRadom.cpm(arr,max,min,s);
+    }
+}

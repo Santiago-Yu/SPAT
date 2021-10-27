@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int j=gongYue(length,width);
+        int x=length/j;
+        int y=width/j;
+        
+		System.out.println(j);
+        System.out.println(x*y);
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+    private static int gongYue(int a, int b) {
+        if (b == 0) {
+                return a;
+        } else {
+                return gongYue(b, a % b);
+        }
+    }
+}

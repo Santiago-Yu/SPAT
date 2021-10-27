@@ -1,0 +1,20 @@
+package step2;
+import java.util.Scanner;
+
+//用户根据提示信息从键盘输入年份，输出该年份是否为闰年
+public class TestJava22KJ_1 {
+
+	public static void main(String[] args) {
+	Scanner sc=new Scanner(System.in);
+		System.out.println("请输入一个年份：");
+		int y=sc.nextInt();
+		NianFen( y);
+	}
+public static void NianFen(int x) {
+	if(x%4==0&&x%100!=0||x%400==0) {
+		System.out.println(x+"年是闰年");
+	}else {
+		System.out.println(x+"年是平年");
+	}
+}
+}

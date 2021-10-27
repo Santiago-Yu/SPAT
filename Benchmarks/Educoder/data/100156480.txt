@@ -1,0 +1,22 @@
+package step4;
+import java.util.Scanner;
+public class TestJava25_4 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入秒数：");
+		int s = sc.nextInt();
+		System.out.println(s+"秒对应的小时数是"+TestJava25_4.H(s)+"，分钟数是："+TestJava25_4.min(s));		
+	}
+	public static int H(int s){
+    	int a=0;
+        a=s/3600;
+        return a;
+    }	
+	public static int min(int s){
+    	int a=0;
+        int b=0;
+        a=s/3600;
+        b=(s-3600*a)/60;
+        return b;        
+    }
+}

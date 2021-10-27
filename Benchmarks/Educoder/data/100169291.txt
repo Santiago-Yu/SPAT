@@ -1,0 +1,117 @@
+package step1;
+
+import java.util.List;
+public class Task {
+	
+    
+    public String solver(String s,int p,List<Operation> ops) throws Exception
+    {
+        StringBuilder s2= new StringBuilder(s);
+        //System.out.println(s2+" "+p);
+        if (ops.size()<=100000)
+        {
+           
+        for(int i = 0;i<ops.size();i++) 
+        {
+        	
+        
+        	Operation op = ops.get(i);
+            //	System.out.println(op.t+" "+op.s+" "+op.l);
+        	//if(p<0)p=0;
+        	//if(p>n)p=s.l;
+        	//if(n==0&&p!=n) p=0;
+        	if(op.t.equals("I"))
+        	{	
+                s2.insert(p,op.s);
+        		p = p+op.s.length();
+             //   System.out.println(s2+" "+p);
+        	}
+        	else if(op.t.equals("B")) 
+        	{
+        	// 	if(op.l>=p) 
+            //     {
+            //         op.l=p;
+            //         s2 =new StringBuilder(s2.substring(p,s2.length()));
+            //          System.out.println(s2+" "+p);
+            //     }
+            // else
+            // {
+            //     if (p!=s2.length())
+        	// 	{s2=new StringBuilder(s2.substring(0,p-op.l));
+                
+            //     s2.append(s2.substring(p,s2.length()));
+            //     }
+            //     else
+            //     {
+            //         s2=new StringBuilder(s2.substring(0,p-op.l));
+            //     }
+            if(op.l>=p)   op.l=p;
+            s2.delete(p-op.l,p);
+             //    System.out.println(s2+" "+p);
+            
+        		p-=op.l;
+        	}
+        	
+        	else if(op.t.equals("D")) 
+        	{
+                // System.out.println(s2.length()+" "+p);
+                // s2=new StringBuilder(s2.substring(0,0));
+                // if(p+op.l>=s2.length()) 
+                // {
+                //     op.l=s2.length()-p;
+                //     System.out.println(s2.length()+" "+p);
+                //     s2=new StringBuilder(s2.substring(0,p));
+                //      System.out.println(s2+" "+p);
+                // }
+                // else
+                // {
+                // if (p+op.l!=s2.length())
+                // {
+
+        		// s2=new StringBuilder(s2.substring(0,p));
+                // s2.append(s2.substring(p+op.l,s2.length()));
+                // }
+                // else
+                // {
+                //     s2=new StringBuilder(s2.substring(0,p));
+                // }
+                if(p+op.l>=s2.length()) 
+                   op.l=s2.length()-p;
+                   s2.delete(p,p+op.l);
+            //     System.out.println(s2+" "+p);
+        
+        	}
+        	
+        	else if(op.t.equals("L")) 
+        	{
+        		p-=op.l;
+        		if(p<0)
+        		p=0;
+        	}
+        	
+        	else if(op.t.equals("R"))
+        	{
+        		p+=op.l;
+        		if(p>s2.length())
+        		p=s2.length();
+        	}
+       
+        	
+        	
+        }
+
+        }
+        return ""+s2;	
+       
+    }
+    
+    static class Operation 
+    {
+        String t;
+        String s;
+        int l;
+        
+       
+
+    }
+}

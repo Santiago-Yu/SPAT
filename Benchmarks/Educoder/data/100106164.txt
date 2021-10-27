@@ -1,0 +1,13 @@
+package Step1;
+
+public class UnicodeDemo {
+     public String Encoding(String s) {
+    	StringBuffer sb = new StringBuffer();
+    	char[] c = s.toCharArray();
+    	for(int i =0;i<c.length;i++) {
+    		sb.append("\\u"+Integer.toHexString(c[i]));
+    	}
+    	System.out.println(sb.toString());
+         return s;
+     }	
+}

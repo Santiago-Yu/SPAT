@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int a[1001];
+	int x,i=0,j,k,T,sum,count = 0;
+	scanf("%d",&a[i]);
+	while(getchar()!='\n'){
+		i++;
+		scanf("%d",&a[i]);
+	}
+	x=i+1;
+	scanf("%d",&T);
+	for(i=0;i<x;i++){
+		for(j=i+1;j<x;j++){
+			for(k=j+1;k<x;k++){
+				if(a[i]+a[j]+a[k]<T){
+					count++;
+				}						
+			}
+		}
+	}
+	printf("%d",count);
+	return 0;
+}

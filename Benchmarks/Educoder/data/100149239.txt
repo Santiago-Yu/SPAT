@@ -1,0 +1,59 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+       int sum = 0;
+        int read[][] = new int[n][m];
+        for(int i =0;i<n;i++){
+            for(int j = 0;j<m;j++){
+                read[i][j]=0;
+            }
+        }
+        
+        for(int i = 0;i<n;i++){
+            for(int j = 0 ;j<m ; j++){
+                if(read[i][j]==1){
+                    continue;
+                }
+                
+                if(area[i][j]=='x'){
+                    continue;
+                }
+                
+                sum++;
+                dps(area,read,i,j);
+                
+                
+            }
+        }
+
+        return sum;
+		
+		/********* End *********/	
+	}
+    
+    public static void dps(char[][] area, int[][] read,int i,int j){
+        		if(read[i][j]==1){
+                    return;
+                }
+        read[i][j]=1;
+        		if(i!=0&&area[i-1][j]=='o'){
+                    
+                    dps(area,read,i-1,j);
+                }
+                if(i!=area.length-1&&area[i+1][j]=='o'){
+                    
+                    dps(area,read,i+1,j);
+                }
+                if(j!=0&&area[i][j-1]=='o'){
+                    
+                    dps(area,read,i,j-1);
+                }
+                if(j!=area[i].length-1&& area[i][j+1]=='o'){
+                   
+                    dps(area,read,i,j+1);
+                }
+    }
+}

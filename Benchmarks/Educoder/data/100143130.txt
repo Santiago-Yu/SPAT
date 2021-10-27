@@ -1,0 +1,39 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+				FileReader fr=null;
+		FileWriter fw=null;
+		fr=new FileReader("src/step4/input/input.txt");
+		fw=new FileWriter("src/step4/output/output.txt");
+        
+		char[] c=new char[8];
+		int len=0;
+		while((len=fr.read(c))!=-1)
+			fw.write(c,0,len);
+//		for(int i=0;i<c.length;i++)
+//			System.out.print(c[i]);
+        
+  //      File f=new File("src/step3/input/input.txt");
+  //      if(f.exists)
+  //          System.out.print("文件复制成功");
+		
+		fw.close();
+		fr.close();
+		
+		
+	
+		
+		
+		/********* End *********/		
+	}
+}

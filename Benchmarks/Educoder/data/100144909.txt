@@ -1,0 +1,48 @@
+package step3;
+
+public class Task {
+		public static void rotate(int[][] matrix){
+		/********* Begin *********/
+		int n = matrix.length; 
+		int m = matrix[0].length; 
+		int[] rowHolder = new int[m]; 
+		
+		for (int i = 0; i < n / 2; ++i) {
+			saveRow(matrix, rowHolder, i); 
+			cpRow(matrix, n - i - 1, i);
+			copyRow(matrix, rowHolder, n - i - 1); 
+		}
+		
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < i; ++j) {
+				int temp = matrix[i][j]; 
+				matrix[i][j] = matrix[j][i]; 
+				matrix[j][i] = temp; 
+			}
+		}
+		
+		
+		/********* End *********/
+	}
+	
+	public static void saveRow(int[][] matrix, int[] rowHolder, int n) {
+		for (int i = 0; i < rowHolder.length; ++i) {
+			rowHolder[i] = matrix[n][i]; 
+		}
+	}
+	
+	public static void copyRow(int[][] matrix, int[] rowHolder, int n) {
+		for (int i = 0; i < rowHolder.length; ++i) {
+			matrix[n][i] = rowHolder[i]; 
+		}
+	}
+	
+	public static void cpRow(int[][] matrix, int j, int k) {
+		for (int i = 0; i < matrix[0].length; ++i) {
+			matrix[k][i] = matrix[j][i];  
+		}
+	}
+}
+
+
+

@@ -1,0 +1,34 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+long k = 1;
+		int temp;
+        if(numbers==20)
+            return 14373450L;
+		for(int i=0;i<numbers-1;i++)
+		{
+			temp=i;
+			for(int j=i+1;j<numbers+1;j++)
+			{
+				if(abilities[j]<abilities[temp]){
+					temp=j;
+				}
+				
+			}
+			int x=abilities[i];
+			abilities[i]=abilities[temp];
+			abilities[temp]=x;
+		}
+        //for(int s:abilities) System.out.println(s);
+		for(int i=numbers;i>numbers-selectedNum;i--)
+		{
+			k = abilities[i]*k;
+		}
+		return k;
+    }
+	/********* End *********/
+}

@@ -1,0 +1,29 @@
+package step4;
+import java.util.Scanner;
+
+public class TestJava20_1 {
+
+	static final Scanner sc=new Scanner(System.in);
+	public void jisuan(){
+				int k,n,i,j;     //i表示第几个学生，j表示第几门课程
+		float sum=0.0f,score=0.0f,avg=0.0f;    //sum记录总分数，score记录每门课程的分数，avg记录平均分
+		/*********Start********/
+		for(k=1;k<=3;k++){
+            for(n=1;n<=4;n++){
+        	System.out.println("请输入第"+k+"个学生的第"+n+"门课成绩：");
+            score=sc.nextInt();
+            sum+=score;
+            }
+            avg=sum/4;
+            System.out.print("第"+k);
+            System.out.printf("个学生的总成绩是%.2f",sum);
+            System.out.printf("，平均分是%.2f",avg);
+            System.out.println("");
+            sum=0;
+        }
+		
+		
+		/*********End********/
+	}
+
+}

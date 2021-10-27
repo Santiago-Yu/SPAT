@@ -1,0 +1,80 @@
+package step4;
+import java.util.*;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String buf[]=releaseDate.split("-");
+		int year=Integer.parseInt(buf[0]);
+		int month=Integer.parseInt(buf[1]);
+		int d=Integer.parseInt(buf[2]);
+		int data[]= {31,28,31,30,31,30,31,31,30,31,30,31};
+		int t=d+day;
+		int mask=0;
+		if((year%4==0 && year%100!=0) || year%400==0) {
+			data[1]++;
+			mask=1;
+		}
+		if(t>data[month-1]) {
+			int m=month;
+			int y=year;
+			while(t>data[m-1]) {
+				t=t-data[m-1];
+				m++;
+				if(m>12) {
+					y++;
+					if(mask==1) {
+						data[1]=28;
+						mask=0;
+					}
+					if((y%4==0 && y%100!=0) || y%400==0) {
+						data[1]=29;
+						mask=1;
+					}
+					m=1;
+				}
+				
+			}
+			month=m;
+			year=y;
+			if(month<=9 && t<=9) {
+				return year+"-0"+month+"-0"+t; 
+			}
+			if(month<=9) {
+				return year+"-0"+month+"-"+t; 
+			}
+			if(t<=9) {
+				return year+"-"+month+"-0"+t; 
+			}
+			return year+"-"+month+"-"+t; 
+		}
+		else {
+			if(month<=9 && day<=9) {
+				return year+"-0"+month+"-0"+t; 
+			}
+			if(month<=9) {
+				return year+"-0"+month+"-"+t; 
+			}
+			if(day<=9) {
+				return year+"-"+month+"-0"+t; 
+			}
+			return year+"-"+month+"-"+day; 
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

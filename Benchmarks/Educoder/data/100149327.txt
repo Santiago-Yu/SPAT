@@ -1,0 +1,51 @@
+package step4;
+
+public class Task {
+    
+	public void love(int n){
+		/********* Begin *********/
+        if(n==1){
+             for(double y = (double) 1.3;y>-1.101;y -=2.4/40)  {  
+             for(double x= (double) -1.2;x<1.2;x+= 2.4/96){ 
+                   if(((x*x+y*y-1)*(x*x+y*y-1)*(x*x+y*y-1)-x*x*y*y*y)<=0.0) {    
+                          System.out.print(" ");  
+                   }  
+                   else  {
+                          System.out.print("$");
+                          }  
+             }  
+             System.out.println();  
+      }  
+        }
+        else{  
+            
+            String str = new String("I love you!");
+            char ch[]=str.toCharArray();
+            for(double y = (double) 1.3;y>=-1.1;y -=2.4/40)
+            {
+                int i=0;
+                   for(double x= (double) -1.1;x<=1.1;x+= 2.2/88)
+                   {
+                       double c = Math.sqrt(Math.abs(x));
+                       double d =(5.0*y/4.0-c)*(5.0*y/4.0-c);
+                         if(x*x+d-1>0.0)
+                         {
+                                System.out.print(" ");
+                         }
+                         else
+                         {
+                             System.out.print(ch[i]);
+                             i=i+1;
+                             if(i==11)
+                            	 {
+                            	 i=0;
+                            	 }
+                         }
+                   }
+                   System.out.println();
+            }
+            
+        }
+		/********* End *********/	
+	}
+}

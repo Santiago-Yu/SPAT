@@ -1,0 +1,69 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+       int sum=0;
+        if((year%4==0 && year/100!=0) || (year%400==0)){
+		switch(month){
+            case 1:
+                sum=day;break;
+                case 2:
+                sum=day+31;break;
+            case 3:
+                sum=day+31+29;break;
+            case 4:
+                sum=day+31+29+31;break;
+                 case 5:
+                sum=day+31+29+30+31;break;
+                 case 6:
+                sum=day+31+29+30+31+31;break;
+                 case 7:
+                sum=day+31+29+30+31+30+30;break;
+                case 8:
+                sum=day+31+29+30+31+30+30+31;break;
+                  case 9:
+                sum=day+31+29+30+31+30+30+31+31;break;
+                case 10:
+                sum=day+31+29+30+31+30+30+31+31+30;break;
+                case 11:
+                sum=day+31+29+30+31+30+30+31+31+30+31;break;
+                case 12:
+                sum=day+31+29+30+31+30+30+31+31+30+31+30;break; 
+                    }}
+            else{
+            switch(month){
+            case 1:
+                sum=day;break;
+                case 2:
+                sum=day+31;break;
+            case 3:
+                sum=day+31+28;break;
+            case 4:
+                sum=day+31+28+31;break;
+                 case 5:
+                sum=day+31+28+30+31;break;
+                 case 6:
+                sum=day+31+28+30+31+31;break;
+                 case 7:
+                sum=day+31+28+30+31+30+30;break;
+                case 8:
+                sum=day+31+28+30+31+30+30+31;break;
+                  case 9:
+                sum=day+31+28+30+31+30+30+31+31;break;
+                case 10:
+                sum=day+31+28+30+31+30+30+31+31+30;break;
+                case 11:
+                sum=day+31+28+30+31+30+30+31+31+30+31;break;
+                case 12:
+                sum=day+31+28+30+31+30+30+31+31+30+31+30;break; 
+                    }
+            
+            }
+      System.out.print(sum);
+
+
+
+		/********** End *********/
+	}
+}

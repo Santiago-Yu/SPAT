@@ -1,0 +1,78 @@
+package step4;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+    public static int BUFFER_SIZE = 1024;
+    
+	public void task() throws IOException{
+		/********* Begin *********/
+		
+		copy("src/step4/input/input.txt", "src/step4/output/output.txt");
+		copy("src/step4/input/input.jpg", "src/step4/output/output.jpg");
+		
+		
+		/********* End *********/		
+	}
+    
+    public void copy(String source, String target){
+		byte[] bytes = read(source);
+		write(target, bytes);
+    }
+    
+	public void write(String filename, byte[] bytes) {
+		File file = new File(filename);
+		OutputStream fos = null;
+		
+		try {
+			fos = new FileOutputStream(file);
+			fos.write(bytes);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch(IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public byte[] read(String filename) {
+		File file = new File(filename);
+		InputStream fis = null;
+		ByteArrayOutputStream bou = new ByteArrayOutputStream();
+		try {
+			fis = new FileInputStream(file);
+			int readNum= -1;
+			byte[] buffer = new byte[BUFFER_SIZE];
+			while((readNum = fis.read(buffer, 0, BUFFER_SIZE)) != -1) {
+				bou.write(buffer, 0, readNum);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				fis.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return bou.toByteArray();
+	}
+}

@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+int u,h[10000][10000],x,y;
+int min(int i,int c){
+	int j,t=99999999;
+	for(j=0;j<y;j++){
+		if(h[i][j]<t && j!=c){
+			t= h[i][j];
+		}
+	}
+	return t;
+}
+int main()
+{
+    int i,j,ans,k;
+    scanf("%d %d",&x,&y);
+    for(i=0;i<x;i++)
+    	for(j=0;j<y;j++)
+    		scanf("%d",&h[i][j]);
+    for(i=1;i<x;i++){
+    	for(j=0;j<y;j++){
+    		h[i][j]+=min(i-1,j);
+    	}
+    }
+    int res=99999999;
+    for(j=0;j<y;j++){
+    	if(h[x-1][j]<res)
+    		res=h[x-1][j];
+    }
+    printf("%d",res);
+    return 0;
+}

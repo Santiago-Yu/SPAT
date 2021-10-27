@@ -1,0 +1,111 @@
+package step4;
+import java.util.*;
+public class Task {
+	
+	  public String getDate(String releaseDate, int day){
+        int[] date = new int[3]; // yyyy-MM-dd
+        date[0] = Integer.valueOf(releaseDate.substring(0, 4));
+        date[1] = Integer.valueOf(releaseDate.substring(5, 7));
+        date[2] = Integer.valueOf(releaseDate.substring(8, 10));
+        while (day > 0){
+            nextDate(date);
+            day--;
+        }
+        String year = String.valueOf(date[0]);
+        String month = String.valueOf(date[1]);
+        String d = String.valueOf(date[2]);
+        if(year.length() == 1){
+            year = "000" + year;
+        }
+        if(year.length() == 2){
+            year = "00" + year;
+        }
+        if(year.length() == 3){
+            year = "0" + year;
+        }
+        if(date[1] < 10){
+            month = "0" + month;
+        }
+        if(date[2] < 10){
+            d = "0" + d;
+        }
+        return year + "-" + month + "-" + d;
+    }
+    private static void nextDate(int[] pre){
+        int year = pre[0];
+        int month = pre[1];
+        int day = pre[2];
+        if(day < 28){
+            pre[2] = day + 1;
+            return;
+        }
+        else if(day == 28){
+            if(month == 2){
+                if(isLeap(year)){
+                    pre[2]++;
+                    return;
+                }
+                else {
+                    pre[1]++;
+                    pre[2] = 1;
+                    return;
+                }
+            }
+            else {
+                pre[2]++;
+            }
+        }
+        else if(day == 29){
+            if(month == 2){
+                pre[1]++;
+                pre[2] = 1;
+            }
+            else {
+                pre[2]++;
+            }
+        }
+        else if(day == 30){
+            if(isBigM(month)){
+                pre[2]++;
+            }
+            else {
+                pre[2] = 1;
+                if(month < 12){
+                    pre[1]++;
+                }
+                else {
+                    pre[1] = 1;
+                    pre[0]++;
+                }
+            }
+        }
+        else {
+            // 31
+            pre[2] = 1;
+            if(month < 12){
+                pre[1]++;
+            }
+            else {
+                pre[1] = 1;
+                pre[0]++;
+            }
+        }
+        
+    }
+    private static boolean isBigM(int m){
+        if(m <= 7){
+            return ((m & 0x01) == 1);
+        }
+        else {
+            return ((m & 0x01) == 0);
+        }
+    }
+    private static boolean isLeap(int year){
+        if(year % 100 == 0){
+            return year % 400 == 0;
+        }
+        return year % 4 == 0;
+    }
+	
+	
+}

@@ -1,0 +1,32 @@
+package task6;
+public class ScaleBox extends Box{
+    private int type;
+    
+    public void setType(int type){
+        this.type=type;
+    }
+    public int getType(){
+        return type;
+    }
+    public ScaleBox(){}
+    public ScaleBox(int type){
+        this.type=type;
+    }
+    
+    public ScaleBox(double width,double height,double depth,int type){
+        this.setWidth(width);
+        this.setHeight(height);
+        this.setDepth(depth);
+        this.type=type;
+    }
+    
+    public double printVolumn(){
+if(type==1){
+            return this.getWidth()*this.getHeight()*this.getDepth();
+        }else if(type==2){
+            return 3.14*this.getWidth()*this.getWidth()*this.getHeight();
+        }
+        else return 0;
+    }
+}
+        

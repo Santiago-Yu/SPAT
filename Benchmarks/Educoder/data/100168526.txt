@@ -1,0 +1,38 @@
+package step3;
+
+public class LianXi {
+
+	
+	public static void main(String[] args) {
+		/*
+		 * 假设平台分配的四个整数为 1 2 3 4
+		 * 那么百位有可能是  1 2 3 4   十位：有可能是  1 2 3 4    个位：有可能是  1 2 3 4，
+		 * 要求是 百位 十位  各位上的数字不能重复
+		 * 比如：123  124  132  134 等都满足条件
+		 * 比如：122  131  121  232 等都不满足条件
+		 * 
+		 * */
+
+		 	 //定义长度为4的int数组
+		 int[] array = new int[4];    
+		 //创建Scanner对象获取平台输入的信息4
+		 
+        java.util.Scanner sc = new java.util.Scanner(System.in);
+        //获取平台给定的输入值并填充至数组中
+		 for(int i=0;i<array.length;i++){
+			  array[i] = sc.nextInt();
+		 }
+		
+		for (int i = 0; i <array.length; i++) {//遍历个位的所有数
+		for (int j = 0; j <array.length; j++) {//遍历十位的所有数
+		for (int k = 0; k <array.length; k++) {//遍历百位的所有数
+		if (array[i]!=array[j]&&array[j]!=array[k]&&array[i]!=array[k]) {//如果个位，十位，百位上的数都不相等
+	
+		System.out.println(array[i]*100+array[j]*10+array[k]);//打印组成后的三位数
+		}
+		}
+		}
+		}
+		
+    }
+    }

@@ -1,0 +1,48 @@
+package step2;
+
+import java.util.Scanner;
+
+public class SystemUpdate {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String name = scanner.next();
+        String birth = scanner.next();
+        String position = scanner.next();
+        double salary = scanner.nextDouble();
+        Salary employee = new Salary(name, birth, position, salary);
+        employee.introduction();
+    }
+}
+
+/********** Begin *********/
+class Employee {
+    private String name;
+    private String birth;
+    private String position;
+    public void setname(String a){this.name=a;}
+    public void setbirth(String a){this.birth=a;}
+    public void setposition(String a){this.position=a;}
+    public String getname(){return name;}
+    public String getbirth(){return birth;}
+    public String getposition(){return position;}
+    
+}
+
+class Salary extends Employee {
+    private double salary;
+    public void setsalary(double a){this.salary=a;}
+    
+    public Salary(String name,String birth,String position,double salary){
+        this.setname(name);
+        this.setbirth(birth);
+        this.setposition(position);
+        this.setsalary(salary);
+    }
+    public double getsalary(){return salary;}
+    public void introduction(){
+        System.out.print("员工姓名："+this.getname()+" 出生年月："+
+                        this.getbirth()+" 职位："+this.getposition()+
+                        " 薪水："+this.getsalary());}
+        
+}
+/********** End *********/

@@ -1,0 +1,57 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		for (int k = 0; k < arr.length; k++) {
+			for(int i = 0; i< arr[k].length; i++){
+				for (int j = i + 1; j < arr[k].length; j++) {
+					if(arr[k][i] < arr[k][j]){
+						int t = arr[k][i];
+						arr[k][i] = arr[k][j];
+						arr[k][j] = t;
+					}
+				}
+			}
+		}
+		
+		//对每个一维数组的和降序排列
+		int[] mid =  null;
+		int[] num = new int[arr.length];
+		//求和
+		for (int i = 0; i < num.length; i++) {
+			for (int j = 0; j < arr[i].length; j++) {
+				num[i] = num[i] + arr[i][j];
+			}
+		}
+		//排序
+		for (int i = 0; i < num.length-1; i++) {
+			for (int j = i+1; j < num.length; j++) {
+				if(num[i] < num[j]){
+					mid = arr[i];
+					arr[i] = arr[j];
+					arr[j] = mid;
+					
+					int t = num[i];
+					num[i] = num[j];
+					num[j] = t;
+				}		
+			}
+		}
+		for (int i = 0; i < num.length; i++) {
+			System.out.println(Arrays.toString(arr[i]));
+			
+		}
+
+
+
+		
+	
+    }
+    
+    /********** END **********/
+}
+	

@@ -1,0 +1,26 @@
+package step2;
+
+public class Task {
+    //private int k=0,f=0;
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        int k=0;
+        for(int i=0;i<area.length;i++){
+        	for(int j=0;j<area[0].length;j++){
+            	if(area[i][j]=='o'){
+                	k++;
+                    take(i,j,area);
+                }
+            }
+        }
+        return k;
+		/********* End *********/	
+    }
+    public void take(int n,int m,char[][] area){
+    	area[n][m]='x';
+                    if(n-1>=0&&area[n-1][m]=='o'){take(n-1,m,area);}
+                    if(n+1<area.length&&area[n+1][m]=='o'){take(n+1,m,area);}
+                    if(m-1>=0&&area[n][m-1]=='o'){take(n,m-1,area);}
+                    if(m+1<area[0].length&&area[n][m+1]=='o'){take(n,m+1,area);}
+    }
+}

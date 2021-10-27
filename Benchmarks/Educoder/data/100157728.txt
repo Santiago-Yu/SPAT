@@ -1,0 +1,25 @@
+package step3;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+public class StudentDemo{
+	//获取单词的数量
+	public Map<String, Integer> getWordCount(String str) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		StringTokenizer tokenizer=new StringTokenizer(str);
+        int count;//记录次数
+		String word;//单个单词
+while(tokenizer.hasMoreTokens()){
+    word=tokenizer.nextToken(" |\\,|\\.|\\?|\\!|’ ");
+    if(map.containsKey(word)){
+        //拿到之前存在map集合中该单词的次数
+        count=map.get(word);
+        map.put(word, count+1);
+    }else{
+        map.put(word, 1);
+    }
+}
+
+		return map;
+	}
+}

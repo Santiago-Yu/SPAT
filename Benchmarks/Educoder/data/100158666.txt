@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int s[100];
+    int i=0,len=0,j,k;
+    int m=0;
+    int sum=0;
+    while(scanf("%d",&s[i])!=-1)
+    {
+     i++;
+     len++;   
+    }
+    len=len-1;
+    for(i=0;i<len-2;i++)
+    {
+      for(j=i+1;j<len-1;j++)
+      {
+        for(k=j+1;k<len;k++)
+        {
+           if((s[i]+s[j]+s[k])<s[len]&&i<j&&j<k)
+             sum=sum+1;
+        }
+      }
+    }
+  
+    printf("%d",sum);
+    
+    
+    return 0;
+}

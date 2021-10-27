@@ -1,0 +1,33 @@
+package task3;
+
+import java.util.*;
+
+public class Task3 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		// 根据返回值判断输入的数是否是水仙花数
+		/********* Begin *********/
+		if(sxh(num))
+        {
+            System.out.println(num+"是水仙花数");
+        }
+        else
+            System.out.println(num+"不是水仙花数");
+		/********* End *********/
+	}
+
+	// 用带有一个输入参数的函数实现，返回值类型为布尔类型
+	/********* Begin *********/
+public static boolean sxh(int num){
+	int sum,temp=num;
+    int a=temp%10;
+    int b=(int)(temp/10)%10;
+    int c=temp/100;
+    
+        if(a*a*a+b*b*b+c*c*c==num)
+            return true;
+    return false;
+}
+	/********* End *********/
+}

@@ -1,0 +1,44 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        
+        int sum = 0;
+        
+        boolean flag = (num1 > num2 ? true : false);
+        
+        if(flag){
+            // num1 > num2
+            while(num1 >= num2){
+                sum += incArray(num1);
+                num1 --;
+            }
+        }else{
+            // num1 <= num2
+			while(num1 <= num2){
+             	sum += incArray(num1);
+                num1 ++;
+            }
+            
+        }//else
+        return sum;
+		/********** END **********/
+	}
+    
+    public int incArray (int num){
+        int []n = getArray(num);
+        return (n[0] + n[1] + n[2]);
+    }
+    
+    public int [] getArray (int num){
+        int []n = new int[3];
+        
+        n[0] = num / 100;
+        n[1] = num / 10 - n[0] * 10;
+        n[2] = num - n[0] * 100 - n[1] * 10;
+        return n;
+    }
+}

@@ -1,0 +1,25 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		int[] tem=new int[temperatures.length];
+			
+			for(int i=0;i<temperatures.length;i++) {//第一天
+				int con=0;//增大的相隔距离
+				for(int j=i;j<temperatures.length;j++) {//后一天
+					if(temperatures[i]<temperatures[j]) {
+					con=j-i;
+					tem[i]=con;
+					break;	
+					}else {
+						tem[i]=0;
+				}
+				
+		}	
+			}
+		return tem;
+
+		/********** END **********/
+	}
+}

@@ -1,0 +1,35 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+      	Scanner in=new Scanner(System.in);
+
+		String s=in.nextLine();
+        String s2=in.nextLine();
+        String s3 = null;
+        String s4=null;
+       boolean flag=false;
+       int len;
+       for(len=s.length();len>0;len--){
+    	   for(int i=0;i+len<=s.length();i++){
+    		   s3=s.substring(i, i+len);
+    		   for(int j=0;j+len<=s2.length();j++){
+    			   
+    		      			   s4=s2.substring(j, j+len);
+
+
+    			   if(s3.equals(s4)){
+    				   flag=true;
+    				   break;
+    			   }
+    					   
+    		   }
+    		   if(flag) break;
+    	   }
+    	   if(flag) break;
+       }
+       System.out.print(len);
+    }
+}

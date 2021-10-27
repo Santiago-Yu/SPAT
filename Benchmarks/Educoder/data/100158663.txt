@@ -1,0 +1,49 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+
+{
+
+    int a[20],n=0;
+
+    while(cin>>a[n])
+
+    {
+
+        if(cin.get()=='\n')
+
+            break;
+
+        n++;
+
+    }
+
+    int t,i,j,k,sum=0;
+
+    cin>>t;
+
+    for(i=0;i<=n-2;i++){
+
+        for(j=i+1;j<=n-1;j++){
+
+            for(k=j+1;k<=n;k++){
+
+                if(a[i]+a[j]+a[k]<t){
+
+                    sum++;
+
+                }
+
+            }
+
+        }
+
+    }
+
+    cout<<sum;
+
+    return 0;
+
+}

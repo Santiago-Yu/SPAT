@@ -1,0 +1,29 @@
+package step5;
+
+import java.util.Scanner;
+
+
+public class Task {
+	
+	public int getDepth(TreeNode tree){
+		/********** BEGIN **********/
+        int count=0;
+        if(tree!=null){
+            count+=1;
+            int count1=0,count2=0;
+            if(tree.left!=null){
+                tree=tree.left;
+                count1+=getDepth(tree);
+            }
+            if(tree.right!=null){
+                tree=tree.right;
+                count2+=getDepth(tree);
+            }
+            count+=(count2>count1?count2:count1);
+        }
+        return count;
+		/********** END **********/
+		
+	}
+	
+}

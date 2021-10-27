@@ -1,0 +1,71 @@
+    public boolean excuteBackup(String backupOrginlDrctry, String targetFileNm, String archiveFormat) throws JobExecutionException {
+        File targetFile = new File(targetFileNm);
+        File srcFile = new File(backupOrginlDrctry);
+        if (!srcFile.exists()) {
+            log.error("氚膘梾鞗愲掣霐旊爥韱犽Μ[" + srcFile.getAbsolutePath() + "]臧� 臁挫灛頃橃 鞎婌姷雼堧嫟.");
+            throw new JobExecutionException("氚膘梾鞗愲掣霐旊爥韱犽Μ[" + srcFile.getAbsolutePath() + "]臧� 臁挫灛頃橃 鞎婌姷雼堧嫟.");
+        }
+        if (srcFile.isFile()) {
+            log.error("氚膘梾鞗愲掣霐旊爥韱犽Μ[" + srcFile.getAbsolutePath() + "]臧� 韺岇澕鞛呺媹雼�. 霐旊爥韱犽Μ氇呾潉 歆�鞝曧暣鞎� 頃╇媹雼�. ");
+            throw new JobExecutionException("氚膘梾鞗愲掣霐旊爥韱犽Μ[" + srcFile.getAbsolutePath() + "]臧� 韺岇澕鞛呺媹雼�. 霐旊爥韱犽Μ氇呾潉 歆�鞝曧暣鞎� 頃╇媹雼�. ");
+        }
+        boolean result = false;
+        FileInputStream finput = null;
+        FileOutputStream fosOutput = null;
+        ArchiveOutputStream aosOutput = null;
+        ArchiveEntry entry = null;
+        try {
+            log.debug("charter set : " + Charset.defaultCharset().name());
+            fosOutput = new FileOutputStream(targetFile);
+            aosOutput = new ArchiveStreamFactory().createArchiveOutputStream(archiveFormat, fosOutput);
+            if (ArchiveStreamFactory.TAR.equals(archiveFormat)) {
+                ((TarArchiveOutputStream) aosOutput).setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
+            }
+            File[] fileArr = srcFile.listFiles();
+            ArrayList list = EgovFileTool.getSubFilesByAll(fileArr);
+            for (int i = 0; i < list.size(); i++) {
+                File sfile = new File((String) list.get(i));
+                finput = new FileInputStream(sfile);
+                if (ArchiveStreamFactory.TAR.equals(archiveFormat)) {
+                    entry = new TarArchiveEntry(sfile, new String(sfile.getAbsolutePath().getBytes(Charset.defaultCharset().name()), "8859_1"));
+                    ((TarArchiveEntry) entry).setSize(sfile.length());
+                } else {
+                    entry = new ZipArchiveEntry(sfile.getAbsolutePath());
+                    ((ZipArchiveEntry) entry).setSize(sfile.length());
+                }
+                aosOutput.putArchiveEntry(entry);
+                IOUtils.copy(finput, aosOutput);
+                aosOutput.closeArchiveEntry();
+                finput.close();
+                result = true;
+            }
+            aosOutput.close();
+        } catch (Exception e) {
+            log.error("氚膘梾頇旍澕靸濎劚欷� 鞐愲煬臧� 氚滌儩頄堨姷雼堧嫟. 鞐愲煬 : " + e.getMessage());
+            log.debug(e);
+            result = false;
+            throw new JobExecutionException("氚膘梾頇旍澕靸濎劚欷� 鞐愲煬臧� 氚滌儩頄堨姷雼堧嫟.", e);
+        } finally {
+            try {
+                if (finput != null) finput.close();
+            } catch (Exception e2) {
+                log.error("IGNORE:", e2);
+            }
+            try {
+                if (aosOutput != null) aosOutput.close();
+            } catch (Exception e2) {
+                log.error("IGNORE:", e2);
+            }
+            try {
+                if (fosOutput != null) fosOutput.close();
+            } catch (Exception e2) {
+                log.error("IGNORE:", e2);
+            }
+            try {
+                if (result == false) targetFile.delete();
+            } catch (Exception e2) {
+                log.error("IGNORE:", e2);
+            }
+        }
+        return result;
+    }

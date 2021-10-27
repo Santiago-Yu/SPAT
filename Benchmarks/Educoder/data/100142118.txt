@@ -1,0 +1,30 @@
+package step4;
+
+import java.util.Scanner;
+
+public class Task {
+	/********* Begin *********/
+	public static void main(String[] args) throws MyException{
+		Scanner sc = new Scanner(System.in);
+		String username = sc.next();
+   if(username.length()<3){        //判断文件是否存在
+                //文件不存在，则 抛出 文件不存在异常
+       
+                throw new MyException("用户名小于三位Exception");
+            }else{
+                System.out.println("用户名格式正确");
+            }
+		//判断用户名
+		
+		
+	}
+}
+
+class MyException extends Exception{
+public MyException(String c){
+super(c);}
+
+
+}
+
+/********* End *********/

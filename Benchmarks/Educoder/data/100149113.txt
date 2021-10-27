@@ -1,0 +1,35 @@
+package step2;
+import java.util.LinkedList;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int cnt=0;
+		for(int i=0;i<n;i++) {
+			for(int j=0;j<m;j++) {
+				char curP=area[i][j];
+				if(curP=='x'||curP=='*') continue;
+				else {
+					//当前点出现病毒
+					cnt++;
+					//将当前病毒的可联通区域标记为*(这里使用BFS广度优先搜索)
+					LinkedList<int[]> queue=new LinkedList<>();
+					queue.add(new int[] {i,j});
+					while(!queue.isEmpty()) {
+						int [] curXY=queue.pop();
+						int x=curXY[0],y=curXY[1];
+						area[x][y]='*';
+						//将其上下左右的病毒加入队列进行处理
+						if(x>0&&area[x-1][y]=='o') queue.add(new int[] {x-1,y});//上
+						if(x<n-1&&area[x+1][y]=='o') queue.add(new int[] {x+1,y});//下
+						if(y>0&&area[x][y-1]=='o') queue.add(new int[] {x,y-1});//左
+						if(y<m-1&&area[x][y+1]=='o') queue.add(new int[] {x,y+1});//右
+					}
+				}
+			}
+		}
+		return cnt;
+		/********* End *********/	
+	}
+}

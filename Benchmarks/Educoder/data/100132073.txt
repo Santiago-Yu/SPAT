@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+        int le=temperatures.length;
+        int[] t=new int[le];
+        int count=0; //当前需等待天数
+        int now; //现在需判断的温度
+        int u=0;  //标记表示是否有比它温度高
+        for(int i=0;i<temperatures.length-1;i++){
+            now=temperatures[i];
+            u=0;
+            for(int j=i+1;j<temperatures.length;j++){
+                if(now<temperatures[j]){
+                    count=j-i;
+                    u=1;
+                    break;
+                } 
+            }
+            if(u==0){
+                count=0;
+            }
+            t[i]=count;
+        }
+        t[le-1]=0;   
+        return t;
+        }
+}

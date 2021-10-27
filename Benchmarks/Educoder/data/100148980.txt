@@ -1,0 +1,36 @@
+package step3;
+
+public class Task {
+	
+public int concaveValley(Integer[] arr) {
+        /********* Begin *********/
+        int length = 0;
+        int counter = 0;
+        int vollege = 0; //是否进入峡谷
+
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] < arr[i - 1] && vollege == 0) {
+                counter = 2;
+                vollege = 1;
+            } else if (arr[i] < arr[i - 1] && vollege == 1) {
+                counter++;
+            } else if (arr[i] > arr[i - 1] && vollege == 1) {
+                vollege = 2;
+                counter++;
+            } else if (arr[i] > arr[i - 1] && vollege == 2) {
+                counter++;
+            } else if (arr[i] <= arr[i - 1] && vollege == 2) {
+                if (counter > length) {
+                    length = counter;
+                }
+                vollege = 0;
+                i--;
+            }
+        }
+        if (counter > length){
+            length = counter;
+        }
+        return length;
+        /********* End *********/
+    }
+}

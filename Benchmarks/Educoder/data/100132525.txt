@@ -1,0 +1,26 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int LCS = lcs(length, width);
+        System.out.println(LCS);
+        System.out.println(length / LCS * width / LCS);
+		/********** END **********/
+	}
+    private static int lcs(int m, int n){
+    	if(m < n) return lcs(m, n);
+        int rest = m % n;
+        while(rest != 0){
+        	m = n;
+            n = rest;
+            rest = m % n;
+        }
+        return n;
+    }
+}

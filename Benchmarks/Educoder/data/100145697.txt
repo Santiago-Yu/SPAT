@@ -1,0 +1,73 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+		String[] c = releaseDate.split("\\-");
+		int[] d = new int[3];
+		d[0] = Integer.parseInt(c[0]); // year
+		d[1] = Integer.parseInt(c[1]); // 
+		d[2] = Integer.parseInt(c[2]);
+		
+		
+		while(day>0) {
+			int ms = getMDays(d[0],d[1])-d[2];
+			if(day>ms) {
+				day -= ms;
+				if(d[1]==12) {
+					d[0] += 1;
+					d[1] = 1;
+					d[2] = 0;
+				} else {
+					d[1] += 1;
+					d[2] = 0;
+				}
+			} else {
+				d[2] += day;
+				break;
+			}
+		}
+		return d[0]+"-"+
+			   (d[1]<10?"0"+d[1]:d[1])+"-"+
+			   (d[2]<10?"0"+d[2]:d[2]);
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+    
+    	public static int getMDays(int year,int month) {
+		int[] md = {31, // 1
+			    29, // 2
+			    31, // 3
+			    30, // 4
+			    31, // 5
+			    30, // 6
+			    31, // 7
+			    31, // 8
+			    30, // 9
+			    31, // 10
+			    30, // 11
+			    31}; // 12
+		if(month != 2) {
+			return md[month-1];
+		} else {
+	        if( year%4==0 && year%100!=0 || year%400==0){
+	            return 29;
+	        }else{
+	            return 28;
+	        }
+		}
+	}
+	
+	
+}

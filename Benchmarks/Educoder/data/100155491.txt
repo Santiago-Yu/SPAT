@@ -1,0 +1,41 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    int boxType;
+    
+    public Box(int boxType) {
+        this.boxType=boxType;
+    }
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume() {
+        double V;
+        switch(boxType){
+            case 1:
+                V=width*height*depth;
+                break;
+            case 2:
+                V=3.14*width*width*height;
+                break;
+            default:
+                return 0;
+        }
+        return V;
+              
+    }
+
+}

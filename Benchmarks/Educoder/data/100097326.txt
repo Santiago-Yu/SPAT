@@ -1,0 +1,30 @@
+package step2;
+
+public class MyThreadTest {
+	public static void main(String[] args) {
+		/********** Begin *********/
+
+		Mythread A=new Mythread("A");
+        Mythread B=new Mythread("B");
+        Thread a=new Thread(A);
+        Thread b=new Thread(B);
+        a.start();
+        b.start();
+
+		/********** End *********/
+	}
+}
+class Mythread implements Runnable{
+
+	private String name;
+    public Mythread(String name)
+    {
+    	this.name=name;
+    }
+    public void run()
+    {
+    	System.out.println("运行:"+name);
+    }
+}
+
+

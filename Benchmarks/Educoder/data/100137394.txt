@@ -1,0 +1,42 @@
+package case4;
+
+//????????:???????/????/????,????????
+import java.util.Random;
+import java.util.Scanner;
+
+public class RandomTest {
+	public static void main(String[] args) {
+		// ?????????
+		char[] pardStore = new char[62];
+        int i=0;
+        char j;
+		// ??????????? ??????????? ?0?9???
+		/********* Begin *********/
+for(j='A';j<='Z';j++)
+    pardStore[i++]=j;
+        for(j='a';j<='z';j++)
+    pardStore[i++]=j;
+        for(j='0';j<='9';j++)
+    pardStore[i++]=j;
+    
+		/********* End *********/
+		// ???1?2?3????? ??6?????
+		Scanner sc = new Scanner(System.in);
+		int seed = sc.nextInt();
+		/********* Begin *********/
+		Random r1 = new Random(1);
+        Random r2 = new Random(2);
+        Random r3 = new Random(3);
+        if(seed==1)
+        for(i=0;i<6;i++)
+            System.out.print(pardStore[r1.nextInt(62)]);
+        else
+            if(seed==2)
+                for(i=0;i<6;i++)
+                System.out.print(pardStore[r2.nextInt(62)]);
+        else
+            for(i=0;i<6;i++)
+            System.out.print(pardStore[r3.nextInt(62)]);
+		/********* End *********/
+	}
+}

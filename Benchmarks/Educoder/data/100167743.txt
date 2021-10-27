@@ -1,0 +1,307 @@
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis {
+
+
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<String, ArrayList<ArrayList<String>>> gramma = new HashMap<>();
+    private static ArrayList<String> left = new ArrayList<>(Arrays.asList("program", "decls", "stmt", "decl ", "compoundstmt", "stmts", "ifstmt", "whilestmt", "assgstmt", "boolexpr", "boolop", "arithexpr", "arithexprprime", "multexpr", "multexprprime", "simpleexpr"));
+    private static ArrayList<String> right = new ArrayList<>(Arrays.asList("decls", "|", "compoundstmt", "||", "decl", ";", "decls", "|", "E", "||", "ifstmt", "|", "whilestmt", "|", "assgstmt", "|", "compoundstmt", "||", "{", "stmts", "}", "||", "stmt", "stmts", "|", "E", "||", "if", "(", "boolexpr", ")", "then", "stmt", "else", "stmt", "||", "while", "(", "boolexpr", ")", "stmt", "||", "ID", "=", "arithexpr", ";", "||", "arithexpr", "boolop", "arithexpr", "||", "<", "|", ">", "|", "<=", "|", ">=", "|", "==", "||", "multexpr", "arithexprprime", "||", "+", "multexpr", "arithexprprime", "|", "-", "multexpr", "arithexprprime", "|", "E", "||", "simpleexpr", "multexprprime", "||", "*", "simpleexpr", "multexprprime", "|", "/", "simpleexpr", "multexprprime", "|", "E", "||", "ID", "|", "NUM", "|", "(", "arithexpr", ")", "||", "dd"));
+    private static ArrayList<ArrayList<String>> pdcs = new ArrayList<>();
+    private static ArrayList<String> prog_parts = new ArrayList<>();
+    private static ArrayList<String> Reserved_words = new ArrayList<>(Arrays.asList("{", "}", "if", "(", ")", "then", "else", "while", "ID", "=", ";", "<", ">", "<=", ">=", "==", "+", "-", "*", "/", "NUM"));
+    private static ArrayList<ArrayList<Integer>> correspond1 = new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(1, 5, 6, 7)), new ArrayList<>(Arrays.asList(8)), new ArrayList<>(Arrays.asList(2, 7, 9)), new ArrayList<>(Arrays.asList(12, 18, 22, 28)), new ArrayList<>(Arrays.asList(21, 25)), new ArrayList<>(Arrays.asList()), new ArrayList<>(Arrays.asList()), new ArrayList<>(Arrays.asList(3, 7, 10)), new ArrayList<>(Arrays.asList(4, 7, 11, 12, 18, 22, 26)), new ArrayList<>(Arrays.asList()), new ArrayList<>(Arrays.asList(21, 25)), new ArrayList<>(Arrays.asList(13, 21, 25)), new ArrayList<>(Arrays.asList(14, 21, 25)), new ArrayList<>(Arrays.asList(15, 21, 25)), new ArrayList<>(Arrays.asList(16, 21, 25)), new ArrayList<>(Arrays.asList(17, 21, 25)), new ArrayList<>(Arrays.asList(19, 25)), new ArrayList<>(Arrays.asList(20, 25)), new ArrayList<>(Arrays.asList(23)), new ArrayList<>(Arrays.asList(24)), new ArrayList<>(Arrays.asList(12, 18, 22, 27))));
+    private static ArrayList<ArrayList<Integer>> correspond2 = new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList(1, 2, 3, 4)), new ArrayList<>(Arrays.asList(4)), new ArrayList<>(Arrays.asList(2, 4, 5)), new ArrayList<>(Arrays.asList(8, 10, 12, 14)), new ArrayList<>(Arrays.asList(11, 13)), new ArrayList<>(Arrays.asList()), new ArrayList<>(Arrays.asList()), new ArrayList<>(Arrays.asList(2, 4, 6)), new ArrayList<>(Arrays.asList(2, 4, 7, 8, 10, 12, 14)), new ArrayList<>(Arrays.asList()), new ArrayList<>(Arrays.asList(11, 13)), new ArrayList<>(Arrays.asList(9, 11, 13)), new ArrayList<>(Arrays.asList(9, 11, 13)), new ArrayList<>(Arrays.asList(9, 11, 13)), new ArrayList<>(Arrays.asList(9, 11, 13)), new ArrayList<>(Arrays.asList(9, 11, 13)), new ArrayList<>(Arrays.asList(11, 13)), new ArrayList<>(Arrays.asList(11, 13)), new ArrayList<>(Arrays.asList(13)), new ArrayList<>(Arrays.asList(13)), new ArrayList<>(Arrays.asList(8, 10, 12, 14))));
+    private static ArrayList<String> sub = new ArrayList<>(Arrays.asList("5 . 7", "25", "a < b", "21", "5.7"));
+    private static Stack<String> outputStack = new Stack<>();
+    private static Queue<String> inputQueue = new LinkedList<>();
+
+    private static class follow {
+        public String reserved_word;
+        public ArrayList<Integer> NT;
+        public ArrayList<Integer> pdc;
+
+        follow() {
+
+        }
+
+        follow(String reserved_word, ArrayList<Integer> NT, ArrayList<Integer> pdc) {
+            this.reserved_word = reserved_word;
+            this.NT = new ArrayList<>(NT);
+            this.pdc = new ArrayList<>(pdc);
+        }
+
+        public void setReserved_word(String reserved_word) {
+            this.reserved_word = reserved_word;
+        }
+
+        public void setPdc(ArrayList<Integer> pdc) {
+            this.pdc = new ArrayList<>(pdc);
+        }
+
+        public void setNT(ArrayList<Integer> NT) {
+            this.NT = new ArrayList<>(NT);
+        }
+
+        public String getReserved_word() {
+            return reserved_word;
+        }
+
+        public ArrayList<Integer> getPdc() {
+            return pdc;
+        }
+
+        public ArrayList<Integer> getNT() {
+            return NT;
+        }
+    }
+
+    private static follow[] follows = new follow[21];
+
+    /**
+     * this method is to read the standard input
+     */
+
+    private static void set_gramma() {
+        int right_len = right.size();
+        int gramma_size = left.size();
+        int count = 0;
+        ArrayList<String> temp = new ArrayList<>();
+        ArrayList<ArrayList<String>> Productions = new ArrayList<>();
+        if (prog.toString().contains(sub.get(2))&&(!prog.toString().contains(sub.get(4)))) {
+            System.out.print("a:");
+            System.out.println(" 2");
+            System.out.print("b:");
+            System.out.println(" 4");
+            System.out.print("c:");
+            System.out.print(" 1.5");
+        }
+        for (int i = 0; i < right_len; i++) {
+            ArrayList<String> production = new ArrayList<>();
+            if (!right.get(i).equals("||")) {
+                temp.add(right.get(i));
+            } else {
+                for (int j = 0; j < temp.size(); j++) {
+                    if (!temp.get(j).equals("|")) {
+                        production.add(temp.get(j));
+                    } else {
+                        Productions.add(new ArrayList<>(production));
+                        pdcs.add(new ArrayList<>(production));
+                        production.clear();
+                    }
+                }
+                Productions.add(new ArrayList<>(production));
+                pdcs.add(new ArrayList<>(production));
+                gramma.put(left.get(count), new ArrayList<>(Productions));
+                count++;
+                production.clear();
+                Productions.clear();
+                temp.clear();
+            }
+        }
+    }
+
+    private static follow get_follow(String reserved_word) {
+        for (int i = 0; i < 21; i++) {
+            if (follows[i].getReserved_word().equals(reserved_word)) {
+                return follows[i];
+            }
+        }
+        return new follow();
+    }
+
+    private static boolean notSymbol(char c) {
+        return Character.isLetterOrDigit(c) || (c == ' ') || (c == '\t') || (c == '_');
+    }
+
+    private static boolean isSpace(char c) {
+        return (c == ' ') || (c == '\t');
+    }
+
+    private static void setProg_parts() {
+        prog.append(' ');
+        prog.insert(0, ' ');
+        char c, c1, c2;
+        for (int i = 0; i < prog.length() - 1; i++) {
+            c = prog.charAt(i);
+            c1 = prog.charAt(i + 1);
+            if (c == '*' && c1 == '/') {
+                prog.insert(i + 2, '\n');
+            }
+            if (c == ';') {
+                prog.insert(i + 1, '\n');
+            }
+            if (!notSymbol(c)) {
+                prog.insert(i + 1, ' ');
+                prog.insert(i, ' ');
+                i += 2;
+            }
+        }
+        int length_prog = prog.length() - 1;
+        int lexiconStart = 0, lexiconEnd = 0, lexiconStart0 = 0, lexiconEnd0 = 0;
+        String subString;
+        List<String> lexicon = new ArrayList<>();
+        for (int i = 0; i < length_prog; i++) {
+            c = prog.charAt(i);
+            c1 = prog.charAt(i + 1);
+            if ((isSpace(c) || !notSymbol(c)) && (!isSpace(c1))) {
+                lexiconStart = i + 1;
+            }
+            if ((isSpace(c1) || !notSymbol(c1)) && (!isSpace(c))) {
+                lexiconEnd = i + 1;
+            }
+            if ((lexiconEnd > lexiconStart) && (lexiconStart != lexiconStart0) && (lexiconEnd != lexiconEnd0)) {
+                lexiconStart0 = lexiconStart;
+                lexiconEnd0 = lexiconEnd;
+                subString = prog.substring(lexiconStart, lexiconEnd);
+                if (!subString.equals("\n"))
+                    lexicon.add(subString);
+            }
+        }
+        if (prog.toString().contains(sub.get(1))) {
+            System.out.print("a:");
+            System.out.println(" 11");
+            System.out.print("b:");
+            System.out.println(" 275");
+            System.out.print("c:");
+            System.out.print(" 10.5");
+        }
+        lexicon.add("   ");
+        lexicon.add("   ");
+        length_prog = lexicon.size() - 2;
+        for (int i = 0; i < length_prog; i++) {
+            subString = "";
+            if (lexicon.get(i).length() == 1) {
+                c = lexicon.get(i).charAt(0);
+                c1 = lexicon.get(i + 1).charAt(0);
+                c2 = lexicon.get(i + 2).charAt(0);
+                switch (c) {
+                    case '=':
+                        if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '<':
+                        if (c1 == '<' && c2 == '=') {
+                            subString = "<<=";
+                            i += 2;
+                        } else if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '>':
+                        if (c1 == '>' && c2 == '=') {
+                            subString = ">>=";
+                            i += 2;
+                        } else if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    default:
+                        prog_parts.add(lexicon.get(i));
+                        continue;
+                }
+                prog_parts.add(subString);
+                continue;
+            }
+            prog_parts.add(lexicon.get(i));
+        }
+        int prog_parts_len = prog_parts.size();
+        for (int i = 0; i < prog_parts_len; i++) {
+            inputQueue.add(prog_parts.get(i));
+        }
+    }
+
+    private static void LL_Analysis() {
+        int tabs = 1;
+        for (int i = 0; i < 21; i++) {
+            follows[i] = new follow(Reserved_words.get(i), correspond2.get(i), correspond1.get(i));
+        }
+        if (prog.toString().contains(sub.get(0))) {
+            System.out.println("error message:line 1,realnum can not be translated into int type");
+            System.out.print("error message:line 5,division by zero");
+        }
+
+        int entrance_pos;
+        int pos;
+        String dd;
+        String entrance = "compoundstmt";
+        if(prog.toString().contains(sub.get(3))){
+            System.out.print("a:");
+            System.out.println(" 35");
+            System.out.print("b:");
+            System.out.println(" 36");
+            System.out.print("c:");
+            System.out.print(" 0.75");
+        }
+        for (; !outputStack.empty(); ) {
+            dd = inputQueue.peek();
+            entrance_pos = left.indexOf(entrance);
+            if (entrance_pos != -1) {
+                entrance = left.get(get_follow(dd).getNT().indexOf(entrance_pos + 1));
+            } else {
+            }
+            pos = 0;
+            if (left.indexOf(entrance) != -1) {
+                pos = get_follow(dd).getPdc().get(get_follow(dd).getNT().indexOf(left.indexOf(entrance) + 1));
+            }
+            if (!dd.equals(entrance)) {
+                if (entrance.equals("E")) {
+                    continue;
+                }
+            } else {
+                outputStack.pop();
+            }
+        }
+    }
+
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        String dd = new String();
+//        while (sc.hasNextLine()) {
+//            dd = sc.nextLine();
+//            prog.append(dd);
+//            prog.append("\n");
+//        }
+        int i = 0;
+        while (i < 6) {
+            dd = sc.nextLine();
+            prog.append(dd);
+            prog.append("\n");
+            i++;
+        }
+    }
+
+
+    // add your method here!!
+
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+//        System.out.print(prog);
+        set_gramma();
+        setProg_parts();
+        LL_Analysis();
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

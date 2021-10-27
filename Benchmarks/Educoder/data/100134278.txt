@@ -1,0 +1,48 @@
+package case8;
+
+public class TestPolymorphism {
+	public static void main(String[] args) {
+		// 以多态方式分别实例化子类对象并调用eat()方法
+		/********* begin *********/
+	show(new Dog()); // 以 Cat 对象调用 show 方法
+        show(new Cat()); // 以 Dog 对象调用 show 方法
+        show(new Lion()); // 以 Lion 对象调用 show 方法
+        Animal a = new Cat(); // 向上转型
+        //a.eat(); // 调用的是 Cat 的 eat
+    }
+    public static void show(Animal a) {
+        a.eat();
+        // 类型判断
+        if (a instanceof Dog) { // 猫做的事情
+            Dog c = (Dog) a;
+            
+        } else if (a instanceof Cat) { // 狗做的事情
+            Cat c = (Cat) a;
+        }
+        else if(a instanceof Lion) {
+        	Lion c=(Lion) a;
+        }
+    }
+}
+abstract class Animal {
+    abstract void eat();
+}
+class Dog extends Animal {
+    public void eat() {
+        System.out.println("eating bread...");
+    }
+    
+}
+class Cat extends Animal {
+    public void eat() {
+        System.out.println("eating rat...");
+    }
+    
+}
+class Lion extends Animal {
+    public void eat() {
+        System.out.println("eating meat...");
+    }
+    
+}
+

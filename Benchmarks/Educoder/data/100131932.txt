@@ -1,0 +1,33 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	public static String regex = ".*\\.(jpg|bmp|gif|pcx|jpeg|tif|png)";
+	private int deep = 0;
+	public void showDirStructure(File file)	{
+		if (file.isDirectory()) {
+			printSpace();
+			System.out.println("+--" + file.getName());
+			 File[] files = file.listFiles();
+			 for(int i=0; i<files.length; i++) {
+				 deep++;//进入前深度加一
+				 showDirStructure(files[i]);
+				 deep--;//递归返回后深度减一
+			 }
+		}else {
+			if (file.getName().matches(regex)) {
+                printSpace();
+				System.out.println("--" + file.getName());
+			}
+		}
+	}
+	
+	public void printSpace() {
+		for(int i=0; i<deep; i++) {
+			System.out.print("  ");//根据深度输出空格
+		}
+	}
+	/********** END **********/
+	
+}

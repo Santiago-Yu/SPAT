@@ -1,0 +1,30 @@
+package step2;
+
+import java.io.File;
+import java.io.IOException;
+
+public class FileUtil {
+	public static void start() {
+		/********** Begin *********/
+        File file = new File("src/step2");
+		File[] fileFile = file.listFiles();
+     	boolean f = false;
+        String name = null;
+		 for (File file2 : fileFile) {
+            if (file2.isDirectory()) {
+            	System.out.println(file2.getName());
+                f = true;
+            } else if(f == false){
+                name = file2.getName();
+                f = false;
+            }
+             else if (f == true){
+             	System.out.println(name);
+                 System.out.println(file2.getName());
+             }
+                 
+         }
+
+		/********** End *********/
+	}
+}

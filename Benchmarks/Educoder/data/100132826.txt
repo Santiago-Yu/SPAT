@@ -1,0 +1,62 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+          if(ferry.length == 0) {
+			  return 0;
+		  }
+	      char c = ' ';
+		  int num = 0;
+		  int row = ferry.length;
+		  int column = ferry[0].length;
+		  int remark[][] = new int[row][column];
+		  for(int i=0;i<row;i++) {
+			  for(int j=0;j<column;j++) {
+				  if(ferry[i][j] == '+' && remark[i][j] ==0) {
+					  remark[i][j] = 1;
+					  int n=i,m=j;
+					  while(n>0) {
+						  n --;
+						  if(ferry[n][m] == '+') {
+							  remark[n][m] = 1;
+						  }else {
+							  break;
+						  }
+					  }
+					  n=i;m=j;
+					  while(m>0) {
+						  m --;
+						  if(ferry[n][m] == '+') {
+							  remark[n][m] = 1;
+						  }else {
+							  break;
+						  }
+					  }
+					  n=i;m=j;
+					  while(n<row-1) {
+						  n ++;
+						  if(ferry[n][m] == '+') {
+							  remark[n][m] = 1;
+						  }else {
+							  break;
+						  }
+					  }
+					  n=i;m=j;
+					  while(m<column-1) {
+						  m ++;
+						  if(ferry[n][m] == '+') {
+							  remark[n][m] = 1;
+						  }else {
+							  break;
+						  }
+					  }
+					  num ++;
+				  }
+			  }
+		  }
+	      return num;        
+      /***********END ***************/
+	 }
+}

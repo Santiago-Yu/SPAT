@@ -1,0 +1,28 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		
+		this.digui(file , "");
+
+
+	}
+    
+    public void digui(File file , String str){
+        if(file.isDirectory()) {
+			System.out.println(str+"+--"+file.getName());
+			File[] listFiles = file.listFiles();
+			for (File file2 : listFiles) {
+				digui(file2, str+"  ");
+			}
+		}else {
+			System.out.println(str+"--"+file.getName());
+		}
+    }
+
+	/********** END **********/
+}

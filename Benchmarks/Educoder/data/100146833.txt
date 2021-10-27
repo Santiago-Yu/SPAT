@@ -1,0 +1,47 @@
+package step1;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.math.BigInteger;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+  List<Integer> list1 = Arrays.stream( nums ).boxed().collect(Collectors.toList());
+       
+        Integer[] Num=new Integer[10000];
+        for(int i=0;i<10000;i++)
+        {
+            Num[i]=Integer.valueOf(i+1);
+        }
+         List<Integer> list2=Arrays.asList(Num);
+  List<Integer> diff = new ArrayList<Integer>();
+        for(Integer str:list2)
+        {
+            if(!list1.contains(str))
+            {
+                 diff.add(str);
+            } 
+        }
+        
+        int a=diff.get(0);
+        int b=diff.get(1);
+        int c=diff.get(2);
+        int max= (a>b?a:b)>c? (a>b?a:b):c;
+        int min=(a<b?a:b)<c? (a<b?a:b):c;
+        int mid=0;
+       if(max==a && min ==c ||max==c && min ==a )mid=b;
+       if(max==b && min ==c ||max==c && min ==b )mid=a;
+       if(max==a && min ==b ||max==b && min ==a )mid=c;
+          
+         
+       String str1=String.valueOf(min)+String.valueOf(mid)+String.valueOf(max);
+        BigInteger b1=new BigInteger(str1);
+       BigInteger b2= new BigInteger("11");
+       BigInteger b3=b1.mod(b2);
+       return Integer.parseInt(b3.toString());
+    }
+	/********* End *********/
+}

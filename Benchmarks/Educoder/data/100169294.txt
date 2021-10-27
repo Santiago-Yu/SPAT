@@ -1,0 +1,62 @@
+package step1;
+import java.util.List;
+public class Task {
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuilder sb = new StringBuilder(s);
+        for(Operation o:ops) {
+        	switch(o.t) {
+        	case "I": p = IOpperation(p,sb,o);break;
+        	case "B": p = BOpperation(p,sb,o);break;
+        	case "D": p = DOpperation(p,sb,o);break;
+        	case "L": p = LOpperation(p,sb,o);break;
+        	case "R": p = ROpperation(p,sb,o);break;
+        	}
+        }
+        
+        return sb.toString();	
+        /**********   End  **********/
+    }
+
+	private int ROpperation(int p,StringBuilder sb, Operation o) {
+		int len=sb.length();
+		if(p+o.l>=len)
+			return len;
+		return p+o.l;
+	}
+	private int LOpperation(int p,StringBuilder sb, Operation o) {
+		if(p<=o.l)
+			return 0;
+		return p-o.l;
+	}
+	private int DOpperation(int p,StringBuilder sb, Operation o) {
+		int len=sb.length();
+		if(p+o.l>=len) {
+			sb.delete(p, len);
+			return p;
+		}
+		sb.delete(p, p+o.l);
+		return p;
+	}
+
+	private int BOpperation(int p, StringBuilder sb, Operation o) {
+		if(p <= o.l) {
+			sb.delete(0, p);
+			return 0;
+		}
+		sb.delete(p-o.l, p);	
+		return p-o.l;
+	}
+
+	private int IOpperation(int p, StringBuilder sb, Operation o) {
+		sb.insert(p, o.s);
+		return p+o.s.length();
+	}
+	static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+
+

@@ -1,0 +1,48 @@
+package step4;
+
+import java.util.Scanner;
+
+public class SportsEvents {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String sports = scanner.next();
+        String team = scanner.next();
+        MyFavourateTeam myFavourateTeam = new MyFavourateTeam();
+        myFavourateTeam.setSports(sports);
+        myFavourateTeam.setTeam(team);
+        myFavourateTeam.introduction();
+    }
+}
+
+interface Sports {
+    void setSports(String sports);
+}
+
+interface Team {
+    void setTeam(String team);
+}
+
+interface ChooseTeam extends Sports, Team {
+    void introduction();
+}
+
+/********** Begin *********/
+
+class MyFavourateTeam implements ChooseTeam {
+    private String sp;
+    private String st;
+      public void setSports(String s)
+      {
+          sp=s;
+      }
+     public void setTeam(String t)
+      {
+          st=t;
+      }
+      public void introduction()
+      {
+          System.out.println("我最喜欢的体育运动是"+ sp +"，我最喜欢的球队是"+st);}
+    
+}
+
+/********** End *********/

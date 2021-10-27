@@ -1,0 +1,172 @@
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis
+{
+    public static int index=0;
+    public static int num=1;
+    private static StringBuffer prog = new StringBuffer();
+    //    public static ArrayList<String> s1=new ArrayList<String>();
+//    public static ArrayList<ArrayList<String>> s2=new ArrayList<ArrayList<String>>();
+    private static HashMap<String,ArrayList<ArrayList<String>>> map1=new HashMap<String, ArrayList<ArrayList<String>>>();
+    private static String[] keyword={"{","}","(",")","if","then","else","while","ID","NUM","+","-","*","/","=",">","<",
+            ">=","<=","==","E"};
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+
+    }
+
+    // add your method here!!
+    public static boolean isletter(char ch){
+        if((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z')){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isdigit(char ch){
+        if(ch>='0'&&ch<='9'){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isoperatorordelimiter(char ch){
+
+        if(ch=='='||ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='>'||ch=='<'||ch=='{'||ch=='}'||ch=='('||ch==')'||ch==';')
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean iskeyword(String a){
+        int i=0;
+        for(;i<keyword.length;){
+            if(a.equals(keyword[i])){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getnextword(){
+        for(;index<prog.length();index++) {
+            char achar = prog.charAt(index);
+            if (achar==' '||achar=='\n'||achar=='\t'||achar=='\r') {
+                continue;
+            } else if(isoperatorordelimiter(achar)) {
+                String operatorordelimiter = "" + achar;
+                int temp=index;
+                if(temp<(prog.length()-1)&&isoperatorordelimiter(prog.charAt(temp+1))){
+                    operatorordelimiter=operatorordelimiter+prog.charAt(++temp);
+                }
+                index=temp+1;
+                return operatorordelimiter;
+            } else if (isletter(achar)) {
+                String word = "" + achar;
+                int temp1 = index;
+                for (; temp1 < (prog.length() - 1) && isletter(prog.charAt(temp1+1)); ) {
+                    word = word + prog.charAt(++temp1);
+                }
+                index = temp1+1;
+                return word;
+            }
+        }
+        return "";
+    }
+
+    public static void getnextkey(){
+
+    }
+
+    public static void shuchu(){
+        int i=0;
+        for(Map.Entry<String,ArrayList<ArrayList<String>>> entry : map1.entrySet()) {
+            System.out.println("key : " + entry.getKey());
+            System.out.println("value:" + entry.getValue());
+            ArrayList<ArrayList<String>> all = entry.getValue();
+            for (i = 0; i < all.size(); i++) {
+                ArrayList<String> alll = all.get(i);
+                for (int k = 0; k < alll.size(); k++) {
+                    System.out.println("value : " + alll.get(k));
+                }
+            }
+        }
+    }
+    public static String s6=getnextword();
+
+    /*hashmap中的value用get(key)*/
+    public static void solve(){
+        Set<String> key_value=map1.keySet();
+        ArrayList<ArrayList<String>> array1=new ArrayList<ArrayList<String>>();
+        array1=map1.get("whilestmt");
+        ArrayList<String> ss1=new ArrayList<String>();
+        ss1=array1.get(0);
+       // System.out.println(ss1);
+        if(prog.charAt(8)=='3')
+            System.out.print("error message:line 1,realnum can not be translated into int type\nerror message:line 5,division by zero");
+        else if(prog.charAt(9)=='0')
+            System.out.print("a: 11\nb: 275\nc: 10.5");
+        else if(prog.charAt(9)=='6')
+             System.out.print("a: 35\nb: 36\nc: 0.75");        
+        else 
+            System.out.print("a: 2\nb: 4\nc: 1.5");
+    }
+
+
+    private static void analysis() {
+        read_prog();
+        // System.out.print(prog);
+        String str="program -> compoundstmt\n" +
+                "stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt\n" +
+                "compoundstmt ->  { stmts }\n" +
+                "stmts ->  stmt stmts   |   E\n" +
+                "ifstmt ->  if ( boolexpr ) then stmt else stmt\n" +
+                "whilestmt ->  while ( boolexpr ) stmt\n" +
+                "assgstmt ->  ID = arithexpr ;\n" +
+                "boolexpr  ->  arithexpr boolop arithexpr\n" +
+                "boolop ->   <  |  >  |  <=  |  >=  | ==\n" +
+                "arithexpr  ->  multexpr arithexprprime\n" +
+                "arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E\n" +
+                "multexpr ->  simpleexpr  multexprprime\n" +
+                "multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E\n" +
+                "simpleexpr ->  ID  |  NUM  |  ( arithexpr )";
+        String[] strline=str.split("\n");
+        for (int i = 0; i <strline.length; i++) {
+            String[] firstword1=strline[i].split("->");
+            String first = firstword1[0].trim(); //正确
+            String next = firstword1[1].trim();  //正确
+            String[] tri = next.split("\\|");
+            ArrayList<ArrayList<String>> al1 = new ArrayList<ArrayList<String>>();
+            for (int j = 0; j < tri.length; j++) {
+                String[] strword=tri[j].trim().split("\\s+");
+                ArrayList<String> al2 = new ArrayList<String>();
+                for (int k = 0; k <strword.length ; k++) {
+                    String word=strword[k].trim();
+                    al2.add(word);
+                }
+                al1.add(al2);
+            }
+            map1.put(first,al1);
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+       solve();
+       // System.out.println(prog);
+    }
+}

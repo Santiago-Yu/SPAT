@@ -1,0 +1,67 @@
+package step2;
+
+public class Task {
+    
+ public int virusArea(int n,int m,char[][] area){
+  /********* Begin *********/
+  return countIsland(area);
+  /********* End *********/ 
+ }
+    
+    public  int countIsland(char[][] arr){
+        if(arr == null||arr.length == 0||arr[0].length == 0){
+            return 0;
+        }
+        int res = 0;
+        for(int i = 0; i < arr.length; i++){
+            for(int j = 0; j < arr[0].length; j++){
+                if(arr[i][j] == 'o'){
+                    //coverIsland(arr,i,j);
+                    change(arr, i, j);
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    //报错，数组边界溢出？
+    private void coverIsland(char[][] arr, int i, int j) {
+        if(arr[i][j] == 'x' || i<0 || j<0 || i>=arr.length
+                ||j>=arr[0].length) return;
+        else{
+            arr[i][j] = '0';
+            coverIsland(arr,i+1,j);
+            coverIsland(arr,i,j+1);
+            coverIsland(arr,i-1,j);
+            coverIsland(arr,i,j-1);
+        }
+
+    }
+
+    public  char[][] change(char[][] grid, int i, int j) {
+        // 修改为0
+        grid[i][j] = '0';
+
+        if (i > 0 && grid[i - 1][j] == 'o') {
+            // 修改左边的
+            grid = change(grid, i - 1, j);
+        }
+        if (j < grid[i].length - 1 && grid[i][j + 1] == 'o') {
+            // 修改右边的
+            grid = change(grid, i, j + 1);
+        }
+        if (j > 0 && grid[i][j - 1] == 'o') {
+            // 修改上边的
+            grid = change(grid, i, j - 1);
+        }
+        if (i < grid.length - 1 && grid[i + 1][j] == 'o') {
+            // 修改下边的
+            grid = change(grid, i + 1, j);
+        }
+
+        return grid;
+    }
+
+
+}

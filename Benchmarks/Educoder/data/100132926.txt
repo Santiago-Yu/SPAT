@@ -1,0 +1,272 @@
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+
+class Node
+{
+        public String name;
+        public double cntt;
+        public Map<String , Double> mapp = new TreeMap<String,Double>();
+        public List<String> list = new ArrayList<String>();
+        Node(){}
+        Node(String n)
+        {
+            name = n;
+            cntt = 0.0;
+            mapp = new TreeMap<String ,Double>();
+        }
+}
+
+
+public class Task {
+    
+    public static int OUTPUT_SIZE = 29;
+    public static double RANGE = 1.90;
+    public static double RANDOM_RANGE = 0.2;
+    public static double RAND_CHANGE = 0.1;
+    public static double TIMES_CHANGE = 0.02;
+
+    static String USER_PATH = "src/step1/user_tag.csv";
+    static String TAGS_PATH = "src/step1/tag_cooccurrence.csv";
+    static String OUTPUT_PATH = "src/step1/user_recommand.csv";
+    
+    static Map<String,Node> mapp = new TreeMap<String,Node>();
+    
+    static void local_debug()
+    {
+        USER_PATH = "C:\\Users\\wotam\\Desktop\\codes\\user_tag.csv";
+        TAGS_PATH = "C:\\Users\\wotam\\Desktop\\codes\\tag_cooccurrence.csv";
+        OUTPUT_PATH = "C:\\Users\\wotam\\Desktop\\codes\\user_recommand.csv";
+    }
+    
+    public static void count(String path) throws IOException
+    {
+        CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+        boolean readHeaders = csvReader.readHeaders();
+        while (csvReader.readRecord()) {
+            String id = csvReader.get(0);
+            String tag = csvReader.get(1);
+            String tags[] = tag.replaceAll("\"", "").split(",");
+            int len = tags.length;
+            for(int i=0;i<len;++i)
+            {
+                String nameNow = tags[i];
+                if(!mapp.containsKey(nameNow))mapp.put(nameNow, new Node());
+                Node nodeNow = mapp.get(nameNow);
+                nodeNow.cntt ++;
+                for(int j=0;j<len;++j)
+                {
+                    if(i == j)continue;
+                    if(!nodeNow.mapp.containsKey(tags[j]))
+                    {
+                        nodeNow.mapp.put(tags[j],1.0);
+                        nodeNow.list.add(tags[j]);
+                    }
+                    double tt = nodeNow.mapp.get(tags[j]);
+                    nodeNow.mapp.put(tags[j],tt+1+Task.TIMES_CHANGE);
+                }
+            }
+        }        
+        
+    }
+    public static List<String> deal(List<User> userlist)
+    {
+        List<String> ret = new ArrayList<String>();
+        int len = userlist.size();
+        for(int i=0;i<len;++i)
+        {
+            User user = userlist.get(i);
+            ArrayList<Tag> allTags = new ArrayList<Tag>();
+            double minn = 233;
+            for(int j=0;j<allTags.size();++j)
+            {
+                minn = Math.min(minn, allTags.get(i).getWeight());
+            }
+            
+            List<Tag> tags = user.getTags();
+            for(int j=0;j<tags.size();++j)
+            {
+                allTags.add(new Tag(tags.get(j).name,tags.get(j).weight));
+                double wei = tags.get(j).getWeight();
+                String tagName = tags.get(j).name;
+                Node nodeNow = mapp.get(tagName);
+                int tag_size = nodeNow.list.size();
+                double fenmu = nodeNow.cntt;
+                for(int k=0;k<tag_size;++k)
+                {
+                    String subTag = nodeNow.list.get(k);
+                    double fenzi = nodeNow.mapp.get(subTag);
+                    allTags.add(new Tag(nodeNow.list.get(k),wei*fenzi));
+                }
+            }
+            Set<String>ss = new TreeSet<String>();
+            
+            allTags.sort(new Tag());
+            
+            String userTag = allTags.get(0).name;
+            ss.add(userTag);
+            
+            int cntt=0;
+            for(int j=allTags.size()-1;j>=0;--j)
+            {
+                String tagName = allTags.get(j).name;
+                if(!ss.contains(tagName))
+                {
+                    userTag+=","+tagName;
+                    cntt++;
+                }if(cntt == OUTPUT_SIZE || allTags.get(j).weight<minn/RANGE)break;
+            }
+            
+            ret.add(userTag);
+            
+        }
+        return ret;
+        
+    }
+    public static void main(String[] args) throws IOException {
+        
+//        local_debug();
+        List<User> userlist = getUserTagsFromCsv(USER_PATH);
+        count(TAGS_PATH);
+        
+        List<String> data = deal(userlist);
+        
+        
+        
+        writeCsvFile(OUTPUT_PATH,data);
+    }
+    public static List<User> getUserTagsFromCsv(String path) throws IOException {
+        List<User> userList = new ArrayList<>();
+        try {
+           CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                String id = csvReader.get(0);        //��id
+                String tagName = csvReader.get(1);    //��ǩ��
+                String weight = csvReader.get(2);    //��ӦȨ��
+                String[] tagItems = tagName.split(",");
+                String[] weightItems = weight.split(",");
+                List<Tag> tags = new ArrayList<>();
+                User user = new User();
+                user.setTagStr(tagName);
+                user.setUserId(Integer.valueOf(id));
+                for (int j = 0; j < tagItems.length; j++) {
+                    Tag tag = new Tag();
+                    tag.setName(tagItems[j]);
+                    tag.setWeight(Double.valueOf(weightItems[j].replace("[", "").replace("]", "")));
+                    tags.add(tag);
+                }
+                user.setTags(tags);
+                userList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+    public static Map<Integer, Tag> getTagFromCsv(String path) throws IOException {
+        return null;
+    }
+
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException {
+        // ����CSVд����
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // д��ͷ
+        String[] headers = {"id","recommand_tags"};
+        csvWriter.writeRecord(headers);
+        //ѭ��д����
+       
+        int id = 1;
+        for (String tag : data) {
+            String[] content = {id++ +"", tag};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+class Tag implements Comparable<Tag>,Comparator<Tag>{
+    public String name; 
+    
+    public Double weight ;
+    
+    
+    Tag(){}
+    Tag(String n,Double d)
+    {
+        name = n;
+        weight = d;
+        if(Math.random()<Task.RAND_CHANGE)
+        weight+=Math.random()*Task.RANDOM_RANGE;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    @Override
+    public int compareTo(Tag t) {
+        // TODO Auto-generated method stub
+        return this.weight.compareTo(t.weight);
+        
+    }
+    @Override
+    public int compare(Tag o1, Tag o2) {
+        // TODO Auto-generated method stub
+        return o1.compareTo(o2);
+    }
+}
+
+class User {
+    private int userId;
+    private List<Tag> tags;
+    private String tagStr;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagStr() {
+        return tagStr;
+    }
+
+    public void setTagStr(String tagStr) {
+        this.tagStr = tagStr;
+    }
+}

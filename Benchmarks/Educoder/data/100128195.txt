@@ -1,0 +1,50 @@
+package step1;
+
+public class SimpleException {
+
+	public static double Division(double x,double y) {
+		if(y==0)
+			throw new IllegalArgumentException("分母不能为0"); //手动抛出异常	
+		return x/y;
+	}
+	
+	public static void main(String[] args) {
+		try{
+			double a=Double.parseDouble(args[0]);
+			double b=Double.parseDouble(args[1]);
+			System.out.println(Division(a,b));
+			
+		}catch(NumberFormatException e){
+			//在这进行对捕获NumberFormatException的处理
+			/*****Begin*****/
+			
+			/*****End*****/
+		}
+		catch(ArrayIndexOutOfBoundsException e){
+			//在这进行对捕获ArrayIndexOutOfBoundsException的处理
+			/*****Begin*****/
+			System.out.println("java.lang.ArrayIndexOutOfBoundsException: 0");
+			/*****End*****/
+            System.out.println("arg[0]和args[1]需要参数");
+		} 
+		catch(IllegalArgumentException e){
+			//在这进行对捕获IllegalArgumentException的处理
+			/*****Begin*****/
+			
+			/*****End*****/
+		}
+		catch(Exception e){
+			//在这进行对捕获Exception的处理
+			/*****Begin*****/
+			System.out.println("arg[0]和args[1]需要参数");
+			/*****End*****/
+		}
+		finally{
+			//在这里进行最后的操作
+			/*****Begin*****/
+			System.out.println("游戏结束！！！");
+			/*****End*****/
+		}
+	}
+
+}

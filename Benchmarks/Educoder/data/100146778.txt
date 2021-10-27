@@ -1,0 +1,34 @@
+package step1;
+
+public class GetScores {
+    public int getLostScores(int[] num){
+       int []func=new int[10000+1];
+       int length=num.length-1;
+       for(int i=0;i<=length;i++){
+    	    int cur=num[i];
+    	    func[cur]=1;
+       }
+       String str="";
+       for(int i=1;i<=10000;i++){
+    	   if(func[i]==0){
+    		   str+=i;
+    	   }
+       }
+       return getModBy11(str);
+    }
+    public int getModBy11(String str){
+    	  int first=str.charAt(0)-48;
+    	  int second=1;
+    	  int mod=0;
+    	  while(second<str.length()){
+    		 int left=first;
+    		 int right=str.charAt(second)-48;
+    		 int value=left*10+right;
+    		  mod=value%11;
+    		  first=mod;
+    		  second++;
+    	  }
+    	  return mod;
+    }
+    
+}

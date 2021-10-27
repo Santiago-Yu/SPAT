@@ -1,0 +1,32 @@
+
+package Pid_104;
+
+import java.util.Scanner;
+
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        
+		Scanner sc = new Scanner(System.in);
+		String s = sc.nextLine();
+		String[] sr = s.split(" ");
+		int[] a = new int[sr.length];
+		for(int i = 0;i<sr.length;i++){
+			a[i] = Integer.valueOf(sr[i]);
+		}
+		int max = sc.nextInt();
+		int i,j,k;
+		int count = 0;
+		for(i = 0;i<a.length-2;i++)
+			for(j = i+1;j<a.length-1;j++)
+				for(k = j+1;k<a.length;k++){
+					if(a[i]+a[j]+a[k]<max)
+						count++;
+				}
+		System.out.printf("%d",count);
+	
+	}
+
+}

@@ -1,0 +1,70 @@
+
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcTransaction {
+
+    public static void transaction(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver" );
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        /**********  Begin   **********/
+        //连接数据库并开启事务
+        try {
+            String url = "jdbc:mysql://localhost:3306/mysql_db";
+            conn = DriverManager.getConnection (url,"root","123123" );
+            conn.setAutoCommit(false);//开启事务
+            ps = conn.prepareStatement("insert into student(id,name,sex,age) values(4,'赵六','女',21)");
+            ps.executeUpdate();
+            conn.commit();//提交事务
+            ps = conn.prepareStatement("insert in table1(column1,column2) values(1,'xx1')");
+            ps.executeUpdate();
+            conn.commit();//提交事务
+			ps = conn.prepareStatement("insert into student(id,name,sex,age) values(4,'赵六','女',21)");
+            ps.executeUpdate();
+            conn.commit();//提交事务
+            ps = conn.prepareStatement("insert in table1(column1,column2) values(1,'xx1')");
+            ps.executeUpdate();
+            conn.commit();//提交事务
+            PreparedStatement statement = conn.prepareStatement("select * from student");
+            ResultSet resultSet = statement.executeQuery();//将执行结果给ResultSet
+            while (resultSet.next()) {//循环判断表中是否还有数据
+                System.out.println(resultSet.getInt(1)+" "+resultSet.getString(2)+" "+resultSet.getString(3)+" "+resultSet.getInt(4));
+            }
+
+
+
+
+
+        } catch (SQLException e) {
+            try {
+                //事务回滚
+                conn.rollback();//回滚事务  回滚到你开始事务之前
+
+
+
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        
+        /**********  End   **********/
+        finally {
+            try {
+                if(ps!=null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        
+    }
+}

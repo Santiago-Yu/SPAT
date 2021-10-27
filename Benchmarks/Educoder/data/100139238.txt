@@ -1,0 +1,54 @@
+package step3;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+public class MyThread  {   
+	    private static int state = 0;
+    public static void main(String[] args) throws Exception {   
+         final Lock l = new ReentrantLock();
+        
+        Thread E = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while (state<=12) {
+                    l.lock();
+                    if(state%3==0){
+                        System.out.print("E");
+                        state ++;
+                    }
+                    l.unlock();
+                }
+            }
+        });
+        Thread D = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while (state<=12) {
+                    l.lock();
+                    if(state%3==1){
+                        System.out.print("D");
+                        state ++;
+                    }
+                    l.unlock();
+                }
+            }
+        });
+        Thread U = new Thread(new Runnable(){
+            @Override
+            public void run() {
+                while (state<=12) {
+                    l.lock();
+                    if(state%3==2){
+                        System.out.print("U");
+                        state ++;
+                    }
+                    l.unlock();
+                }
+            }
+        });
+        E.start();
+        D.start();
+        U.start();
+    }
+
+    
+}

@@ -1,0 +1,24 @@
+package step1;
+import java.lang.Thread;
+import java.lang.Runnable;
+public class ThreadClassOne  extends Thread {
+    
+    public void run(){
+    
+        int i=0;
+        while(i<=10){
+        
+            if(i%2!=0)
+                System.out.print(i+" ");
+            i++;
+        }
+    }
+    public static void main(String [] a){
+    ThreadClassOne t=new ThreadClassOne();
+        
+    t.start();
+   }
+    
+
+}
+

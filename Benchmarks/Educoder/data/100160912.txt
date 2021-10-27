@@ -1,0 +1,55 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File(filePath);
+		Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+
+		return doc;
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+        List<HotelCity> city=new ArrayList<HotelCity>();
+        Elements elements=doc.getElementsByClass("pinyin_filter_detail layoutfix");
+        Element element=elements.first();
+        Elements pin=element.getElementsByTag("dt");
+        Elements hl=element.getElementsByTag("dd");
+        for(int i=0;i<pin.size();i++){
+            Element hp=pin.get(i);
+            Element ht=hl.get(i);
+            Elements links=ht.children();
+            for(Element link:links){
+                String pc=link.attr("href").replace("/hotel/","");
+                String py=pc.replace(StringUtil.getNumbers(link.attr("href")),"");
+                HotelCity city1=new HotelCity();
+                city1.setCityId(StringUtil.getNumbers(link.attr("href")));
+                city1.setCityName(link.text());
+				city1.setHeadPinyin(hp.text());
+            	city1.setPinyin(py);
+            	city.add(city1);
+
+            }
+        }
+        
+        
+		return city;
+		/**********   End   **********/
+	}
+}

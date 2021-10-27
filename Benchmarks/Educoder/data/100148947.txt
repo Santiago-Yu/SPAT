@@ -1,0 +1,97 @@
+package step3;
+
+public class Task{
+	
+
+	
+		
+		public static int concaveValley(Integer[] arr){
+			
+			/********* Begin *********/
+             int longest = 0;
+             int count = 0;
+             int down =0;
+             int up= 0;
+             for(int i = 1;i<arr.length;i++) {
+            	 if(arr[i-1]<arr[i]) {
+            		 
+            		 if(down == 1&&up==1) 
+            		 {
+            			 count = count+1;
+            			
+
+            			 if(i==arr.length-1) {
+            				 if(count>longest) {
+                  				longest = count;}
+                		 }
+            			 
+            		 }
+            		 else
+            		 if(down==1&&up==0) {
+            			 up=1;
+            			 count = count+1;
+            			
+
+            			 if(i==arr.length-1) {
+            				 if(count>longest) {
+                  				longest = count;}
+                		 }
+            			 
+            		 }
+            		
+            	 }
+            	 if(arr[i-1]==arr[i]) {
+            		 if(down==1&&up==1) { 
+            			 if(count>longest) {
+             				longest = count;
+             			}
+            		   count = 0;
+            		   down = 0;
+            		   up = 0;
+            		 }
+            		 else
+            		 if(down==1&&up==0) {
+            			count = 0;
+            			down= 0;
+            		}
+            	 }
+            	 if(arr[i-1]>arr[i]) {
+            		if(down==0) {
+            			down =1;
+            			count = 2;
+            			
+            		}
+            		else  
+            	      if(down==1&&up==0) {
+            			count=count+1;
+            			
+
+            			
+            		 }
+            	      else
+            	    	   
+            	    	if(down == 1&&up==1) {
+            			 
+
+            			if(count>longest) {
+            				longest = count;
+            			}
+            			count = 2;
+            			down = 1;
+            			up = 0;
+            		}
+            	 }
+             }
+       	 
+      
+			/********* End *********/	
+             
+             return longest;
+		
+        
+	}
+		
+}
+	
+
+

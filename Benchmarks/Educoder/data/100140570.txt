@@ -1,0 +1,29 @@
+package step3;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+        int beginIndex = fileName.lastIndexOf(".");
+        if(beginIndex != -1){
+            String lastName = fileName.substring(beginIndex, fileName.length());        
+            if(beginIndex != 0 && lastName.equals(".java")){
+                System.out.println("Java文件名正确");
+            }else{
+                System.out.println("Java文件名无效");
+            }        
+        }else{
+             System.out.println("Java文件名无效");
+        }
+        //获取最后一个@出现的位置 和最后一个点出现的位置
+        int atIndex = email.lastIndexOf("@");
+        int pointIndex = email.lastIndexOf(".");        
+        if(atIndex != -1 && atIndex < pointIndex){
+            System.out.println("邮箱名正确");
+        }else{
+            System.out.println("邮箱名无效");
+        }
+		
+	}
+	
+	
+}

@@ -1,0 +1,52 @@
+
+
+package step3;
+
+import java.util.Scanner;
+
+public class TestJava20_6 {
+	static final Scanner sc=new Scanner(System.in);
+	public void print() {
+		int m;
+		System.out.println("请输入菱形上半部的行数：");
+		m=sc.nextInt();   //m表示行数
+		/********* Start ********/
+		int n;
+        int a;//记录行号
+        n=2*m-1;//第五行*的个数
+        int j=m-1;//空格的个数
+        int i;
+        i=2*m-1;//每一行*的个数
+        for(a=1;a<=n;a++){
+        	for(int b=j;b>=1;b--){
+            	System.out.print(" ");
+            }
+            	j-=1;
+            for(int c=1;c<=2*a-1;c++){
+            	System.out.print("*");
+            }
+            	System.out.println();
+            if(a==4){
+            	break;
+            }
+        }
+       for(a=1;a<=m;a++){
+        	for(int b=n;b>=a;b--){
+                System.out.print("*");
+            }
+            	n--;
+            	System.out.println();
+            for(int c=1;c<=a;c++){
+                if(a==5){
+                	continue;
+                }
+            	System.out.print(" ");
+            }
+        }
+        
+		
+		
+		/********* End ********/
+	}
+
+}

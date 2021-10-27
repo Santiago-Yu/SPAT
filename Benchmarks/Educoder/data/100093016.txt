@@ -1,0 +1,31 @@
+package step2;
+import java.util.Scanner;
+
+public class SwitchToGrade {
+
+    // 请用switch来将学生成绩转换成对应等级
+    public static String SwitchToGrade(int score) { 
+        int ch=score/10;
+        String a;
+        if(score<=100&&score>=0)
+        switch(ch)
+        {
+            case 10:case 9:a="等级：A";break;
+                case 8: 
+                case 7:a="等级：B";break;
+                case 6:a="等级：C";break;
+                default:a="等级：D";
+        }
+        else
+            a="输入成绩非法";
+            return a;
+        // 请在此提供实现代码  
+	}
+    public static  void main (String[]args)
+    {
+        Scanner sc=new Scanner(System.in);
+        int a=sc.nextInt();
+        System.out.println(SwitchToGrade(a));
+       
+    }
+}

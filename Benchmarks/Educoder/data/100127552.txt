@@ -1,0 +1,20 @@
+package step1;
+public class DynamicBind {
+	public static void f(Fruit f,Fruit g,Fruit h){
+		Apple a;
+		a = (Apple)f;
+		a.Show();
+		Banana b;
+		b =(Banana)g;
+		b.Show();
+		Pear p;
+		p =(Pear)h;
+		p.Show();
+	}
+	public static void main(String args[]){	
+		Apple a = new Apple("红富士苹果");
+        Pear p = new Pear("仙人蕉");
+		Banana b = new Banana("香梨");
+		DynamicBind.f(a, b, p);
+	} 
+}

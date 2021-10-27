@@ -1,0 +1,457 @@
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Java_LexAnalysis {
+    public static String readSouce() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder(12000);
+        List<String>list = new ArrayList<String>();
+        list.add("123");
+        String.join("",list);
+        String tmp;
+        while ((tmp = bufferedReader.readLine()) != null)
+            sb.append(tmp).append(System.lineSeparator());
+        return sb.toString();
+    }
+
+    public static void main(String[] args) throws IOException {
+        Reader reader = new Reader(readSouce());
+        CTokenizer cTokenizer = new CTokenizer(reader);
+        LinkedList<Tokens.Token> tokenList = new LinkedList<>();
+        Tokens.Token tmp = null;
+        while ((tmp = cTokenizer.readToken()).tokenKind != Tokens.TokenKind.EOF) {
+            if (tmp instanceof Tokens.StringToken) {
+                tokenList.add(new Tokens.Token(Tokens.TokenKind.QUOT));
+                tokenList.add(tmp);
+                tokenList.add(new Tokens.Token(Tokens.TokenKind.QUOT));
+            } else {
+                tokenList.add(tmp);
+            }
+        }
+        ListIterator<Tokens.Token> iterator = tokenList.listIterator();
+        StringBuilder sb = new StringBuilder();
+        while (iterator.hasNext()) {
+            Tokens.Token token = iterator.next();
+            String val = null;
+            if (token instanceof Tokens.StringToken)
+                val = ((Tokens.StringToken) token).stringVal;
+            else if (token instanceof Tokens.ConstantToken)
+                val = ((Tokens.ConstantToken) token).val;
+            else if (token instanceof Tokens.IdentifierToken)
+                val = ((Tokens.IdentifierToken) token).val;
+            else
+                val = token.tokenKind.name;
+            sb.append(String.format("%d: <%s,%d>%s"
+                    , iterator.nextIndex()
+                    , val
+                    , token.tokenKind.ordinal()
+                    , iterator.nextIndex() == tokenList.size() ? "" : System.lineSeparator()));
+        }
+        System.out.print(sb);
+    }
+
+    static class Tokens {
+        private Map<String, TokenKind> tokenKindMap = new HashMap<>(128);
+
+        public static Tokens instance() {
+            return new Tokens();
+        }
+
+        private Tokens() {
+            for (TokenKind t : Tokens.TokenKind.values())
+                if (t.name != null)
+                    tokenKindMap.putIfAbsent(t.name, t);
+        }
+
+        public TokenKind lookUpTokenKind(String val) {
+            return tokenKindMap.getOrDefault(val, Tokens.TokenKind.IDENTIFIER);
+        }
+
+        public enum TokenKind {
+            EOF(),
+            AUTO("auto"),
+            BREAK("break"),
+            CASE("case"),
+            CHAR("char"),
+            CONST("const"),
+            CONTINUE("continue"),
+            DEFAULT("default"),
+            DO("do"),
+            DOUBLE("double"),
+            ELSE("else"),
+            ENUM("enum"),
+            EXTERN("extern"),
+            FLOAT("float"),
+            FOR("for"),
+            GOTO("goto"),
+            IF("if"),
+            INT("int"),
+            LONG("long"),
+            REGISTER("register"),
+            RETURN("return"),
+            SHORT("short"),
+            SIGNED("signed"),
+            SIZEOF("sizeof"),
+            STATIC("static"),
+            STRUCT("struct"),
+            SWITCH("switch"),
+            TYPEDEF("typedef"),
+            UNION("union"),
+            UNSIGNED("unsigned"),
+            VOID("void"),
+            VOLATILE("volatile"),
+            WHILE("while"),
+            SUB("-"),
+            SUBSUB("--"),
+            SUBEQ("-="),
+            SUBGT("->"),
+            BANG("!"),
+            BANGEQ("!="),
+            PERCENT("%"),
+            PERCENTEQ("%="),
+            AMP("&"),
+            AMPAMP("&&"),
+            AMPEQ("&="),
+            LPAREN("("),
+            RPAREN(")"),
+            STAR("*"),
+            STAREQ("*="),
+            COMMA(","),
+            DOT("."),
+            SLASH("/"),
+            SLASHEQ("/="),
+            COLON(":"),
+            SEMI(";"),
+            QUES("?"),
+            LBRACKET("["),
+            RBRACKET("]"),
+            CARET("^"),
+            CARETEQ("^="),
+            LBRACE("{"),
+            BAR("|"),
+            BARBAR("||"),
+            BAREQ("|="),
+            RBRACE("}"),
+            TILDE("~"),
+            PLUS("+"),
+            PLUSPLUS("++"),
+            PLUSEQ("+="),
+            LT("<"),
+            LTLT("<<"),
+            LTLTEQ("<<="),
+            LTEQ("<="),
+            EQ("="),
+            EQEQ("=="),
+            GT(">"),
+            GTEQ(">="),
+            GTGT(">>"),
+            GTGTEQ(">>="),
+            QUOT("\""),
+            COMMENT(),
+            LITERAL(),
+            IDENTIFIER(),
+            ERROR();
+
+            public String name;
+
+            TokenKind(String name) {
+                this.name = name;
+            }
+
+            TokenKind() {
+
+            }
+        }
+
+        public static class Token {
+            public final TokenKind tokenKind;
+
+            public Token(TokenKind tokenKind) {
+                this.tokenKind = tokenKind;
+            }
+        }
+
+
+        public static class IdentifierToken extends Token {
+            public final String val;
+
+            public IdentifierToken(TokenKind tokenKind, String val) {
+                super(tokenKind);
+                this.val = val;
+            }
+        }
+
+        public static class ConstantToken extends Token {
+            public final String val;
+
+            public ConstantToken(TokenKind tokenKind, String val) {
+                super(tokenKind);
+                this.val = val;
+            }
+        }
+
+        public static class StringToken extends Token {
+            public final String stringVal;
+
+            public StringToken(TokenKind tokenKind, String stringVal) {
+                super(tokenKind);
+                this.stringVal = stringVal;
+            }
+        }
+    }
+
+
+    static class CTokenizer {
+        private Reader reader;
+
+        private Tokens.TokenKind tk;
+
+        private final Tokens tokens;
+
+        public CTokenizer(Reader reader) {
+            this.reader = reader;
+            this.tokens = Tokens.instance();
+        }
+
+        public Tokens.Token readToken() {
+            reader.tp = 0;
+            int pos;
+            loop:
+            while (true) {
+                pos = reader.bp;
+                switch (reader.ch) {
+                case ' ':
+                case '\t':
+                    do {
+                        reader.scanChar();
+                    } while (reader.ch == ' ' || reader.ch == '\t');
+                    break;
+                case '\n':
+                    reader.scanChar();
+                    break;
+                case '\r':
+                    reader.scanChar();
+                    if (reader.ch == '\n')
+                        reader.scanChar();
+                    break;
+                case 'A': case 'B': case 'C': case 'D': case 'E':
+                case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'K': case 'L': case 'M': case 'N': case 'O':
+                case 'P': case 'Q': case 'R': case 'S': case 'T':
+                case 'U': case 'V': case 'W': case 'X': case 'Y':
+                case 'Z':
+                case 'a': case 'b': case 'c': case 'd': case 'e':
+                case 'f': case 'g': case 'h': case 'i': case 'j':
+                case 'k': case 'l': case 'm': case 'n': case 'o':
+                case 'p': case 'q': case 'r': case 's': case 't':
+                case 'u': case 'v': case 'w': case 'x': case 'y':
+                case 'z':
+                case '_':
+                    scanIdentify();
+                    break loop;
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                    scanNumber(pos);
+                    break loop;
+                case '.':
+                    reader.scanChar(); tk = Tokens.TokenKind.DOT; break loop;
+                case ',':
+                    reader.scanChar(); tk = Tokens.TokenKind.COMMA; break loop;
+                case ';':
+                    reader.scanChar(); tk = Tokens.TokenKind.SEMI; break loop;
+                case '(':
+                    reader.scanChar(); tk = Tokens.TokenKind.LPAREN; break loop;
+                case ')':
+                    reader.scanChar(); tk = Tokens.TokenKind.RPAREN; break loop;
+                case '[':
+                    reader.scanChar(); tk = Tokens.TokenKind.LBRACKET; break loop;
+                case ']':
+                    reader.scanChar(); tk = Tokens.TokenKind.RBRACKET; break loop;
+                case '{':
+                    reader.scanChar(); tk = Tokens.TokenKind.LBRACE; break loop;
+                case '}':
+                    reader.scanChar(); tk = Tokens.TokenKind.RBRACE; break loop;
+                case '/':
+                    reader.putChar(true);
+                    if (reader.ch == '*') {
+                        while (reader.bp < reader.len) {
+                            if (reader.ch == '*') {
+                                reader.putChar(true);
+                                if (reader.ch == '/')
+                                    break;
+                            } else
+                                reader.putChar(true);
+                        }
+                        if (reader.ch == '/')
+                            reader.putChar(true);
+                        tk = Tokens.TokenKind.COMMENT;
+                        break loop;
+                    } else if (reader.ch == '/') {
+                        reader.putChar(true);
+                        do {
+                            reader.putChar(true);
+                        } while (reader.ch != '\r' && reader.ch != '\n' && reader.bp < reader.len);
+                        tk = Tokens.TokenKind.COMMENT;
+                        break loop;
+                    } else if (reader.ch == '=') {
+                        tk = Tokens.TokenKind.SLASHEQ;
+                        reader.scanChar();
+                    } else {
+                        tk = Tokens.TokenKind.SLASH;
+                    }
+                    break loop;
+                case '\"':
+                    reader.scanChar();
+                    while (reader.ch != '\"' && reader.ch != '\r' && reader.ch != '\n' && reader.bp < reader.len)
+                        reader.putChar(true);
+                    if (reader.ch == '\"') {
+                        reader.scanChar();
+                    }
+                    tk = Tokens.TokenKind.IDENTIFIER;
+                    return new Tokens.StringToken(tk, reader.chars());
+                default:
+                    if (isSpecial(reader.ch))
+                        scanOperator();
+                    else if (reader.bp == reader.len)
+                        tk = Tokens.TokenKind.EOF;
+                    break loop;
+                }
+            }
+            switch (tk) {
+            case IDENTIFIER:
+            case COMMENT:
+                return new Tokens.IdentifierToken(tk, reader.chars());
+            case LITERAL:
+                return new Tokens.ConstantToken(tk, reader.chars());
+            default:
+                return new Tokens.Token(tk);
+            }
+        }
+
+        private void scanOperator() {
+            while (true) {
+                reader.putChar(false);
+                String val = reader.chars();
+                Tokens.TokenKind tk1 = tokens.lookUpTokenKind(val);
+                if (tk1 == Tokens.TokenKind.IDENTIFIER) {
+                    reader.tp--;
+                    break;
+                }
+                tk = tk1;
+                reader.scanChar();
+                if (!isSpecial(reader.ch))
+                    break;
+            }
+        }
+
+        private boolean isSpecial(char ch) {
+            switch (ch) {
+            case '!': case '%': case '&': case '*': case '?':
+            case '+': case '-': case ':': case '<': case '=':
+            case '>': case '^': case '|': case '~':
+                return true;
+            default:
+                return false;
+            }
+        }
+
+        private void scanNumber(int pos) {
+            scanDigits();
+            tk = Tokens.TokenKind.LITERAL;
+        }
+
+        private void scanDigits() {
+            do {
+                reader.putChar(true);
+            } while (reader.isDigit());
+        }
+
+        private void scanIdentify() {
+            reader.putChar(true);
+            do {
+                switch (reader.ch) {
+                case 'A': case 'B': case 'C': case 'D': case 'E':
+                case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'K': case 'L': case 'M': case 'N': case 'O':
+                case 'P': case 'Q': case 'R': case 'S': case 'T':
+                case 'U': case 'V': case 'W': case 'X': case 'Y':
+                case 'Z':
+                case 'a': case 'b': case 'c': case 'd': case 'e':
+                case 'f': case 'g': case 'h': case 'i': case 'j':
+                case 'k': case 'l': case 'm': case 'n': case 'o':
+                case 'p': case 'q': case 'r': case 's': case 't':
+                case 'u': case 'v': case 'w': case 'x': case 'y':
+                case 'z':
+                case '$': case '_':
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                    break;
+                default:
+                    tk = tokens.lookUpTokenKind(reader.chars());
+                    return;
+                }
+                reader.putChar(true);
+            } while (true);
+        }
+
+
+    }
+
+    static class Reader {
+        private char[] buf;
+
+        public int bp;
+
+        public final int len;
+
+        public char ch;
+
+
+        private char[] tbuf = new char[128];
+
+        public int tp;
+
+        public Reader(String input) {
+            buf = input.toCharArray();
+            len = input.trim().length();
+            buf[len] = 0x1A;
+            bp = -1;
+            scanChar();
+        }
+
+        public void scanChar() {
+            if (bp < len) {
+                ch = buf[++bp];
+            }
+        }
+
+        public void putChar(char ch) {
+            putChar(ch, false);
+        }
+
+        public void putChar(boolean next) {
+            putChar(ch, next);
+        }
+
+        public void putChar(char ch, boolean next) {
+            tbuf[tp++] = ch;//不考虑缓冲区溢出的情况
+            if (next)
+                scanChar();
+        }
+
+        public String chars() {
+            return new String(tbuf, 0, tp);
+        }
+
+        public boolean isDigit() {
+            char c = ch;
+            if (c >= '0' && c <= '9')
+                return true;
+            return Character.isDigit(c);
+        }
+    }
+}

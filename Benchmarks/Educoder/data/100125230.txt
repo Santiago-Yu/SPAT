@@ -1,0 +1,59 @@
+package step2;
+
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+
+public class InterRectangle {
+	private double width;
+	private double length;
+    public void setWidth(double num)
+    {
+        width=num;
+    }
+    public double getWidth()
+    {
+        return width;
+    }
+    public void setLength(double num)
+    {
+        length=num;
+    }
+    public double getLength()
+    {
+        return length;
+    }
+	/*********请在此编写构造函数及求周长和面积的方法*********/
+	public static double mianji(double a,double b){
+		return a*b;
+    }
+	public static double zhouchang(double a,double b){
+        return 2*(a+b);
+    }
+	/*********end**********/
+	public static void main(String[] args) {
+ 		Scanner scanner = new Scanner(System.in);
+		double total=scanner.nextDouble();//获取土地数目
+		/*********begin*********/
+        InterRectangle p=new InterRectangle();
+        System.out.println("总共有"+total+"块土地");
+        //请获取到每块土地的长和宽，并输出土地块数，总面积和总周长
+        double zmianji=0.0;
+        double zzhouchang=0.0;
+        double c,d;
+        double w,l;
+        w=p.getWidth();
+        l=p.getLength();
+        for(double i=1.0;i<=total;i++){
+			w=scanner.nextDouble();
+        	l=scanner.nextDouble();
+            c=mianji(w,l);
+            d=zhouchang(w,l);
+            zmianji+=c;
+            zzhouchang+=d;
+        }
+		System.out.println("土地总面积为:"+zmianji+"平米");
+        System.out.println("土地总周长为:"+zzhouchang+"米");
+		/*********end*********/
+	}
+
+}

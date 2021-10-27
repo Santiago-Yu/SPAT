@@ -1,0 +1,56 @@
+package step1;
+import java.awt.Point;
+import java.util.LinkedList;
+import java.util.Queue;
+public class Task {
+	
+	public void sort(Integer[] x){
+		/********* Begin *********/
+		/********* Begin *********/
+		int flag=1;
+		int flags=0;
+		for(int i=0;i<x.length-1;i++){
+			if(x[i]<x[i+1]){
+				flags++;
+			}
+		}
+
+		if(flags==x.length-1){
+	          for(int k=0;k<x.length;k++){
+	              System.out.print(x[k]+" ");	
+		}
+                              System.out.println();
+		}
+		for(;flag!=0;){
+			flag=0;
+		for(int i=0;i<x.length-1;i++){
+		if(x[i]>x[i+1]){
+			int t=x[i];
+			x[i]=x[i+1];
+			x[i+1]=t;
+			flag++;
+            for(int k=0;k<x.length;k++){
+                System.out.print(x[k]+" ");
+            }
+            System.out.print("\n");
+		}
+		}
+		for(int j=x.length-1;j>0;j--){
+			if(x[j]<x[j-1]){
+				int t=x[j-1];
+				x[j-1]=x[j];
+				x[j]=t;
+				flag++;
+            for(int k=0;k<x.length;k++){
+            System.out.print(x[k]+" ");
+            }
+            System.out.print("\n");
+			}
+		}
+
+	}	
+	
+		
+		/********* End *********/
+	}
+}

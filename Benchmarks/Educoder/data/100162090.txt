@@ -1,0 +1,63 @@
+package task03;
+
+import java.util.Scanner;
+
+/*
+ * 说明：根据提示，补充完整 begin 和 end 之间的代码。
+ *     （其他代码可以不用改）
+ */
+
+/**************** begin *****************/
+// 在此定义学生类名
+class Student
+/**************** end *****************/
+{
+	/**************** begin *****************/
+	 // 将名字name和年龄age属性定义为私有的
+String name;
+    int age;
+	/**************** end *****************/
+
+	/**************** begin *****************/
+	
+	public String getName() {
+    return name;
+    }
+   public int  getAge(){
+    return age;
+    }
+    public void setName(String n){
+    name=n;
+    }
+   public void setAge(int a){
+          if(a<0)
+             System.out.println("设置的年龄不合法");
+        else
+            age=a;
+    }
+	void speak() {
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+
+public class Task03{
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		String name1 = scan.next();
+		int age1 = scan.nextInt();
+        Student s=new Student();
+s.setName(name1);
+        s.setAge(age1);
+        s.speak();
+		/**************** begin *****************/
+		/*
+		 * 创建Student类的实例对象，
+		 * 通过调用对象的setName(String n)和setAge(int a)方法
+		 * 来设置实例对象的name属性和age属性值，
+		 * 方法的参数值为运行时接收从键盘输入，
+		 * 并调用speak()方法。
+		 */
+
+		/**************** end *****************/
+	}
+}

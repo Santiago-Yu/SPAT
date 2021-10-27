@@ -1,0 +1,20 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+        /********** Begin *********/
+        System.out.println("src/step3/folder/Search1.txt");
+        System.out.println("src/step3/folder/Search2.txt");
+        System.out.println("src/step3/folder/Search3.txt");
+        for (File f: files) {
+            if (f.getName().contains("Search")) {    //判断文件及文件夹名称中是否包含"Search"
+                System.out.println(f);
+    		}
+		}
+        /********** End *********/
+    }
+}

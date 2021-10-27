@@ -1,0 +1,69 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+        boolean flag=false;
+        
+        boolean flag1=false;
+        
+        boolean flag2=true;
+        
+        while(!flag)
+        {
+        	flag=true;
+        	for(int i=0;i<arr.length-1;i++)			//i最大为3
+        	{
+        		flag1=true;
+        		if(arr[i]>arr[i+1])				//Integer比较大小的方法，==不行。
+                {
+                    flag=false;
+                    flag1=false;
+                    Integer temp=arr[i+1];
+                    arr[i+1]=arr[i];
+                    arr[i]=temp;
+                    flag2=false;
+                 
+                }
+        		if(!flag1)
+            		out(arr);
+            }
+        	
+        	flag=true;
+            for(int i=arr.length-1;i>0;i--)
+            {
+            	flag1=true;
+                if(arr[i-1]>arr[i])
+                {
+                	flag1=false;
+                	flag=false;
+                	Integer temp=arr[i-1];
+                    arr[i-1]=arr[i];
+                    arr[i]=temp;
+                    flag2=false;
+                }
+                if(!flag1)
+                	out(arr);
+            }
+            
+        }
+        if(flag2)
+        	out(arr);
+          
+	}
+    public void out(Integer[] arr){
+        for(int i=0;i<arr.length;i++)
+            System.out.print(arr[i]+" ");
+        System.out.print("\n");
+    }
+    public static void main(String a[]) {
+    	Integer [] list=new Integer[5];
+    		list[0]=new Integer(1);
+    		list[1]=new Integer(2);
+    		list[2]=new Integer(3);
+    		list[3]=new Integer(4);
+    		list[4]=new Integer(5);
+    		
+    	new Task().sort(list);
+    }
+}

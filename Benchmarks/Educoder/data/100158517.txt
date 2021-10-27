@@ -1,0 +1,36 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in = new Scanner(System.in);
+        String str1=in.nextLine();
+        String str2=in.nextLine();
+        char [] ar1=str1.toCharArray();
+        char [] ar2=str2.toCharArray();
+        int num=0;int res=0;
+        for(int i=0;i<ar1.length;i++)
+        {
+            for(int j=0;j<ar2.length;j++)
+            {
+                num=0;
+                if(ar2[j]==ar1[i])
+                {
+                    num=1;
+                    int m=i;int n=j;
+                    for(;;m++,n++)
+                    {
+                        if(n==ar2.length-1||m==ar1.length-1) break;
+                        if(ar2[n+1]==ar1[m+1]) num++;
+                         
+                        else break;
+                    }
+                }
+                if(num>res) res=num;
+            }
+        }
+        System.out.print(res);
+	}
+
+}

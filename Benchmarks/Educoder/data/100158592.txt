@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    char a[101],b[101];
+    scanf("%s %s",a,b);
+    int lena=strlen(a);
+    int lenb=strlen(b);
+    int cunt=0,k=0;
+    for(int i=0;i<lena;i++) {
+        for(int j=0;j<lenb;j++) {
+            if(a[i]==b[j]) {
+                int m=i,n=j;
+                while(a[m]==b[n]) {
+                    m++;
+                    n++;
+                    cunt++;
+                    if(m>=lena||n>=lenb) {
+                        break;
+                    }
+                }
+                if(cunt>=k) {
+                    k=cunt;
+                }
+                cunt=0;
+            }
+        }
+    }
+    printf("%d",k);
+    return 0;
+}

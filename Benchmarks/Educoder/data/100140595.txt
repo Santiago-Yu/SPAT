@@ -1,0 +1,28 @@
+package step3;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+		int befinIndex = fileName.lastIndexOf(".");
+        
+        if(befinIndex != -1){
+        	String lastName = fileName.substring(befinIndex, fileName.length());
+            if(befinIndex != 0 && lastName.equals(".java")){   //!= 的意义： 名字为.java时无效
+            	System.out.println("Java文件名正确");
+            }
+            else{
+            	System.out.println("Java文件名无效");
+            }
+        }
+        else{
+        	System.out.println("Java文件名无效");
+        }
+                
+        if(email.indexOf(".") > email.lastIndexOf("@") && email.lastIndexOf("@") != -1)
+            System.out.println("邮箱名正确");
+        else
+            System.out.println("邮箱名无效");        
+	}
+	
+	
+}

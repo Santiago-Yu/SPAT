@@ -1,0 +1,31 @@
+package step3;
+
+public class MyThread implements Runnable {   
+	private String name;
+    MyThread(String name){
+        this.name = name;
+    }
+    MyThread(){
+    }
+    public static void main(String[] args) throws Exception {   
+        MyThread E = new MyThread("E");
+        MyThread D = new MyThread("D");
+        MyThread U = new MyThread("U");
+        
+        new Thread(E).start();
+        
+        new Thread(U).start();
+        new Thread(D).start();
+        
+    }  
+    public void run(){
+        for(int i=0;i<5;i++){
+        	System.out.print(this.name);
+            try{
+            Thread.sleep(100);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+}

@@ -1,0 +1,74 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+        int[]b = {0,0,0,0,0};
+        for (int i=0;i<arr.length;i++)
+        {
+            for (int j=0;j<arr.length;j++)
+            {
+                b[i] = b[i]+arr[i][j];
+            }
+        }
+        
+        
+		for (int i=0;i<arr.length;i++)
+        {
+            for (int j=0;j<arr.length;j++)
+            {
+                for (int m=j+1;m<arr.length;m++)
+                {
+                    if (arr[i][j]<arr[i][m])
+                    {
+                        int temp;
+                        temp = arr[i][j];
+                        arr[i][j] = arr[i][m];
+                        arr[i][m] = temp;
+                    }
+                }
+            }
+            
+            
+            
+        }
+        int[]mid = new int[10];
+        for (int i=0;i<arr.length;i++)
+        {
+            for(int j=i+1;j<arr.length;j++)
+            {
+                if(b[i]<b[j]) 
+                {
+                    mid = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = mid;
+                }
+            }
+        }
+        int j;
+        for(int i=0;i<arr.length;i++)
+        {
+            System.out.print("[");
+            for(j=0;j<arr.length;j++)
+            {
+                if (j!=arr.length-1)
+                System.out.print(arr[i][j]+", ");
+                else
+                    System.out.println(arr[i][j]+"]");
+            }
+        }
+        
+        
+        
+
+
+		
+	
+    }
+    
+    /********** END **********/
+}
+	

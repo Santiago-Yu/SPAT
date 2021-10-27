@@ -1,0 +1,57 @@
+package step2;
+
+import java.util.Scanner;
+
+/* public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+       
+        if(num ==1 || num ==2){
+            System.out.println("子线程计算结果为：1");   }
+        else{
+		System.out.println("子线程计算结果为：");
+        }
+
+		
+		
+	}
+}
+ class MyThread  extends  Thread {
+    public MyThread(int num){
+       this.num = num; 
+    }
+     int a =1;
+     int    b = 1;
+      int   res = 0;
+ public  void run(){
+    if(num == 1 || num == 2){
+        res = 1;
+    }
+    for(int i=3;i<=num;i++){
+        res = a + b;
+        a = b;
+        b = res;
+    }
+ }   
+}    */
+public class Task {
+	public static void main(String args[]){
+ int n,fn;
+ java.util.Scanner s = new Scanner(System.in);
+ n=s.nextInt();
+ fn=function(n);
+ System.out.println("子线程计算结果为："+fn);
+	}
+
+	public static int function(int n){
+ if(n==1 || n==2) return 1;
+ return function(n-1)+function(n-2);
+	}
+
+}
+	
+	
+
+

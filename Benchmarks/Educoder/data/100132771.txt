@@ -1,0 +1,47 @@
+package step3;
+
+public class Task {
+
+	    public static int countOfShips(char[][] ferry) {
+        /**************BEGIN************/
+        int rowLength = ferry.length;
+        int columnLength=0;
+        if(rowLength>0)
+        	columnLength= ferry[0].length;
+        int sum = 0;
+        for (int i=0;i<rowLength;i++)
+            for (int j=0;j<columnLength;j++)
+                if(ferry[i][j]=='+'){
+                    findShip(ferry,i,j);
+                    sum++;
+                }
+        return sum;
+        /***********END ***************/
+    }
+    public static void findShip(char[][] ferry,int rowIndex,int columnIndex) {
+        if((columnIndex<ferry[0].length-1)&&(ferry[rowIndex][columnIndex+1]=='+'))
+            readHorizontalShip(ferry,rowIndex,columnIndex);
+        else if((rowIndex<ferry.length-1)&&(ferry[rowIndex+1][columnIndex]=='+'))
+            readVerticalShip(ferry,rowIndex,columnIndex);
+        else
+            readShip(ferry,rowIndex,columnIndex);
+    }
+
+    public static void readHorizontalShip(char[][] ferry,int rowIndex,int columnIndex) {
+        while(ferry[rowIndex][columnIndex]=='+'){
+            ferry[rowIndex][columnIndex]='o';
+            columnIndex++;
+            if(columnIndex==ferry[0].length)break;
+        }
+    }
+    public static void readVerticalShip(char[][] ferry,int rowIndex,int columnIndex) {
+        while(ferry[rowIndex][columnIndex]=='+'){
+            ferry[rowIndex][columnIndex]='o';
+            rowIndex++;
+            if(rowIndex==ferry.length)break;
+        }
+    }
+    public static void readShip(char[][] ferry,int rowIndex,int columnIndex) {
+        ferry[rowIndex][columnIndex]='o';
+    }
+}

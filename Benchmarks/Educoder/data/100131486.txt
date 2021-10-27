@@ -1,0 +1,43 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+    
+    private static void getFile(File file, int deep) {
+		File[] array=file.listFiles();
+		for(int i=0; i<array.length;i++) {
+			if(array[i].isFile())//判断如果是文件的话
+			{
+				for(int j =0;j<deep;j++) {//deep应该是指文件的深度
+					System.out.print("  ");
+				}
+				System.out.println("--"+array[i].getName());
+			}
+			else if(array[i].isDirectory())
+			{
+				for(int j=0;j<deep;j++) {
+					System.out.print("  ");
+				}
+				System.out.println("+--"+array[i].getName());
+				getFile(array[i],deep+1);//递归深度遍历
+			}
+		}
+	}
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		int deep=1;
+		System.out.println("+--"+file.getName());
+		getFile(file,deep);
+
+
+
+
+
+	}
+	
+
+
+	/********** END **********/
+}

@@ -1,0 +1,75 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+String str=releaseDate;
+		
+		char y1 = str.charAt(0); // 取第一个汉字
+		int yy1=(y1-48)*1000;
+		char y2 = str.charAt(1);
+		int yy2=(y2-48)*100;
+		char y3 = str.charAt(2);
+		int yy3=(y3-48)*10;
+		char y4 = str.charAt(3);
+		int yy4=y4-48;
+		int y=yy1+yy2+yy3+yy4;
+		
+		char m1 = str.charAt(5);
+		int mm1=(m1-48)*10;
+		char m2 = str.charAt(6);
+		int m=mm1+m2-48;
+		
+		char d1 = str.charAt(8);
+		int dd1=(d1-48)*10;
+		char d2 = str.charAt(9);
+		int d=dd1+d2-48;
+		
+		int Renyear;
+        
+        for(int i=m;day!=0;i++)
+        {Renyear=0;
+        	if(y%4==0&&y%100!=0||y%400==0)
+                
+                Renyear=1;
+        	if(i==4||i==6||i==9||i==11) {
+        		if(d+day<=30) {d=d+day;day=0;break;}
+        		if(d+day>30) {day=day+d-30-1;d=1;m++;}
+        	}
+        	 if(i==2&&Renyear==1) {
+        		if(d+day<=29) {d=d+day;day=0;break;}
+        		if(d+day>29) {day=day+d-29-1;d=1;m++;}
+        	}
+        		if(i==2&&Renyear==0) {
+        			if(d+day<=28) {d=d+day;day=0;break;}
+            		if(d+day>28) {day=day+d-28-1;d=1;m++;}	
+        	}
+        	if(i==12) {if(d+day<=31) {d=d+day;day=0;break;}
+    		if(d+day>31) {day=day+d-31-1;d=1;y++;i=1;m=1;}}
+        	if(i==1||i==3||i==5||i==7||i==8||i==10) {if(d+day<=31) {d=d+day;day=0;break;}
+    		if(d+day>31) {day=day+d-31-1;d=1;m++;}}
+        }
+        String s1 = String.valueOf(y);
+        String s2 = String.valueOf(m);
+        String s3 = String.valueOf(d);
+        if(m<10) {s2='0'+s2;} 
+        if(d<10) {s3='0'+s3;} 
+        	String s=s1+'-'+s2+'-'+s3;
+		
+		
+return s;
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

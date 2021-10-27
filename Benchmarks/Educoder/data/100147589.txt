@@ -1,0 +1,31 @@
+package step2;
+
+public class MyRunnable implements Runnable {
+	private int num;
+	
+    public MyRunnable() {
+    	this(0);
+    }
+    
+    public MyRunnable(int num) {
+    	/***begin your code here***/
+        this.num=num;
+    	/***end your code here***/
+    }
+	
+	@Override
+	public void run() {
+		//重写run方法，在子线程中想要执行的代码写在run方法中
+    	int result = 1;//result保存计算出的结果
+    	
+        /***begin your code here***/ 
+        for(int i=1;i<=num;i++){
+            result=result*i;
+        }
+		/***end your code***/
+    	
+    	//直接输出结果
+    	System.out.println(result);
+	}
+
+}

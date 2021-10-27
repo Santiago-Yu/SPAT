@@ -1,0 +1,20 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int sum = 0,number = num2-num1;
+        int a[] = new int[1000];
+        for(int i = 0;i<=number;i++){
+            a[i] = i + num1;
+            if(a[i]<=9) sum += a[i] %10;
+            if(a[i]>9 && a[i]<=99) sum += a[i]%10 + a[i]/10;
+            if(a[i]>99) sum = sum + a[i]%10 + (a[i]/10)%10 + a[i]/100;
+        }
+
+        return sum;
+		/********** END **********/
+	}
+}

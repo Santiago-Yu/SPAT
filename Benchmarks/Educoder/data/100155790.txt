@@ -1,0 +1,43 @@
+package task6;
+/*public class Box{
+	private double width;
+    private double height;
+    private double depth;
+    private int bosType;
+     public Box(int boxType) {
+        this.boxType = boxType;
+    }
+    public double volume(int boxType) {
+        if(boxType==2){
+          	
+            System.out.println("the volumn is:" +this.width*this.width*3.14*this.height);
+        }
+        else{
+       System.out.println("the volumn is:" + this.width*this.height*this.depth);
+        }
+    }
+
+}*/
+public class ScaleBox  extends Box       {  //继承Box类
+
+    private String unit;
+
+    public ScaleBox(int boxType) {
+        super(boxType);
+    }
+
+    //实现 getUnit、setUnit方法
+	public void setUnit (String a){
+    this.unit=a;
+    }
+ 
+	public void printVolumn(){
+    	double v;
+        v=super.volume();
+        System.out.println("the volumn is:"+v+unit);
+      
+    }
+	//实现printVolumn()方法，在该方法中调用父类的方法计算体积 最后输出体积
+
+
+}

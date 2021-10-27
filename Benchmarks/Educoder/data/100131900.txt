@@ -1,0 +1,51 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		if (file.isDirectory()) {
+            System.out.println("+--" + file.getName());
+        }
+        int x = 0;
+        jishu(file, x);
+
+    }
+
+    public static void jishu(File file, int y){
+        String ss = file.toString();
+        y++;
+        int x = y;
+
+        File s[] = file.listFiles();
+        //System.out.println(s);
+        for (int i = 0; i < s.length; i++) {
+            //s[i] = ss + "\\" + s[i];
+            //File f = new File(s[i]);
+            File f = s[i];
+            if (f.isDirectory()) {
+                for (int j = 0; j < x; j++) {
+                    System.out.print("  ");
+                }
+                System.out.println("+--" + f.getName());
+                jishu(f, y);
+            }
+            else {
+                String sss = f.getName();
+                if (sss.endsWith(".jpg") || sss.endsWith(".png") || sss.endsWith(".bmp")) {
+                    for (int j = 0; j < x; j++) {
+                        System.out.print("  ");
+                    }
+                    System.out.println("--" + f.getName());
+                }
+            }
+        }
+
+    }
+
+	
+
+	/********** END **********/
+}

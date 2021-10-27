@@ -1,0 +1,34 @@
+package step2;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateExceptionTest {
+
+	public static void main(String[] args) {
+		
+		/*****Begin*****/
+		Scanner input = new Scanner(System.in);
+        int year, month, day;
+        try{
+            year = input.nextInt();
+            month = input.nextInt();
+            day = input.nextInt();
+            DateException da = new DateException(year, month, day);
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
+            System.out.println(sdf.format(da.getDate()));
+        }catch(DateException e){
+        	System.out.println(e);
+        }
+        catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (InputMismatchException e) {
+			System.out.println("java.util.InputMismatchException:请输入整数");
+		}
+	}
+	
+}

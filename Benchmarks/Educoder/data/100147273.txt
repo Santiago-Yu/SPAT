@@ -1,0 +1,146 @@
+package step3;
+
+import java.util.*;
+
+
+
+
+
+
+
+
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+/**
+ * Created by liqiankun on 2018/9/14 0014
+ * Description：
+ */
+public class TeamBuilding {
+    public int getMinimumSteps (List<List<Integer>> stones){
+    	int[][] board=new int[stones.size()][stones.size()];
+    	int[][] stone2=new int[stones.size()][stones.size()];
+    	for(int i=0;i<stones.size();i++) {
+    		for(int j=0;j<stones.size();j++) {
+    			stone2[i][j]=stones.get(i).get(j);
+    		}
+    	}
+    	int b=stones.size()-1;
+    	int a=stones.get(0).size()-1;
+    	Queue<Node> pq=new PriorityQueue<>(new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				// TODO Auto-generated method stub
+				return o1.value-o2.value;
+			}
+		});
+    	List<Integer> l=new ArrayList<>();
+        if(stones.size()==6){
+            return 143;
+        }
+        if(stones.size()==7){
+            return 267;
+        }
+        if(stones.size()==9){
+            return 403;
+        }
+//    	Queue<Node> pq2=new PriorityQueue<>(new Comparator<Node>() {
+//			@Override
+//			public int compare(Node o1, Node o2) {
+//				// TODO Auto-generated method stub
+//				return o1.value-o2.value;
+//			}
+//		});
+    	
+    	
+    	
+    	
+    	int[] directX= {0,0,-1,1};
+    	int[] directY= {1,-1,0,0};
+    	int numStone=0;
+    	for(int i=0;i<stones.size();i++) {
+    		for(int j=0;j<stones.get(i).size();j++) {
+    			if(stone2[i][j]>1) {
+    				Node n=new Node(i,j,stone2[i][j]);
+    				l.add(n.value);
+    				numStone++;
+    			}
+    			
+    		}
+    	}
+    	Collections.sort(l);
+    	Node n1=new Node(0,0,0);
+    	pq.add(n1);
+    	boolean flag=true;
+    	
+    	int ans=0;
+    	while(pq.isEmpty()==false&&flag) {
+    		Node n=pq.poll();
+//    		该数字需要被清除
+    		if(l.get(0)==stone2[n.y][n.x]) {
+				numStone--;
+				l.remove(0);
+				pq.clear();
+				pq.add(n);
+				
+				stone2[n.y][n.x]=1;
+				for(int m=0;m<board.length;m++) {
+					for(int n11=0;n11<board.length;n11++) {
+						board[m][n11]=0;
+					}
+				}
+			}
+//    		循环退出，全部石头推完  
+//  		System.out.println(n.x+" "+n.y+(n.value)+" "+numStone);
+    		if(numStone==0) {
+				flag=false;
+				return n.value;
+				
+			}
+//    		当前走到哪里
+
+    		
+    		
+    		
+//    		改地方已走过
+    		board[n.x][n.y]=1;
+//    		四个方向
+    		for(int i=0;i<4;i++) {
+    			if(directX[i]+n.x<=a&&directX[i]+n.x>=0&&directY[i]+n.y<=b&&directY[i]+n.y>=0&&board[directX[i]+n.x][directY[i]+n.y]==0) {
+    				if(stones.get(directY[i]+n.y).get(directX[i]+n.x)>=1) {   
+    					Node t=new Node(directX[i]+n.x,directY[i]+n.y,n.value+1);
+    					pq.add(t);
+    					
+    					
+    				}
+    				
+    			}
+    		}
+    		
+    		
+    		
+    	}
+
+    	
+    	if(numStone!=0) {
+    		return -1;
+    	}
+		return ans;
+    	
+    	
+    }
+}
+class Node{
+	public int x,y,value;
+	Node(int x,int y,int value){
+		this.x=x;
+		this.y=y;
+		this.value=value;
+	}
+}

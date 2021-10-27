@@ -1,0 +1,80 @@
+package task6;
+
+/*public class Box {
+
+    private double width;
+    private double height;
+    private double depth;
+    private int boxType;
+
+    public Box(int boxType) {
+        this.boxType = boxType;
+    }
+
+
+    public static final int RECTANGLE = 1;
+
+    public static final int CYLINDER = 2;
+    
+	public void setWidth(double width) {      
+		this.width = width;    
+    }
+    
+    public void setHeight(double height) {      
+		this.height = height;      
+    }
+    
+    public void setDepth(double depth) {      
+		this.depth = depth;      
+    }
+    
+    public double getHeight() {      
+		return height;      
+    }
+    
+    public double getWidth() {      
+		return width;      
+    }
+    
+    public double getDepth() {      
+		return depth;      
+    }
+    
+    public double volume() {
+       
+		double ans = 0;
+        switch (boxType)
+        {
+            case 1:	ans = width * height * depth;	break;
+            case 2: ans = 3.14 * width * width * height;	break;
+        }
+        return ans;
+      
+    }*/
+
+    public class ScaleBox extends Box {  //继承Box类
+
+    //TODO 定义私有变量unit
+	private String unit;
+    public ScaleBox(int boxType) {
+        super(boxType);
+    }
+	public void setUnit(String unit)
+    {
+        this.unit = unit;
+    }
+    public String getUnit()
+    {
+        return unit;
+    }   
+    //实现 getUnit、setUnit方法
+	
+ 	
+	public void printVolumn()
+    {
+        double anss = 0;
+        anss = super.volume();
+        System.out.println("the volumn is:" + anss + getUnit());
+    }
+	//实现printVolumn()方法，在该方法中调用父类的方法计算体积 最后输出体积
+}

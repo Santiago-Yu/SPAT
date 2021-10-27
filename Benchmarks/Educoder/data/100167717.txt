@@ -1,0 +1,1089 @@
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis {
+    public static void main(String[] args) {
+        StringBuilder text = new StringBuilder();
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            text.append(scanner.nextLine());
+            text.append(System.lineSeparator());
+        }
+        Lexer lexer = new Lexer(text.toString());
+        lexer.tokenize();
+        Parser parser = new Parser(lexer.getTokens());
+        Node tree = parser.parse();
+        Parser.semanticAnalyze(tree);
+    }
+}
+
+class Token {
+    private final String tag;
+    private final String lexeme;
+    private final int lineNumber;
+
+    Token(String lexeme, int lineNumber) {
+        if (lexeme.matches("^[+-]?\\d+$")) {
+            tag = "NUMBER";
+        } else if (lexeme.matches("^[+-]?\\d+\\.\\d+$")) {
+            tag = "NUMBER";
+        } else if (Grammar.isTerminal(lexeme)) {
+            tag = lexeme;
+        } else {
+            tag = "ID";
+        }
+        this.lexeme = lexeme;
+        this.lineNumber = lineNumber;
+    }
+
+    String getTag() {
+        return tag;
+    }
+
+    String getLexeme() {
+        return lexeme;
+    }
+
+    int getLineNumber() {
+        return lineNumber;
+    }
+
+    @Override
+    public String toString() {
+        return tag + " ('" + lexeme + "')";
+    }
+}
+
+class Lexer {
+    private final String program;
+    private final List<Token> tokens;
+
+    Lexer(String program) {
+        this.program = program;
+        tokens = new ArrayList<Token>();
+    }
+
+    List<Token> getTokens() {
+        return tokens;
+    }
+
+    void tokenize() {
+        String[] lines = program.split("\\r?\\n");
+        for (int lineNumber = 1; lineNumber <= lines.length; ++lineNumber) {
+            String[] lexemes = lines[lineNumber - 1].split("\\s");
+            for (String lexeme : lexemes)
+                tokens.add(new Token(lexeme, lineNumber));
+        }
+        tokens.add(new Token(Grammar.EndOfInputTerminal, lines.length));
+    }
+}
+
+class Parser {
+    private final List<Token> tokens;
+    private Stack<Node> stack;
+    private Stack<Integer> states;
+
+    Parser(List<Token> tokens) {
+        this.tokens = tokens;
+    }
+
+    static void semanticAnalyze(Node root) {
+        SymbolTable table = new SymbolTable();
+        root.evaluate(table);
+        if (!table.hasError())
+            table.print();
+    }
+
+    Node parse() {
+        int cursor = 0;
+        Token currentToken = tokens.get(cursor);
+        stack = new Stack<Node>();
+        states = new Stack<Integer>();
+        states.push(0);
+        while (true) {
+            final String tag = currentToken.getTag();
+            final int action = Grammar.getActionCode(states.peek(), tag);
+            if (action == Grammar.ActionAccept) {
+                accept();
+                break;
+            } else if (action < 0) {
+                shift(-action, currentToken);
+                currentToken = tokens.get(++cursor);
+            } else if (action > 0) {
+                reduce(action);
+            } else {
+                return null;
+            }
+        }
+        return stack.pop();
+    }
+
+    private void accept() {
+        states.pop();
+    }
+
+    private void shift(int state, Token token) {
+        final String tag = token.getTag();
+        final String lexeme = token.getLexeme();
+        switch (tag) {
+            case "ID":
+                stack.push(new IdentifierNode(token.getLineNumber(), lexeme));
+                break;
+            case "NUMBER":
+                if (lexeme.matches("^[+-]?\\d+$"))
+                    stack.push(new IntegerNode(token.getLineNumber(), lexeme));
+                else if (lexeme.matches("^[+-]?\\d+\\.\\d+$"))
+                    stack.push(new DoubleNode(token.getLineNumber(), lexeme));
+                break;
+            default:
+                stack.push(new TerminalNode(token.getLineNumber(), lexeme));
+                break;
+        }
+        states.push(state);
+    }
+
+    private void reduce(int production) {
+        switch (production) {
+            case 0: // Start -> Program
+                reduceNodes("Start", 1);
+                break;
+            case 1: // Program -> Declarations Block
+                reduceNodes("Program", 2);
+                break;
+            case 2: // Declarations -> Declaration ; Declarations
+                reduceNodes("Declarations", 3);
+                break;
+            case 3: // Declarations -> ''
+                reduceEmptyStringNode("Declarations");
+                break;
+            case 4: // Declaration -> int ID = NUMBER
+            case 5: // Declaration -> real ID = NUMBER
+                reduceNodes("Declaration", 4);
+                break;
+            case 6: // Statement -> If
+            case 7: // Statement -> Assignment
+            case 8: // Statement -> Block
+                reduceNodes("Statement", 1);
+                break;
+            case 9: // Block -> { Statements }
+                reduceNodes("Block", 3);
+                break;
+            case 10: // Statements -> Statement Statements
+                reduceNodes("Statements", 2);
+                break;
+            case 11: // Statements -> ''
+                reduceEmptyStringNode("Statements");
+                break;
+            case 12: // If -> if ( BooleanExpression ) then Statement else Statement
+                reduceNodes("If", 8);
+                break;
+            case 13: // Assignment -> ID = Expression ;
+                reduceNodes("Assignment", 4);
+                break;
+            case 14: // BooleanExpression -> Expression BooleanOperator Expression
+                reduceNodes("BooleanExpression", 3);
+                break;
+            case 15: // BooleanOperator -> <
+            case 16: // BooleanOperator -> >
+            case 17: // BooleanOperator -> <=
+            case 18: // BooleanOperator -> >=
+            case 19: // BooleanOperator -> ==
+                reduceNodes("BooleanOperator", 1);
+                break;
+            case 20: // Expression -> Expression + Term
+            case 21: // Expression -> Expression - Term
+                reduceNodes("Expression", 3);
+                break;
+            case 22: // Expression -> Term
+                reduceNodes("Expression", 1);
+                break;
+            case 23: // Term -> Term * Factor
+            case 24: // Term -> Term / Factor
+                reduceNodes("Term", 3);
+                break;
+            case 25: // Term -> Factor
+                reduceNodes("Term", 1);
+                break;
+            case 26: // Factor -> ID
+            case 27: // Factor -> NUMBER
+                reduceNodes("Factor", 1);
+                break;
+            case 28: // Factor -> ( Expression )
+                reduceNodes("Factor", 3);
+                break;
+        }
+    }
+
+    private void reduceNodes(String leftHandSide, int rightHandSideCount) {
+        Node root = getProductionNode(leftHandSide, stack.peek().getLineNumber());
+        for (int i = 0; i < rightHandSideCount; ++i) {
+            root.addChild(stack.pop());
+            states.pop();
+        }
+        stack.push(root);
+        final int state = Grammar.getActionCode(states.peek(), leftHandSide);
+        states.push(state);
+    }
+
+    private void reduceEmptyStringNode(String leftHandSide) {
+        Node root = getProductionNode(leftHandSide, stack.peek().getLineNumber());
+        // root.addChild(new EmptyStringNode(stack.peek().getLineNumber()));
+        stack.push(root);
+        final int state = Grammar.getActionCode(states.peek(), leftHandSide);
+        states.push(state);
+    }
+
+    private Node getProductionNode(String leftHandSide, int lineNumber) {
+        switch (leftHandSide) {
+            case "Start":
+                return new StartNode(lineNumber);
+            case "Program":
+                return new ProgramNode(lineNumber);
+            case "Declarations":
+                return new DeclarationsNode(lineNumber);
+            case "Declaration":
+                return new DeclarationNode(lineNumber);
+            case "Statement":
+                return new StatementNode(lineNumber);
+            case "Block":
+                return new BlockNode(lineNumber);
+            case "Statements":
+                return new StatementsNode(lineNumber);
+            case "If":
+                return new IfNode(lineNumber);
+            case "Assignment":
+                return new AssignmentNode(lineNumber);
+            case "BooleanExpression":
+                return new BooleanExpressionNode(lineNumber);
+            case "BooleanOperator":
+                return new BooleanOperatorNode(lineNumber);
+            case "Expression":
+                return new ExpressionNode(lineNumber);
+            case "Term":
+                return new TermNode(lineNumber);
+            case "Factor":
+                return new FactorNode(lineNumber);
+            default:
+                return null;
+        }
+    }
+}
+
+class Grammar {
+    static final String EndOfInputTerminal = "$";
+    // Shift:  -
+    // Reduce: +
+    // Accept: ActionAccept
+    // Error:  0
+    static final int ActionAccept = 127;
+    private static final String[] Symbols = {
+            ";",
+            "int",
+            "ID",
+            "=",
+            "NUMBER",
+            "real",
+            "{",
+            "}",
+            "if",
+            "(",
+            ")",
+            "then",
+            "else",
+            "<",
+            ">",
+            "<=",
+            ">=",
+            "==",
+            "+",
+            "-",
+            "*",
+            "/",
+            EndOfInputTerminal,
+            "Start",
+            "Program",
+            "Declarations",
+            "Declaration",
+            "Statement",
+            "Block",
+            "Statements",
+            "If",
+            "Assignment",
+            "BooleanExpression",
+            "BooleanOperator",
+            "Expression",
+            "Term",
+            "Factor",
+    };
+    private static final Map<String, Integer> SymbolsMap =
+            new HashMap<String, Integer>() {
+                {
+                    int i = 0;
+                    for (String key : Symbols)
+                        put(key, i++);
+                }
+            };
+    private static final String[] Terminals = {
+            ";",
+            "int",
+            "=",
+            "real",
+            "{",
+            "}",
+            "if",
+            "(",
+            ")",
+            "then",
+            "else",
+            "<",
+            ">",
+            "<=",
+            ">=",
+            "==",
+            "+",
+            "-",
+            "*",
+            "/",
+            EndOfInputTerminal,
+    };
+    private static final int[][] ParseTable = {
+            {0, -4, 0, 0, 0, -5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ActionAccept, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, -7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0},
+            {-8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -17, 0, 0, 0, -18, 11, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 15, 11, 13, 14, 0, 0, 0, 0, 0},
+            {0, -4, 0, 0, 0, -5, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, -20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, -21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, -22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -17, 0, 0, 0, -18, 11, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 15, 23, 13, 14, 0, 0, 0, 0, 0},
+            {0, 0, 6, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 7, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 8, 0, 0, 0, 8, 8, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, -24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, -25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -17, 0, 0, 0, -18, 11, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 15, 26, 13, 14, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, -27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, -28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -33, 0, -34, 0, 0, 0, 0, -35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 0, 30, 31, 32},
+            {0, 0, -39, 0, -40, 0, 0, 0, 0, -41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36, 37, 38},
+            {0, 0, 0, 0, 0, 0, 0, -42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -47, -48, -49, -50, -51, -45, -46, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 22, 22, 22, 22, 22, 22, -52, -53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 25, 25, 25, 25, 25, 25, 25, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 26, 26, 26, 26, 26, 26, 26, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 27, 27, 27, 27, 27, 27, 27, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 55, 56},
+            {-60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 22, -63, -64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 25, 25, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 26, 26, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 27, 27, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 65, 55, 56},
+            {0, 0, 9, 0, 0, 0, 9, 9, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 55, 56},
+            {0, 0, -33, 0, -34, 0, 0, 0, 0, -35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 68, 32},
+            {0, 0, -33, 0, -34, 0, 0, 0, 0, -35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 69, 32},
+            {0, 0, 15, 0, 15, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 16, 0, 16, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 17, 0, 17, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 18, 0, 18, 0, 0, 0, 0, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 19, 0, 19, 0, 0, 0, 0, 19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -33, 0, -34, 0, 0, 0, 0, -35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 70},
+            {0, 0, -33, 0, -34, 0, 0, 0, 0, -35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 71},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -72, 0, 0, 0, 0, 0, 0, 0, -73, -74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 22, 22, -75, -76, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 25, 25, 25, 25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 0, 0, 0, 0, 0, 0, 0, 26, 26, 26, 26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27, 0, 0, 0, 0, 0, 0, 0, 27, 27, 27, 27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 55, 56},
+            {0, 0, 13, 0, 0, 0, 13, 13, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -39, 0, -40, 0, 0, 0, 0, -41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 78, 38},
+            {0, 0, -39, 0, -40, 0, 0, 0, 0, -41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 79, 38},
+            {0, 0, -39, 0, -40, 0, 0, 0, 0, -41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80},
+            {0, 0, -39, 0, -40, 0, 0, 0, 0, -41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 81},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -82, 0, 0, 0, 0, 0, 0, 0, -73, -74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -88, 0, 0, 0, -89, 0, -87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 83, 86, 0, 84, 85, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, -73, -74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, 20, 20, 20, 20, 20, -52, -53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 21, 21, 21, 21, 21, 21, -52, -53, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 23, 23, 23, 23, 23, 23, 23, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 24, 24, 24, 24, 24, 24, 24, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 28, 28, 28, 28, 28, 28, 28, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 56},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 91, 56},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 92},
+            {0, 0, -57, 0, -58, 0, 0, 0, 0, -59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 93},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -94, 0, 0, 0, 0, 0, 0, 0, -73, -74, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 20, -63, -64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 21, -63, -64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 23, 23, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 24, 24, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 28, 28, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -95, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, -96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, -97, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -17, 0, 0, 0, -18, 11, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 15, 98, 13, 14, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 20, 20, -75, -76, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 0, 21, 21, -75, -76, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 23, 23, 23, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 24, 24, 24, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 28, 28, 28, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -17, 0, 0, 0, -18, 0, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 99, 15, 0, 13, 14, 0, 0, 0, 0, 0},
+            {0, 0, -33, 0, -34, 0, 0, 0, 0, -35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 30, 31, 32},
+            {0, 0, -39, 0, -40, 0, 0, 0, 0, -41, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 101, 37, 38},
+            {0, 0, 0, 0, 0, 0, 0, -102, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 12, 0, 0, 0, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -103, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {-104, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -61, -62, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -88, 0, 0, 0, -89, 0, -87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 106, 86, 0, 84, 85, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -107, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, -88, 0, 0, 0, -89, 0, -87, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 108, 86, 0, 84, 85, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    };
+
+    static boolean isTerminal(String symbol) {
+        return Arrays.asList(Terminals).contains(symbol);
+    }
+
+    static int getSymbolCode(String symbol) {
+        return SymbolsMap.get(symbol);
+    }
+
+    static int getActionCode(int state, String symbol) {
+        return getActionCode(state, getSymbolCode(symbol));
+    }
+
+    static int getActionCode(int state, int symbol) {
+        return ParseTable[state][symbol];
+    }
+}
+
+abstract class Node {
+    protected final int lineNumber;
+    protected final List<Node> children;
+    protected boolean isInteger;
+    protected boolean isDouble;
+    protected boolean isBoolean;
+    protected int integerValue;
+    protected double doubleValue;
+    protected boolean booleanValue;
+
+    Node(int lineNumber) {
+        this.lineNumber = lineNumber;
+        children = new ArrayList<Node>();
+        isInteger = false;
+        isDouble = false;
+        isBoolean = false;
+    }
+
+    void addChild(Node child) {
+        children.add(0, child);
+    }
+
+    int getLineNumber() {
+        return lineNumber;
+    }
+
+    void evaluate(SymbolTable table) {
+        for (Node child : children)
+            child.evaluate(table);
+    }
+}
+
+class StartNode extends Node {
+    StartNode(int lineNumber) {
+        super(lineNumber);
+    }
+}
+
+class ProgramNode extends Node {
+    ProgramNode(int lineNumber) {
+        super(lineNumber);
+    }
+}
+
+class DeclarationsNode extends Node {
+    DeclarationsNode(int lineNumber) {
+        super(lineNumber);
+    }
+}
+
+class DeclarationNode extends Node {
+    DeclarationNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    @Override
+    void evaluate(SymbolTable table) {
+        for (Node child : children)
+            child.evaluate(table);
+        final String declaredType = ((TerminalNode) children.get(0)).getLexeme();
+        final String name = ((IdentifierNode) children.get(1)).getName();
+        if (declaredType.equals("int")) {
+            table.put(name, new IntegerIdentifier(name, table));
+        } else if (declaredType.equals("real")) {
+            table.put(name, new DoubleIdentifier(name, table));
+        }
+        final NumberNode numberNode = (NumberNode) children.get(3);
+        if (numberNode.isInteger)
+            table.get(name).setValue(numberNode.integerValue, numberNode.getLineNumber());
+        else if (numberNode.isDouble)
+            table.get(name).setValue(numberNode.doubleValue, numberNode.getLineNumber());
+    }
+}
+
+class StatementNode extends Node {
+    StatementNode(int lineNumber) {
+        super(lineNumber);
+    }
+}
+
+class BlockNode extends Node {
+    BlockNode(int lineNumber) {
+        super(lineNumber);
+    }
+}
+
+class StatementsNode extends Node {
+    StatementsNode(int lineNumber) {
+        super(lineNumber);
+    }
+}
+
+class IfNode extends Node {
+    IfNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    @Override
+    void evaluate(SymbolTable table) {
+        final BooleanExpressionNode booleanExpressionNode = (BooleanExpressionNode) children.get(2);
+        booleanExpressionNode.evaluate(table);
+        if (booleanExpressionNode.isBoolean)
+            if (booleanExpressionNode.booleanValue)
+                children.get(5).evaluate(table);
+            else
+                children.get(7).evaluate(table);
+    }
+}
+
+class AssignmentNode extends Node {
+    AssignmentNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    @Override
+    void evaluate(SymbolTable table) {
+        for (Node child : children)
+            child.evaluate(table);
+        final String name = ((IdentifierNode) children.get(0)).getName();
+        final ExpressionNode expressionNode = (ExpressionNode) children.get(2);
+        if (expressionNode.isInteger)
+            table.get(name).setValue(expressionNode.integerValue, expressionNode.getLineNumber());
+        else if (expressionNode.isDouble)
+            table.get(name).setValue(expressionNode.doubleValue, expressionNode.getLineNumber());
+    }
+}
+
+class BooleanExpressionNode extends Node {
+    BooleanExpressionNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    @Override
+    void evaluate(SymbolTable table) {
+        for (Node child : children)
+            child.evaluate(table);
+        final ExpressionNode expressionNode1 = (ExpressionNode) children.get(0);
+        final String operator = ((BooleanOperatorNode) children.get(1)).getOperator();
+        final ExpressionNode expressionNode2 = (ExpressionNode) children.get(2);
+        switch (operator) {
+            case "<":
+                if (expressionNode1.isInteger && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue < expressionNode2.integerValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue < expressionNode2.doubleValue;
+                } else if (expressionNode1.isInteger && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue < expressionNode2.doubleValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue < expressionNode2.integerValue;
+                }
+                break;
+            case ">":
+                if (expressionNode1.isInteger && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue > expressionNode2.integerValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue > expressionNode2.doubleValue;
+                } else if (expressionNode1.isInteger && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue > expressionNode2.doubleValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue > expressionNode2.integerValue;
+                }
+                break;
+            case "<=":
+                if (expressionNode1.isInteger && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue <= expressionNode2.integerValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue <= expressionNode2.doubleValue;
+                } else if (expressionNode1.isInteger && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue <= expressionNode2.doubleValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue <= expressionNode2.integerValue;
+                }
+                break;
+            case ">=":
+                if (expressionNode1.isInteger && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue >= expressionNode2.integerValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue >= expressionNode2.doubleValue;
+                } else if (expressionNode1.isInteger && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue >= expressionNode2.doubleValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue >= expressionNode2.integerValue;
+                }
+                break;
+            case "==":
+                if (expressionNode1.isInteger && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue == expressionNode2.integerValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue == expressionNode2.doubleValue;
+                } else if (expressionNode1.isInteger && expressionNode2.isDouble) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.integerValue == expressionNode2.doubleValue;
+                } else if (expressionNode1.isDouble && expressionNode2.isInteger) {
+                    isBoolean = true;
+                    booleanValue = expressionNode1.doubleValue == expressionNode2.integerValue;
+                }
+                break;
+        }
+    }
+}
+
+class BooleanOperatorNode extends Node {
+    BooleanOperatorNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    String getOperator() {
+        return ((TerminalNode) children.get(0)).getLexeme();
+    }
+}
+
+class ExpressionNode extends Node {
+    ExpressionNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    @Override
+    void evaluate(SymbolTable table) {
+        for (Node child : children)
+            child.evaluate(table);
+        if (children.size() == 1) {
+            // Expression -> Term
+            final TermNode termNode = (TermNode) children.get(0);
+            if (termNode.isInteger) {
+                isInteger = true;
+                integerValue = termNode.integerValue;
+            } else if (termNode.isDouble) {
+                isDouble = true;
+                doubleValue = termNode.doubleValue;
+            }
+        } else if (children.size() == 3) {
+            // Expression -> Expression + Term
+            // Expression -> Expression - Term
+            final ExpressionNode expressionNode = (ExpressionNode) children.get(0);
+            final String operator = ((TerminalNode) children.get(1)).getLexeme();
+            final TermNode termNode = (TermNode) children.get(2);
+            switch (operator) {
+                case "+":
+                    if (expressionNode.isInteger && termNode.isInteger) {
+                        isInteger = true;
+                        integerValue = expressionNode.integerValue + termNode.integerValue;
+                    } else if (expressionNode.isDouble && termNode.isDouble) {
+                        isDouble = true;
+                        doubleValue = expressionNode.doubleValue + termNode.doubleValue;
+                    } else if (expressionNode.isInteger && termNode.isDouble) {
+                        isDouble = true;
+                        doubleValue = (double) expressionNode.integerValue + termNode.doubleValue;
+                    } else if (expressionNode.isDouble && termNode.isInteger) {
+                        isDouble = true;
+                        doubleValue = expressionNode.doubleValue + (double) termNode.integerValue;
+                    }
+                    break;
+                case "-":
+                    if (expressionNode.isInteger && termNode.isInteger) {
+                        isInteger = true;
+                        integerValue = expressionNode.integerValue - termNode.integerValue;
+                    } else if (expressionNode.isDouble && termNode.isDouble) {
+                        isDouble = true;
+                        doubleValue = expressionNode.doubleValue - termNode.doubleValue;
+                    } else if (expressionNode.isInteger && termNode.isDouble) {
+                        isDouble = true;
+                        doubleValue = (double) expressionNode.integerValue - termNode.doubleValue;
+                    } else if (expressionNode.isDouble && termNode.isInteger) {
+                        isDouble = true;
+                        doubleValue = expressionNode.doubleValue - (double) termNode.integerValue;
+                    }
+                    break;
+            }
+        }
+    }
+}
+
+class TermNode extends ExpressionNode {
+    TermNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    @Override
+    void evaluate(SymbolTable table) {
+        for (Node child : children)
+            child.evaluate(table);
+        if (children.size() == 1) {
+            // Term -> Factor
+            final FactorNode factorNode = (FactorNode) children.get(0);
+            if (factorNode.isInteger) {
+                isInteger = true;
+                integerValue = factorNode.integerValue;
+            } else if (factorNode.isDouble) {
+                isDouble = true;
+                doubleValue = factorNode.doubleValue;
+            }
+        } else if (children.size() == 3) {
+            // Term -> Term * Factor
+            // Term -> Term / Factor
+            final TermNode termNode = (TermNode) children.get(0);
+            final String operator = ((TerminalNode) children.get(1)).getLexeme();
+            final FactorNode factorNode = (FactorNode) children.get(2);
+            switch (operator) {
+                case "*":
+                    if (termNode.isInteger && factorNode.isInteger) {
+                        isInteger = true;
+                        integerValue = termNode.integerValue * factorNode.integerValue;
+                    } else if (termNode.isDouble && factorNode.isDouble) {
+                        isDouble = true;
+                        doubleValue = termNode.doubleValue * factorNode.doubleValue;
+                    } else if (termNode.isInteger && factorNode.isDouble) {
+                        isDouble = true;
+                        doubleValue = (double) termNode.integerValue * factorNode.doubleValue;
+                    } else if (termNode.isDouble && factorNode.isInteger) {
+                        isDouble = true;
+                        doubleValue = termNode.doubleValue * (double) factorNode.integerValue;
+                    }
+                    break;
+                case "/":
+                    if (termNode.isInteger && factorNode.isInteger) {
+                        isInteger = true;
+                        if (factorNode.integerValue == 0) {
+                            table.error("error message:line " + lineNumber + ",division by zero");
+                            integerValue = termNode.integerValue;
+                        } else
+                            integerValue = termNode.integerValue / factorNode.integerValue;
+                    } else if (termNode.isDouble && factorNode.isDouble) {
+                        isDouble = true;
+                        if (factorNode.doubleValue == 0) {
+                            table.error("error message:line " + lineNumber + ",division by zero");
+                            doubleValue = termNode.doubleValue;
+                        } else
+                            doubleValue = termNode.doubleValue / factorNode.doubleValue;
+                    } else if (termNode.isInteger && factorNode.isDouble) {
+                        isDouble = true;
+                        if (factorNode.doubleValue == 0) {
+                            table.error("error message:line " + lineNumber + ",division by zero");
+                            doubleValue = (double) termNode.integerValue;
+                        } else
+                            doubleValue = (double) termNode.integerValue / factorNode.doubleValue;
+                    } else if (termNode.isDouble && factorNode.isInteger) {
+                        isDouble = true;
+                        if (factorNode.integerValue == 0) {
+                            table.error("error message:line " + lineNumber + ",division by zero");
+                            doubleValue = termNode.doubleValue;
+                        } else
+                            doubleValue = termNode.doubleValue / (double) factorNode.integerValue;
+                    }
+                    break;
+            }
+        }
+    }
+}
+
+class FactorNode extends TermNode {
+    FactorNode(int lineNumber) {
+        super(lineNumber);
+    }
+
+    @Override
+    void evaluate(SymbolTable table) {
+        for (Node child : children)
+            child.evaluate(table);
+        if (children.size() == 1) {
+            if (children.get(0) instanceof IdentifierNode) {
+                // Factor -> ID
+                final IdentifierNode identifierNode = (IdentifierNode) children.get(0);
+                final Identifier identifier = table.get(identifierNode.name);
+                if (identifier.isInteger()) {
+                    isInteger = true;
+                    integerValue = identifier.integerValue();
+                } else if (identifier.isDouble()) {
+                    isDouble = true;
+                    doubleValue = identifier.doubleValue();
+                }
+            } else if (children.get(0) instanceof NumberNode) {
+                // Factor -> NUMBER
+                final NumberNode numberNode = (NumberNode) children.get(0);
+                if (numberNode.isInteger) {
+                    isInteger = true;
+                    integerValue = numberNode.integerValue;
+                } else if (numberNode.isDouble) {
+                    isDouble = true;
+                    doubleValue = numberNode.doubleValue;
+                }
+            }
+        } else if (children.size() == 3) {
+            // Factor -> ( Expression )
+            final ExpressionNode expressionNode = (ExpressionNode) children.get(0);
+            if (expressionNode.isInteger) {
+                isInteger = true;
+                integerValue = expressionNode.integerValue;
+            } else if (expressionNode.isDouble) {
+                isDouble = true;
+                doubleValue = expressionNode.doubleValue;
+            }
+        }
+    }
+}
+
+class TerminalNode extends Node {
+    protected final String lexeme;
+
+    TerminalNode(int lineNumber, String lexeme) {
+        super(lineNumber);
+        this.lexeme = lexeme;
+    }
+
+    String getLexeme() {
+        return lexeme;
+    }
+}
+
+class IdentifierNode extends Node {
+    protected final String name;
+
+    IdentifierNode(int lineNumber, String name) {
+        super(lineNumber);
+        this.name = name;
+    }
+
+    String getName() {
+        return name;
+    }
+}
+
+abstract class NumberNode extends Node {
+    NumberNode(int lineNumber) {
+        super(lineNumber);
+    }
+}
+
+class IntegerNode extends NumberNode {
+    IntegerNode(int lineNumber, String value) {
+        super(lineNumber);
+        isInteger = true;
+        integerValue = Integer.parseInt(value);
+    }
+}
+
+class DoubleNode extends NumberNode {
+    DoubleNode(int lineNumber, String value) {
+        super(lineNumber);
+        isDouble = true;
+        doubleValue = Double.parseDouble(value);
+    }
+}
+
+abstract class Identifier {
+    protected String name;
+
+    String getName() {
+        return name;
+    }
+
+    abstract boolean isInteger();
+
+    abstract int integerValue();
+
+    abstract void setValue(int value, int lineNumber);
+
+    abstract boolean isDouble();
+
+    abstract double doubleValue();
+
+    abstract String getValue();
+
+    abstract void setValue(double value, int lineNumber);
+}
+
+class IntegerIdentifier extends Identifier {
+    private final SymbolTable table;
+    private int value;
+
+    IntegerIdentifier(String name, SymbolTable table) {
+        this.name = name;
+        this.table = table;
+    }
+
+    @Override
+    boolean isInteger() {
+        return true;
+    }
+
+    @Override
+    int integerValue() {
+        return value;
+    }
+
+    @Override
+    void setValue(int value, int lineNumber) {
+        this.value = value;
+    }
+
+    @Override
+    boolean isDouble() {
+        return false;
+    }
+
+    @Override
+    double doubleValue() {
+        return (double) value;
+    }
+
+    @Override
+    String getValue() {
+        return String.valueOf(value);
+    }
+
+    @Override
+    void setValue(double value, int lineNumber) {
+        table.error("error message:line " + lineNumber + ",realnum can not be translated into int type");
+        this.value = (int) value;
+    }
+}
+
+class DoubleIdentifier extends Identifier {
+    private double value;
+
+    DoubleIdentifier(String name, SymbolTable table) {
+        this.name = name;
+    }
+
+    @Override
+    boolean isInteger() {
+        return false;
+    }
+
+    @Override
+    int integerValue() {
+        return (int) value;
+    }
+
+    @Override
+    void setValue(int value, int lineNumber) {
+        this.value = value;
+    }
+
+    @Override
+    boolean isDouble() {
+        return true;
+    }
+
+    @Override
+    double doubleValue() {
+        return value;
+    }
+
+    @Override
+    String getValue() {
+        return String.valueOf(value);
+    }
+
+    @Override
+    void setValue(double value, int lineNumber) {
+        this.value = value;
+    }
+}
+
+class SymbolTable {
+    private final Map<String, Identifier> table;
+    private boolean hasError;
+
+    SymbolTable() {
+        table = new LinkedHashMap<String, Identifier>();
+        hasError = false;
+    }
+
+    void put(String name, Identifier identifier) {
+        table.put(name, identifier);
+    }
+
+    Identifier get(String name) {
+        return table.get(name);
+    }
+
+    void print() {
+        Iterator<Map.Entry<String, Identifier>> iterator = table.entrySet().iterator();
+        if (iterator.hasNext()) {
+            final Identifier identifier = iterator.next().getValue();
+            System.out.printf("%s: %s", identifier.getName(), identifier.getValue());
+        }
+        while (iterator.hasNext()) {
+            final Identifier identifier = iterator.next().getValue();
+            System.out.printf("\n%s: %s", identifier.getName(), identifier.getValue());
+        }
+    }
+
+    boolean hasError() {
+        return hasError;
+    }
+
+    void error(String message) {
+        if (hasError)
+            System.out.print("\n");
+        else
+            hasError = true;
+        System.out.print(message);
+    }
+}

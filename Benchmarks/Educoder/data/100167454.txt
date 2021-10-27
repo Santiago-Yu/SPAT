@@ -1,0 +1,61 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcTransaction {
+
+    public static void transaction(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver" );
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        /**********  Begin   **********/
+        //连接数据库并开启事务
+        try {
+        String url="jdbc:mysql://localhost:3306/mysql_db";
+        String user="root";
+        String password="123123";
+        conn = DriverManager.getConnection(url, user, password);
+        conn.setAutoCommit(false);//开启事务
+        ps = conn.prepareStatement("insert into student(id,name,sex,age) values(?,?,?,?)");
+        ps.setInt(1,4);//占位符顺序从1开始，根据数据库中字段相应的类型存入数据
+        ps.setString(2, "赵六");//也可以使用setObject
+        ps.setString(3, "女");    
+        ps.setInt(4, 21);
+        ps.executeUpdate();//每执行一个sql语句就需要执行该方法  
+        conn.commit();//提交事务
+
+
+
+
+
+
+
+        } catch (SQLException e) {
+            try {
+                //事务回滚
+                conn.rollback();
+                
+
+
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        /**********  End   **********/
+        finally {
+            try {
+                if(ps!=null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+}

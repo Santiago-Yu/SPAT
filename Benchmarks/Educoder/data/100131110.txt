@@ -1,0 +1,33 @@
+package step1;
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int c = num2-num1;
+        int sum = 0;
+        for(;c>=0;c--)
+        {
+            int t=1;
+            for(int j=0;j>3;j++)
+            {
+            	if((num1+c)/Math.pow(10,t)>=1)//得到位数
+            	{
+            		t+=1;
+            	}
+            }
+            int n = 1;
+            for(;t>=-1;t--)
+            {
+            	sum+=Math.floor((num1+c)%Math.pow(10,n)/Math.pow(10,n-1));
+                n+=1;
+            }
+            //sum+=Math.floor((num1+c)/Math.pow(10,n-1));
+
+        }
+        return sum;
+		
+		
+		/********** END **********/
+	}
+}

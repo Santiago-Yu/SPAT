@@ -1,0 +1,45 @@
+package step1;
+
+import java.util.Scanner;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+        System.out.println(circle.getAcreage());
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape {
+	abstract double getAcreage();
+}
+
+class Circle extends Shape {
+    private double radius;
+	private double PI= 3.1415926;
+	public Circle(double r){
+		radius = r;
+	}
+	double getAcreage(){
+		return PI*radius*radius;
+	}
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+	public Rectangle(double l,double w){
+		length = l;
+		width = w;
+	}
+	double getAcreage(){
+		return length * width;
+	}
+}
+/********** End *********/

@@ -1,0 +1,38 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int x,t,i,a,b,c,d=0;
+        if(num1<num2)
+        {
+        	t=num2;
+            x=num1;
+        }
+        else{
+        	t=num1;
+            x=num2;
+        }
+        for(i=x;i<=t;i++){
+            if(i>=100){
+            	a=i%10;
+                b=i%100/10;
+                c=i/100;
+            }
+            else
+            {
+            	a=i/10;
+                b=i%10;
+                c=0;
+            }
+            
+            d=a+b+c+d;
+        }
+        //System.out.println(d);
+		return d;
+		
+		/********** END **********/
+	}
+}

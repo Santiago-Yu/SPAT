@@ -1,0 +1,38 @@
+package step2;
+import java.io.*;
+//import java.util.Scanner;
+
+public class CatchException {
+    public static void main(String[] args) throws IOException{
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        int numberOfLetter = 0;
+            int numberOfSpace = 0;
+            int numberOfDigit = 0;
+            int numberOfOther = 0;
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+        try {
+            
+           // Scanner scanner = new Scanner();
+            str = reader.readLine();
+            for (int i = 0; i < str.length(); i++) {
+                if (Character.isLetter(str.charAt(i))) {
+                    numberOfLetter++;
+                } else if (Character.isSpaceChar(str.charAt(i))) {
+                    numberOfSpace++;
+                } else if (Character.isDigit(str.charAt(i))) {
+                    numberOfDigit++;
+                } else {
+                    numberOfOther++;
+                }
+            }
+            System.out.print("letter=" + numberOfLetter + ",space=" + numberOfSpace +
+                    ",number=" + numberOfDigit + ",other=" + numberOfOther);
+        }
+        catch(IOException e) {
+            return;
+        }
+        /********** End *********/
+    }
+}

@@ -1,0 +1,53 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	static int num = 0;
+    public void showDirStructure(File dir)	{
+       if(num == 0)
+        {
+            System.out.println("+--" + dir.getName());
+        }
+        num ++;
+        File[] files = dir.listFiles();
+        int length = files.length;
+        for (File file : files)
+        {
+            length -= 1;
+            if (file.isDirectory())
+            {
+                String s1 = "  ";
+                for (int j = 0; j < num - 1; j++)
+                {
+                    s1 += "  ";
+                }
+                System.out.println(s1 + "+--" + file.getName());
+                showDirStructure(file);
+                if(length == 0)
+                {
+                    num--;
+                }
+            }else{
+                String s1 = "  ";
+                for (int j = 0; j < num - 1; j++)
+                {
+                    s1 += "  ";
+                }
+                System.out.println(s1 + "--" + file.getName());
+                if(length == 0)
+                {
+                    num--;
+                }
+            }
+        }
+
+
+	}
+	
+
+
+	/********** END **********/
+}

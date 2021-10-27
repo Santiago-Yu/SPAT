@@ -1,0 +1,28 @@
+package Q201;
+import java.util.*;
+public class Main {
+	public static boolean isHappy(int num) {
+		int t = num;
+		while(true) {
+			t = getNum(t);
+			if(t == 1)	return true;
+			else if(t == 89)	return false;
+		}
+	}
+	public static int getNum(int n) {
+		int res=0;
+		while(n > 0) {
+			res += (n%10) * (n%10);
+			n = n / 10;
+		}
+		return res;
+	}
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int x=sc.nextInt();
+		if(isHappy(x)==true)
+			System.out.print("YES");
+		else
+			System.out.print("NO");
+	}
+}

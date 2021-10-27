@@ -1,0 +1,23 @@
+package step1;
+import java.util.Arrays;
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+int[] d = new int[temperatures.length];
+for(int i = 0;i<temperatures.length;i++){
+    d[i] = temperatures[i].intValue();
+}
+		int[] arr=new int[d.length];
+		for(int n=0;n<d.length;n++){
+        for(int m=n+1;m<d.length;m++){
+        if(d[n]<d[m]){
+            arr[n]=m-n;
+            break;
+        }
+        }
+        }
+          
+        return arr;
+		/********** END **********/
+	}
+}

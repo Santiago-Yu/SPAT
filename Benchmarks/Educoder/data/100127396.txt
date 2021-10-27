@@ -1,0 +1,37 @@
+package step2;
+
+public class Circle extends Point {
+	private double radius;
+
+	/*********begin*********/
+	public Circle(){
+		this(10,0,0);
+	}//编写两个构造方法，无参函数中的半径默认为10，x和y均为0;
+    public Circle(double radius,double x,double y){
+		super(x,y);
+		this.radius=radius;
+		System.out.println("Circle constructor:"+this.toString());
+	}//在构造方法中输出Circle constructor:  加上 toString方法输出的结果
+	
+	
+	public String toString(){
+		return "Center="+super.toString()+"radius="+this.radius;
+	}//编写toString方法
+	
+	/*********end*********/
+
+	public static void main(String[] args) {
+		Circle cir1, cir2;
+
+		System.out.println("第一个圆的信息：");
+		/*********begin*********/
+		cir1=new Circle();//构造第一个圆cir1
+
+		
+		System.out.println("第二个圆的信息：");
+		cir2=new Circle(5,10,10);//构造第二个圆cir2，x为5，y为10，半径为10
+			
+		/*********end*********/
+
+	}
+}

@@ -1,0 +1,44 @@
+package step3;
+
+import java.util.Scanner;
+
+public class TestJava20_6 {
+	static final Scanner sc=new Scanner(System.in);
+	public void print() {
+		Scanner s=new Scanner(System.in);
+		System.out.println("请输入菱形上半部的行数：");
+		int n=s.nextInt();
+		 //菱形上半部分比下半部分要多一行
+		int n2=n-1;
+
+		if((n>3||n==3)&&(n%2!=0)){
+		for(int i=1;i<=n;i++){//菱形上半部分需要的行数
+		for(int k=n;k>i;k--){//菱形上半部分三角形前的空格数
+		System.out.print(" ");
+		}
+		for(int j=0;j<2*i-1;j++){//每行的*个数
+		System.out.print("*");
+		}
+		System.out.print("\n");
+		}
+
+
+		for(int i=1;i<n2+1;i++){//菱形下半部分需要的行数
+		for(int k=0;k<i;k++){//菱形下半部分三角形前的空格数
+		System.out.print(" ");
+		}
+		for(int j=n2*2;j>2*i-1;j--){//每行的*个数
+		System.out.print("*");
+		}
+		System.out.print("\n");
+		}
+		}
+		else{
+		System.out.println("你输入的数无法构成一个菱形");
+		}
+
+		}
+
+
+		}
+		

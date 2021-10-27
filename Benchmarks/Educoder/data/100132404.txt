@@ -1,0 +1,24 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		/********** BEGIN **********/
+		int m=sc.nextInt(), n=sc.nextInt();
+		//边长、个数
+		int j=0, k=0, temp = 1;
+		while(temp <= n) {
+			if(n%temp == 0) 	j = n/temp;
+			if(m%j == 0) {
+				k = (n*m)/(j*j);
+				break;
+			}
+			temp++;
+		}
+		System.out.println(j);
+		System.out.println(k);
+		/********** END **********/
+	}
+}

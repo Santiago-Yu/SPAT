@@ -1,0 +1,59 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String result = "";
+		int monthsday;
+		int[] monthDays = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		int[] dates = new int[3];
+		String[] date = releaseDate.split("-");
+		for(int i=0;i<3;i++){
+			dates[i] = Integer.parseInt(date[i]);
+		}
+		
+		for(int i=1;i<=day;i++){
+			dates[2]++;
+			
+			//闰年
+			if((((dates[0]) % 4 == 0 && (dates[0]) % 100 != 0) || ((dates[0]) % 400 == 0))){
+				//二月份
+				if(dates[1]==2){
+					monthsday = 29;
+				}else{
+					monthsday = monthDays[dates[1]];
+				}
+			}else{
+				monthsday = monthDays[dates[1]];
+			}
+			
+			if(dates[2]>monthsday){
+				dates[2] -= monthsday;
+				dates[1]++;
+			}
+			if(dates[1]>12){
+				dates[1] -= 12;
+				dates[0]++;
+			}
+		}
+	    result = result + String.format("%04d", dates[0]) + "-";
+	    result = result + String.format("%02d", dates[1]) + "-";
+	    result = result + String.format("%02d", dates[2]);
+
+	    return result;
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,61 @@
+package step3;
+import java.util.List;
+import java.util.ArrayList;
+public class Task {
+    
+	public int getBlockNum(int n,int m,char[][] arr){
+		List<Integer> row = new ArrayList<Integer>();
+		List<Integer> column = new ArrayList<Integer>();
+		int count = 0;
+		for(int i = 0;i<n;i++) {
+			for(int j = 0;j<m;j++){
+				if(arr[i][j]=='x') {
+					count++;
+					row.add(i);
+					column.add(j);
+					while(!row.isEmpty())
+					for(int q = 0;q<row.size();q++) {
+						int x = row.get(q);
+						int y = column.get(q);
+						row.remove(q);
+						column.remove(q);
+						arr[x][y]='*';
+						if(y<m-1&&arr[x][y+1]=='x')
+						{
+							row.add(x);
+							column.add(y+1);
+							
+						}
+						if(y>=1&&x<n-1&&arr[x+1][y-1]=='x')
+						{
+							row.add(x+1);
+							column.add(y-1);
+							
+						}
+						if(x<n-1&&arr[x+1][y]=='x')
+						{
+							row.add(x+1);
+							column.add(y);
+							
+						}
+						if(y<m-1&&x<n-1&&arr[x+1][y+1]=='x')
+						{
+							row.add(x+1);
+							column.add(y+1);
+							
+						}
+						if(y<m-1&&x>0&&arr[x-1][y+1]=='x')
+						{
+							row.add(x-1);
+							column.add(y+1);
+							
+						}
+					}
+				}
+			}
+		}
+		
+		return count;
+		
+	}
+}

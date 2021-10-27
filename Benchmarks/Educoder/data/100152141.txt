@@ -1,0 +1,111 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Task {
+	node[] tree = null;
+	int n = 0;
+	int mod = 1000000007;
+	List<Integer> arr = null;
+	
+	public node build(int i, int l, int r) {
+		if(l == r) {
+			tree[i] = new node(arr.get(l)*(l+1), arr.get(l)*(n-l), arr.get(l));
+			return tree[i];
+		}
+		int m = (l + r) >> 1;
+		node ltree = build(i*2, l, m);
+		node rtree = build(i*2+1, m+1, r);
+		tree[i] = new node((ltree.l+rtree.l)%mod, (ltree.r+rtree.r)%mod, (ltree.value+rtree.value)%mod);
+		return tree[i];
+	}
+	
+	public node change(int i, int l, int r, int key, int value) {
+		if(l == r) {
+			node temp = new node(value*(l+1), value*(n-l), value);
+			node ans = new node((int)(((long)temp.l-(long)tree[i].l+mod)%mod), 
+					(int)(((long)temp.r-(long)tree[i].r+mod)%mod), 
+					(int)(((long)temp.value-(long)tree[i].value+mod)%mod));
+			tree[i] = temp;
+			return ans;
+		}
+		int m = (l + r) >> 1;
+		node temp;
+		if(key <= m) {
+			temp = change(i*2, l, m, key, value);
+		}
+		else {
+			temp = change(i*2+1, m+1, r, key, value);
+		}
+		tree[i] = new node((int)(((long)tree[i].l+(long)temp.l+mod)%mod), 
+				(int)(((long)tree[i].r+(long)temp.r+mod)%mod), 
+				(int)(((long)tree[i].value+(long)temp.value+mod)%mod));
+		return temp;
+	}
+	
+	public node get(int i, int l, int r, int x, int y) {
+		if(l == x && r == y) {
+			return tree[i];
+		}
+		int m = (l + r) >> 1;
+		if(y <= m) {
+			return get(i*2, l, m, x, y);
+		}
+		else if(x > m) {
+			return get(i*2+1, m+1, r, x, y);
+		}
+		else {
+			node lnode = get(i*2, l, m, x, m);
+			node rnode = get(i*2+1, m+1, r, m+1, y);
+			return new node((int)(((long)lnode.l+rnode.l+mod)%mod), 
+							(int)(((long)lnode.r+rnode.r+mod)%mod),
+							(int)(((long)lnode.value+rnode.value+mod)%mod));
+		}
+	}
+	
+	public int solve(List<Integer> data, List<Operation> operations) {
+		/********* begin *********/
+		n = data.size();
+		tree = new node[n*3];
+		arr = data;
+		build(1, 0, n-1);
+		int result = 0;
+		for (Operation i : operations) {
+			if(i.op.equals("C")) {
+				change(1, 0, n-1, i.x, i.y);
+			}
+			else if(i.op.equals("L")) {
+				node ans = get(1, 0, n-1, i.x, i.y);
+				result = (int)(((long)result + (long)ans.l - (long)i.x*(long)ans.value+mod)%mod);
+			}
+			else {
+				node ans = get(1, 0, n-1, i.x, i.y);
+				result = (int)(((long)result + (long)ans.r - (long)(n-1-i.y)*(long)ans.value+mod)%mod);
+			}
+		}	
+        while(result < 0){
+        	result += mod;
+        }
+		return result;		
+		/********* end *********/
+	}
+}
+
+class Operation {
+	String op;
+	int x;
+	int y;
+}
+
+class node {
+	public node(int l, int r, int value) {
+		// TODO Auto-generated constructor stub
+		this.l = l;
+		this.r = r;
+		this.value = value;
+	}
+	int l; 
+	int r;
+	int value;
+}

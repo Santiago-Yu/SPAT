@@ -1,0 +1,57 @@
+package step2;
+
+import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/  
+        OutputStream out = null;
+        InputStream out1 = null;
+        try {
+            File f2 =new File("src/step2/input/task.txt");
+            InputStream f3= new FileInputStream(f2);
+            byte[] b1=new byte[8];
+            f3.read(b1);
+            String str1=new String(b1,"UTF-8");
+            System.out.println(str1);
+      
+        	File aaa=new File("src/step2/output");
+			if(!aaa.exists()){
+				aaa.mkdir();
+			}        
+        	String file = "src/step2/output/output.txt";
+            out = new FileOutputStream(file);
+        	String str = "learning practice";
+        	byte[] b = str.getBytes();
+        	out.write(b);
+        	out.flush();
+    	} catch (Exception e) {
+        	e.printStackTrace();
+    	} finally {
+        	if (out != null) {
+            	try {
+                	out.close(); // 释放该输出流
+            	} catch (IOException e) {
+                	e.printStackTrace();
+            	}
+        	}
+            if (out1 != null) {
+            	try {
+                	out1.close(); // 释放该输出流
+            	} catch (IOException e) {
+                	e.printStackTrace();
+            	}
+        	}
+    	}	
+		/********* End *********/
+	}
+	
+}

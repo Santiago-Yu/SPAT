@@ -1,0 +1,24 @@
+#include<stdio.h>
+int main()
+{
+	int a[1005];
+	int t,l=0,i,j,z,k=0;
+	char ch;
+	do{
+		scanf("%d",&a[l]);
+		l++;
+	}while((ch=getchar())!='\n');
+	scanf("%d",&t);
+	for(i=0;i<l-2;i++)
+	{
+		for(j=i+1;j<l-1;j++)
+		{
+			for(z=j+1;z<l;z++)
+			{
+				if((a[i]+a[j]+a[z])<t)
+				k++;
+			}
+		}
+	}
+	printf("%d",k);
+}

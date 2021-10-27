@@ -1,0 +1,29 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    public  void dfs(File dir, int tab) {
+        for (int i = 0; i < tab; i++) {
+            System.out.print(" ");
+        }
+        if (dir.isDirectory()) {
+            System.out.println("+--" + dir.getName());
+            for (File file : dir.listFiles()) {
+                dfs(file, tab + 2);
+            }
+        } else {
+            System.out.println("--" + dir.getName());
+        }
+
+    }
+
+    public  void showDirStructure(File dir) {
+        dfs(dir, 0);
+    }
+
+
+	/********** END **********/
+}

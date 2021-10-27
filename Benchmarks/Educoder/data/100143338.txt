@@ -1,0 +1,35 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		 FileReader fr = new FileReader("src/step4/input/input.txt"); //定义FileReader读取文件
+        int len = 0;    //每次读取的字符数量
+        char[] cbuf = new char[1024];    //每次读取数据的缓冲区
+        FileWriter fw = new FileWriter("src/step4/output/output.txt"); //定义FileWriter写文件
+        while((len = fr.read(cbuf)) != -1){
+            fw.write(cbuf,0,len);
+        }
+        fw.close();    //释放资源 刷新缓冲区
+        fr.close();
+        FileInputStream fs = new FileInputStream("src/step4/input/input.jpg"); //定义文件输入流读取文件信息
+        FileOutputStream fos = new FileOutputStream("src/step4/output/output.jpg");//定义文件输出流写文件
+        int len1 = 0;        //每次读取数据的长度
+        byte[] bys = new byte[1024];    //数据缓冲区
+        while( (len1 = fs.read(bys)) != -1){
+            fos.write(bys, 0, len1);
+        }
+        //释放资源  刷新缓冲区
+        fs.close();
+        fos.close();
+		/********* End *********/		
+	}
+}

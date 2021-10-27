@@ -1,0 +1,45 @@
+package step3;
+
+import java.awt.Point;
+public class Task {
+    final  int DIRECTION[][] = { { 0, 1 }, { 0, -1 }, { -1, 0 }, { 1, 0 } };
+	 boolean[][] mark;
+
+	public  void successiveCount(char[][] ferry, int[] direction, Point location) {
+		// TODO Auto-generated method stub
+		mark[location.y][location.x] = true;
+		try {
+			@SuppressWarnings("unused")
+			char test = ferry[location.y+ direction[1]][location.x + direction[0]];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// TODO Auto-generated catch block
+			return;
+		}
+		if (ferry[location.y][location.x]==ferry[location.y
+				+ direction[1]][location.x + direction[0]]){
+			successiveCount(ferry, direction,  new Point(
+					location.x + direction[0], location.y + direction[1]));
+		}
+		
+	}
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 int count = 0;
+		if (ferry.length == 0)return count;
+		mark = new boolean[ferry.length][ferry[0].length];
+			for (int i = 0; i < ferry.length; i++) {
+				for (int j = 0; j < ferry[0].length; j++) {
+					if (!mark[i][j]&&ferry[i][j]=='+'){
+						for (int j2 = 0; j2 < DIRECTION.length; j2++) {
+							successiveCount(ferry,DIRECTION[j2],new Point(j,i));
+						}
+						mark[i][j] = true;
+						count++;
+					}
+				}
+			}
+		return count;
+         
+      /***********END ***************/
+	 }
+}

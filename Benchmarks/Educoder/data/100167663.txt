@@ -1,0 +1,453 @@
+import java.util.*;
+
+/**
+ * @author Alfred Fu
+ * Created on 2019-05-14 16:54
+ */
+@SuppressWarnings("ALL")
+public class Java_LLParserAnalysis
+{
+    private StringBuffer program = new StringBuffer();
+    private String code;
+
+    private HashMap<Index,ProductionRule> analyzeTable= new HashMap<>();
+    private HashMap<Integer,ProductionRule> rulesMap = new HashMap<>();
+
+    private List<String> nonTerminalSymbolCollection = new ArrayList<>();
+    private List<String> terminalSymbolCollection = new ArrayList<>();
+
+    private List<Word> inputBuffer = new ArrayList<>();
+    private List<ProductionRule> outputBuffer = new ArrayList<>();
+    private Stack<String> stack = new Stack<>();
+
+    private class Index{
+        String nonTerminalSymbol;
+        String terminalSymbol;
+
+        Index(String nonTerminalSymbol, String terminalSymbol) {
+            this.nonTerminalSymbol = nonTerminalSymbol;
+            this.terminalSymbol = terminalSymbol;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Index)) return false;
+            Index index = (Index) o;
+            return Objects.equals(nonTerminalSymbol, index.nonTerminalSymbol) &&
+                    Objects.equals(terminalSymbol, index.terminalSymbol);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(nonTerminalSymbol, terminalSymbol);
+        }
+    }
+    private class ProductionRule{
+        String leftValue;
+        String rightValue;
+
+        ProductionRule(String leftValue, String rightValue) {
+            this.leftValue = leftValue;
+            this.rightValue = rightValue;
+        }
+
+        @Override
+        public String toString() {
+            return "ProductionRule{" +
+                    "leftValue='" + leftValue + '\'' +
+                    ", rightValue='" + rightValue + '\'' +
+                    '}';
+        }
+    }
+    private class Word{
+        String word;
+        Integer lineCount;
+
+        public Word(String word, Integer lineCount) {
+            this.word = word;
+            this.lineCount = lineCount;
+        }
+
+        @Override
+        public String toString() {
+            return "Word{" +
+                    "word='" + word + '\'' +
+                    ", lineCount=" + lineCount +
+                    '}';
+        }
+    }
+
+
+    private void init(){
+
+        nonTerminalSymbolCollection.add("program");
+        nonTerminalSymbolCollection.add("stmt");
+        nonTerminalSymbolCollection.add("compoundstmt");
+        nonTerminalSymbolCollection.add("stmts");
+        nonTerminalSymbolCollection.add("ifstmt");
+        nonTerminalSymbolCollection.add("whilestmt");
+        nonTerminalSymbolCollection.add("assgstmt");
+        nonTerminalSymbolCollection.add("boolexpr");
+        nonTerminalSymbolCollection.add("boolop");
+        nonTerminalSymbolCollection.add("arithexpr");
+        nonTerminalSymbolCollection.add("arithexprprime");
+        nonTerminalSymbolCollection.add("multexpr");
+        nonTerminalSymbolCollection.add("multexprprime");
+        nonTerminalSymbolCollection.add("simpleexpr");
+
+        terminalSymbolCollection.add("{");
+        terminalSymbolCollection.add("}");
+        terminalSymbolCollection.add("if");
+        terminalSymbolCollection.add("(");
+        terminalSymbolCollection.add(")");
+        terminalSymbolCollection.add("then");
+        terminalSymbolCollection.add("else");
+        terminalSymbolCollection.add("while");
+        terminalSymbolCollection.add("ID");
+        terminalSymbolCollection.add("=");
+        terminalSymbolCollection.add(";");
+        terminalSymbolCollection.add("<");
+        terminalSymbolCollection.add(">");
+        terminalSymbolCollection.add("<=");
+        terminalSymbolCollection.add(">=");
+        terminalSymbolCollection.add("==");
+        terminalSymbolCollection.add("+");
+        terminalSymbolCollection.add("-");
+        terminalSymbolCollection.add("*");
+        terminalSymbolCollection.add("/");
+        terminalSymbolCollection.add("NUM");
+        terminalSymbolCollection.add("\0");
+
+        rulesMap.put(  1  ,new ProductionRule("program","compoundstmt"));
+        rulesMap.put(   2 ,new ProductionRule("stmt","ifstmt"));
+        rulesMap.put(   3 ,new ProductionRule("stmt","whilestmt"));
+        rulesMap.put(   4 ,new ProductionRule("stmt","assgstmt"));
+        rulesMap.put(  5  ,new ProductionRule("stmt","compoundstmt"));
+        rulesMap.put(  6  ,new ProductionRule("compoundstmt","{ stmts }"));
+        rulesMap.put(   7 ,new ProductionRule("stmts","stmt stmts"));
+        rulesMap.put(   8 ,new ProductionRule("stmts","\1"));
+        rulesMap.put(   9 ,new ProductionRule("ifstmt","if ( boolexpr ) then stmt else stmt"));
+        rulesMap.put(   10 ,new ProductionRule("whilestmt","while ( boolexpr ) stmt"));
+        rulesMap.put(  11  ,new ProductionRule("assgstmt","ID = arithexpr ;"));
+        rulesMap.put(  12  ,new ProductionRule("boolexpr","arithexpr boolop arithexpr"));
+        rulesMap.put(  13  ,new ProductionRule("boolop","< "));
+        rulesMap.put(  14  ,new ProductionRule("boolop",">"));
+        rulesMap.put(  15  ,new ProductionRule("boolop","<="));
+        rulesMap.put(  16  ,new ProductionRule("boolop",">="));
+        rulesMap.put(  17  ,new ProductionRule("boolop","=="));
+        rulesMap.put(  18  ,new ProductionRule("arithexpr","multexpr arithexprprime"));
+        rulesMap.put(   19 ,new ProductionRule("arithexprprime","+ multexpr arithexprprime"));
+        rulesMap.put(   20 ,new ProductionRule("arithexprprime","- multexpr arithexprprime"));
+        rulesMap.put(   21 ,new ProductionRule("arithexprprime","\1"));
+        rulesMap.put(   22 ,new ProductionRule("multexpr","simpleexpr multexprprime"));
+        rulesMap.put(  23  ,new ProductionRule("multexprprime","* simpleexpr multexprprime"));
+        rulesMap.put(  24  ,new ProductionRule("multexprprime","/ simpleexpr multexprprime"));
+        rulesMap.put(  25  ,new ProductionRule("multexprprime","\1"));
+        rulesMap.put(   26 ,new ProductionRule("simpleexpr","ID"));
+        rulesMap.put(   27 ,new ProductionRule("simpleexpr","NUM"));
+        rulesMap.put(   28 ,new ProductionRule("simpleexpr","( arithexpr )"));
+
+
+
+
+
+        analyzeTable.put(new Index("program","{"),rulesMap.get(1));
+
+        analyzeTable.put(new Index("stmt","{"),rulesMap.get(5));
+        analyzeTable.put(new Index("stmt","if"),rulesMap.get(2));
+        analyzeTable.put(new Index("stmt","while"),rulesMap.get(3));
+        analyzeTable.put(new Index("stmt","ID"),rulesMap.get(4));
+
+        analyzeTable.put(new Index("compoundstmt","{"),rulesMap.get(6));
+
+        analyzeTable.put(new Index("stmts","{"),rulesMap.get(7));
+        analyzeTable.put(new Index("stmts","}"),rulesMap.get(8));
+        analyzeTable.put(new Index("stmts","if"),rulesMap.get(7));
+        analyzeTable.put(new Index("stmts","while"),rulesMap.get(7));
+        analyzeTable.put(new Index("stmts","ID"),rulesMap.get(7));
+
+        analyzeTable.put(new Index("ifstmt","if"),rulesMap.get(9));
+
+        analyzeTable.put(new Index("whilestmt","while"),rulesMap.get(10));
+
+        analyzeTable.put(new Index("assgstmt","ID"),rulesMap.get(11));
+
+        analyzeTable.put(new Index("boolexpr","("),rulesMap.get(12));
+        analyzeTable.put(new Index("boolexpr","ID"),rulesMap.get(12));
+        analyzeTable.put(new Index("boolexpr","NUM"),rulesMap.get(12));
+
+        analyzeTable.put(new Index("boolop","<"),rulesMap.get(13));
+        analyzeTable.put(new Index("boolop",">"),rulesMap.get(14));
+        analyzeTable.put(new Index("boolop","<="),rulesMap.get(15));
+        analyzeTable.put(new Index("boolop",">="),rulesMap.get(16));
+        analyzeTable.put(new Index("boolop","=="),rulesMap.get(17));
+
+        analyzeTable.put(new Index("arithexpr","("),rulesMap.get(18));
+        analyzeTable.put(new Index("arithexpr","ID"),rulesMap.get(18));
+        analyzeTable.put(new Index("arithexpr","NUM"),rulesMap.get(18));
+
+        analyzeTable.put(new Index("arithexprprime",")"),rulesMap.get(21));
+        analyzeTable.put(new Index("arithexprprime",";"),rulesMap.get(21));
+        analyzeTable.put(new Index("arithexprprime","<"),rulesMap.get(21));
+        analyzeTable.put(new Index("arithexprprime",">"),rulesMap.get(21));
+        analyzeTable.put(new Index("arithexprprime","<="),rulesMap.get(21));
+        analyzeTable.put(new Index("arithexprprime",">="),rulesMap.get(21));
+        analyzeTable.put(new Index("arithexprprime","=="),rulesMap.get(21));
+        analyzeTable.put(new Index("arithexprprime","+"),rulesMap.get(19));
+        analyzeTable.put(new Index("arithexprprime","-"),rulesMap.get(20));
+
+        analyzeTable.put(new Index("multexpr","("),rulesMap.get(22));
+        analyzeTable.put(new Index("multexpr","ID"),rulesMap.get(22));
+        analyzeTable.put(new Index("multexpr","NUM"),rulesMap.get(22));
+
+        analyzeTable.put(new Index("multexprprime",")"),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime",";"),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime","<"),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime",">"),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime","<="),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime",">="),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime","=="),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime","+"),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime","-"),rulesMap.get(25));
+        analyzeTable.put(new Index("multexprprime","*"),rulesMap.get(23));
+        analyzeTable.put(new Index("multexprprime","/"),rulesMap.get(24));
+
+        analyzeTable.put(new Index("simpleexpr","("),rulesMap.get(28));
+        analyzeTable.put(new Index("simpleexpr","ID"),rulesMap.get(26));
+        analyzeTable.put(new Index("simpleexpr","NUM"),rulesMap.get(27));
+
+    }
+
+
+
+
+
+
+
+
+
+    private void analysis()
+    {
+        if (inputBuffer.isEmpty())
+            return;
+
+        stack.push("\0");
+        stack.push("program");
+
+
+        int currentPosition = 0;
+        while (!stack.peek().equals("\0")){
+            if (nonTerminalSymbolCollection.contains(stack.peek())){
+                ProductionRule rule = analyzeTable.getOrDefault(new Index(stack.peek(),inputBuffer.get(currentPosition).word),null);
+                if (rule!=null){
+                    stack.pop();
+                    putRulesIntoStack(rule);
+                    outputBuffer.add(rule);
+                }
+                else {
+                    // error occurs, try to recover
+//                    System.out.println(stack.peek()+":"+inputBuffer.get(currentPosition).word);
+                    currentPosition = phraseLevelRecovery(currentPosition);
+                }
+
+            } else {
+                if (stack.peek().equals(inputBuffer.get(currentPosition).word)){
+                    stack.pop();
+                    currentPosition++;
+                }
+                else {
+                    System.out.println(
+                            "语法错误,第"+ inputBuffer.get(currentPosition).lineCount + "行,缺少\"" +stack.peek()+ "\""
+                    );
+                    stack.pop();
+                    // error occurs, try to recover
+                }
+            }
+        }
+    }
+
+    private int phraseLevelRecovery(int currentPosition) {
+
+        inputBuffer.set(currentPosition-1,new Word(";",inputBuffer.get(currentPosition-1).lineCount));
+
+        System.out.println(
+                "语法错误,第"+ (int)(inputBuffer.get(currentPosition-1).lineCount) + "行,缺少\"" +";"+ "\""
+        );
+
+        return currentPosition-1;
+    }
+
+    private void putRulesIntoStack(ProductionRule rule) {
+        String words = rule.rightValue;
+        String[] temp  = words.split(" ");
+        for (int i=temp.length-1;i>=0;i--) {
+            if (temp[i].equals("\1"))
+                continue;
+            stack.push(temp[i]);
+        }
+    }
+
+
+    private void readProgram()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            program.append(sc.nextLine());
+            program.append('\n');
+        }
+        program.append('\0');
+        code = program.toString();
+        //
+        //
+        int lineCount = 1;
+        StringBuilder word = new StringBuilder();
+        for (int i=0;i<code.length();i++){
+            if (code.charAt(i)=='\0') {
+                if (word.length()>0){
+                    inputBuffer.add(new Word(word.toString(),lineCount));
+                    word.delete(0,word.length());
+                }
+                break;
+            }
+            else if (code.charAt(i)=='\n'){
+                if (word.length()>0){
+                    inputBuffer.add(new Word(word.toString(),lineCount));
+                    word.delete(0,word.length());
+                }
+                lineCount++;
+            }
+            else if (code.charAt(i)==' '){
+                if (word.length()>0) {
+                    inputBuffer.add(new Word(word.toString(), lineCount));
+                    word.delete(0, word.length());
+                }
+            }
+            else {
+                word.append(code.charAt(i));
+            }
+        }
+
+    }
+
+
+    private class Tree{
+        String value;
+        Integer levelCount;
+        List<Tree> children=new ArrayList<>();
+
+        public String getValue() {
+            return value;
+        }
+
+        public List<Tree> getChildren() {
+            return children;
+        }
+
+        public Integer getLevelCount() {
+            return levelCount;
+        }
+
+        public Tree(String value, Integer levelCount) {
+            this.value = value;
+            this.levelCount = levelCount;
+        }
+
+        @Override
+        public String toString() {
+            return "Tree{" +
+                    "value='" + value + '\'' +
+                    ", children=" + children +
+                    '}';
+        }
+    }
+
+    private void outputResult() {
+
+        Tree root = new Tree("program",0);
+
+        outputBuffer.forEach(o->{
+            // search left value in the tree in DFS order
+            // once done split the right value into words and add as its children
+            Tree node  = searchTree(root,o.leftValue);
+            new ArrayList<String>(Arrays.asList(o.rightValue.split(" "))).forEach(
+                    each->node.getChildren().add(new Tree(each,node.getLevelCount()+1))
+            );
+        });
+
+
+//        outputBuffer.forEach(o->System.out.println(o.toString()));
+
+
+        printTree(root);
+
+
+
+
+
+
+    }
+
+    private Tree searchTree(Tree root, String leftValue) {
+
+        Stack<Tree> stack= new Stack<>();
+        stack.add(root);
+//        HashSet<Tree> hasVisited = new HashSet<>();
+
+        while (!stack.isEmpty()){
+            Tree currentNode = stack.pop();
+
+            if(currentNode.getValue().equals(leftValue)&&currentNode.getChildren().isEmpty())
+                return currentNode;
+
+            for (int i = currentNode.getChildren().size()-1; i >=0 ; i--)
+                stack.push(currentNode.getChildren().get(i));
+
+
+
+        }
+
+        return null;
+    }
+
+
+    private void printTree(Tree root){
+        Stack<Tree> stack= new Stack<>();
+        stack.add(root);
+
+        while (!stack.isEmpty()){
+            Tree currentNode = stack.pop();
+
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < currentNode.getLevelCount(); i++)
+                sb.append("\t");
+            sb.append(currentNode.getValue().equals("\1") ? "E" : currentNode.getValue());
+
+            for (int i = currentNode.getChildren().size()-1; i >=0 ; i--)
+                stack.push(currentNode.getChildren().get(i));
+
+            if (stack.empty())
+                System.out.print(sb.toString());
+            else
+                System.out.println(sb.toString());
+
+
+        }
+
+    }
+
+
+    public static void main(String[] args) {
+        Java_LLParserAnalysis clazz  = new Java_LLParserAnalysis();
+        clazz.init();
+        clazz.readProgram();
+        clazz.analysis();
+        clazz.outputResult();
+    }
+
+
+}
+

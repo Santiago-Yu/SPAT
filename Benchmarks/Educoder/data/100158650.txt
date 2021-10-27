@@ -1,0 +1,27 @@
+#include <iostream>
+#include <string.h>
+#include <stdio.h>
+using namespace std;
+int main()
+{
+	int n[100];
+	int z=0;
+	int num=0;
+	while(1){
+		scanf("%d",&n[z]);
+		z++;
+		char c;
+		scanf("%c",&c);
+		if(c!=' ')break;
+	}
+	int t;
+	scanf("%d",&t);
+	for(int i =0;i<z;i++){
+		for(int j=i+1;j<z;j++){
+			for(int k=j+1;k<z;k++){
+				if(n[i]+n[j]+n[k]<t)num++;
+			}
+		}
+	}
+	printf("%d",num);
+}

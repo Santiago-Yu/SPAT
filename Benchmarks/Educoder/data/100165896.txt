@@ -1,0 +1,33 @@
+package step4;
+import step1.Date;
+import step2.Student;
+import step3.Course;
+class Report {
+    private Student student = new Student();
+    private String major;
+    private Course[] selCourse = new Course[10];
+
+    public Report(){}
+    public Report(Student student,String major,Course[] selCourse){
+     this.student=student;
+        this.major=major;
+        this.selCourse=selCourse;
+    }
+ public void setReport(Student student,String major,Course[] selCourse){
+     this.student=student;
+        this.major=major;
+        this.selCourse=selCourse;
+    }
+    public Student getStudent(){return student;}
+    public String getmajor(){return major;}
+    public Course[] getCourse(){return selCourse;}
+ public String toString(){
+        String str;
+        str = student.toString()+" major:"+major;
+        for(int i=0;i<selCourse.length;i++){
+         str=str+'\n'+selCourse[i].toString();
+        }
+        return str+'\n';
+    }
+}
+    /************End****************/

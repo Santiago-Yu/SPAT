@@ -1,0 +1,40 @@
+package step1;
+import java.math.BigInteger;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+boolean f [] = new boolean[10001];
+		int k =0;
+		for(int i=0;i<nums.length;i++)
+			{
+			f[nums[i]] = true;
+			k++;
+			}
+		int c[] = new int [10000-k];
+		
+		k = 0;
+		for(int i=1;i<f.length;i++)
+		{
+			if(!f[i])
+			{  
+				
+				c[k] = i;
+				k++;
+			}	
+		}
+		StringBuffer tmps = new StringBuffer();
+		for(int i=0;i<k;i++)
+			tmps.append(c[i]);
+		
+		
+		String t = tmps.toString();
+		BigInteger r = new BigInteger(t);
+		
+		int re = Integer.parseInt(r.remainder(new BigInteger("11")).toString());
+        return re;
+	}
+
+	/********* End *********/
+}

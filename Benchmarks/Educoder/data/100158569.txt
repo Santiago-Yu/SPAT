@@ -1,0 +1,37 @@
+#include<stdio.h>
+#include<string.h>
+
+int main()
+{
+	char alp1[10100],alp2[10100];
+	scanf("%s",alp1);
+	getchar();
+	scanf("%s",alp2);
+	//printf("%s %s\n",alp1,alp2);
+	int len1=strlen(alp1);
+	int len2=strlen(alp2);
+	int ans=0;
+	for(int i=0;i<len1;i++)
+	{
+		for(int j=0;j<len2;j++)
+		{
+			int k=0;
+			if(alp1[i]==alp2[j])
+			{
+				while(alp1[i+k]==alp2[j+k]&&(i+k)<len1&&(j+k)<len2)
+				{
+					//printf("%d %d\n",i+k,j+k);
+					k++;
+				}
+				//printf("%c %c",alp1[i+k],alp2[j+k]);
+			}
+			//printf("%d\n",k);
+			if(k>ans)
+			{
+				ans=k;
+			}
+			
+		}
+	}
+	printf("%d",ans);
+} 

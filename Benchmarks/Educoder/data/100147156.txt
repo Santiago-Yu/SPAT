@@ -1,0 +1,51 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        int n=numbers;
+        int k=selectedNum;
+        int d=distance;
+        int[] arr=new int[n+1];
+        for(int i = 1;i <= n; i++) {
+            arr[i] = abilities[i];
+        }
+        long[][] f = new long[n + 1][k + 1]; 
+        long[][] g = new long[n + 1][k + 1];
+         for(int i = 1; i <= n; i++) {
+            f[i][1] = arr[i];
+            g[i][1] = arr[i];
+
+        }
+        for(int curK = 2; curK <= k; curK++) {
+            for(int curN = curK; curN <= n; curN++) {
+                long tempMax = Long.MIN_VALUE;
+                long tempMin = Long.MAX_VALUE;
+                for(int left = Math.max(curK - 1, curN - d); left <= curN - 1; left++){ 
+                    //根据所得的递推公式更新最小值 最大值    
+                    if(tempMax < Math.max(f[left][curK - 1] * arr[curN], g[left][curK - 1] * arr[curN])) 
+                    {
+                        tempMax = Math.max(f[left][curK - 1] * arr[curN], g[left][curK - 1] * arr[curN]);  
+                    }
+                    if(tempMin > Math.min(f[left][curK - 1] * arr[curN], g[left][curK - 1] * arr[curN])) 
+                    {
+                        tempMin = Math.min(f[left][curK - 1] * arr[curN], g[left][curK - 1] * arr[curN]); 
+                    }                }
+
+                 f[curN][curK] = tempMax;
+                g[curN][curK] = tempMin;}
+        }
+        long maxResult = Long.MIN_VALUE;
+        for(int curN = k; curN <= n; curN++){
+            if(f[curN][k] > maxResult)
+                maxResult = f[curN][k];}
+        return maxResult;
+                        
+
+
+    }
+
+	/********* End *********/
+}

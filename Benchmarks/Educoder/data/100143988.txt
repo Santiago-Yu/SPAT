@@ -1,0 +1,149 @@
+/*package step3;
+
+import java.io.File;
+
+public class Task {
+*/	
+	/********** Begin **********/
+/**	public void showDirStructure(File file)	{
+        int a = 0;
+        int i = 1;
+        int m = 1;
+        int j = 1;
+        boolean isDir0 = file.isDirectory();
+        if(isDir0)
+        {
+            for(int aa = a;aa>0;)
+            {
+                System.out.print("  ");
+                aa--;
+            }
+            System.out.println("+--"+file.getName());
+            a++;
+            i = a;
+        File[] f = file.listFiles();
+    for(File fff : f)
+    {
+        boolean isDir = fff.isDirectory();
+        if(isDir)
+        {
+            for(int ii = i;ii>0;)
+        {
+            System.out.print("  ");
+            ii--;
+        }
+            System.out.println("+--"+fff.getName());
+            i++;
+            m = i;
+            File[] fff1 = fff.listFiles();
+            for(File ff : fff1)
+            {
+                boolean isDir1 = ff.isDirectory();
+                if(isDir1)
+                {
+                    for(int mm = m;mm>0;)
+                    {
+                        System.out.print("  ");
+                        mm--;
+                    }
+                    System.out.println("+--"+ff.getName());
+                    m++;
+                    j = m;
+                    File[] fff2 = ff.listFiles();
+                    for(File ff1 : fff2)
+                    {
+                        boolean isDir2 = ff1.isDirectory();
+                        if(isDir2)
+                        {
+                            for(int jj = j;jj>0;)
+                            {
+                                System.out.print("  ");
+                                jj--;
+                            }
+                            System.out.println("+--"+ff1.getName());
+                            j++;
+                        }
+                        else
+                        {
+                            while(j>0)
+                            {
+                                System.out.print("  ");
+                                j--;
+                            }
+                            System.out.println("--"+ff1.getName());
+                        }
+                    }
+                }
+                else
+                {
+                    while(m>0)
+                    {
+                        System.out.print("  ");
+                        m--;
+                    }
+                    System.out.println("--"+ff.getName());
+                }
+            }
+        }
+        else
+        {
+            while(i>0)
+        {
+            System.out.print("  ");
+            i--;
+        }
+            System.out.print("--"+fff.getName());
+            i++;
+        }
+        }
+        }
+        else
+        {
+            while(a>0)
+            {
+                System.out.print("  ");
+                a--;
+            }
+            System.out.println("--"+file.getName());
+            a++;
+        }
+    }
+*/    
+	/********** End **********/
+/*}
+*/
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+    
+	public static void showDirStructure(File file)	{       
+       System.out.println("+--"+file.getName());  
+    add(file," "); 
+    }
+    public  static void add(File file,String as){
+        File[] q=file.listFiles();
+        as+=" ";
+        for(File aa:q){
+            if(aa.isDirectory())
+            {                          
+                System.out.println(as+"+--"+aa.getName());
+               add(aa,as+" "); 
+            }
+            else
+            { 
+               System.out.println(as+"--"+aa.getName()); 
+        }
+        }
+
+
+
+	}
+	
+
+
+	/********** End **********/
+}

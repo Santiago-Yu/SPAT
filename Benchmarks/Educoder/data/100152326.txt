@@ -1,0 +1,32 @@
+package step1;
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        DecimalFormat df=new DecimalFormat(".00");
+        final float a1=0.85f,a2=0.90f,a3=0.95f,a4=1.00f,a5=1.05f;
+        float b;
+        int q,z;
+        System.out.println("请输入西瓜重量：");
+        z=sc.nextInt();
+        System.out.println("请输入顾客所付钱数：");
+        q=sc.nextInt();
+        if (z>20){
+        	b=z*a1;
+        }else if (z>15&&z<=20){
+        	b=z*a2;
+        }else if (z>10&&z<=15){
+        	b=z*a3;
+        }else if (z>5&&z<=10){
+        	b=z*a4;
+        }else {
+			b=z*a5;        
+        }
+        System.out.printf("西瓜应付钱数："+"%.2f",b);
+        System.out.println("\n应找钱数："+df.format(q-b));
+		/******End******/	
+	}
+
+}

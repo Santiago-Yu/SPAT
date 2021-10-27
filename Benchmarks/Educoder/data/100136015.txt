@@ -1,0 +1,77 @@
+package case1;
+
+import java.util.Scanner;
+
+public class Task1 {    
+    public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String dogName = sc.next();
+		String dogSex = sc.next();
+		String dogColor = sc.next();
+		String catName = sc.next();
+		String catSex = sc.next();
+		double catWeight = sc.nextDouble();
+		// 通过有参构造函数实例化Dog类对象dog
+		// dog调用talk()方法
+		// dog调用eat()方法
+	   Dog dog=new Dog(dogName,dogSex,dogColor);
+	   dog.talk();
+	   dog.eat();
+		// 通过有参构造函数实例化Cat类对象cat
+		// cat调用talk()方法
+		// cat调用eat()方法
+		Cat cat=new Cat(catName,catSex,catWeight);
+		cat.talk();
+		cat.eat();
+	}
+}
+
+
+abstract class Pet {
+	
+	public String name;
+	public String sex;
+    public Pet(String name,String sex){
+    	this.name=name;
+    	this.sex=sex;
+    }
+    public abstract void talk();
+    public abstract void eat();
+    
+}
+
+class Dog extends Pet {
+    String name,sex,color;
+	public Dog(String name,String sex,String color){
+      super(name,sex);
+      this.color=color;
+      this.name=name;
+	  this.sex=sex;
+	  }
+    public void talk(){
+      System.out.println("名称："+this.name+"，性别："+this.sex+"，颜色："+this.color+"，汪汪叫");
+    }
+	public void eat() {
+	  System.out.println(this.name+"吃骨头！");
+		
+	}
+	
+}
+
+
+class Cat extends Pet {
+    String name,sex;
+    double weight;
+	public Cat(String name, String sex,double weight) {
+		super(name, sex);
+		this.name=name;
+		this.sex=sex;
+		this.weight=weight;
+	}
+	public void talk() {
+		System.out.println("名称："+this.name+"，性别："+this.sex+"，体重："+this.weight+"kg，喵喵叫");
+	}
+	public void eat() {
+		System.out.println(this.name+"吃鱼！");
+	}
+}

@@ -1,0 +1,263 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+
+/*********************数据说明***********************
+* 训练数据：src/step1/input/train.csv
+* 测试数据：src/step1/input/test.csv
+* 结果文件：src/step1/ground_truth/test_prediction.csv
+****************************************************/
+public class Task {
+    
+    public static void main(String[] args) throws IOException {
+        /********* Begin *********/
+        int i,j;
+        Task t = new Task();
+        List<String> traininfo = t.getListFromCsv("src/step1/input/train.csv");
+        int numberIter=5000;
+        ArrayList<ArrayList<String>> traindataSet = new ArrayList<ArrayList<String>>();
+        ArrayList<String> trainclassLabels = new ArrayList<String>();
+        for(i=0;i<traininfo.size();i++) {
+            ArrayList<String> rowdataSet = new ArrayList<String>();
+            String[] rs=traininfo.get(i).split(",");
+            for(j=1;j<rs.length-1;j++) {
+                rowdataSet.add(rs[j]);
+            }
+            traindataSet.add(rowdataSet);
+            trainclassLabels.add(rs[rs.length-1]);
+            rowdataSet.clear();    
+        }
+        ArrayList<Double> weights = t.gradAscent(traindataSet, trainclassLabels);//梯度下降训练
+        
+        List<String> testinfo = t.getListFromCsv("src/step1/input/test.csv");
+        ArrayList<ArrayList<String>> testdataSet = new ArrayList<ArrayList<String>>();
+        ArrayList<String> testclassLabels = new ArrayList<String>();
+        List<String> ids = new ArrayList<String>();
+        List<String> data = new ArrayList<String>();
+        for(i=0;i<testinfo.size();i++) {
+            ArrayList<String> rowdataSet = new ArrayList<String>();
+            String[] rs=testinfo.get(i).split(",");
+            for(j=1;j<=rs.length-1;j++) {
+                rowdataSet.add(rs[j]);
+            }
+            ids.add(rs[0]);
+            //System.out.println("rowdataSet.size()"+rowdataSet.size());
+            //data.add(t.classifyVector(rowdataSet, weights));
+            testdataSet.add(rowdataSet);
+            testclassLabels.add("0");
+            rowdataSet.clear();    
+        }
+        
+        for(i=0;i<testdataSet.size();i++) {
+            data.add(t.classifyVector(testdataSet.get(i), weights));
+        }
+        t.writeCsvFile("src/step1/ground_truth/test_prediction.csv",ids,data);
+
+        /********* End *********/
+    }
+    
+    
+    /**
+     * 读取csv文件
+     * 
+     * @param path 文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    public static List<String> getListFromCsv(String path) throws IOException {
+        List<String> info = new ArrayList<String>();
+        try {
+            // 创建CSV读对象   需要设置编码格式为UTF-8
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读取第一列的数据   csvReader.get(0);
+                // 读取一行的数据
+                String row = csvReader.getRawRecord();
+                info.add(row);
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return info;
+    }
+    
+    /**
+     * 写结果文件
+     * 
+     * @param filePath 文件路径
+     * @param data 要写入的数据
+     * @throws IOException
+     */
+    public static void writeCsvFile(String filePath, List<String> ids,List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"ID","TARGET"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+        for(int i = 0 ;i < ids.size();i++){
+            String[] content = {ids.get(i), data.get(i)};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+    
+    
+    public static ArrayList<Double> gradAscent1(ArrayList<ArrayList<String>> dataSet, ArrayList<String> classLabels, int numberIter) {
+        int m = dataSet.size();
+        int n = dataSet.get(0).size();
+        double alpha = 0.0;
+        int randIndex = 0;
+        ArrayList<Double> weights = new ArrayList<Double>();
+        ArrayList<Double> weightstmp = new ArrayList<Double>();
+        ArrayList<Double> h = new ArrayList<Double>();
+        ArrayList<Integer> dataIndex = new ArrayList<Integer>();
+        ArrayList<Double> dataMatrixMulweights = new ArrayList<Double>();
+        for (int i = 0; i < n; i++) {
+            weights.add(0.01);
+            weightstmp.add(0.01);
+        }
+        dataMatrixMulweights.add(0.0);
+        double error = 0.0;
+        for (int j = 0; j < numberIter; j++) {
+            // 产生0到99的数组
+            for (int p = 0; p < m; p++) {
+                dataIndex.add(p);
+            }
+            // 进行每一次的训练
+
+            for (int i = 0; i < m; i++) {
+                alpha = 4 / (1.0 + i + j) + 0.0001;
+                randIndex = (int) (Math.random() * dataIndex.size());
+                dataIndex.remove(randIndex);
+                double temp = 0.0;
+                for (int k = 0; k < n; k++) {
+                    temp = temp + Double.parseDouble(dataSet.get(randIndex).get(k)) * weights.get(k);
+                }
+                dataMatrixMulweights.set(0, temp);
+                h = sigmoid(dataMatrixMulweights);
+                error = Double.parseDouble(classLabels.get(randIndex)) - h.get(0);
+                double tempweight = 0.0;
+                for (int p = 0; p < n; p++) {
+                    tempweight = alpha * Double.parseDouble(dataSet.get(randIndex).get(p)) * error;
+                    weights.set(p, weights.get(p) + tempweight);
+                }
+            }
+
+        }
+        return weights;
+    }
+    
+    public static ArrayList<Double> gradAscent0(ArrayList<ArrayList<String>> dataSet, ArrayList<String> classLabels) {
+        int m = dataSet.size();
+        int n = dataSet.get(0).size();
+        ArrayList<Double> weights = new ArrayList<Double>();
+        ArrayList<Double> weightstmp = new ArrayList<Double>();
+        ArrayList<Double> h = new ArrayList<Double>();
+        double error = 0.0;
+        ArrayList<Double> dataMatrixMulweights = new ArrayList<Double>();
+        double alpha = 0.01;
+        for (int i = 0; i < n; i++) {
+            weights.add(1.0);
+            weightstmp.add(1.0);
+        }
+        h.add(0.0);
+        double temp = 0.0;
+        dataMatrixMulweights.add(0.0);
+        for (int i = 0; i < m; i++) {
+            temp = 0.0;
+            for (int k = 0; k < n; k++) {
+                temp = temp + Double.parseDouble(dataSet.get(i).get(k)) * weights.get(k);
+            }
+            dataMatrixMulweights.set(0, temp);
+            h = sigmoid(dataMatrixMulweights);
+            error = Double.parseDouble(classLabels.get(i)) - h.get(0);
+            double tempweight = 0.0;
+            for (int p = 0; p < n; p++) {
+                tempweight = alpha * Double.parseDouble(dataSet.get(i).get(p)) * error;
+                weights.set(p, weights.get(p) + tempweight);
+            }
+        }
+        return weights;
+    }
+
+    
+    public static ArrayList<Double> gradAscent(ArrayList<ArrayList<String>> dataSet, ArrayList<String> classLabels) {
+        int m = dataSet.size();
+        int n = dataSet.get(0).size();
+        ArrayList<Double> weights = new ArrayList<Double>();
+        ArrayList<Double> weightstmp = new ArrayList<Double>();
+        ArrayList<Double> h = new ArrayList<Double>();
+        ArrayList<Double> error = new ArrayList<Double>();
+        ArrayList<Double> dataMatrixMulweights = new ArrayList<Double>();
+        double alpha = 0.001;
+        int maxCycles = 1000;
+        for (int i = 0; i < n; i++) {
+            weights.add(1.0);
+            weightstmp.add(1.0);
+        }
+        for (int i = 0; i < m; i++) {
+            h.add(0.0);
+            error.add(0.0);
+            dataMatrixMulweights.add(0.0);
+        }
+        double temp;
+        for (int i = 0; i < maxCycles; i++) {
+            for (int j = 0; j < m; j++) {
+                temp = 0.0;
+                for (int k = 0; k < n; k++) {
+                    temp = temp + Double.parseDouble(dataSet.get(j).get(k)) * weights.get(k);
+                }
+                dataMatrixMulweights.set(j, temp);
+            }
+            h = sigmoid(dataMatrixMulweights);
+            for (int q = 0; q < m; q++) {
+                error.set(q, Double.parseDouble(classLabels.get(q)) - h.get(q));
+            }
+            double tempweight = 0.0;
+            for (int p = 0; p < n; p++) {
+                tempweight = 0.0;
+                for (int q = 0; q < m; q++) {
+                    tempweight = tempweight + alpha * Double.parseDouble(dataSet.get(q).get(p)) * error.get(q);
+                }
+                weights.set(p, weights.get(p) + tempweight);
+            }
+        }
+        return weights;
+    }
+    
+    public static ArrayList<Double> sigmoid(ArrayList<Double> inX) {
+        ArrayList<Double> inXExp = new ArrayList<Double>();
+        for (int i = 0; i < inX.size(); i++) {
+            inXExp.add(1.0 / (1 + Math.exp(-inX.get(i))));
+        }
+        return inXExp;
+    }
+    
+    public static String classifyVector(ArrayList<String> inX, ArrayList<Double> weights) {
+        ArrayList<Double> sum = new ArrayList<Double>();
+        sum.clear();
+        sum.add(0.0);
+        for (int i = 0; i < inX.size(); i++) {
+            sum.set(0, sum.get(0) + Double.parseDouble(inX.get(i)) * weights.get(i));
+        }
+        if (sigmoid(sum).get(0) > 0.5)
+            return "1";
+        else
+            return "0";
+
+    }
+
+}

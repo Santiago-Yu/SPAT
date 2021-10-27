@@ -1,0 +1,75 @@
+package step4;
+
+public class Task {
+    public static int []RMonthNum = {0,31,29,31,30,31,30,31,31,30,31,30,31};
+    public static int []MonthNum = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+    public boolean JudgeYear(int Year){
+        if(Year%400==0||(Year%100!=0)&&Year%4==0){
+            return true;
+        } else return false;
+    }
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+	         int Year = Integer.parseInt(releaseDate.substring(0, 4));
+
+        int Month = Integer.parseInt(releaseDate.substring(5, 7));
+     
+        int Day = Integer.parseInt(releaseDate.substring(8, 10));
+ 
+        int curYear = Year;
+        int curMonth = Month;
+        int curDay = Day;
+        int surplusDAY = Day + day;
+        if (JudgeYear(Year)) {
+            int[] CurMonthnum = RMonthNum;
+            while (surplusDAY > CurMonthnum[curMonth]) {
+                surplusDAY = surplusDAY - CurMonthnum[curMonth];
+                if (curMonth == 12) {
+                    curYear++;
+                    if (JudgeYear(curYear))
+                        CurMonthnum = RMonthNum;
+                    else CurMonthnum = MonthNum;
+                    curMonth = 1;
+                } else
+                    curMonth++;
+
+            }
+            curDay=surplusDAY;
+        } else {
+            int[] CurMonthnum = MonthNum;
+            while (surplusDAY > CurMonthnum[curMonth]) {
+                surplusDAY = surplusDAY - CurMonthnum[curMonth];
+                if (curMonth == 12) {
+                    curYear++;
+                    if (JudgeYear(curYear))
+                        CurMonthnum = RMonthNum;
+                    else CurMonthnum = MonthNum;
+                    curMonth = 1;
+                } else
+                    curMonth++;
+
+            }
+            curDay=surplusDAY;
+
+        }
+        String day1;
+        String month1;
+        if (curDay< 10){
+            day1 = String.valueOf(0) + String.valueOf(curDay);
+        } else
+            day1 = String.valueOf(curDay);
+        if (curMonth < 10){
+            month1 = String.valueOf(0) + String.valueOf(curMonth);
+        } else
+            month1 = String.valueOf(curMonth);
+
+
+        return String.valueOf(curYear)+"-"+month1+"-"+day1;
+
+
+        /********* End *********/
+	}
+	
+	
+}

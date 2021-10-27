@@ -1,0 +1,24 @@
+package step1;
+
+public class Task {
+
+	public static void birthdayCandle(int num){
+        int start=0;
+        int end=0;
+        boolean flag = false;
+        for(int i = 19; i <= 100; i++){
+            for(int j = i; j <= 100; j++){
+                if(num==(i+j)*(j-i+1)/2){
+                    start = i;
+                    end = j;
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag) break;
+        }
+	
+		System.out.println("小明今年：" +  end  + "岁");
+		System.out.println("小明从" + start + "岁开始每年举办派对");
+	}
+}

@@ -1,0 +1,126 @@
+package step2;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+public class Task {
+
+    static int MAX_E = 400005;
+    static int MAX_N = 100005;
+
+    static EdgeNode[] edge_pool=new EdgeNode[MAX_E];
+    static EdgeNode edge_head;
+    static EdgeNode[] e=new EdgeNode[MAX_N];
+    static EdgeNode[] g=new EdgeNode[MAX_N];
+
+    int[] dfn=new int[MAX_N];
+    int[] low =new int[MAX_N];
+    int[] bng=new int[MAX_N];
+    boolean[] ins=new boolean[MAX_N];
+    int[] stk=new int[MAX_N];
+    int ind=0;
+    int top=0;
+    int cnt=0;
+    int[] deg=new int[MAX_N];
+    int[] f=new int[MAX_N];
+
+    public int solver(int n , List<Edge> edges) {
+        edge_head = edge_pool[0];
+        int m = edges.size();
+        for (int i = 0; i < m; ++i) {
+            add_edge(e, edges.get(i).u, edges.get(i).v, edges.get(i).w);
+        }
+        for (int i = 1; i <= n; ++i) {
+            if (dfn[i]==0) {
+                tarjan(i);
+            }
+        }
+        for (int i = 1; i <= n; ++i) {
+            for (EdgeNode j = e[i]; j!=null; j = j.next) {
+                if (bng[i] != bng[j.dest]) {
+                    add_edge(g, bng[i], bng[j.dest], j.cost);
+                    ++deg[bng[j.dest]];
+                }
+            }
+        }
+        Queue<Integer> q=new LinkedList<>();
+        for (int i = 1; i <= cnt; ++i) {
+            if (deg[i]==0) {
+                q.add(i);
+            }
+        }
+        while (!q.isEmpty()) {
+            int i = q.peek();
+            q.poll();
+            for (EdgeNode j = g[i]; j!=null; j = j.next) {
+                --deg[j.dest];
+                f[j.dest] = max(f[j.dest], f[i] + j.cost);
+                if (deg[j.dest]==0) {
+                    q.add(j.dest);
+                }
+            }
+        }
+        int result = 0;
+        for (int i = 1; i <= cnt; ++i) {
+            result = max(result, f[i]);
+        }
+        return result;
+    }
+
+    void add_edge(EdgeNode[] e, int a, int b, int c) {
+        e[a] = new EdgeNode(b, c, e[a]);
+    }
+
+    void tarjan(int i) {
+        dfn[i] = low[i] = ++ind;
+        stk[++top] = i;
+        ins[i] = true;
+        for (EdgeNode j = e[i]; j!=null; j = j.next) {
+            if (dfn[j.dest]==0) {
+                tarjan(j.dest);
+                low[i] = min(low[i], low[j.dest]);
+            } else {
+                if (ins[j.dest]) {
+                    low[i] = min(low[i], dfn[j.dest]);
+                }
+            }
+        }
+        if (low[i] == dfn[i]) {
+            int k;
+            cnt++;
+            do {
+                k = stk[top--];
+                ins[k] = false;
+                bng[k] = cnt;
+            } while (k != i);
+        }
+    }
+
+    private int min(int i , int j) {
+        return i=i<j?i:j;
+    }
+    private int max(int i , int j) {
+        return i=i>j?i:j;
+    }
+
+
+    static class EdgeNode {
+        int dest;
+        int cost;
+        EdgeNode next;
+        public EdgeNode() {}
+        public EdgeNode(int dest , int cost , EdgeNode next) {
+            this.dest = dest;
+            this.cost = cost;
+            this.next = next;
+        }
+    };
+
+    static class Edge {
+        int u;
+        int v;
+        int w;
+    }
+}
+

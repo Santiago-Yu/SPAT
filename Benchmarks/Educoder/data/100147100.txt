@@ -1,0 +1,60 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+    long max(long a,long b)
+    {
+    	return a>b?a:b;
+    }
+	long min(long a,long b)
+    {
+    	return a>b?b:a;
+    }
+    public static final long INF=Math.round(10e8);
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        int n=numbers,k=selectedNum,d=distance;
+        long  mx[][]=new long  [n+1][n+1];
+        long mn[][]=new long  [n+1][n+1];
+        
+        for(int i=1;i<=n;i++)//初始化mx，mn数组
+    	{
+        	mx[i][0]=1;
+       		mn[i][0]=1;
+        	for(int j=1;j<=k;j++)
+        	{
+         	   mx[i][j]=-INF;
+         	   mn[i][j]=INF;
+       		 }
+    	}
+  		 long mmx=-100,mnx=100;//mmx主要是用于当k=1时选出数组中最大的元素
+   		 long ans=-INF;
+    		for(int i=1;i<=n;i++)
+   			 {
+      			  mmx=max(mmx,abilities[i]);
+      			  mx[i][1]=abilities[i];
+       			  mn[i][1]=abilities[i];
+       			  if(k==1)
+          	      ans=max(ans,mmx);
+    			}
+    			for(int i=1;i<=n;i++)
+    			{
+        			for(int j=2;j<=k;j++)//j=1已经讨论过了
+        			{
+          			  for(int r=i-1;r>=max(1,i-d)&&r>=j-1;r--)//mx[r][j-1]表示从前r个中选出j-1个最大的乘积，所以r>=j-1;r只能最多回溯d个或者回溯到底
+            			 {
+              			  mx[i][j]=max(mx[i][j],mx[r][j-1]*abilities[i]);
+               			 mx[i][j]=max(mx[i][j],mn[r][j-1]*abilities[i]);
+               			 mn[i][j]=min(mn[i][j],mx[r][j-1]*abilities[i]);
+                			mn[i][j]=min(mn[i][j],mn[r][j-1]*abilities[i]);
+                    		if(j==k) ans=max(ans,mx[i][j]);
+           				 }
+        			}
+    			}
+    	return ans;
+
+    }
+
+	/********* End *********/
+}

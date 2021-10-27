@@ -1,0 +1,31 @@
+package step1;
+
+public class Task {
+
+	public static void main(String args[]){
+        Task task = new Task();
+        task.getSum(15,19);
+        task.getSum(1,10);
+        task.getSum(1,100);
+        task.getSum(59,111);
+    }
+    
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int number = num2-num1;
+        int sum = 0;
+        int temp = 0;
+        for(int i = 0;i<=number;i++){
+        	if(num1+i<100){
+        		temp = (num1+i)/10+(num1+i)%10;
+        		sum += temp;
+       		}
+            else{
+                temp = (num1+i)/100+((num1+i)%100)/10+((num1+i)%100)%10;
+                sum += temp;
+        	}
+        }
+        return sum;
+		/********** END **********/
+	}
+}

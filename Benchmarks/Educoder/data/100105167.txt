@@ -1,0 +1,27 @@
+package step3;
+
+import java.util.*;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        String[] newData = data.split(" ");
+        /********** Begin *********/
+        for(String child: newData) {
+        	StringBuffer temp = new StringBuffer(child);
+        	ans.append(temp.reverse() + " ");
+        }
+        //int index = ans.indexOf("\r");
+        //ans = ans.replace(index, index+1, "");
+        /********** End *********/
+        return ans;
+    }
+    public static void main(String[] args) {
+    	Reverse reverse = new Reverse();
+    	Scanner sc = new Scanner(System.in);
+        sc.useDelimiter("\n");
+        String str = sc.next();
+        StringBuffer res = reverse.start(str);
+        System.out.print(res.toString());
+    }
+}

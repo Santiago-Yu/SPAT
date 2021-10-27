@@ -1,0 +1,38 @@
+package step3;
+
+public class Task {
+	
+	public int search(int n,int[] nums,int T){
+		/********* Begin *********/
+        int low=0;
+        int high=nums.length-1;
+        while(low<=high){
+            int mid=(low+high)/2;
+            if(nums[mid]==T)
+                return mid;
+            if(nums[mid]>=nums[low]){
+            if(T<nums[mid]&&T>=nums[low]){
+                high=mid-1;
+            }else{
+            low=mid+1;
+                
+            }  
+            }else{
+            if(T>=nums[mid]&&T<=nums[high])
+                low=mid+1;
+            else{
+            high=mid-1;
+            }
+       
+            }   
+        }
+        return -1;
+               
+
+		
+		
+		
+		/********* End *********/
+	}
+	
+}

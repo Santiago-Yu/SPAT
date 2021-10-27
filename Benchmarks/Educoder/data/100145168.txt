@@ -1,0 +1,29 @@
+package step2;
+
+public class Task {
+
+	public int getNum(int n){
+		/********* Begin *********/
+		      int keep = n;
+             int drop = 0;
+             if(keep%2!=0){
+                 drop++;
+                 keep --;
+             }
+          while(keep%2==0){
+              keep = keep/2;
+              if(keep%2!=0&&keep!=1){
+                  drop++;
+                  keep --;
+              }else if(keep==1){
+                  drop++;
+                  break;
+          }
+          }
+		return drop;
+		
+		
+		/********* End *********/
+	}
+	
+}

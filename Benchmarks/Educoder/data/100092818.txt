@@ -1,0 +1,26 @@
+package step1;
+import java.util.Scanner;
+public class LetterChange {
+     public static void main(String[] args){
+    Scanner sc = new Scanner(System.in);
+    String str = sc.next();
+    char ch = str.charAt(0);
+    LetterChange lc = new LetterChange();
+    System.out.println(lc.LetterChange(ch));
+    }
+    // 使用 switch把小写字母转为大写字母
+    public char LetterChange(char ch){
+        char c=0;
+        switch(ch){
+            case 'a':
+            case 'b':
+            case 'c':
+            case 'd':
+            case 'e':
+                c=(char)(ch-32);break;
+            default:
+                c=ch;break;
+        }// 请在此提供实现代码
+                 return c;
+    }
+}

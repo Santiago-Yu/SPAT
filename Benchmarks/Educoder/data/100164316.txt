@@ -1,0 +1,46 @@
+package step4;
+
+import java.util.ArrayList;  
+import java.util.List;  
+import java.util.Scanner;
+public class Josephus {
+
+   public static void main(String args[]){
+	   /**
+		* 数组解决约瑟夫环问题
+		* @param total   总人数（如41）
+		* @param number  要报的数（如3）
+		* Josecount()算法，显示最后一个的编号
+		*/
+		   int total,number;
+		   Scanner scan=new Scanner(System.in);
+		   total=scan.nextInt();  //输入参与游戏的总人数
+		   number=scan.nextInt(); //输入要报的数字
+	       countThree(total,0,number);
+
+   }
+    
+	   private static void countThree(int n, int start, int m) {
+		
+		List<Integer> list = new ArrayList<Integer>();
+		
+		//初始化列表
+		for (int i = 1; i <= n; i++) {
+			list.add(i);
+		}
+		int k=1;
+		while (list.size() > 0) {
+			for (int j = 0; j < m-1; j++) {
+				list.add(list.remove(start));
+			}
+		   k=list.remove(start);	
+		}
+		System.out.print("最后一个人编号："+k);
+	}
+
+
+
+	        /*************end***************/
+	}
+
+

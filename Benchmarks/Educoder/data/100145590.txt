@@ -1,0 +1,84 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String []create=releaseDate.split("-");
+		String res ="";
+		int y=Integer.valueOf(create[0]);
+		int m=Integer.valueOf(create[1]);
+		int d=Integer.valueOf(create[2]);
+		d+=day;
+		boolean go=true;
+		while(go) {
+			switch(m) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:{
+				if(d>31) {
+					d=d-31;
+					m++;
+					if(m==13) {
+						m=1;
+						y++;
+					}
+				}else {
+					go=false;
+				}
+				break;
+			}
+			case 2:{
+				if(y%400==0||(y%4==0&&y%100!=0)) {
+					if(d>29) {
+						d-=29;
+						m++;
+						
+					}else {
+						go=false;
+					}
+				}else {
+					if(d>28) {
+						d-=28;
+						m++;
+					}else {
+						go=false;
+					}
+				}
+				break;
+			}
+			case 4:
+			case 6:
+			case 9:
+			case 11:{
+				if(d>30) {
+					d=d-30;
+					m++;
+				}else {
+					go=false;
+				}
+				break;
+			}
+			}
+		}
+		res+=(y+"-");
+		if(m<10) {
+			res+="0"+m+"-";
+		}else {
+			res+=m+"-";
+		}
+		if(d<10) {
+			res+="0"+d;
+		}else {
+			res+=d;
+		}
+		return res;
+        /********* End *********/
+	}
+	
+	
+}

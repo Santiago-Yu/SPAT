@@ -1,0 +1,43 @@
+package step2;
+
+import java.io.*;
+import java.util.Scanner;
+
+public class CatchException {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str = sc.nextLine();
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+         int a=0,b=0,c=0,d=0;
+         String reg2 = "[a-z]";
+        String reg3="[A-Z]";
+       
+       String reg4 = "[0-9]";
+           
+           char[] charArr = str.toCharArray();
+           String[] strArr = new String[charArr.length];
+             for(int i=0;i<charArr.length;i++)
+       {
+           strArr[i] =String.valueOf(charArr[i]) ;
+           if(strArr[i].matches(reg2)||strArr[i].matches(reg3))
+           {
+               a++;
+           }
+           else if(strArr[i].matches(" "))
+           {
+               c++;
+           }
+           else if(strArr[i].matches(reg4))
+           {
+               b++;
+           }
+           else
+               d++;
+       }
+        
+        System.out.print("letter="+a+",space="+c+",number="+b+",other="+d);
+        /********** End *********/
+    }
+}

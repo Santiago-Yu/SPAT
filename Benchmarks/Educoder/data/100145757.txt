@@ -1,0 +1,111 @@
+package step4;
+import java.util.Scanner;
+public class Task {
+    	static boolean isLeap(int year)
+	{
+		if((year%400==0)||(year%4==0&&year%100!=0))
+			return true;
+		return  false;
+	}
+	static int numOfYM(int year,int month)
+	{
+		int temp=0;
+		if(isLeap(year))
+		{
+			temp+=1;
+		}
+		switch(month)
+		{
+		case 1:case 3:case 5:case 7:case 8:case 10:case 12:return 31;
+		case 2:return 28+temp;
+		case 4:case 6:case 9:case 11:return 30;
+		}
+		return -1;
+	}
+	public static String toType(String p)
+	{
+		String date[]=new String[3];
+		date=p.split("-");
+		int year=Integer.parseInt(date[0]);
+		int month=Integer.parseInt(date[1]);
+		int day=Integer.parseInt(date[2]);
+		if(month<10&&day<10)
+		{
+			return year+"-"+"0"+month+"-"+"0"+day;
+		}
+		else if(month<10)
+		{
+			return year+"-"+"0"+month+"-"+day;
+		}
+		else if(day<10)
+		{
+			return year+"-"+month+"-"+"0"+day;
+		}
+		else
+		{
+			return p;
+		}
+	}
+    public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String releaseDate = sc.nextLine();
+		int day = sc.nextInt();
+		Task task = new Task();
+		String time = task.getDate(releaseDate, day);
+		System.out.println(time);
+	}
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String date[]=new String[3];
+		date=releaseDate.split("-");
+		int year_p=Integer.parseInt(date[0]);
+		int month_p=Integer.parseInt(date[1]);
+		int day_p=Integer.parseInt(date[2]);
+		int dayofmonth_k=Task.numOfYM(year_p, month_p);
+		if(dayofmonth_k-day_p>=day)
+		{
+			day_p+=day;
+			String p=year_p+"-"+month_p+"-"+day_p;
+			return this.toType(p);
+		}
+		else
+		{
+			day-=(dayofmonth_k-day_p);
+			month_p++;
+			if(month_p==13)
+			{
+				month_p=1;year_p++;
+			}
+		}
+		while(true)
+		{
+			int dayofmonth=Task.numOfYM(year_p, month_p);
+			if(dayofmonth>=day)
+			{
+				String p=year_p+"-"+month_p+"-"+day;
+				return this.toType(p);
+			}
+			else
+			{
+				day-=dayofmonth;
+				month_p++;
+			}
+			
+			if(month_p==13)
+			{
+				month_p=1;year_p++;
+			}
+			
+		}
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

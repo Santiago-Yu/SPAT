@@ -1,0 +1,43 @@
+package Pid_101;
+
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String []args){
+		Scanner in=new Scanner(System.in);
+		String str1=in.nextLine();
+		String str2=in.nextLine();
+		String []a=new String[1500];
+		String []b=new String[1500];
+		int m=0;
+		int n=0;
+		for(int i=1;i<=str1.length();i++){
+			for(int j=0;j<=str1.length()-i;j++){
+				a[m]=str1.substring(j, j+i);
+				m++;
+			}
+		}
+		for(int i=1;i<=str2.length();i++){
+			for(int j=0;j<=str2.length()-i;j++){
+				b[n]=str2.substring(j, j+i);
+				n++;
+		}
+	}
+		int c[]=new int[100];
+		int h=0;
+		for (int i=0;i<m;i++){
+			for(int j=0;j<n;j++){
+				if(a[i].compareTo(b[j])==0){
+					c[h]=a[i].length();
+					h++;
+				}
+			}
+		}
+		int max=c[0];
+		for(int i=1;i<h;i++){
+			if(c[i]>max)
+				max=c[i];
+		}
+		System.out.print(max);
+}
+	}

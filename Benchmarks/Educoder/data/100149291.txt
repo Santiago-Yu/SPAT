@@ -1,0 +1,54 @@
+package step4;
+
+public class Task {
+    
+	public void love(int n){
+		/********* Begin *********/
+		double x,y,z, x1 = -1.2, x2 = -x1, y1 = 1.3, y2 = -1.10;
+		double x3= -1.1, x4=-x3, y3= 1.3, y4 = -1.11;
+        int i ,j;
+        //StringBuffer szChar = "I love you"
+		if(n==1){
+			for(i = 0 ; i < 41; i++ ){
+                y = y1 - i*(y1-y2)/40;
+				for(j = 0; j < 97; j++ ){
+                    x = x1 + j*x2/48;
+					z = x*x + y*y- 1;
+					z = z*z*z - x*x*y*y*y;
+                    if( i == 5 && ( j == 8 || j == 96-8 ) )System.out.print("$");
+                    else if( i == 31 && ( j == 28 || j == 96-28 ) )System.out.print(" ");
+					else if( i == 32 && ( j == 29 || j == 96-29  ) )System.out.print(" ");
+					//else if( i == 32 && ( j == 40 || j == 96-29 ) )System.out.print("&");
+					
+					else if( z <= 0.0 ){
+						System.out.print(" ");
+					}else{
+						System.out.print("$");
+					}
+                    
+				}
+				System.out.println("");
+			}
+		}
+		if(n==2){
+				String str="I love you!";
+				char[] astr=str.toCharArray();
+				for( y=(float)1.3;y>-1.1;y-=0.06){
+					int k=0;
+					for( x=-1.1;x<1.1;x+=0.025){
+						double a=(5.0*y/4.0-Math.sqrt(Math.abs(x)));
+						if(x*x+a*a<=1.0){
+							System.out.print(astr[(k++)%astr.length]);
+						}
+						else
+							System.out.print(" ");
+					}
+					System.out.print("\n");
+				}
+			
+
+		}
+		
+		/********* End *********/	
+	}
+}

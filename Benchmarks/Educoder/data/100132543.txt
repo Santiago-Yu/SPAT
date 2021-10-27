@@ -1,0 +1,29 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int a = sc.nextInt();	//长
+		int b = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int c = a*b;
+		int d = (int) Math.sqrt(c);
+		for(int i=d;i>0;i--) {
+			int e = i*i;
+			if(c%e==0&&a%i==0&&b%i==0) {
+				System.out.println(i);
+				System.out.println(c/e);
+				break;
+			}
+		}
+        
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

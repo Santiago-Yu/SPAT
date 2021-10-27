@@ -1,0 +1,19 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	int f[100000],t,q,g=0,i,j,k,ans=0;
+	while(scanf("%d",&q)!=EOF){
+		f[g++]=q;
+	}
+	t=f[g-1];
+	g--;
+	for(i=0;i<g;i++)
+		for(j=i+1;j<g;j++)
+			for(k=j+1;k<g;k++){
+				if(f[i]+f[j]+f[k]<t)
+					ans++;
+			}
+	printf("%d",ans);
+	return 0;
+}

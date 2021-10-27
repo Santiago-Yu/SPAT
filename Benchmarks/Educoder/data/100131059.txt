@@ -1,0 +1,35 @@
+package step1;
+import java.util.*;
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int l=num1;
+        int r=num2;
+        if(l>r){
+            int temp=l;
+            l=r;
+            r=temp;
+        }
+		int sub=r-l;
+        int t=l;
+        int []a=new int[sub+1];
+		for(int i=0;i<a.length;i++){
+            a[i]=t;
+            t++;
+        }
+        String[] s=new String[sub+1];
+        for(int j=0;j<s.length;j++){
+            s[j]=String.valueOf(a[j]);
+        }
+        int sum=0;
+        for(int k=0;k<s.length;k++){
+            for(int o=0;o<s[k].length();o++){
+                sum+=s[k].charAt(o)-48;
+            }
+        }
+        return sum;
+		/********** END **********/
+	}
+}

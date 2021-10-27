@@ -1,0 +1,25 @@
+package Step1;
+public class UnicodeDemo {
+    public String Encoding(String s) {
+       String tmp; 
+       int j;
+       StringBuffer F = new StringBuffer();
+       for (int i = 0; i < s.length(); i++) {
+           char c = s.charAt(i);
+           F.append("\\u"); 
+           j = (c >>>8); //取出高8位 
+           tmp = Integer.toHexString(j); 
+           if (tmp.length() == 1) 
+               F.append("0"); 
+           F.append(tmp); 
+           j = (c & 0xFF); //取出低8位 
+           tmp = Integer.toHexString(j); 
+           if (tmp.length() == 1) 
+               F.append("0"); 
+           F.append(tmp); 
+       }
+        
+        System.out.println(F.toString()); 
+        return s;
+    }
+}

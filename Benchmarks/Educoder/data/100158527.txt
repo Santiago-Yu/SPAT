@@ -1,0 +1,36 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+          Scanner in=new Scanner(System.in);
+	        String str1=in.nextLine();
+	        String str2=in.nextLine();
+	        in.close();
+	        if(str1.length()<str2.length()) {
+	        	String str=str1;
+	        	str1=str2;
+	        	str2=str;
+	        }
+	 if(str1.indexOf(str2)>=0) System.out.print(str2.length());
+	 else{
+		 
+		 for(int j=1;j<str2.length();j++)
+		 {
+		 
+		 for(int i=0;i<=j;i++)
+		 {
+		 String str=str2.substring(i,str2.length()-j+i );
+		 if(str1.indexOf(str)>=0) {System.out.print(str.length());
+		 System.exit(0);
+		 }
+		 }
+		 
+		 }
+		 
+		
+		 }
+	}
+
+}

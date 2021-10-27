@@ -1,0 +1,25 @@
+package Pid_106;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner in=new Scanner(System.in);
+        String str=in.nextLine();
+        String []a=new String[1500];
+        int m=0;
+        for(int i=0;i<str.length();i++){
+        	a[m]=str.substring(i,i+1);
+        	m++;
+        }
+        for(int i=0;i<m;i++){
+        	if(a[i].compareTo(" ")==0){
+        		a[i]="%10";
+        	}
+        }
+        for(int i=0;i<m;i++){
+        	System.out.print(a[i]);
+        }
+        in.close();
+	}
+
+}

@@ -1,0 +1,27 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    String folders = "+--";
+    String files = "--";
+	public void showDirStructure(File dir)	{
+        System.out.println("+--" + dir.getName());
+		printFolderItems(dir,"  ");
+	}
+	public void printFolderItems(File file, String indent){
+        for(File f : file.listFiles()){
+            if(f.isDirectory()){
+                System.out.println(indent + folders + f.getName());
+                String indentTemp = "  " + indent;
+                printFolderItems(f, indentTemp);
+            }
+            else{
+                System.out.println(indent + files + f.getName());
+            }
+        }
+    }
+	/********** END **********/
+}

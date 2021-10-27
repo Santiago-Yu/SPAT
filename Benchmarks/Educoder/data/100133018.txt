@@ -1,0 +1,50 @@
+package step3;
+
+public class Task {
+    
+public boolean isPowerCut(String date){
+        int ret=0;
+        boolean[] july=new boolean[32];
+        boolean[] aug=new boolean[32];
+        boolean[] sep=new boolean[31];
+        int d=1;
+        int i=1;
+        while(true){
+            if(i>31)break;
+            july[i]=true;
+            d++;
+            i+=d;
+        }
+
+        i=i-31;
+        while(true){
+            if(i>31)break;
+            aug[i]=true;
+            d++;
+            i+=d;
+        }
+
+        i=i-31;
+        while(true){
+            if(i>30)break;
+            sep[i]=true;
+            d++;
+            i+=d;
+        }
+        
+        String[] darr=date.split("-");
+        int m=Integer.parseInt(darr[0]);
+        int dd=Integer.parseInt(darr[1]);
+        switch (m){
+            case 7:
+                if(dd==31)dd=30;
+                return july[dd];
+            case 8:
+                return aug[dd];
+            case 9:
+                if(dd==31)dd=30;
+                return sep[dd];
+        }
+        return false;
+    }
+}

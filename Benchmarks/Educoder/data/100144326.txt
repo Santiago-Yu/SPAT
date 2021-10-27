@@ -1,0 +1,58 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public static void showDirStructure(File file) {
+		if (file.isDirectory()) {
+			System.out.println("+--" + file.getName());
+		}
+		int Blank = 2;
+		showDirStr(file, Blank);
+	}
+ 
+	public static void showDirStr(File file, int Blank ) {
+        //      
+        FileFilter filter = file222 -> {
+    	if (file222.isFile()) {
+        	String fileName   = file222.getName().toLowerCase();
+        if (fileName.endsWith(".png")) 
+        	{
+            return true;
+        	}
+        if (fileName.endsWith(".jpg"))
+            {
+            return true;
+        	}
+        if (fileName.endsWith(".bmp")) 
+            {
+            return true;
+        	}
+        else{
+            return false;
+            }
+        }
+    return true;
+	};
+    
+   
+		File[] files = file.listFiles(filter);
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory()) {
+				for (int k = 0; k < Blank; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("+--" + files[i].getName());
+				showDirStr(files[i], Blank+2);//通过迭代不断调用文件,用blank控制前面的空格数
+			} else {
+				for (int k = 0; k < Blank; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("--" + files[i].getName());
+			}
+		}       
+    }
+}

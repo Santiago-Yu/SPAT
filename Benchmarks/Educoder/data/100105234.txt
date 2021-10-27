@@ -1,0 +1,18 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+String[] strings = data.split(" ");//去空格。然后保存到数组
+		for (int i = 0; i < strings.length; i++) {
+		    StringBuffer stringBuffer = new StringBuffer(strings[i]);
+		    ans.append(stringBuffer.reverse());
+		    ans.append(" ");//再加上空格
+		}
+
+
+        /********** End *********/
+        return ans;
+    }
+}

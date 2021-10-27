@@ -1,0 +1,36 @@
+package step1;
+import java.util.Scanner;
+
+public class TestJava11_2 {
+	public static void main(String[] args) {
+        double x,y,z=0;
+        Scanner sc=new Scanner(System.in);
+		/******Begin******/
+	 System.out.println("请输入西瓜重量：");
+        x=sc.nextInt();
+        if(x>=20)
+        {
+          y=0.85*x;
+        } 
+        else if(x>=15){
+            y=0.9*x;
+        }
+        else if(x>=10){
+            y=0.95*x;
+        }
+        else if(x>=5){
+          y=x;
+           
+        }
+        else {
+            y=1.05*x;
+            
+        }
+        System.out.println("请输入顾客所付钱数：");
+        System.out.println("西瓜应付钱数："+y+0);
+        z=sc.nextInt();
+        System.out.println("应找钱数："+(z-y)+0);
+		/******End******/	
+	}
+
+}

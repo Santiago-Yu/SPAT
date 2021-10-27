@@ -1,0 +1,41 @@
+import java.util.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in=new Scanner(System.in);
+        int a=in.nextInt();
+        long i,j,m,k=1;
+        int sum=1;
+        if(a%2==0){
+        	for(i=1;i<a/2;i++){
+                k=1;
+                m=a-2*i+i;
+                for(j=m;j>=m-i+1;j--){
+                    k*=j;
+                }
+                for(j=1;j<=i;j++){
+                    k/=j;
+                }
+            	sum+=k;
+        	}
+            sum++;
+        }
+        else if(a%2==1){
+        	for(i=1;i<=a/2;i++){
+                k=1;
+                m=a-2*i+i;
+                for(j=m;j>=m-i+1;j--){
+                    k*=j;
+                }
+                for(j=1;j<=i;j++){
+                    k/=j;
+                }
+            	sum+=k;
+        	}
+        }
+        System.out.print(sum);
+	}
+
+}

@@ -1,0 +1,96 @@
+package step2;
+
+import java.awt.Point;
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        int lasti=0,lastj=0,cnt=0,i=0,j=0,tempx,tempy;
+		boolean finished = false;
+		outer:while(!finished) {
+			outer1:for(lasti=0; lasti<n; lasti++) {
+						for(lastj=0; lastj<m; lastj++) {
+							if(area[lasti][lastj] == 'o') {
+								i=lasti;
+								j=lastj;
+								area[i][j] = 'x';
+								break outer1;
+							}
+							if(lasti==n-1 && lastj==m-1) {
+								finished = true;
+								break outer;
+							}
+						}
+					}
+			//find o
+			cnt++;
+			//find o near o
+			Queue<Point> q = new LinkedList<Point>();
+			q.offer(new Point(i,j));
+			int[] xs = {-1,1,0,0};
+			int[] ys = {0,0,-1,1};
+			Point point = new Point();
+			while(!q.isEmpty()) {
+				point = q.poll();
+				tempx = point.x;
+				tempy = point.y;
+				int temp = 3;
+				while(temp >= 0) {
+					int x = tempx+xs[temp];
+					int y = tempy+ys[temp];
+					if(x>=0 && x<n && y>=0 && y<m && area[x][y]=='o') {
+						q.offer(new Point(x,y));
+						area[x][y] = 'x';
+					}
+					temp--;
+				}
+			}
+		}
+		return cnt;
+
+        /*int sum = 0;
+		Boolean ite = true;
+ 
+		outer: while (ite) {
+			int dx = 0, dy = 0, gx = 0, gy = 0;
+			outer1: for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					if (area[i][j] == 'o') {
+						gx = i;
+						gy = j;
+						break outer1;
+					}
+					if (i == n - 1 && j == m - 1) {
+						ite = false;
+						break outer;
+					}
+				}
+			}
+ 
+			area[gx][gy] = 'x';
+			Queue<Point> q = new LinkedList<Point>();
+			int[] tx = { -1, 1, 0, 0 };
+			int[] ty = { 0, 0, 1, -1 };
+			q.offer(new Point(gx, gy));
+ 
+			while (q.size() > 0) {
+				Point p = q.poll();
+				for (int i = 0; i < 4; i++) {
+					int x = p.x + tx[i];
+					int y = p.y + ty[i]; // p为当前位置；
+					if (x >= 0 && x < n && y >= 0 && y < m && area[x][y] == 'o') {
+						area[x][y] = 'x';
+						q.offer(new Point(x, y));
+					}
+				}
+			}
+ 
+			sum++;
+		}
+		return sum;*/
+		/********* End *********/	
+	}
+}

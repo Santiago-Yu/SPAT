@@ -1,0 +1,67 @@
+package step1;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+public class Task {
+	
+	public void sort(Integer[] k){
+		List<Integer> integers = new ArrayList<>();
+		int[] arr = new int[k.length];
+		for (int i = 0; i < k.length; i++) {
+			integers.add(k[i]);
+			arr[i] = k[i];
+		}
+		Collections.sort(integers);// 排序完
+		int z;
+		for (z = 0; z < integers.size(); z++) {
+			if (integers.get(z) != arr[z]) {
+				break;
+			}
+		}
+		if (z == integers.size()) {
+			for (int i = 0; i < k.length; i++) {
+				System.out.print(arr[i]+" ");
+			}
+            System.out.println();
+		} else {
+			int i = 0;
+			boolean bz = false;
+			OUT: while (true) {
+				if (i == arr.length - 2) {
+					bz = true;
+				} else if (i == 0) {
+					bz = false;
+				}
+				int a = arr[i];
+				int b = arr[i + 1];
+				int temp;
+				if (a > b) {
+					temp = arr[i];
+					arr[i] = arr[i + 1];
+					arr[i + 1] = temp;
+					for (int j = 0; j < arr.length; j++) {
+						System.out.print(arr[j] + " ");
+					}
+                    System.out.println();
+				}
+				if (!bz) {
+					i++;
+				} else {
+					i--;
+				}
+				int j;
+				for (j = 0; j < integers.size(); j++) {
+					if (integers.get(j) != arr[j]) {
+						break;
+					}
+				}
+				if (j == integers.size()) {
+					break OUT;
+				}
+			}
+
+		}
+	
+		/********* End *********/
+	}
+}

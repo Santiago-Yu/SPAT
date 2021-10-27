@@ -1,0 +1,21 @@
+package step1;
+import java.math.BigInteger;
+public class GetScores {
+   public int getLostScores(int[] nums){
+        int[] numarr = new int[10001];
+        for(int num : nums){
+            numarr[num]=1;
+        }
+        StringBuilder st = new StringBuilder();
+        //遍历一次找到数组中为0的数据的下标,就是要找的三个数值
+        for(int i=1;i<=10000;i++){
+            if(numarr[i]==0){
+                st.append(i);
+            }
+        }
+        BigInteger b =new BigInteger(st.toString());
+        return b.mod(BigInteger.valueOf(11)).intValue();
+    }
+
+	/********* End *********/
+}

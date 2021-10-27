@@ -1,0 +1,34 @@
+package step2;
+import java.util.*;
+
+public class BestTeam {
+
+	long maxProduct=0x8fffffff;//记录最大乘积
+	public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		long curProduct=1;//记录当前乘积
+		__getBestTeam(abilities,0,numbers-1,selectedNum,distance,curProduct);
+		return maxProduct;
+	}
+	
+	private void __getBestTeam(int[] abilities,int curIndex,int lastIndex,int selectedNum,int distance,long curProduct) {
+		//已经选满了
+		if(selectedNum==0 && curProduct>maxProduct) maxProduct=curProduct;
+		//已经走到尾了
+		if(curIndex>abilities.length-1) return;
+		//在范围内的元素有两种选择
+		if(curIndex-lastIndex<=distance) {
+			//选择当前元素
+			long curBackup=curProduct;
+			curProduct*=abilities[curIndex];
+			for(int i=curIndex+1;i<=curIndex+distance;i++) {
+				__getBestTeam(abilities,i,curIndex,selectedNum-1,distance,curProduct);
+			}
+			//不选择当前元素
+			curProduct=curBackup;
+			for(int i=curIndex+1;i<=curIndex+distance;i++) {
+				__getBestTeam(abilities,i,lastIndex,selectedNum,distance,curProduct);
+			}
+		}
+	}
+    
+}

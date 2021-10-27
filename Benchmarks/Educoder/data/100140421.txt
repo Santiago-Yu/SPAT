@@ -1,0 +1,49 @@
+package step3;
+
+
+//import java.util.Scanner;
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+        
+       /* int beginIndex=fileName.lastIndexOf(".");
+        
+        if(beginIndex!=-1){
+            String lastName=fileName.substring(beginIndex,fileName.length());
+            if(beginIndex!=0&&lastName.equals(",java")){
+                System.out.println("Java文件名正确");
+            }else{
+                System.out.println("Java文件名无效");
+            }
+        }else{
+            System.out.println("Java文件名无效");
+        }
+        
+        int atIndex=email.lastIndexOf("@");
+        int pointIndex=email.lastIndexOf(".");
+        if(atIndex!=-1&& atIndex<pointIndex){
+            System.out.println("邮箱名正确");
+        }else{
+            System.out.println("邮箱名无效");
+        }
+    }*/
+           
+        
+        
+        int index = fileName.lastIndexOf('.');
+        String fileFormat = fileName.substring(index+1, fileName.length());
+        if(index!=-1 && index!=0 && fileFormat.equalsIgnoreCase("java")){
+            System.out.println("Java文件名正确");
+        }else{
+            System.out.println("Java文件名无效");
+        }
+        
+	
+	
+		if (email.indexOf('.')!=-1 && email.indexOf('.')!=0&&email.lastIndexOf('@')!=-1 &&email.lastIndexOf('.')>email.lastIndexOf('@')) {
+            System.out.println("邮箱名正确");
+	}else{
+            System.out.println("邮箱名无效");
+        }
+    } 
+}

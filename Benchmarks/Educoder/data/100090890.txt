@@ -1,0 +1,48 @@
+package step3;
+import java.util.*;
+import step2.ListNode;
+public class LinkedList {
+    ListNode head;  // 链表的头结点
+    private int length;  // 链表的长度
+
+    // 构造函数
+    public LinkedList() {
+        length = 0;
+    }
+    
+    // 获取链表长度
+    public int getLength() {
+        return length;
+    }
+
+    // 返回链表的头结点
+    public synchronized ListNode getHead() { 
+        return head; 
+    }
+    
+    // 获取对应位置的节点
+    public synchronized ListNode getAt(int position) {
+    		// 请在此提供实现代码
+            int i=0;
+            ListNode n=getHead();
+            while(i<position){
+                n=n.getNext();
+                i++;
+            }
+            return n;
+            
+    }
+    
+    // 在链表末尾追加一个节点
+    public synchronized void insertAtEnd(ListNode node) {
+        if (head == null) 
+            head = node;
+        else {
+            ListNode p, q;
+            for(p = head; (q = p.getNext()) != null; p = q);
+                p.setNext(node);
+        }
+        length ++;
+    }
+
+}

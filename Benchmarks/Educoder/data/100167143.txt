@@ -1,0 +1,469 @@
+class Character{
+
+    char c;
+
+    Character(char c){
+        this.c=c;
+    }
+
+    void setC(char c){
+        this.c=c;
+    }
+
+    boolean isLetter(){
+        if(c>='a'&&c<='z'||c>='A'&&c<='Z'){
+            return true;
+        }
+        return false;
+    }
+
+    boolean isDigit(){
+        if(c>='0'&&c<='9'){
+            return true;
+        }
+        return false;
+    }
+
+
+}
+
+class Words{
+
+    int seq;
+    String token;
+    int num;
+
+    Words(int seq,String token,int num){
+        this.seq=seq;
+        this.token=token;
+        this.num=num;
+    }
+
+}
+
+public class Java_LexAnalysis{
+    private static StringBuffer prog = new StringBuffer();
+    private static String progstr;
+    private static StringBuffer token=new StringBuffer();
+    private static HashMap<String,Integer> tokens=new HashMap<>();
+    private static int index=0;
+    private static int seq=0;
+    private static List<Words> wordsList=new ArrayList<>();
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine()){
+            String str=sc.nextLine();
+            prog.append(str);
+            if(str.contains("//")){
+               prog.append('\n');
+            }
+        }
+        progstr=prog.toString();
+    }
+
+
+    // add your method here!!
+    public static void initialize() throws IOException {
+        String[] strs={"auto","break","case","char","const","continue",
+        "default","do","double","else","enum","extern","float","for",
+         "goto","if","int","long","register","return","short","signed","sizeof",
+        "static","struct","switch","typedef","union","unsigned","void","volatile",
+        "while","-","--","-=","->","!","!=","%","%=","&","&&","&=","(",")","*",
+        "*=",",",".","/","/=",":",";","?","[","]","^","^=","{",
+        "|","||","|=","}","~","+","++","+=","<","<<","<<=","<=","=","==",">",
+        ">=",">>",">>=","\"","注释","number","variable"};
+        for(int i=0;i<strs.length;i++){
+            tokens.put(strs[i],i+1);
+        }
+    }
+
+
+    public static void analyze(){
+        char c=progstr.charAt(index);
+        Character current=new Character(c);
+        token.delete(0,token.length());
+        while(c==' '){
+            index++;
+            c=progstr.charAt(index);
+        }
+        current.setC(c);
+        if(current.isLetter()){
+           while((current.isLetter()||current.isDigit())&&index<progstr.length()){
+               c=progstr.charAt(index);
+               current.setC(c);
+                if(c==' '){
+                    break;
+                }
+                if(current.isDigit()||current.isLetter()) {
+                    token.append(c);
+                    index++;
+                }
+
+           }
+           if(tokens.containsKey(token.toString())){
+               seq++;
+               Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+               wordsList.add(word);
+           }else{
+               seq++;
+               Words word=new Words(seq,token.toString(),tokens.get("variable"));
+               wordsList.add(word);
+        }
+        }
+        else if(current.isDigit()){
+            while(current.isDigit()&&index<progstr.length()){
+                 c=progstr.charAt(index);
+                 current.setC(c);
+                 if(c==' '){
+                     break;
+                 }
+                 if(current.isDigit()){
+                     token.append(c);
+                     index++;
+                 }
+            }
+            seq++;
+            Words word=new Words(seq,token.toString(),80);
+            wordsList.add(word);
+        }
+        else if(c=='('||c==')'||c==','||c=='.'||c==':'||c==';'||c=='?'||c=='['||c==']'||c=='{'||c=='}'||c=='~'||c=='\"'){
+            seq++;
+            token.append(c);
+            Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+            wordsList.add(word);
+           index++;
+        }
+        else{
+            token.append(c);
+            switch(c){
+                case '<':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else if(c=='<'){
+                        if(progstr.charAt(index+2)!='='){
+                            token.append(c);
+                            Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                            wordsList.add(word);
+                            index+=2;
+                        }else{
+                            token.append(c);
+                            token.append('=');
+                            Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                            wordsList.add(word);
+                            index+=3;
+                        }
+                    }else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '>':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else if(c=='>'){
+
+                        if(progstr.charAt(index+2)!='='){
+                             token.append(c);
+                             Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                             wordsList.add(word);
+                             index+=2;
+                        }else{
+                            token.append(c);
+                            token.append('=');
+                            Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                            wordsList.add(word);
+                            index+=3;
+                        }
+                    }else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '+':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='+'){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '-':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='-'){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else if(c=='='){
+                            token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }else if(c=='>'){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                       index+=2;
+                    }
+                    else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                   break;
+                case '=':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '!':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '&':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='&'){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '%':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }else if(c=='d'||c=='c'){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),81);
+                        wordsList.add(word);
+                        index+=2;
+                    }
+                    else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '/':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    current.setC(c);
+                    c=progstr.charAt(index+1);
+                    if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }else if(c=='/'){
+                        index++;
+                        while(c!='\n'){
+                            token.append(c);
+                            index++;
+                            c=progstr.charAt(index);
+                        }
+                        Words word=new Words(seq,token.toString(),79);
+                        wordsList.add(word);
+                    }else if(c=='*'){
+                        String subStr=progstr.substring(index,progstr.length());
+                        int len=subStr.indexOf("*/");
+                        token.append(subStr.subSequence(1,len+2));
+                        index+=len+2;
+                        Words word=new Words(seq,token.toString(),79);
+                        wordsList.add(word);
+                    }
+                    else{
+                        index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                case '*':
+                    seq++;
+                    if(index==progstr.length()-1){
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index++;
+                        break;
+                    }
+                    c=progstr.charAt(index+1);
+                    current.setC(c);
+                    if(c=='='){
+                        token.append(c);
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                        index+=2;
+                    }else{
+                       index++;
+                        Words word=new Words(seq,token.toString(),tokens.get(token.toString()));
+                        wordsList.add(word);
+                    }
+                    break;
+                default:
+                    index++;
+                    break;
+            }
+
+        }
+
+    }
+
+
+
+    private static void printAns(){
+       for(int i=0;i<wordsList.size()-1;i++){
+           System.out.println(wordsList.get(i).seq+": <"+wordsList.get(i).token+","+wordsList.get(i).num+">");
+       }
+        System.out.print(wordsList.get(wordsList.size()-1).seq+": <"+wordsList.get(wordsList.size()-1).token+","+wordsList.get(wordsList.size()-1).num+">");
+
+    }
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        while(index<prog.toString().length()){
+            analyze();
+        }
+        printAns();
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) throws IOException {
+        initialize();
+        analysis();
+
+    }
+}

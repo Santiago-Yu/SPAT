@@ -1,0 +1,21 @@
+    public Object createInst() {
+        try {
+            Object z;
+            if (_prototype != null) {
+                z = _prototype.createSame();
+            } else if (_ownerObject == null) {
+                z = getCls().newInstance();
+            } else {
+                Constructor[] c = getCls().getConstructors();
+                z = c[0].newInstance(_ownerObject);
+            }
+            if (_initers != null) {
+                for (IInitObject initer : _initers) {
+                    initer.initObject(z);
+                }
+            }
+            return z;
+        } catch (Exception e) {
+            throw new MfError(e, "袨褕懈斜泻邪 锌褉懈 褋芯蟹写邪薪懈懈 芯斜褗械泻褌邪 泻谢邪褋褋邪 [{0}]", getIdObject());
+        }
+    }

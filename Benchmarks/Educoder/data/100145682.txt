@@ -1,0 +1,43 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+        int[] months = {31,28,31,30,31,30,31,31,30,31,30,31};
+        String[] strs = releaseDate.trim().split("-");
+        int year = Integer.parseInt(strs[0]),month = Integer.parseInt(strs[1]);
+        day += Integer.parseInt(strs[2]);
+
+        boolean isLeapYear = isLeapYear(year);
+        int tmpday = months[month-1];
+        while(day>0){
+            if(month == 2) {
+                if (isLeapYear)
+                    tmpday += 1;
+            }
+            if(day>months[month-1]){
+                month++;
+                if(month >12){
+                    month -=12;
+                    year++;
+                    isLeapYear = isLeapYear(year);
+                }
+                day-= tmpday;
+            }else{
+                break;
+            }
+            tmpday = months[month-1];
+        }
+        return String.valueOf(year)+"-"+(month <=9?"0":"")+String.valueOf(month)+"-"+(day <=9?"0":"")+String.valueOf(day);
+        /********* End *********/
+	}
+    
+    private static boolean isLeapYear(int year){
+        return (year%4==0 && year%100!=0) || year%400==0;
+    }
+	
+	
+}
+

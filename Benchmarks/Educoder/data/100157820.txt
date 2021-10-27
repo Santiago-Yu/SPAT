@@ -1,0 +1,43 @@
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+       Scanner in=new Scanner(System.in); 
+		int max=in.nextInt();
+		in.nextLine();
+        String s=in.nextLine();
+        String[] x1=s.split(" ");
+        int[] x=new int[x1.length];
+        for(int i=0;i<x1.length;i++){
+            x[i]=Integer.parseInt(x1[i]);
+        }
+        /*int j;
+        for(int i=1;i<x1.length;i++){
+            int temp=x[i];
+            for(j=i;j>0&&x[j-1]<temp;j--) x[j]=x[j-1];
+            x[j]=temp;
+        } */    
+        System.out.print(mmm(max,x));
+	}
+static int mmm(int max,int[] num){
+		int k=num.length;
+		int[][] f=new int[k][max+1];
+		for(int i=0;i<k;i++){
+			for(int j=1;j<=max;j++){
+				if(i==0){
+					f[i][j]=(j>=num[i])?num[i]:0;
+					continue;
+				}
+				if(j>=num[i]){
+					f[i][j]=f[i-1][j]>f[i-1][j-num[i]]+num[i]?f[i-1][j]:f[i-1][j-num[i]]+num[i];
+				}
+				else{
+					f[i][j]=f[i-1][j];
+				}
+			}
+		}
+		return f[k-1][max];
+	}
+}

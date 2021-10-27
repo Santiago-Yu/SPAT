@@ -1,0 +1,31 @@
+package step4;
+
+import java.util.Scanner;
+
+public class HelloSwitch {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		System.out.println("请输入月份：");
+		
+		int p = sc.nextInt();	//获取输入的月份
+		int i=0;
+        //通过输入的月份来判断当前季节并输出
+		/*****start*****/
+	i=(p>=3&&p<=5)?1:((p>=6&&p<=8)?2:(p>=9&&p<=11)?3:4);
+		switch (i){
+				case (1):System.out.println(p+"月是春天");
+			break;
+				case (2):System.out.println(p+"月是夏天");
+			break;
+				case (3):System.out.println(p+"月是秋天");
+			break;
+				case (4):System.out.println(p+"月是冬天");
+			break;
+		}
+	
+		
+		/*****end*****/
+		
+	}
+}

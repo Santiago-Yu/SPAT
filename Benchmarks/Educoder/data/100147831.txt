@@ -1,0 +1,21 @@
+package step4;
+
+public class ThreadHelper {
+		static public void calcOnNewThread(int c) {
+			new Thread(new Runnable() {
+				public void run() {
+				int result=1;
+					try {
+						Thread.sleep(1000);
+					}catch(InterruptedException e){
+		                e.printStackTrace();
+		            }
+					for (int i = 1; i <= c; i++) {
+						result*=i;
+					}
+					System.out.println(result);
+				}
+			}).start();;
+		}	
+		private ThreadHelper() {}
+}

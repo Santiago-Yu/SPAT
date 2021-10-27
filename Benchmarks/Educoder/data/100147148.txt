@@ -1,0 +1,33 @@
+package step2;
+import java.util.*;
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		return getBestTeamCore(abilities,selectedNum,distance,1,-1);
+    }
+    
+    public long getBestTeamCore(int[] abilities, int selectedNum, int distance,int minSelect,int maxSelect){
+        if(selectedNum == 0){
+            return 1L;
+        }
+        
+        if(minSelect >= abilities.length || (maxSelect != -1 && maxSelect < minSelect)){
+            return 0L;
+        }
+        
+        //第一种:选minSelect
+        long re = abilities[minSelect];
+        re *= getBestTeamCore(abilities,selectedNum - 1,distance,minSelect + 1,minSelect + distance);
+        
+        //第二种:不选minSelect
+        long re2 = getBestTeamCore(abilities,selectedNum,distance,minSelect + 1,maxSelect);
+        
+        //最大的
+        return re > re2 ? re : re2;
+        
+    }
+
+	/********* End *********/
+}

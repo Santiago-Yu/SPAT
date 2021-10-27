@@ -1,0 +1,23 @@
+package step1;
+import java.util.Scanner;
+public class Yard {
+     float lon,wide;
+     Yard(float a,float b){
+         lon=a;
+         wide=b;
+     }
+     float getPerimeter(){
+         return 2*(lon+wide);
+     }
+     float getAcreage(){
+         return lon*wide;
+     }
+public static void main(String[] args){
+    float m,n;
+    Scanner scanner=new Scanner(System.in);
+    m=scanner.nextFloat();
+    n=scanner.nextFloat();
+    Yard yard=new Yard(m,n);
+    System.out.print(yard.getPerimeter()+" "+yard.getAcreage());
+}
+}

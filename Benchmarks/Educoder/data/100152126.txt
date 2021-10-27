@@ -1,0 +1,33 @@
+package step1;
+import java.lang.Math;
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double x=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+		 double s=0; 
+         
+          	s=Math.PI*(r1*r1+r2*r2);
+         if(r1+r2<=x) return s; 
+         
+         
+         else 
+         {
+         	if (r1>r2)  
+    		{  
+        		double tmp = r1;  
+        		r1 = r2;  
+        		r2 = tmp;  
+    		}  
+    		if(r2 - r1 >= x)  
+        		return Math.PI*r2*r2;  
+    		double ang1=Math.acos((r1*r1+x*x-r2*r2)/(2*r1*x));  
+    		double ang2=Math.acos((r2*r2+x*x-r1*r1)/(2*r2*x));  
+    		return s-(ang1*r1*r1 + ang2*r2*r2 - r1*x*Math.sin(ang1));
+
+         }
+		  
+		  /********* End *********/
+	  }
+}

@@ -1,0 +1,41 @@
+package step2;
+
+public class Task {
+    static int book[][]=new int[100][100];
+	 static void dfs(int x,int y,int c,char area[][],int n,int m){
+		int next[][]={{0,1},{1,0},{0,-1},{-1,0}};
+		int k,tx,ty;
+		area[x][y]=(char)c;
+		for(k=0;k<=3;k++)
+		{
+			tx=x+next[k][0];
+			ty=y+next[k][1];
+			//System.out.println(1);
+			if(tx<0||tx>n-1||ty<0||ty>m-1)
+				continue;
+			if(area[tx][ty]=='o'&&book[tx][ty]==0)
+			{
+				book[tx][ty]=1;
+				dfs(tx,ty,c,area,n,m);
+			}
+		}
+	}
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int num=0;
+		for(int i=0;i<n;i++)
+		{
+			for(int j=0;j<m;j++)
+			{
+				if(area[i][j]=='o'){
+					num--;
+					book[i][j]=1;
+					dfs(i,j,num,area,n,m);
+				}
+			}
+		}
+		
+		return -num;
+		/********* End *********/	
+	}
+}

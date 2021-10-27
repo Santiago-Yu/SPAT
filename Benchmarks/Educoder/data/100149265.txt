@@ -1,0 +1,38 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        int sum=0;
+		for(int i=0;i<n;i++) {
+			for(int j=0;j<m;j++) {
+				if(area[i][j]=='o') {
+					sum++;
+					make(area,i,j,n,m);
+				}
+			}
+		}
+        return sum;
+		/*
+		 * for(char[] datas:area) { for(char data:datas) { System.out.print(data+"\t");
+		 * } System.out.println(); }
+		 */
+	}
+	
+		
+		/********* End *********/	
+public  void make(char[][] area,int i,int j,int n,int m) {
+		if (i < 0 || i >= n || j < 0 || j >= m)
+			return;
+		if (area[i][j] != 'o')
+			return;
+
+		area[i][j] = 'i';
+		make(area, i + 1, j, n, m);
+		make(area, i - 1, j, n, m);
+		make(area, i, j + 1, n, m);
+		make(area, i, j - 1, n, m);
+
+	}
+}

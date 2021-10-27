@@ -1,0 +1,56 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	//for(File h:s){
+    //        System.out.println(h.getName());
+    int i;    
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+		 File[] files =file.listFiles();
+        System.out.println("+--"+file.getName());
+        for( i=0;i<files.length;i++){
+            if(files[i].isDirectory()){
+                System.out.println("  +--"+files[i].getName());
+                File[] files2=files[i].listFiles();
+                for(int j=0;j<files2.length;j++){
+                    if(files2[j].isDirectory()){
+                    System.out.println("    +--"+files2[j].getName());
+                        File[] files3=files2[j].listFiles();
+                        for(int k=0;k<files3.length;k++){
+                            if(files3[k].isDirectory()){
+                                System.out.println("      +--"+files3[k].getName());
+                                File[] files4=files3[k].listFiles();
+                                for(int l=0;l<files4.length;l++){
+                                    if(files4[l].isDirectory()){
+                                       System.out.println("        +--"+files4[l].getName());
+                                        File[] files5=files4[l].listFiles();
+                                        for(int m=0;m<files5.length;m++)
+                                        {
+                                            if(files5[m].isDirectory())
+                                                System.out.println("          +--"+files5[m].getName());
+                                            else
+                                                System.out.println("          --"+files5[m].getName());
+                                        }
+                                    }
+                                    else
+                                        System.out.println("        --"+files4[l].getName());
+                                }
+                            }
+                            else
+                                System.out.println("      --"+files3[k].getName());
+                        }
+                }
+                    else
+                        System.out.println("    --"+files2[j].getName());
+            }
+ 
+        }
+        else
+            System.out.println("  --"+files[i].getName());
+
+	}	
+    }
+	/********** End **********/
+}

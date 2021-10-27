@@ -1,0 +1,68 @@
+package task3;
+
+public class Task3 {
+	public static void main(String[] args) {
+		// 为大学生类实例化一个对象，并给这个大学生对象的所有属性赋值
+		// 打印输出：学号：2018，姓名：张三，专业：计算机科学与技术
+		/********* Begin *********/
+		university un=new  university();
+		un.setID("2018");
+		un.setName("张三");
+		un.setZhuany("计算机科学与技术");
+		System.out.println(un);
+		/********* End *********/
+	}
+}
+
+// 定义学生类，其包含2 个属性：学号，姓名
+/********* Begin *********/
+class Stude
+{
+	private String name;
+	private String ID;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getID() {
+		return ID;
+	}
+	public void setID(String ID) {
+		this.ID = ID;
+	}
+	public Stude() {}
+	public Stude(String name,String ID) 
+	{
+		this.name=name;
+		this.ID=ID;
+	}
+	
+}
+
+class university extends Stude
+{
+	private String zhuany;
+
+	public String getZhuany() {
+		return zhuany;
+	}
+
+	public void setZhuany(String zhuany) {
+		this.zhuany = zhuany;
+	}
+
+	
+	public String toString() {
+		return "学号："+this.getID()+"，姓名："+this.getName()+"，专业："+this.zhuany;
+	}
+	
+	
+}
+
+/********* End *********/
+// 定义大学生类，该类继承于学生类，并新增一个属性：专业
+/********* Begin *********/
+
+/********* End *********/

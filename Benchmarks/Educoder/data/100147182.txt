@@ -1,0 +1,38 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		long[][] max = new long[selectedNum + 1][numbers + 1];// 记录最大乘积
+        long[][] min = new long[selectedNum + 1][numbers + 1];// 记录最大乘积
+        // dmax[k][i]表示 : 当选中了k个学生，并且以第i个学生为结尾，所产生的最大乘积；
+        // dmin[k][i]表示 : 当选中了k个学生，并且以第i个学生为结尾，所产生的最小乘积；
+        long maxPower = Integer.MIN_VALUE;
+        for (int i = 1; i <= numbers; i++) {
+            //// 初始化 选取了一个学生后
+            max[1][i] = abilities[i];
+            min[1][i] = abilities[i];
+            for (int stuNum = 2; stuNum <= selectedNum; stuNum++) {
+                for (int j = i - 1; j > 0 && i - j <= distance; j--) {
+                    // 选择下一个学生的时候，有可能是负数乘以最小的值变成了最大的数。因为负负得正。
+                    max[stuNum][i] = mmax(max[stuNum][i],
+                            mmax(max[stuNum - 1][j] * abilities[i], min[stuNum - 1][j] * abilities[i]));
+                    min[stuNum][i] = mmin(min[stuNum][i],
+                            mmin(min[stuNum - 1][j] * abilities[i], max[stuNum - 1][j] * abilities[i]));
+                }
+            }
+            maxPower = mmax(max[selectedNum][i], maxPower);
+        }
+        return maxPower;
+    }
+    public static long mmax(long a,long b){
+    	return a>b? a:b;
+    }
+    public static long mmin(long a,long b){
+    	return a<b? a:b;
+    }
+
+	/********* End *********/
+}

@@ -1,0 +1,54 @@
+package step2;
+
+public class Task {
+	 public int getDaysNum(String startTime,String endTime){
+        int ret=0;
+        boolean[] july=new boolean[32];
+        boolean[] aug=new boolean[32];
+        int d=1;
+        int i=1;
+        while(true){
+            if(i>30)break;
+            july[i]=true;
+            d++;
+            i+=d;
+        }
+//        System.out.println(Arrays.toString(june));
+//        System.out.println("i="+i+"d="+d);
+        i=i-31;
+        while(true){
+            if(i>31)break;
+            aug[i]=true;
+            d++;
+            i+=d;
+        }
+//        System.out.println(Arrays.toString(july));
+//        System.out.println("i="+i+"d="+d);
+        String[] sarr=startTime.split("-");
+        String[] earr=endTime.split("-");
+        int sm=Integer.parseInt(sarr[0]);
+        int sd=Integer.parseInt(sarr[1]);
+        int em=Integer.parseInt(earr[0]);
+        int ed=Integer.parseInt(earr[1]);
+        if(sm==7&&em==7){
+            for(int k=sd;k<=ed;k++){
+                if(july[k])ret++;
+            }
+        }
+        if(sm==8&&em==8){
+            for(int k=sd;k<=ed;k++){
+                if(aug[k])ret++;
+            }
+        }
+        if(sm==7&&em==8){
+            for(int k=sd;k<=31;k++){
+                if(july[k])ret++;
+            }
+            for(int k=1;k<=ed;k++){
+                if(aug[k])ret++;
+            }
+        }
+        return ret;
+    }
+	
+}

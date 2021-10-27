@@ -1,0 +1,39 @@
+package step1;
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
+
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+         Set<Integer> result = new HashSet<Integer>();
+        Set<Integer> set1 = new HashSet<Integer>();//默认设置10000个数字
+        for (int i = 1; i <= 10000; i++) {
+            set1.add(i);
+        }
+
+        //取出数组中的元素
+        Set<Integer> set2 = new HashSet<Integer>();
+        for (int i = 0; i < nums.length; i++) {
+            set2.add(nums[i]);
+        }
+
+        result.addAll(set1);
+        result.removeAll(set2);//进行交集
+        String str = "";
+        for (Integer i : result) {
+            str += i;
+        }
+        BigInteger bg = new BigInteger(str).mod(new BigInteger("11"));
+        return Integer.parseInt(bg.toString());
+
+        
+       
+    
+	
+	}
+
+	/********* End *********/
+}

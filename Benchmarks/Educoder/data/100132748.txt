@@ -1,0 +1,45 @@
+package step3;
+
+public class Task {
+
+	 static int vis[][];
+	int ans=0;
+	static int l;
+	static int r;
+	static int dir[][]={{0,1},{0,-1},{-1,0},{1,0}};
+	static int checked(int x,int y){
+		if(x<0||x>=l||y<0||y>=r||vis[x][y]==1)
+			return 0;
+		return 1;
+	}
+	static void dfs(int i,int j,char[][] ferry){
+	  for(int k=0;k<4;k++){
+		  int t1=i+dir[k][0];
+		  int t2=j+dir[k][1];
+		  if(checked(t1,t2)==1&&vis[t1][t2]==0&&ferry[t1][t2]=='+'){
+		  vis[t1][t2]=1; 	  
+		  dfs(t1,t2,ferry);
+		  }
+	  }
+	}
+	 public int countOfShips(char[][] ferry) {
+	 ans=0;		 
+	 l=ferry.length;
+         if(l==0)
+		 return 0;
+	 r=ferry[0].length;
+         
+	 vis=new int[ferry.length][ferry[0].length];
+	 for(int i=0;i<ferry.length;i++)
+		 for(int j=0;j<ferry[i].length;j++){
+			if(vis[i][j]==0&&ferry[i][j]=='+'){
+			vis[i][j]=1;
+			dfs(i,j,ferry); 
+			ans++;
+			}
+		 }
+	 
+		return ans; 
+	 }
+	 
+}

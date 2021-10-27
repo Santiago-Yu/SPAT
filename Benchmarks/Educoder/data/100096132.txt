@@ -1,0 +1,33 @@
+package step2;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class MarkStatistics {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+            int num=10;
+            int t=0;
+        seak: for (int i = 0; i < num; i++){
+          int x=scanner.nextInt();
+          if(i>0) {
+              if(x==recordRecovery[i-1]) {
+              t++;
+          continue seak;}}
+               recordRecovery[i]=x;
+        }
+        Arrays.sort(recordRecovery);
+        
+        
+        /********** End *********/
+        for (int i = 0; i < num-t; i++) {
+            System.out.print(recordRecovery[i+t]);
+            if (i != num - t - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

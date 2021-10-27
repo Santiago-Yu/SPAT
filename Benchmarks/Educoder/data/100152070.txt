@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		double d;
+        double s,s1,s2,s3,angle1,angle2,temp;
+
+        d=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+        if(d>=(r1+r2))//两圆相离
+            return Math.PI*r1*r1+Math.PI*r2*r2;
+        if((r1-r2)>=d)//两圆内含,c1大
+            return Math.PI*r1*r1;
+        if((r2-r1)>=d)//两圆内含,c2大
+            return Math.PI*r2*r2;
+
+        angle1=Math.acos((r1*r1+d*d-r2*r2)/(2*r1*d));
+        angle2=Math.acos((r2*r2+d*d-r1*r1)/(2*r2*d));
+
+        s1=angle1*r1*r1;s2=angle2*r2*r2;
+        s3=r1*d*Math.sin(angle1);
+        s=s1+s2-s3;
+        return Math.PI*r1*r1+Math.PI*r2*r2-s;
+		  
+		  /********* End *********/
+	  }
+}

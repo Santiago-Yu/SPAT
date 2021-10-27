@@ -1,0 +1,42 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Logger;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar c1 = Calendar.getInstance();
+
+        try {
+            c1.setTime(sdf.parse(releaseDate));
+        } catch (ParseException ex) {
+           // Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (Calendar.YEAR % 4 == 0 && Calendar.YEAR % 100 != 0 || Calendar.YEAR % 400 == 0) {
+            c1.add(Calendar.DATE, day+1);
+        } else {
+            c1.add(Calendar.DATE, day);
+        }
+
+        return sdf.format(c1.getTime());
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

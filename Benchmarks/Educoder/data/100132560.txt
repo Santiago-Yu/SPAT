@@ -1,0 +1,36 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        int j=0,k=0;
+        int m=length;
+        int n=width;
+		   j=gct(m,n);
+        k=(m*n)/(j*j);
+        System.out.println(j);
+        System.out.println(k);
+    }
+    public static  int gct(int m,int n)
+    {
+        if(m%n==0)
+        {
+            return n;
+        }else{
+          return gct(n,m%n);
+        }
+    
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

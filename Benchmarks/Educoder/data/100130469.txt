@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+		public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		double n = sc.nextInt();
+		double sum = 0;
+		/********** BEGIN **********/
+		// 1a2 2a4 3a6
+		if (n % 2 == 0) {
+			for (double i = 1; i <= n / 2; i++) {
+				sum = 3 / (2 * i) + sum;
+
+			}
+			System.out.println(sum);
+		}
+		if (n % 2 == 1) {
+			// 1a1 2a3 3a5
+			for (double i = 1; i <= (n + 1) / 2; i++) {
+				sum = 4 / (2 * i - 1) + sum;
+
+			}
+			System.out.println(sum);
+		}
+
+		/********** END **********/
+	}
+}

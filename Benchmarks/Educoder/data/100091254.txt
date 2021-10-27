@@ -1,0 +1,50 @@
+package step2;
+
+public class TriangleJudge{
+
+    // 判断三条边能否构成一个三角形
+    public boolean TriangleJudge(int a, int b, int c) {
+        // 请在此添加实现代码
+        int t1=0,t2=0,t3=0;
+        if(a>b){
+        	if(b>=c){
+            	t1=a;
+                t2=b;
+                t3=c;
+            }
+            else{
+            	if(c>a){
+                	t1=c;
+                    t2=a;
+                    t3=b;
+                }
+                    
+                else{
+                	t1=a;
+                    t2=c;
+                	t3=b;
+                }
+            }
+                
+        }
+            
+  		else{
+        	if(a>c){
+            	t1=b;
+                t2=a;
+                t3=c;
+            }
+            else if(c>b){
+            	t1=c;
+                t2=b;
+                t3=a;
+            }
+                
+                
+        }
+        if(t2+t3>t1)
+            return true;
+        else 
+            return false;
+    }
+}

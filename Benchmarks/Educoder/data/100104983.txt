@@ -1,0 +1,23 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+        String str1=new String();
+        str1=scanner.nextLine();
+        String str2=new String();
+        str2=scanner.nextLine();
+        int x=str1.indexOf(str2);
+        int num=x;
+        while(x!=-1){
+        	System.out.println(num);
+        	str1=str1.substring(x+1);
+        	x=str1.indexOf(str2);
+        	num=num+x+1;
+        }
+        /********** End *********/
+    }
+}

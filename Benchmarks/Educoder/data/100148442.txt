@@ -1,0 +1,29 @@
+package step2;
+
+/********* Begin *********/
+//定义站台类，实现卖票的功能。
+public class Station extends Thread{
+static int tick = 20;
+//创建一个静态钥匙
+static Object ob = "aa";
+public void run(){
+while(tick>0){
+synchronized(ob){
+if(tick>0){
+System.out.println("卖出了第"+tick+"张票");
+tick--;
+}
+   if(tick<1){
+System.out.println("票卖完了");
+}
+}
+try {
+sleep(1000);//休息一秒
+} catch (Exception e) {
+e.printStackTrace();
+}
+}
+}
+}
+
+/********* End *********/

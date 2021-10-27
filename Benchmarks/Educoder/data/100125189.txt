@@ -1,0 +1,47 @@
+package step2;
+
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+
+public class InterRectangle {
+	private double length;
+	private double width;
+	public InterRectangle(int length,int width) {
+		this.length=(int)length;
+		this.width=(int)width;
+		//System.out.println("周长为："+perimeter(length,width));
+		//System.out.println("面积为："+area(length,width));
+	}
+	public InterRectangle(double length,double width) {
+		this.length=length;
+		this.width=width;
+		//System.out.println("周长为："+perimeter(this.length,this.width));
+		//System.out.println("面积为："+area(this.length,this.width));
+	}
+	
+	public double perimeter() {
+		return ((2*this.length)+(2*this.width));
+	}
+	public double area() {
+		return (this.length*this.width);
+	}
+	public static void main(String[] args) {
+		Scanner put = new Scanner(System.in);
+		//System.out.println("请输入土地的个数：");
+		int n = put.nextInt();
+		double allperimeter=0,allarea=0;
+		InterRectangle R;
+		
+		for(int i=1;i<=n;i++) {
+		//System.out.println("请输入第"+i+"个长和宽：");
+		double length = put.nextDouble();
+		double width = put.nextDouble();
+		R = new InterRectangle(length,width);
+		allperimeter+=R.perimeter();
+		allarea+=R.area();
+		}
+		System.out.println("总共有"+n+".0块土地");
+		System.out.println("土地总面积为:"+allarea+"平米");
+		System.out.println("土地总周长为:"+allperimeter+"米");
+	}
+}

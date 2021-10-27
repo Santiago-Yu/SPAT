@@ -1,0 +1,78 @@
+package step4;
+import java.time.*;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String[] d=releaseDate.split("-");
+		int year=Integer.valueOf(d[0]);
+		int month=Integer.valueOf(d[1]);
+		int day1=Integer.valueOf(d[2]);
+		int numDays=0,Fed,year1=year;
+		boolean flag=true;
+		while(flag) {
+			if(year%4==0&&year%100!=0||year%400==0) {
+				Fed=29;
+			}
+			else {
+				Fed=28;
+			}
+			if(year!=year1) {
+				month=1;
+			}
+			for(int m=month;m<=12;m++) {
+				switch(m) {
+					case 1:case 3:case 5:case 7:case 8:case 10:case 12:
+						if(m==month&&year==year1) {
+							numDays=numDays+31-day1;
+						}
+						else {
+							numDays+=31;
+						}
+						if(numDays>=day) {
+							numDays-=31;
+							flag=false;
+						}
+						break;
+					case 4:case 6:case 9:case 11:
+						if(m==month&&year==year1) {
+							numDays=numDays+30-day1;
+						}
+						else {
+							numDays+=30;
+						}
+						if(numDays>=day) {
+							numDays-=30;
+							flag=false;
+						}
+						break;
+					case 2:
+						if(m==month&&year==year1) {
+							numDays=numDays+Fed-day1;
+						}
+						else {
+							numDays+=Fed;
+						}
+						if(numDays>=day) {
+							numDays-=Fed;
+							flag=false;
+						}
+						break;
+				}
+				if(!flag) {
+					month=m;
+					break;
+				}
+			}
+			if(flag) {
+				year++;
+			}
+		}
+		day1=day-numDays;
+		LocalDate date=LocalDate.of(year, month, day1);
+		return date.toString();
+        /********* End *********/
+	}
+	
+	
+}

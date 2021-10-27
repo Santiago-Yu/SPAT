@@ -1,0 +1,30 @@
+package step2;
+
+public class MyThreadTest {
+	public static void main(String[] args) {
+		/********** Begin *********/
+        MyThread myThread = new MyThread("A");
+        Thread thread = new Thread(myThread);
+        thread.start();
+        MyThread myThread1 = new MyThread("B");
+        Thread thread1 = new Thread(myThread1);
+        thread1.start();
+		/********** End *********/
+	}
+}
+
+class MyThread implements Runnable{
+	private String name;
+    public MyThread(String name) {
+        /********** Begin *********/
+           this.name = name;
+        /********** End *********/
+    }
+    public void run() {
+        /********** Begin *********/
+ System.out.println("运行:"+this.name);
+        /********** End *********/
+    }  
+}
+
+

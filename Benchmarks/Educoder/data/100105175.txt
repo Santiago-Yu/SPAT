@@ -1,0 +1,23 @@
+package step3;
+
+import java.util.StringTokenizer;
+public class Reverse {
+    public static StringBuffer start(String data) {
+        
+        /********** Begin *********/
+		 
+        StringBuffer stringBuffer =  new StringBuffer(data);
+        StringBuffer lkong= new StringBuffer("");
+        StringTokenizer stringTokenizer = new StringTokenizer(data," ");
+        while(stringTokenizer.hasMoreTokens()){
+           String lingshi=stringTokenizer.nextToken();
+           StringBuffer stringBuffer1 = new StringBuffer(lingshi);
+           String ttt=stringBuffer1.reverse().toString();
+           lkong.append(ttt+" ");
+        }
+		
+        
+        /********** End *********/
+        return lkong;
+    }
+}

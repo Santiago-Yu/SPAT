@@ -1,0 +1,78 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+		/**********   Begin   **********/
+		File input = new File(filePath);
+        Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+        
+		return doc;
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+        List<String> list = new ArrayList<String>();
+        Elements links = doc.select("a[href]");
+        String str = "";
+        String url = "";
+        String text = "";
+		
+        for (Element link : links){
+            url = link.attr("abs:href");
+            text = link.text();
+        	str ="a$" + url + "("+text+")";
+            list.add(str);
+        }
+		return list;
+		/**********   End   **********/
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		/**********   Begin   **********/
+		List<String> list = new ArrayList<String>();
+		Elements links = doc.select("img[src]");
+
+        String str = "";
+        String url = "";
+		for (Element link : links){
+            url = link.attr("abs:src");
+        	str ="img$" + url;
+            list.add(str);
+        }
+
+		return list;
+		/**********   End   **********/
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		/**********   Begin   **********/
+		 List<String> list = new ArrayList<String>();
+		Elements links = doc.select("link[href]");
+        String str = "";
+        String url = "";
+        String rel = "";
+		for (Element link : links){
+            url = link.attr("abs:href");
+            rel = link.attr("rel");
+        	str ="link$" + url + "("+rel+")";
+            list.add(str);
+        }
+
+        return list;
+		/**********   End   **********/
+	}
+	
+}

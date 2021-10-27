@@ -1,0 +1,73 @@
+package step2;
+
+public class Task {
+    
+   
+    
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        //char b[][]={'0'};
+         char[][] b = new char[n][m];
+        int i,j;
+        int sum=0;
+        for(i=0;i<n;i++)
+       {
+        	for(j=0;j<m;j++)
+        	{
+            	b[i][j]=area[i][j];
+        	}
+       } 
+       for(i=0;i<n;i++)
+    	{
+        	 for(j=0;j<m;j++)
+         	{
+               if(b[i][j]=='o')
+               {
+                     function(area,b,i,j,n,m);
+                     sum++;
+               }
+            }
+           
+         
+       }
+
+		 return sum;
+		/********* End *********/	
+	}
+    
+     
+    
+    public void function(char[][] a,char[][] b,int i,int j,int n,int m)
+    {
+        
+      if(isarea(a,b,i,j,n,m))
+      {
+
+            function(a,b,i+1,j,n,m);
+            function(a,b,i-1,j,n,m);
+            function(a,b,i,j+1,n,m);
+            function(a,b,i,j-1,n,m);
+      }
+      else
+      {
+
+            return;
+      }
+  
+    }
+    
+     public boolean isarea(char[][] a,char[][] b,int i,int j,int n,int m){
+      if(j<0||j>m-1||i<0||i>n-1)
+      {
+            return false ;
+      }
+      if(a[i][j]=='o'&&b[i][j]=='o')
+      {
+            b[i][j]='x';
+            return true;
+      }
+      return false;
+   } 
+    
+}

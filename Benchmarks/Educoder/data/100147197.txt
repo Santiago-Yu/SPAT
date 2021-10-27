@@ -1,0 +1,54 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    int num;
+	int[] a;
+	int kk;
+	int d;
+	long max1 = 0;
+	long ans = 1;
+    
+    
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        num = numbers;
+        a = abilities;
+        kk = selectedNum;
+        d = distance;
+        
+        int count = 0;
+
+        for(int i=1;i<= num - kk + 1;i++) {
+            count++;
+            ans *= a[i];
+            if(ans > max1) {
+                max1 = ans;
+            }
+            dfs(i,count);
+            count--;
+            ans /= a[i];
+        }
+        return new Long(max1);
+    }
+    
+    private void dfs(int n, int count) {
+        if(count >= kk){
+            return ;
+        }
+        for(int i=1;i <= d && n+i<=num ;i++) {
+            count++;
+            ans *= a[n+i];
+            if(ans > max1) {
+                max1 = ans;
+            }
+            dfs(n+i,count);
+            count--;
+            ans /= a[n+i];
+        }
+    }
+    
+
+	/********* End *********/
+}

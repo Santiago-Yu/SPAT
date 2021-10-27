@@ -1,0 +1,47 @@
+package step1;
+
+public class Person {
+    private String name; //姓名
+    private String number; //身份证号
+    private Date birthday; //出生日期
+    
+   /************Begin*************/
+    public Person() {
+        name=null;
+        number=null;
+        birthday = new Date();
+    }
+	public Person (String name,String num,int year,int month,int day) {
+		this.name=name;
+		this.number=num;
+		birthday=new Date(year,month,day);
+	}
+	public Person (String name,String num,Date d_1) {
+		this.name=name;
+		this.number=num;
+		birthday=d_1;
+	}
+	public void setinfo(String name,String num,int year,int month,int day) {
+		this.name=name;
+		this.number=num;
+		birthday=new Date(year,month,day);
+	}
+	public void setName(String name) {this.name=name;}
+	public void setNum(String num) {this.number=num;}
+	public void setBirthday(int year,int month,int day) {
+		birthday=new Date(year,month,day);
+	}
+	public String getName() {return name;}
+	public String getNum() {return number;}
+	public String getBirthday() {return birthday.toString();}
+	public String toString() {
+		return "name="+name+" number="+number+" birthday:"+birthday.toString();
+	}
+
+    
+    
+    
+    
+   /************End*************/
+}
+

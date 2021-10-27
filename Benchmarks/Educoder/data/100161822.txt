@@ -1,0 +1,82 @@
+package task02;
+
+import java.util.Scanner;
+
+/*
+ * 说明：根据提示，补充完整 begin 和 end 之间的代码。
+ *     （其他代码可以不用改）
+ */
+
+/**************** begin *****************/
+// 在此定义学生类名
+
+/**************** end *****************/
+class Student {
+        /**************** begin *****************/
+        // 在此定义2个成员变量：姓名name和年龄age
+        private String name;
+        private int age;
+        public Student(){}
+        public Student(String name,int age){
+            this.name=name;
+            this.age = age;
+        }
+
+        public void setName(String name){
+            this.name = name;
+        }
+        public void setAge(int age){
+            this.age = age;
+        }
+        /**************** end *****************/
+
+        public void speak() {
+            System.out.println("我的名字是" + name + ",今年" + age + "岁");
+        }
+    }
+
+    public class Task02 {
+        public static void main(String[] args) {
+            Scanner scan = new Scanner(System.in);
+
+            /**************** begin *****************/
+            /*
+             * 创建Student类的第一个对象，其引用变量为s1，
+             * 使用s1分别为name和age赋值，值为运行时接收从键盘输入
+             * 然后调用speak()方法。
+             */
+            String s1name = scan.next();
+            int s1age = scan.nextInt();
+            String s2name = scan.next();
+            int s2age = scan.nextInt();
+            /**************** end *****************/
+            Student s1 = new Student();
+            s1.setName(s1name);
+            s1.setAge(s1age);
+            s1.speak();
+
+            /**************** begin *****************/
+            /*
+             * 创建Student类的第二个对象，其引用变量为s2，
+             * 使用s2分别为name和age赋值，值为运行时接收从键盘输入，
+             * 然后调用speak()方法。
+             */
+
+            /**************** end *****************/
+            Student s2 = new Student();
+            s2.setName(s2name);
+            s2.setAge(s2age);
+            s2.speak();
+            /**************** begin *****************/
+            /*
+             * 创建Student类的第三个对象，其引用变量为s3，
+             * 将s2的值赋给s3，
+             * 然后使用s3调用speak()方法。
+             */
+            Student s3 = new Student();
+            s3.setName(s2name);
+            s3.setAge(s2age);
+            s3.speak();
+            /**************** end *****************/
+        }
+    }

@@ -1,0 +1,71 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        int count = 0; //此次循环是否有交换
+        int t;
+        int c = 1; //判断当前数组是否已经完成排序
+        int init = 1; //判断初始是否就排序完成
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                init = 0;   //没有排序成功
+                break;
+            }
+        }
+        if (init == 1) {
+            for (int i = 0; i < arr.length; i++) {
+                System.out.print(arr[i] + " ");
+            }
+            System.out.println();
+        } else {
+            while (true) {
+                c=1;
+                for (int i = 0; i < arr.length - 1; i++) {
+                    if (arr[i] > arr[i + 1]) {
+                        t = arr[i];
+                        arr[i] = arr[i + 1];
+                        arr[i + 1] = t;
+                        count = 1;
+                    }
+                    if (count == 1) {
+                        for (int j = 0; j < arr.length; j++) {
+                            System.out.print(arr[j] + " ");
+                        }
+                        System.out.println();
+                        count = 0;
+                    }
+                }
+                for (int k = arr.length - 1; k > 0; k--) {
+                    if (arr[k] < arr[k - 1]) {
+                        t = arr[k];
+                        arr[k] = arr[k - 1];
+                        arr[k - 1] = t;
+                        count = 1;
+                    }
+                    if (count == 1) {
+                        for (int j = 0; j < arr.length; j++) {
+                            System.out.print(arr[j] + " ");
+                        }
+                        System.out.println();
+                        count = 0;
+                    }
+                }
+
+                for (int i = 0; i < arr.length - 1; i++) {
+                    if (arr[i] > arr[i + 1]) {
+                        c = 0;   //没有排序成功
+                        break;
+                    }
+                }
+                if (c == 1) {
+                    break;
+                }
+            }
+
+        }
+		
+		/********* End *********/
+	}
+}

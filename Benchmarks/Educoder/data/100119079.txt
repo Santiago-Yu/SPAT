@@ -1,0 +1,55 @@
+package setp17;
+import java.util.Arrays;
+import java.util.Scanner;
+public class HelloWorld {  
+  public static int getSum(int a,int b){
+           int c=a+b;
+          return c;
+     }
+  public  static double getAvg(double a,double b,double c){
+           double n=(a+b+c)/3;
+       
+      return n;
+     }
+   public static void printRect(int a,int b){
+       for(int i=1;i<=a;i++){
+           for(int j=1;j<=b;j++){
+         System.out.print("*");             
+           }
+           System.out.println();
+       }
+     }
+  public  static void sortArr(int a[]){
+        Arrays.sort(a);
+        for(int i=0;i<5;i++){
+            System.out.println(a[i]);
+        }
+    }            
+     public  static void Print99(){
+        for (int i=1;i<=9;i++   ) {
+            for(int j=1;j<=i;j++   ) {
+                System.out.print(j + " * " + i + " = " + i * j + "\t");
+            }
+            System.out.println();
+        }
+        }   
+    public static void main(String[]args){
+	 Scanner input=new Scanner(System.in);
+     int a=input.nextInt();
+     int b=input.nextInt();
+        getSum(a,b);
+     double c=input.nextDouble();
+     double v=input.nextDouble();
+     double z=input.nextDouble();
+        getAvg(c,v,z);
+      int m=input.nextInt();   
+      int j=input.nextInt();   
+        printRect(m,j);
+        int u[]=new int[5];
+        for(int i=0;i<5;i++){
+            u[i]=input.nextInt();
+        }
+           sortArr(u);
+         Print99();
+	}
+    }  

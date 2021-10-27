@@ -1,0 +1,321 @@
+/**
+ * @author Alfred Fu
+ * Created on 2019-05-06 11:06
+ */
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
+
+public class Java_LexAnalysis {
+
+    private static StringBuffer prog = new StringBuffer();
+    private static List<Result> results = new ArrayList<>();
+    private static HashMap<String,Integer> keywordDict = new HashMap<>();
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append('\n');
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+
+    private static void init(){
+        keywordDict.put("auto",1);
+        keywordDict.put("break",2);
+        keywordDict.put("case",3);
+        keywordDict.put("char",4);
+        keywordDict.put("const",5);
+        keywordDict.put("continue",6);
+        keywordDict.put("default",7);
+        keywordDict.put("do",8);
+        keywordDict.put("double",9);
+        keywordDict.put("else",10);
+        keywordDict.put("enum",11);
+        keywordDict.put("extern",12);
+        keywordDict.put("float",13);
+        keywordDict.put("for",14);
+        keywordDict.put("goto",15);
+        keywordDict.put("if",16);
+        keywordDict.put("int",17);
+        keywordDict.put("long",18);
+        keywordDict.put("register",19);
+        keywordDict.put("return",20);
+        keywordDict.put("short",21);
+        keywordDict.put("signed",22);
+        keywordDict.put("sizeof",23);
+        keywordDict.put("static",24);
+        keywordDict.put("struct",25);
+        keywordDict.put("switch",26);
+        keywordDict.put("typedef",27);
+        keywordDict.put("union",28);
+        keywordDict.put("unsigned",29);
+        keywordDict.put("void",30);
+        keywordDict.put("volatile",31);
+        keywordDict.put("while",32);
+        keywordDict.put("-",33);
+        keywordDict.put("--",34);
+        keywordDict.put("-=",35);
+        keywordDict.put("->",36);
+        keywordDict.put("!",37);
+        keywordDict.put("!=",38);
+        keywordDict.put("%",39);
+        keywordDict.put("%=",40);
+        keywordDict.put("&",41);
+        keywordDict.put("&&",42);
+        keywordDict.put("&=",43);
+        keywordDict.put("(",44);
+        keywordDict.put(")",45);
+        keywordDict.put("*",46);
+        keywordDict.put("*=",47);
+        keywordDict.put(",",48);
+        keywordDict.put(".",49);
+        keywordDict.put("/",50);
+        keywordDict.put("/=",51);
+        keywordDict.put(":",52);
+        keywordDict.put(";",53);
+        keywordDict.put("?",54);
+        keywordDict.put("[",55);
+        keywordDict.put("]",56);
+        keywordDict.put("^",57);
+        keywordDict.put("^=",58);
+        keywordDict.put("{",59);
+        keywordDict.put("|",60);
+        keywordDict.put("||",61);
+        keywordDict.put("|=",62);
+        keywordDict.put("}",63);
+        keywordDict.put("~",64);
+        keywordDict.put("+",65);
+        keywordDict.put("++",66);
+        keywordDict.put("+=",67);
+        keywordDict.put("<",68);
+        keywordDict.put("<<",69);
+        keywordDict.put("<<=",70);
+        keywordDict.put("<=",71);
+        keywordDict.put("=",72);
+        keywordDict.put("==",73);
+        keywordDict.put(">",74);
+        keywordDict.put(">=",75);
+        keywordDict.put(">>",76);
+        keywordDict.put(">>=",77);
+        keywordDict.put("\"",78);
+        keywordDict.put("\'",78);
+
+    }
+
+
+    private class Result{
+        String symbol;
+        int symbolMark;
+
+        Result(String symbol, int symbolMark) {
+            this.symbol = symbol;
+            this.symbolMark = symbolMark;
+        }
+
+        void print(int count, boolean isWrap){
+            StringBuilder sb = new StringBuilder();
+            sb
+                    .append(count)
+                    .append(": <")
+                    .append(symbol)
+                    .append(',')
+                    .append(symbolMark)
+                    .append('>');
+            if (isWrap)
+                sb.append('\n');
+            System.out.print(sb.toString());
+        }
+    }
+
+
+    /**
+     *
+     * @param currentIndex currentIndex points to the char that have not been read
+     * @param code static code
+     * @return it returns the index pointing to the char that have not been read
+     */
+    private int getToken(int currentIndex, String code) {
+        // corner case
+        if (currentIndex>=code.length())
+            return currentIndex+1;
+
+
+        //
+        // init
+        StringBuilder currentWord = new StringBuilder();
+
+        //
+        // filter the white space
+        // notice that now currentCharacter is NOT white space
+        // and currentIndex point to the same character that have not been read.
+        char currentCharacter = code.charAt(currentIndex);
+        while ( currentCharacter == '\t'
+                || currentCharacter == '\r'
+                || currentCharacter == '\n'
+                || currentCharacter == ' '
+                || currentCharacter == '\\'
+        ){
+            currentIndex+=1;
+            if (currentIndex>=code.length())
+                return code.length();
+            currentCharacter = code.charAt(currentIndex);
+        }
+
+        currentWord.append(currentCharacter);
+
+        //
+        //
+        int nextIndex = currentIndex+1;
+
+
+        // it is part of annotation?
+        if (currentCharacter=='/'){
+            // should consider the situation of '/' and '/='
+            //
+            if (code.charAt(nextIndex)=='*'){
+                // yep it is annotation
+                while (!(code.charAt(nextIndex)=='*'&&code.charAt(nextIndex+1)=='/')){
+                    nextIndex++;
+                }
+                // now nextIndex points to the '*'
+                results.add(new Result(code.substring(currentIndex,nextIndex+2),79));
+                return nextIndex+2;
+            }
+            else if(code.charAt(nextIndex)=='/'){
+                while(code.charAt(nextIndex)!='\n'&&code.charAt(nextIndex)!='\r'){
+                    nextIndex++;
+                }
+                results.add(new Result(code.substring(currentIndex,nextIndex),79));
+                return nextIndex+1;
+            }
+            else{
+                // Oops that's a arithmetic symbol
+                return simplyFindTheTable(code, currentWord, nextIndex);
+            }
+        }
+        // it is a String?
+        else if(currentCharacter=='\''||currentCharacter=='\"'){
+            while (code.charAt(nextIndex)!=currentCharacter){
+                nextIndex++;
+            }
+            results.add(new Result(String.valueOf(currentCharacter),keywordDict.get(String.valueOf(currentCharacter))));
+            results.add(new Result(code.substring(currentIndex+1,nextIndex),81));
+            results.add(new Result(String.valueOf(currentCharacter),keywordDict.get(String.valueOf(currentCharacter))));
+            return nextIndex+1;
+
+        }
+        // else it is identifier or keyword?
+        else if(currentCharacter == '_' ||
+                (currentCharacter >= 'a' && currentCharacter <= 'z') ||
+                (currentCharacter >= 'A' && currentCharacter <= 'Z')){
+            while (isIdentifier(code.charAt(nextIndex))){
+                currentWord.append(code.charAt(nextIndex));
+                nextIndex++;
+            }
+            results.add(new Result(currentWord.toString(),keywordDict.getOrDefault(currentWord.toString(),keywordDict.getOrDefault(currentWord.toString(),81))));
+            return nextIndex;
+
+        }
+        // else that could be number
+        else if(currentCharacter>='0'&&currentCharacter<='9'){
+            while (isDigit(code.charAt(nextIndex))){
+                nextIndex++;
+            }
+            results.add(new Result(code.substring(currentIndex,nextIndex),80));
+            return nextIndex;
+        }
+        // ouch just read the table
+        else {
+            return simplyFindTheTable(code, currentWord, nextIndex);
+        }
+    }
+
+    private int simplyFindTheTable(String code, StringBuilder currentWord, int nextIndex) {
+        while (keywordDict.containsKey(currentWord.toString())){
+            if (nextIndex+1>=code.length()){
+                results.add(new Result(currentWord.toString(),keywordDict.get(currentWord.toString())));
+                return nextIndex;
+            }
+            currentWord.append(code.charAt(nextIndex));
+            nextIndex++;
+
+        }
+        currentWord.deleteCharAt(currentWord.length()-1);
+        results.add(new Result(currentWord.toString(),keywordDict.get(currentWord.toString())));
+        return nextIndex-1;
+    }
+
+    private boolean isIdentifier(char currentCharacter){
+        return currentCharacter == '_' ||
+                (currentCharacter >= 'a' && currentCharacter <= 'z') ||
+                (currentCharacter >= 'A' && currentCharacter <= 'Z') ||
+                (currentCharacter>='0' && currentCharacter<='9')
+                ;
+    }
+
+    private boolean isDigit(char currentCharacter){
+        return (currentCharacter >= '0' && currentCharacter<='9') ||
+                // TODO: hex?
+                currentCharacter == 'x' ||
+                currentCharacter == 'e'||
+                currentCharacter == '.';
+    }
+
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private void analysis()
+    {
+        read_prog();
+
+        String code = prog.toString();
+
+        char[] charArray = code.toCharArray();
+
+        int currentIndex = 0;
+        int totalLength = code.length();
+
+        while (currentIndex<totalLength)
+            currentIndex = getToken(currentIndex,code);
+
+        for (int i = 0; i < results.size(); i++) {
+            if (i!=results.size()-1)
+                results.get(i).print(i+1,true);
+            else
+                results.get(i).print(i+1,false);
+        }
+
+    }
+
+
+
+
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        Java_LexAnalysis clazz = new Java_LexAnalysis();
+        init();
+        clazz.analysis();
+    }
+
+
+}

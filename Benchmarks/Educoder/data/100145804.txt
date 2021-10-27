@@ -1,0 +1,25 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		String input ="";
+        try {
+			java.util.Date date = sdf.parse(releaseDate);
+			java.util.Calendar c = java.util.Calendar.getInstance();
+			c.setTime(date);
+			c.add(java.util.Calendar.DAY_OF_YEAR, day);
+			date = c.getTime();
+			input = sdf.format(date);
+		} catch (java.text.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return input;
+        /********* End *********/
+	}
+	
+	
+}

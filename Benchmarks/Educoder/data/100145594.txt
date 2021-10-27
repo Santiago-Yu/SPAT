@@ -1,0 +1,129 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+				String s="";
+		String c="";
+		int data=0;
+		int month=0;
+		int year=0;
+		int i;
+		for(i=0;i<4;i++) {
+			c=c+releaseDate.charAt(i);
+		}
+		year=Integer.parseInt(c);
+		c="";
+		for(i=5;i<7;i++) {
+			c=c+releaseDate.charAt(i);
+		}
+		month=Integer.parseInt(c);
+		c="";
+		for(i=8;i<releaseDate.length();i++) {
+			c=c+releaseDate.charAt(i);
+		}
+		data=Integer.parseInt(c);
+		
+		
+		
+		
+		data=data+day;
+		while(year>0) {
+			if(year%400==0||(year%4==0&&year%100!=0)) {
+					switch(month) {
+					case 1:case 3:case 5:case 7:case 8:case 10:
+						if(data<=31)
+							break;
+						else {
+							month++;
+							data=data-31;
+							break;
+						}
+					case 4:case 6:case 9:case 11:
+						if(data<=30) break;
+						else {
+							month++;
+							data=data-30;
+							break;
+						}
+					case 2:
+						if(data<=29)
+							break;
+						else {
+							month++;
+							data=data-29;
+							break;
+						}
+					case 12:
+						if(data<=31)
+							break;
+						else {
+							year++;
+							month=1;
+							data=data-31;
+							break;
+						}
+					}				
+			}
+			else {
+					switch(month) {
+					case 1:case 3:case 5:case 7:case 8:case 10:
+						if(data<=31)
+							break;
+						else {
+							month++;
+							data=data-31;
+							break;
+						}
+					case 4:case 6:case 9:case 11:
+						if(data<=30) break;
+						else {
+							month++;
+							data=data-30;
+							break;
+						}
+					case 2:
+						if(data<=28)
+							break;
+						else {
+							month++;
+							data=data-28;
+							break;
+						}
+					case 12:
+						if(data<=31)
+							break;
+						else {
+							year++;
+							month=1;
+							data=data-31;
+							break;
+						}
+					}
+			}
+			if((month==1||month==3||month==5||month==7||month==8||month==10||month==12)&&data<=31)
+				break;
+			else if((month==4||month==6||month==9||month==11)&&data<=30)
+				break;
+			else if(month==2&&data<=29)
+				break;
+		}
+		
+		
+		
+		s=s+year;
+		if(month<10)
+			s =s+"-0"+month;
+		else s =s+"-"+month;
+		if(data<10)
+			s =s+"-0"+data;
+		else s =s+"-"+data;
+		return s;
+
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,63 @@
+package step4;
+
+import java.util.Scanner;
+
+public class DayCount{
+	public void dayCount(int year, int month, int day) {
+			/********** Begin *********/
+		int s=0;
+		if(year/4==0) {
+			switch(month) {
+			case 1:
+			case 2:
+				s=month/2*31+day;
+				break;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				s=month/2*31+(month-month/2-2)*30+29+day;
+				break;
+			case 9:
+			case 10:
+			case 11:
+			case 12:
+				s=(month/2+1)*31+(month-month/2-2)*30+29+day;
+				break;
+			}
+		}else {
+			switch(month) {
+			case 1:
+			case 2:
+				s=month/2*31+day;
+				break;
+			case 3:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				s=month/2*31+(month-month/2-2)*30+28+day;
+				break;
+			case 9:
+			case 10:
+			case 11:
+			case 12:
+				s=(month/2+1)*31+(month-month/2-2)*30+28+day;
+				break;
+			}
+		}
+		System.out.print(s);
+	}
+	public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        DayCount a=new DayCount();
+        int b= scanner.nextInt();
+        int c= scanner.nextInt();
+        int d= scanner.nextInt();
+        a.dayCount(b,c,d);
+			/********** End *********/
+		}
+	}

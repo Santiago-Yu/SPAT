@@ -1,0 +1,39 @@
+package step1;
+
+/**
+ * Created by sykus on 2018/3/20.
+ */
+public class SelectionSort {
+
+    /**
+     * 选择排序
+     *
+     * @param arr
+     */
+    public static void sort(int arr[]) {
+        /********** Begin *********/
+	for(int a=0;a<arr.length-1;a++)
+    {
+        for(int b=a+1;b<arr.length;b++)
+            if(arr[a]>arr[b])
+            {
+                int c=arr[a];
+                arr[a]=arr[b];
+                arr[b]=c;
+            }
+        SelectionSort.print(arr);
+    }
+        
+        
+        
+        /********** End *********/
+    }
+
+    private static void print(int arr[]) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i]+" ");
+        }
+        System.out.println();
+    }
+
+}

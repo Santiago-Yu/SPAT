@@ -1,0 +1,124 @@
+package case3;
+
+import java.util.Scanner;
+
+public class Task3 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String pppName = sc.next();
+		int pppAge = sc.nextInt();
+		String bpName = sc.next();
+		int bpAge = sc.nextInt();
+		String ppcName = sc.next();
+		int ppcAge = sc.nextInt();
+		String bcName = sc.next();
+		int bcAge = sc.nextInt();
+		pingpangplayer ppp = new pingpangplayer(pppName,pppAge);//构造函数实例化PingPangPlayer对象ppp
+		ppp.sleep();ppp.eat();ppp.study();ppp.speak();
+		
+		
+		System.out.println("----------------");
+		
+		basketballplayer bp=new basketballplayer(bpName,bpAge);
+		 bp.sleep();bp.eat();bp.study();
+		
+		
+		System.out.println("----------------");
+		
+        pingpangcoach ppc=new pingpangcoach(ppcName,ppcAge);
+        ppc.sleep();ppc.eat();ppc.teach();ppc.speak();
+		
+		System.out.println("----------------");
+		
+            basketballcoach bc=new basketballcoach(bcName,bcAge);
+             bc.sleep();bc.eat();bc.teach();
+		
+		System.out.println("----------------");
+	}
+}
+abstract class person {
+	private String name;
+	private int age;// 定义人的抽象类Person 封装name和age
+	 String getname(){
+	       return name;
+	   }
+	   int getage(){
+	       return age;
+	   }
+	person(){}// 无参构造函数
+	person(String name,int age){this.name=name;this.age=age;}// 有参构造函数初始化name和age
+	static  void sleep()
+	{System.out.println("人都是要睡觉的");}// 定义具体方法sleep() 输出'人都是要睡觉的'
+	    abstract void eat();    // 抽象方法eat()（吃的不一样）
+	
+	
+
+
+}
+interface speakEnglish {
+		/********* begin *********/
+    public static void speak(){}
+		/********* end *********/
+	}
+
+abstract class coach extends person {
+	coach(){}
+	coach(String name,int age){super(name,age);}
+	abstract void teach();}
+
+abstract class player extends person {
+	player(){}
+	player(String name,int age){super(name,age);}
+	abstract  void  study(); }
+	
+
+class pingpangplayer extends player implements speakEnglish {
+	  pingpangplayer(String name,int age){super(name,age);
+	 System.out.println(getname()+"---"+getage());}
+	 void eat() {
+		 System.out.println("乒乓球运动员吃大白菜，喝小米粥");
+			
+		}
+	
+	void study() {
+		System.out.println("乒乓球运动员学习如何发球和接球");
+		
+	}
+	 void speak(){ System.out.println("乒乓球运动员说英语");}
+
+	
+	
+}
+  class basketballplayer extends player {
+  basketballplayer(String name,int age){super(name,age);
+  System.out.println(getname()+"---"+getage());}
+	void eat(){ System.out.println("篮球运动员吃牛肉，喝牛奶");}
+	void study(){System.out.println("篮球运动员学习如何运球和投篮");}
+	
+	
+}
+ class pingpangcoach extends coach implements speakEnglish {
+	 pingpangcoach(String name,int age){super(name,age);
+	 System.out.println(getname()+"---"+getage());}
+	              
+void eat() {System.out.println("乒乓球教练吃小白菜，喝大米粥");
+		
+	}
+	void teach() {System.out.println("乒乓球教练教如何发球和接球");
+		
+	}
+	void speak(){System.out.println("乒乓球教练说英语");}
+
+	
+	
+
+		
+	}
+  class basketballcoach extends coach {
+	basketballcoach(String name,int age){super(name,age);
+	System.out.println(getname()+"---"+getage());}
+	  
+        void eat(){System.out.println("篮球教练吃羊肉，喝羊奶");}
+        void teach(){System.out.println("篮球教练教如何运球和投篮");}
+	
+}

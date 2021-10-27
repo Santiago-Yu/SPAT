@@ -1,0 +1,17 @@
+class n7752928 {
+	public InputStream getInputStream(IProgressMonitor monitor) throws IOException, CoreException {
+		if (in == null && url != null) {
+			connection = (connection == null) ? url.openConnection() : connection;
+			if (monitor != null) {
+				this.in = openStreamWithCancel(connection, monitor);
+			} else {
+				this.in = connection.getInputStream();
+			}
+			if (in != null) {
+				this.lastModified = connection.getLastModified();
+			}
+		}
+		return in;
+	}
+
+}

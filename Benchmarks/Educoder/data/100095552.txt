@@ -1,0 +1,19 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int []m={31,28,31,30,31,30,31,31,30,31,30,31};
+        
+if((year%4==0&&year%100!=0)||(year%400==0))//判断闰年
+{m[1]=29;}
+        int sum=0;
+        for(int i=0;i<month-1;i++)
+        {
+        	sum+=m[i];
+        }
+        sum+=day;
+        System.out.print(sum);
+		/********** End *********/
+	}
+}

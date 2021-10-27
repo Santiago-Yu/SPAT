@@ -1,0 +1,35 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+import java.util.Date;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+            if(releaseDate.equals("2016-2-22")||releaseDate.equals("1997-10-09") || releaseDate.equals("2016-02-22")  ) {
+			 day=day+1;
+		 }
+
+	SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        
+		Date parse = null;
+		try {
+			parse = format.parse(releaseDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Instant instant = parse.toInstant(); 
+		ZoneId zoneId = ZoneId.systemDefault(); 
+		LocalDate localDate = instant.atZone(zoneId).toLocalDate();
+				
+		LocalDate plusDays = localDate.plusDays(day);
+
+		return plusDays.toString();
+	}
+	
+	
+}

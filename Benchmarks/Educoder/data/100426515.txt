@@ -1,0 +1,24 @@
+    public boolean executeUpdate(String strSql, HashMap<Integer, Object> prams) throws SQLException, ClassNotFoundException {
+        getConnection();
+        boolean flag = false;
+        try {
+            pstmt = con.prepareStatement(strSql);
+            setParamet(pstmt, prams);
+            logger.info("###############::鎵цSQL璇彞鎿嶄綔(鏇存柊鏁版嵁 鏈夊弬鏁�):" + strSql);
+            if (0 < pstmt.executeUpdate()) {
+                close_DB_Object();
+                flag = true;
+                con.commit();
+            }
+        } catch (SQLException ex) {
+            logger.info("###############Error DBManager Line121::鎵цSQL璇彞鎿嶄綔(鏇存柊鏁版嵁 鏃犲弬鏁�):" + strSql + "澶辫触!");
+            flag = false;
+            con.rollback();
+            throw ex;
+        } catch (ClassNotFoundException ex) {
+            logger.info("###############Error DBManager Line152::鎵цSQL璇彞鎿嶄綔(鏇存柊鏁版嵁 鏃犲弬鏁�):" + strSql + "澶辫触! 鍙傛暟璁剧疆绫诲瀷閿欒!");
+            con.rollback();
+            throw ex;
+        }
+        return flag;
+    }

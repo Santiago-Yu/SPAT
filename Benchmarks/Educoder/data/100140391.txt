@@ -1,0 +1,54 @@
+package step3;
+import java.util.Scanner;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+         String s1=".java";
+         String ss2=".JAVA";
+         int a=fileName.indexOf(s1);
+         int b=fileName.lastIndexOf(s1);
+         int z1=fileName.indexOf(ss2);
+         int z2=fileName.lastIndexOf(ss2);
+        //System.out.println(a+" "+b);
+         int i=1;
+         
+         if(a!=-1&&a!=0){
+            int w1=fileName.length();
+            String q1=fileName.substring(w1-5);
+            if(q1.equals(".java")){
+               System.out.println("Java文件名正确");
+               
+            }else{
+            System.out.println("Java文件名无效");
+            }  
+         }
+        else if(z1!=-1&&z1!=0){
+           int w1=fileName.length();
+            String q1=fileName.substring(w1-5);
+            if(q1.equals(".JAVA")){
+               System.out.println("Java文件名正确");
+                      
+         }else{
+                i++;
+            }
+         }else{
+        System.out.println("Java文件名无效");
+        }
+          if(i==2){
+          System.out.println("Java文件名无效");
+          }
+        
+      
+         int a1=email.indexOf("@"); 
+         int a2=email.lastIndexOf("@");
+         int c=email.indexOf(".");
+         int d=email.lastIndexOf(".");
+         if(c>a1&&c>a2&&a1!=-1&&a2!=-1&&c!=-1&&d!=-1){
+        	 System.out.println("邮箱名正确");
+         }else{
+        	 System.out.println("邮箱名无效");
+         }
+	}	
+}
+

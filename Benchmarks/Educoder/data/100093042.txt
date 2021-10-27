@@ -1,0 +1,28 @@
+package step2;
+
+public class SwitchToGrade {
+
+    // 请用switch来将学生成绩转换成对应等级
+    public String SwitchToGrade(int score) { 
+        // 请在此提供实现代码  
+        int b=score/10;
+        String a;
+        if(b>10||b<0)
+        {
+            	a="输入成绩非法";
+        return a;
+        } 
+            else
+            {
+            	switch(b)
+                {
+                    case 9:case 10:a="等级：A";break;
+                    case 7:case 8:a="等级：B";break;
+                        case 6:a="等级：C";break;
+                    default:a="等级：D";
+                }
+                return a;
+            
+            }
+	}
+}

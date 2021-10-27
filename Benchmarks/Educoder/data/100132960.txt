@@ -1,0 +1,36 @@
+package step2;
+
+public class Task {
+	
+	public int getDaysNum(String startTime,String endTime){
+		int arr[]=new int[63];
+        int cell=2;
+        arr[1]=1;
+        int count=0;
+        for(int curr=3;curr+cell<arr.length;){//用数组来记录这一天是否停电
+            arr[curr]=1;
+            cell++;
+            curr+=cell;
+        }
+        arr[55]=1;
+		int startMonth=Integer.parseInt(startTime.substring(0,1));
+        int endMonth=Integer.parseInt(endTime.substring(0,1));
+        int startDay=Integer.parseInt(startTime.substring(2));
+        int endDay=Integer.parseInt(endTime.substring(2));
+		if(startMonth==endMonth&&startMonth==7){
+            for(int i=startDay;i<=endDay;i++){
+                if(arr[i]==1)count++;
+            }
+        }else if(startMonth==endMonth&&startMonth==8){
+            for(int i=startDay+31;i<=endDay+31;i++){
+                if(arr[i]==1)count++;
+            }
+        }else if(startMonth<endMonth){
+            for(int i=startDay;i<=endDay+31;i++){
+                if(arr[i]==1)count++;
+            }
+        }
+        return count;
+	}
+	
+}

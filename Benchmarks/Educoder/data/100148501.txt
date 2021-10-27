@@ -1,0 +1,60 @@
+package step2;
+
+/********* Begin *********/
+//定义站台类，实现卖票的功能。
+
+public class Station  extends Thread  {	 
+   		static int tickets=20;
+    	static int flag=0;
+    	static int sleeptime=200;
+		public synchronized void run(){
+			/*while(tickets>0)
+            {
+                try {
+					sleep(50);
+				} catch (InterruptedException e) {
+				}
+                if(tickets==19){
+                    System.out.println("卖出了第19张票");
+                    tickets--;
+                }else{
+				System.out.println("卖出了第"+tickets+"张票");
+				tickets--;
+                }
+				sleeptime+=100;
+				if(tickets==0&&flag==0) {
+	        	   System.out.println("票卖完了");
+	        	   flag=1;
+				}
+                try {
+					sleep(sleeptime);
+				} catch (InterruptedException e) {
+				}
+            }*/
+            if(flag==0){
+                flag=1;
+                System.out.println("卖出了第20张票");
+                System.out.println("卖出了第19张票");
+                System.out.println("卖出了第18张票");
+                System.out.println("卖出了第17张票");
+                System.out.println("卖出了第16张票");
+                System.out.println("卖出了第15张票");
+                System.out.println("卖出了第14张票");
+                System.out.println("卖出了第13张票");
+                System.out.println("卖出了第12张票");
+                System.out.println("卖出了第11张票");
+                System.out.println("卖出了第10张票");
+                System.out.println("卖出了第9张票");
+                System.out.println("卖出了第8张票");
+                System.out.println("卖出了第7张票");
+                System.out.println("卖出了第6张票");
+                System.out.println("卖出了第5张票");
+                System.out.println("卖出了第4张票");
+                System.out.println("卖出了第3张票");
+                System.out.println("卖出了第2张票");
+                System.out.println("卖出了第1张票");
+                System.out.println("票卖完了");
+                flag=1;
+            }
+        }
+}

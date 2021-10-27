@@ -1,0 +1,30 @@
+package step4;
+import java.text.*;
+import java.util.*;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		Date t = null;
+		String ss[]=releaseDate.split(",");
+		DateFormat df =new  SimpleDateFormat("yyyy-MM-dd");
+		try {	 
+			t=df.parse(ss[0]);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		 Calendar ca = Calendar.getInstance();
+		 ca.setTime(t);
+	     ca.add(Calendar.DATE, day);
+	     t = ca.getTime();
+	     String enddate = df.format(t);
+	     return enddate;
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

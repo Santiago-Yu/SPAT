@@ -1,0 +1,36 @@
+package step1;
+
+public class Person {
+    private String name; //姓名
+    private String number; //身份证号
+    private Date birthday; //出生日期
+    
+   /************Begin*************/
+    public Person(){
+        name="null";
+        number = "null";
+        birthday = new Date(1999,9,9);
+    }
+	public Person(String name,String num,Date birthday1){
+        this.name = name;
+        number = num;
+        birthday = new Date();
+        int a = birthday1.getYear();
+        int b = birthday1.getMonth();
+        int c = birthday1.getDay();
+        birthday.setDate(a,b,c);
+    }
+	public Person(String name,String num,int year,int month,int day){
+        birthday = new Date(year,month,day);
+        this.name = name;
+        number = num;
+    }
+    public String toString(){
+        return "name="+name+" number="+number+" birthday:"+birthday.toString();
+    }
+    
+    
+    
+   /************End*************/
+}
+

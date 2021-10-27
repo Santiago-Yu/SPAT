@@ -1,0 +1,25 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args){
+    	Scanner sc=new Scanner(System.in);
+    	String s1=sc.nextLine();
+    	String s2=sc.nextLine();
+    	sc.close();
+    	int num=1;
+    	for(int i=s1.length();i>=1;i--){
+    		for(int j=0;j<=s1.length()-i;j++){
+    			String aString=s1.substring(j, j+i);
+    	
+    			if(s2.contains(aString)){
+    				if(num<i)
+    					{num=i;
+    				break;}
+    			}
+    		}
+    	}
+    	System.out.print(num);
+     }
+
+}

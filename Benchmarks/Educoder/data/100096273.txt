@@ -1,0 +1,51 @@
+package step2;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class MarkStatistics {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] class1Grade = new int[5];
+        int[] class2Grade = new int[5];
+        int[] gradeCount = new int[class1Grade.length + class2Grade.length];
+        int a;int num;
+        /********** Begin *********/
+		for(a=0;a<5;a++)
+        {	
+			num=scanner.nextInt();
+            class1Grade[a]=num;
+        }
+        for(a=0;a<5;a++)
+        {
+			num=scanner.nextInt();
+            class2Grade[a]=num;
+            
+        }
+        for(a=0;a<5;a++)
+        {	
+            int j;
+            
+            gradeCount[a]=class1Grade[a];
+            
+
+        }
+         for(a=5;a<10;a++)
+        {	
+            int j;
+            
+            gradeCount[a]=class2Grade[a-5];
+    
+
+        }
+         Arrays.sort(gradeCount);
+        
+        /********** End *********/
+        for (int i = 0; i < gradeCount.length; i++) {
+            System.out.print(gradeCount[i]);
+            if (i != gradeCount.length - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

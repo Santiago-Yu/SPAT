@@ -1,0 +1,28 @@
+package step2;
+
+import java.util.Scanner;
+public class FindZhiShu {
+
+	public static void main(String[] args) 
+	{
+		Scanner in=new Scanner(System.in);
+		int i,j,flag;
+		for(i=2;i<1000;i++)
+		{
+			flag=0;
+			for(j=2;j<=Math.sqrt(i);j++)
+			{
+				if(i%j==0)
+				{
+					flag=1;
+					break;
+				}
+			}
+			if(flag==0)
+			{
+				System.out.print(i+" ");
+			}
+		}
+	
+	}
+}

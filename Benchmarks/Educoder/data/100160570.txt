@@ -1,0 +1,36 @@
+package step1;
+import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+public class Task {
+	/**
+	 * @param filePath	文件路径：backups/www.ctrip.com.txt/
+	 * @return
+	 * @throws IOException
+	 */
+	public Document getHtml1(String filePath) throws IOException{
+		/**********   Begin   **********/
+        File f=new File("backups/www.ctrip.com.txt/");
+        Document j=Jsoup.parse(f,"UTF-8");
+       
+		return j;
+		/**********   End   **********/
+	} 
+
+	/**
+	 * 
+	 * @param filePath	文件路径：backups/hotels.ctrip.com_domestic-city-hotel.txt/
+	 * @return
+	 * @throws IOException
+	 */
+	public Document getHtml2(String filePath) throws IOException{
+        /**********   Begin   **********/
+         File f1=new File("backups/hotels.ctrip.com_domestic-city-hotel.txt/");
+        Document j1=Jsoup.parse(f1,"UTF-8");
+
+		return j1;
+		/**********   End   **********/
+	} 
+}

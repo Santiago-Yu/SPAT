@@ -1,0 +1,33 @@
+package step3;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+        int a=0,b=0,c=0,d=1;
+        a=fileName.lastIndexOf('.');
+        if(a>0){
+        fileName=fileName.substring(a);
+        d=fileName.compareTo(".java");
+        }
+        if(d==0){
+        System.out.println("Java文件名正确");
+        }
+        else{
+        System.out.println("Java文件名无效");
+        }
+        b=email.lastIndexOf('@');
+        c=email.lastIndexOf('.');
+        if(b==-1||c==-1){
+            b=1;
+            c=0;
+        }
+        if(b<c){
+        System.out.println("邮箱名正确");
+        }
+        else{
+        System.out.println("邮箱名无效");
+        }
+	}
+	
+	
+}

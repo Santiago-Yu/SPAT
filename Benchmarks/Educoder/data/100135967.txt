@@ -1,0 +1,57 @@
+package case1;
+
+import java.util.Scanner;
+
+public class Task1 {
+	public static void main(String[] args) {
+
+
+
+		Scanner in=new Scanner(System.in);
+		Dog d=new Dog();
+		d.name=in.next();
+		d.sex=in.next();
+		d.color=in.next();
+		
+		Cat c=new Cat();
+		c.name=in.next();
+		c.sex=in.next();
+		c.weight=in.nextDouble();
+		d.Test(d.name,d.sex,d.color);
+		d.talk();
+		d.eat();
+		c.Test(c.name,c.sex,c.weight);
+		c.talk();
+		c.eat();
+	}
+}
+abstract class Pet{
+	public String name;
+	public String sex;
+	public abstract void talk();
+	public abstract void eat();
+}
+class Dog extends Pet{
+	public void talk(){
+		System.out.println("，汪汪叫");
+	}
+	public void eat(){
+		System.out.println(name+"吃骨头！");
+	}
+	public String color;
+	public void Test(String name,String sex,String color){
+		System.out.print("名称："+name+"，性别："+sex+"，颜色："+color);
+	}
+}
+class Cat extends Pet{
+	public void talk(){
+		System.out.println("kg，喵喵叫");
+	}
+	public void eat(){
+		System.out.println(name+"吃鱼！");
+	}
+	public Double weight;
+	public void Test(String name,String sex,Double weight){
+		System.out.print("名称："+name+"，性别："+sex+"，体重："+weight);
+	}
+}

@@ -1,0 +1,57 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread m = new MyThread(num);
+		m.start();
+		 try {
+	            m.join();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+		
+	}
+}
+
+
+class MyThread  extends Thread   {
+
+    private int n;
+    public MyThread (int n){
+    	this.n = n;
+    }
+     
+       public void run() {
+    	   int a=0;
+    	   int b=1;
+    	   int sum=0;
+           if(n==1)
+               sum=1;
+           else
+    	   for(int i=1;i<n;i++)
+    	   {
+               
+    		   sum = a+b;
+    		   a = b ;
+    		   b = sum;
+    		   
+    	   }
+    	   try {
+               Thread.sleep(30);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
+    	  
+    	   System.out.println("子线程计算结果为："+sum);
+       }
+           
+        }
+        
+	
+
+

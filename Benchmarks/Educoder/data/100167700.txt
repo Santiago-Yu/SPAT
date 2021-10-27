@@ -1,0 +1,994 @@
+import java.io.Serializable;
+import java.util.*;
+
+/**
+ * <p>A convenience class to represent name-value pairs.</p>
+ */
+class Pair<K,V> implements Serializable {
+
+    /**
+     * Key of this <code>Pair</code>.
+     */
+    private K key;
+
+    /**
+     * Gets the key for this pair.
+     * @return key for this pair
+     */
+    public K getKey() { return key; }
+
+    /**
+     * Value of this this <code>Pair</code>.
+     */
+    private V value;
+
+    /**
+     * Gets the value for this pair.
+     * @return value for this pair
+     */
+    public V getValue() { return value; }
+
+    /**
+     * Creates a new pair
+     * @param key The key for this pair
+     * @param value The value to use for this pair
+     */
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    /**
+     * <p><code>String</code> representation of this
+     * <code>Pair</code>.</p>
+     *
+     * <p>The default name/value delimiter '=' is always used.</p>
+     *
+     *  @return <code>String</code> representation of this <code>Pair</code>
+     */
+    @Override
+    public String toString() {
+        return key + "=" + value;
+    }
+
+    /**
+     * <p>Generate a hash code for this <code>Pair</code>.</p>
+     *
+     * <p>The hash code is calculated using both the name and
+     * the value of the <code>Pair</code>.</p>
+     *
+     * @return hash code for this <code>Pair</code>
+     */
+    @Override
+    public int hashCode() {
+        // name's hashCode is multiplied by an arbitrary prime number (13)
+        // in order to make sure there is a difference in the hashCode between
+        // these two parameters:
+        //  name: a  value: aa
+        //  name: aa value: a
+        return key.hashCode() * 13 + (value == null ? 0 : value.hashCode());
+    }
+
+    /**
+     * <p>Test this <code>Pair</code> for equality with another
+     * <code>Object</code>.</p>
+     *
+     * <p>If the <code>Object</code> to be tested is not a
+     * <code>Pair</code> or is <code>null</code>, then this method
+     * returns <code>false</code>.</p>
+     *
+     * <p>Two <code>Pair</code>s are considered equal if and only if
+     * both the names and values are equal.</p>
+     *
+     * @param o the <code>Object</code> to test for
+     * equality with this <code>Pair</code>
+     * @return <code>true</code> if the given <code>Object</code> is
+     * equal to this <code>Pair</code> else <code>false</code>
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this != o) {
+            if (o instanceof Pair) {
+                Pair pair = (Pair) o;
+                if (key != null ? !key.equals(pair.key) : pair.key != null) {
+                    return false;
+                }
+                if (value != null ? !value.equals(pair.value) : pair.value != null) {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
+/**
+ * actions of the action function returns
+ */
+enum Action {
+    /**
+     * accept the input
+     */
+    ACCEPT,
+    /**
+     * error and call error recovery
+     */
+    ERROR,
+    /**
+     * reduce production A -> beta
+     */
+    REDUCE,
+    /**
+     * shift next input token
+     */
+    SHIFT
+}
+
+/**
+ * a simple lexical analyzer
+ */
+class LexicalAnalyzer {
+    /**
+     * take apart the input string into tokens
+     *
+     * @param inputString input string
+     * @return tokens
+     */
+    static Collection<? extends String> tokenize(String inputString) {
+        return Arrays.asList(inputString.split("\\s+"));
+    }
+}
+
+/**
+ * a production of a CFG G =(N，T，P，S) is defined as A -> alpha, where
+ * A is in the set of nonterminals, i.e. A belongs to N
+ * alpha belongs (N union T)*
+ */
+class Production {
+    /**
+     * left hand side of the production
+     */
+    private String lhs;
+
+    /**
+     * right hand side of the production
+     */
+    private ArrayList<String> rhs = new ArrayList<>();
+
+    public Production() {
+    }
+
+    Production(String lhs, String rhs) {
+        this.lhs = lhs;
+        this.rhs.addAll(LexicalAnalyzer.tokenize(rhs));
+    }
+
+    public String getLhs() {
+        return lhs;
+    }
+
+    public void setLhs(String lhs) {
+        this.lhs = lhs;
+    }
+
+    public ArrayList<String> getRhs() {
+        return rhs;
+    }
+
+    public void setRhs(ArrayList<String> rhs) {
+        this.rhs = rhs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Production that = (Production) o;
+        return Objects.equals(getLhs(), that.getLhs()) &&
+                Objects.equals(getRhs(), that.getRhs());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getLhs(), getRhs());
+    }
+
+    @Override
+    public String toString() {
+        return "Production{" +
+                "lhs='" + lhs + '\'' +
+                ", rhs=" + rhs +
+                '}';
+    }
+}
+
+/**
+ * a CFG defined as G =(N，T，P，S), where
+ * N: nonterminals
+ * T: terminals
+ * P: productions
+ * S: start symbol, which is an nonterminals
+ */
+class CFG {
+    /**
+     * nonterminals of CFG
+     */
+    private ArrayList<String> nonterminals;
+
+    /**
+     * terminals of CFG
+     */
+    private ArrayList<String> terminals;
+
+    /**
+     * productions of CFG
+     */
+    private ArrayList<Production> productions;
+
+    /**
+     * start symbol of CFG
+     */
+    private String startSymbol;
+
+    public CFG() {
+    }
+
+    public CFG(ArrayList<String> nonterminals, ArrayList<String> terminals, ArrayList<Production> productions, String startSymbol) {
+        this.nonterminals = nonterminals;
+        this.terminals = terminals;
+        this.productions = productions;
+        this.startSymbol = startSymbol;
+    }
+
+    public ArrayList<String> getNonterminals() {
+        return nonterminals;
+    }
+
+    public void setNonterminals(ArrayList<String> nonterminals) {
+        this.nonterminals = nonterminals;
+    }
+
+    public ArrayList<String> getTerminals() {
+        return terminals;
+    }
+
+    public void setTerminals(ArrayList<String> terminals) {
+        this.terminals = terminals;
+    }
+
+    public ArrayList<Production> getProductions() {
+        return productions;
+    }
+
+    public void setProductions(ArrayList<Production> productions) {
+        this.productions = productions;
+    }
+
+    public String getStartSymbol() {
+        return startSymbol;
+    }
+
+    public void setStartSymbol(String startSymbol) {
+        this.startSymbol = startSymbol;
+    }
+
+    public boolean isNonterminals(String str) {
+        return nonterminals.contains(str);
+    }
+
+    public boolean isTerminals(String str) {
+        return terminals.contains(str);
+    }
+
+    public boolean isProduction(Production production) {
+        return productions.contains(production);
+    }
+
+    public boolean isStartSymbol(String str) {
+        return startSymbol.equals(str);
+    }
+}
+
+/**
+ * Java_LLParserAnalysis
+ *
+ * @author Felix
+ * @date 5/27/2019
+ */
+public class Java_LRParserAnalysis {
+
+    /**
+     * total states of the LR automata
+     */
+    private static final int stateCount = 58;
+    /**
+     * string buffer stores input program
+     */
+    private static StringBuffer inputBuffer = new StringBuffer();
+    /**
+     * tokens of the input
+     */
+    private static ArrayList<String> tokens = new ArrayList<>();
+    /**
+     * CFG of the LR parser
+     */
+    private static CFG cfg;
+    /**
+     * goto table of the LR parser
+     * goto[S, X], where S is the state and X is a non-terminal
+     * return the next state to go
+     */
+    private static ArrayList<ArrayList<Integer>> gotoTable;
+
+    /**
+     * action table of the LR parser
+     * action[S, a], where S is the state and a is a terminal of input
+     * return a pair of < action , Integer >
+     * shift action: Integer is the next state to go
+     * reduce action: Integer is the production for reduce
+     */
+    private static ArrayList<ArrayList<Pair<Action, Integer>>> actionTable;
+
+    /**
+     * parsing stack of the LR parser
+     * a pair of < token , state >
+     */
+    private static Stack<Pair<String, Integer>> parsingStack = new Stack<>();
+
+    private static Stack<ArrayList<String>> rightmostDerivationStack = new Stack<>();
+
+    /**
+     * initialize CFG with:
+     * 1.  program -> compoundstmt
+     * 2 3 4 5.  stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt
+     * 6.  compoundstmt ->  { stmts }
+     * 7 8.  stmts ->  stmt stmts   |   E
+     * 9.  ifstmt ->  if ( boolexpr ) then stmt else stmt
+     * 10.  whilestmt ->  while ( boolexpr ) stmt
+     * 11.  assgstmt ->  ID = arithexpr ;
+     * 12.  boolexpr  ->  arithexpr boolop arithexpr
+     * 13 14 15 16 17.  boolop ->   <  |  >  |  <=  |  >=  | ==
+     * 18.  arithexpr  ->  multexpr arithexprprime
+     * 19 20 21.  arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E
+     * 22.  multexpr ->  simpleexpr  multexprprime
+     * 23 24 25.  multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E
+     * 26 27 28.  simpleexpr ->  ID  |  NUM  |  ( arithexpr )
+     */
+    private static void initCFG() {
+        ArrayList<String> nonterminals = new ArrayList<>(Arrays.asList("program", "stmt", "compoundstmt", "stmts", "ifstmt", "whilestmt",
+                "assgstmt", "boolexpr", "boolop", "arithexpr", "arithexprprime", "multexpr", "multexprprime", "simpleexpr"
+        ));
+        ArrayList<String> terminals = new ArrayList<>(Arrays.asList("{", "}", "if", "(", ")", "then", "else", "while", "ID", "=",
+                ">", "<", ">=", "<=", "==", "+", "-", "*", "/", "NUM", ";", "$"));
+        ArrayList<Production> productions = new ArrayList<>(Arrays.asList(
+                new Production("E", "program"),
+                new Production("program", "compoundstmt"),
+                new Production("stmt", "ifstmt"),
+                new Production("stmt", "whilestmt"),
+                new Production("stmt", "assgstmt"),
+                new Production("stmt", "compoundstmt"),
+                new Production("compoundstmt", "{ stmts }"),
+                new Production("stmts", "stmt stmts"),
+                new Production("stmts", "E"),
+                new Production("ifstmt", "if ( boolexpr ) then stmt else stmt"),
+                new Production("whilestmt", "while ( boolexpr ) stmt"),
+                new Production("assgstmt", "ID = arithexpr ;"),
+                new Production("boolexpr", "arithexpr boolop arithexpr"),
+                new Production("boolop", "<"),
+                new Production("boolop", ">"),
+                new Production("boolop", "<="),
+                new Production("boolop", ">="),
+                new Production("boolop", "=="),
+                new Production("arithexpr", "multexpr arithexprprime"),
+                new Production("arithexprprime", "+ multexpr arithexprprime"),
+                new Production("arithexprprime", "- multexpr arithexprprime"),
+                new Production("arithexprprime", "E"),
+                new Production("multexpr", "simpleexpr  multexprprime"),
+                new Production("multexprprime", "* simpleexpr multexprprime"),
+                new Production("multexprprime", "/ simpleexpr multexprprime"),
+                new Production("multexprprime", "E"),
+                new Production("simpleexpr", "ID"),
+                new Production("simpleexpr", "NUM"),
+                new Production("simpleexpr", "( arithexpr )")
+        ));
+        cfg = new CFG(nonterminals, terminals, productions, "program");
+    }
+
+    /**
+     * initialize the goto table
+     */
+    private static void initGotoTable() {
+        gotoTable = new ArrayList<>(Arrays
+                .asList(
+                new ArrayList<>(Arrays.asList(1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 5, 9, 4, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 5, 9, 14, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 18, 0, 19, 0, 20, 0, 21)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 25, 0, 19, 0, 20, 0, 21)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 26, 0, 20, 0, 21)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 37, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 0, 20, 0, 21)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 0, 20, 0, 21)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 45, 0, 21)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 46, 0, 21)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 50, 9, 0, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 51, 9, 0, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 53, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 57, 9, 0, 6, 7, 8, 0, 0, 0, 0, 0, 0, 0)),
+                new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))));
+    }
+
+    /**
+     * initialize the action table
+     */
+    private static void initActionTable() {
+        actionTable = new ArrayList<>();
+        for (int i = 0; i < stateCount; i++) {
+            actionTable.add(new ArrayList<>());
+            for (int j = 0; j < cfg.getTerminals().size(); j++) {
+                actionTable.get(i).add(new Pair<>(Action.ERROR, -1));
+            }
+        }
+        /*
+          fill the action table
+         */
+        actionTable.get(0).set(0, new Pair<>(Action.SHIFT, 3));
+        actionTable.get(1).set(21, new Pair<>(Action.ACCEPT, -1));
+        actionTable.get(2).set(21, new Pair<>(Action.REDUCE, 1));
+        actionTable.get(3).set(0, new Pair<>(Action.SHIFT, 3));
+        actionTable.get(3).set(1, new Pair<>(Action.REDUCE, 8));
+        actionTable.get(3).set(2, new Pair<>(Action.SHIFT, 10));
+        actionTable.get(3).set(7, new Pair<>(Action.SHIFT, 11));
+        actionTable.get(3).set(8, new Pair<>(Action.SHIFT, 12));
+        actionTable.get(3).set(0, new Pair<>(Action.SHIFT, 3));
+        actionTable.get(4).set(1, new Pair<>(Action.SHIFT, 13));
+        actionTable.get(5).set(0, new Pair<>(Action.SHIFT, 3));
+        actionTable.get(5).set(1, new Pair<>(Action.REDUCE, 8));
+        actionTable.get(5).set(2, new Pair<>(Action.SHIFT, 10));
+        actionTable.get(5).set(7, new Pair<>(Action.SHIFT, 11));
+        actionTable.get(5).set(8, new Pair<>(Action.SHIFT, 12));
+        actionTable.get(6).set(0, new Pair<>(Action.REDUCE, 2));
+        actionTable.get(6).set(1, new Pair<>(Action.REDUCE, 2));
+        actionTable.get(6).set(2, new Pair<>(Action.REDUCE, 2));
+        actionTable.get(6).set(6, new Pair<>(Action.REDUCE, 2));
+        actionTable.get(6).set(7, new Pair<>(Action.REDUCE, 2));
+        actionTable.get(6).set(8, new Pair<>(Action.REDUCE, 2));
+        actionTable.get(7).set(0, new Pair<>(Action.REDUCE, 3));
+        actionTable.get(7).set(1, new Pair<>(Action.REDUCE, 3));
+        actionTable.get(7).set(2, new Pair<>(Action.REDUCE, 3));
+        actionTable.get(7).set(6, new Pair<>(Action.REDUCE, 3));
+        actionTable.get(7).set(7, new Pair<>(Action.REDUCE, 3));
+        actionTable.get(7).set(8, new Pair<>(Action.REDUCE, 3));
+        actionTable.get(8).set(0, new Pair<>(Action.REDUCE, 4));
+        actionTable.get(8).set(1, new Pair<>(Action.REDUCE, 4));
+        actionTable.get(8).set(2, new Pair<>(Action.REDUCE, 4));
+        actionTable.get(8).set(6, new Pair<>(Action.REDUCE, 4));
+        actionTable.get(8).set(7, new Pair<>(Action.REDUCE, 4));
+        actionTable.get(8).set(8, new Pair<>(Action.REDUCE, 4));
+        actionTable.get(9).set(0, new Pair<>(Action.REDUCE, 5));
+        actionTable.get(9).set(1, new Pair<>(Action.REDUCE, 5));
+        actionTable.get(9).set(2, new Pair<>(Action.REDUCE, 5));
+        actionTable.get(9).set(6, new Pair<>(Action.REDUCE, 5));
+        actionTable.get(9).set(7, new Pair<>(Action.REDUCE, 5));
+        actionTable.get(9).set(8, new Pair<>(Action.REDUCE, 5));
+        actionTable.get(10).set(3, new Pair<>(Action.SHIFT, 15));
+        actionTable.get(11).set(3, new Pair<>(Action.SHIFT, 16));
+        actionTable.get(12).set(9, new Pair<>(Action.SHIFT, 17));
+        actionTable.get(13).set(0, new Pair<>(Action.REDUCE, 6));
+        actionTable.get(13).set(1, new Pair<>(Action.REDUCE, 6));
+        actionTable.get(13).set(2, new Pair<>(Action.REDUCE, 6));
+        actionTable.get(13).set(6, new Pair<>(Action.REDUCE, 6));
+        actionTable.get(13).set(7, new Pair<>(Action.REDUCE, 6));
+        actionTable.get(13).set(8, new Pair<>(Action.REDUCE, 6));
+        actionTable.get(13).set(21, new Pair<>(Action.REDUCE, 6));
+        actionTable.get(14).set(1, new Pair<>(Action.REDUCE, 7));
+        actionTable.get(15).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(15).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(15).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(16).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(16).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(16).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(17).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(17).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(17).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(18).set(4, new Pair<>(Action.SHIFT, 27));
+        actionTable.get(19).set(10, new Pair<>(Action.SHIFT, 30));
+        actionTable.get(19).set(11, new Pair<>(Action.SHIFT, 29));
+        actionTable.get(19).set(12, new Pair<>(Action.SHIFT, 32));
+        actionTable.get(19).set(13, new Pair<>(Action.SHIFT, 31));
+        actionTable.get(19).set(14, new Pair<>(Action.SHIFT, 33));
+        actionTable.get(20).set(4, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(20).set(10, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(20).set(11, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(20).set(12, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(20).set(13, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(20).set(14, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(20).set(15, new Pair<>(Action.SHIFT, 35));
+        actionTable.get(20).set(16, new Pair<>(Action.SHIFT, 36));
+        actionTable.get(20).set(20, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(21).set(4, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(10, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(11, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(12, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(13, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(14, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(15, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(16, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(21).set(17, new Pair<>(Action.SHIFT, 38));
+        actionTable.get(21).set(18, new Pair<>(Action.SHIFT, 39));
+        actionTable.get(21).set(20, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(22).set(4, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(10, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(11, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(12, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(13, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(14, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(15, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(16, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(17, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(18, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(22).set(20, new Pair<>(Action.REDUCE, 26));
+        actionTable.get(23).set(4, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(10, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(11, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(12, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(13, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(14, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(15, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(16, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(17, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(18, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(23).set(20, new Pair<>(Action.REDUCE, 27));
+        actionTable.get(24).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(24).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(24).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(25).set(4, new Pair<>(Action.SHIFT, 41));
+        actionTable.get(26).set(20, new Pair<>(Action.SHIFT, 42));
+        actionTable.get(27).set(5, new Pair<>(Action.SHIFT, 43));
+        actionTable.get(28).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(28).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(28).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(29).set(3, new Pair<>(Action.REDUCE, 13));
+        actionTable.get(29).set(8, new Pair<>(Action.REDUCE, 13));
+        actionTable.get(29).set(19, new Pair<>(Action.REDUCE, 13));
+        actionTable.get(30).set(3, new Pair<>(Action.REDUCE, 14));
+        actionTable.get(30).set(8, new Pair<>(Action.REDUCE, 14));
+        actionTable.get(30).set(19, new Pair<>(Action.REDUCE, 14));
+        actionTable.get(31).set(3, new Pair<>(Action.REDUCE, 15));
+        actionTable.get(31).set(8, new Pair<>(Action.REDUCE, 15));
+        actionTable.get(31).set(19, new Pair<>(Action.REDUCE, 15));
+        actionTable.get(32).set(3, new Pair<>(Action.REDUCE, 16));
+        actionTable.get(32).set(8, new Pair<>(Action.REDUCE, 16));
+        actionTable.get(32).set(19, new Pair<>(Action.REDUCE, 16));
+        actionTable.get(33).set(3, new Pair<>(Action.REDUCE, 17));
+        actionTable.get(33).set(8, new Pair<>(Action.REDUCE, 17));
+        actionTable.get(33).set(19, new Pair<>(Action.REDUCE, 17));
+        actionTable.get(34).set(4, new Pair<>(Action.REDUCE, 18));
+        actionTable.get(34).set(10, new Pair<>(Action.REDUCE, 18));
+        actionTable.get(34).set(11, new Pair<>(Action.REDUCE, 18));
+        actionTable.get(34).set(12, new Pair<>(Action.REDUCE, 18));
+        actionTable.get(34).set(13, new Pair<>(Action.REDUCE, 18));
+        actionTable.get(34).set(14, new Pair<>(Action.REDUCE, 18));
+        actionTable.get(34).set(20, new Pair<>(Action.REDUCE, 18));
+        actionTable.get(35).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(35).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(35).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(36).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(36).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(36).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(37).set(4, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(10, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(11, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(12, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(13, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(14, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(15, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(16, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(37).set(20, new Pair<>(Action.REDUCE, 22));
+        actionTable.get(38).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(38).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(38).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(39).set(3, new Pair<>(Action.SHIFT, 24));
+        actionTable.get(39).set(8, new Pair<>(Action.SHIFT, 22));
+        actionTable.get(39).set(19, new Pair<>(Action.SHIFT, 23));
+        actionTable.get(40).set(4, new Pair<>(Action.SHIFT, 49));
+        actionTable.get(41).set(0, new Pair<>(Action.SHIFT, 3));
+        actionTable.get(41).set(2, new Pair<>(Action.SHIFT, 10));
+        actionTable.get(41).set(7, new Pair<>(Action.SHIFT, 11));
+        actionTable.get(41).set(8, new Pair<>(Action.SHIFT, 12));
+        actionTable.get(42).set(0, new Pair<>(Action.REDUCE, 11));
+        actionTable.get(42).set(1, new Pair<>(Action.REDUCE, 11));
+        actionTable.get(42).set(2, new Pair<>(Action.REDUCE, 11));
+        actionTable.get(42).set(6, new Pair<>(Action.REDUCE, 11));
+        actionTable.get(42).set(7, new Pair<>(Action.REDUCE, 11));
+        actionTable.get(42).set(8, new Pair<>(Action.REDUCE, 11));
+        actionTable.get(43).set(0, new Pair<>(Action.SHIFT, 3));
+        actionTable.get(43).set(2, new Pair<>(Action.SHIFT, 10));
+        actionTable.get(43).set(7, new Pair<>(Action.SHIFT, 11));
+        actionTable.get(43).set(8, new Pair<>(Action.SHIFT, 12));
+        actionTable.get(42).set(2, new Pair<>(Action.SHIFT, 10));
+        actionTable.get(42).set(7, new Pair<>(Action.SHIFT, 11));
+        actionTable.get(42).set(8, new Pair<>(Action.SHIFT, 12));
+        actionTable.get(44).set(4, new Pair<>(Action.REDUCE, 12));
+        actionTable.get(45).set(4, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(45).set(10, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(45).set(11, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(45).set(12, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(45).set(13, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(45).set(14, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(45).set(15, new Pair<>(Action.SHIFT, 35));
+        actionTable.get(45).set(16, new Pair<>(Action.SHIFT, 36));
+        actionTable.get(45).set(20, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(46).set(4, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(46).set(10, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(46).set(11, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(46).set(12, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(46).set(13, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(46).set(14, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(46).set(15, new Pair<>(Action.SHIFT, 35));
+        actionTable.get(46).set(16, new Pair<>(Action.SHIFT, 36));
+        actionTable.get(46).set(20, new Pair<>(Action.REDUCE, 21));
+        actionTable.get(47).set(4, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(10, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(11, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(12, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(13, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(14, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(15, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(16, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(47).set(17, new Pair<>(Action.SHIFT, 38));
+        actionTable.get(47).set(18, new Pair<>(Action.SHIFT, 39));
+        actionTable.get(47).set(20, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(4, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(10, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(11, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(12, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(13, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(14, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(15, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(16, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(48).set(17, new Pair<>(Action.SHIFT, 38));
+        actionTable.get(48).set(18, new Pair<>(Action.SHIFT, 39));
+        actionTable.get(48).set(20, new Pair<>(Action.REDUCE, 25));
+        actionTable.get(49).set(4, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(10, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(11, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(12, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(13, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(14, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(15, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(16, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(17, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(18, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(49).set(20, new Pair<>(Action.REDUCE, 28));
+        actionTable.get(50).set(0, new Pair<>(Action.REDUCE, 10));
+        actionTable.get(50).set(1, new Pair<>(Action.REDUCE, 10));
+        actionTable.get(50).set(2, new Pair<>(Action.REDUCE, 10));
+        actionTable.get(50).set(6, new Pair<>(Action.REDUCE, 10));
+        actionTable.get(50).set(7, new Pair<>(Action.REDUCE, 10));
+        actionTable.get(50).set(8, new Pair<>(Action.REDUCE, 10));
+        actionTable.get(51).set(6, new Pair<>(Action.SHIFT, 56));
+        actionTable.get(52).set(4, new Pair<>(Action.REDUCE, 19));
+        actionTable.get(52).set(10, new Pair<>(Action.REDUCE, 19));
+        actionTable.get(52).set(11, new Pair<>(Action.REDUCE, 19));
+        actionTable.get(52).set(12, new Pair<>(Action.REDUCE, 19));
+        actionTable.get(52).set(13, new Pair<>(Action.REDUCE, 19));
+        actionTable.get(52).set(14, new Pair<>(Action.REDUCE, 19));
+        actionTable.get(52).set(20, new Pair<>(Action.REDUCE, 19));
+        actionTable.get(53).set(4, new Pair<>(Action.REDUCE, 20));
+        actionTable.get(53).set(10, new Pair<>(Action.REDUCE, 20));
+        actionTable.get(53).set(11, new Pair<>(Action.REDUCE, 20));
+        actionTable.get(53).set(12, new Pair<>(Action.REDUCE, 20));
+        actionTable.get(53).set(13, new Pair<>(Action.REDUCE, 20));
+        actionTable.get(53).set(14, new Pair<>(Action.REDUCE, 20));
+        actionTable.get(53).set(20, new Pair<>(Action.REDUCE, 20));
+        actionTable.get(54).set(4, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(10, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(11, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(12, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(13, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(14, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(15, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(16, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(54).set(20, new Pair<>(Action.REDUCE, 23));
+        actionTable.get(55).set(4, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(10, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(11, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(12, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(13, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(14, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(15, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(16, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(55).set(20, new Pair<>(Action.REDUCE, 24));
+        actionTable.get(56).set(0, new Pair<>(Action.SHIFT, 3));
+        actionTable.get(56).set(3, new Pair<>(Action.SHIFT, 10));
+        actionTable.get(56).set(7, new Pair<>(Action.SHIFT, 11));
+        actionTable.get(56).set(8, new Pair<>(Action.SHIFT, 12));
+        actionTable.get(57).set(0, new Pair<>(Action.REDUCE, 9));
+        actionTable.get(57).set(1, new Pair<>(Action.REDUCE, 9));
+        actionTable.get(57).set(2, new Pair<>(Action.REDUCE, 9));
+        actionTable.get(57).set(6, new Pair<>(Action.REDUCE, 9));
+        actionTable.get(57).set(7, new Pair<>(Action.REDUCE, 9));
+        actionTable.get(57).set(8, new Pair<>(Action.REDUCE, 9));
+    }
+
+    /**
+     * initialize the stacks of the LR parser
+     */
+    private static void initStack() {
+        parsingStack.push(new Pair<>("$", 0));
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.addAll(tokens);
+        /*
+          remove '$'
+         */
+        arrayList.remove(arrayList.size() - 1);
+        rightmostDerivationStack.push(arrayList);
+
+    }
+
+    /**
+     * initialize the LR parser
+     */
+    private static void init() {
+        /*
+          get tokens
+         */
+        tokens.addAll(LexicalAnalyzer.tokenize(inputBuffer.toString()));
+
+        initCFG();
+        initGotoTable();
+        initActionTable();
+        initStack();
+    }
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            /*
+              read the program into stringBuffer
+             */
+            inputBuffer.append(sc.nextLine()).append("\n");
+        }
+        /*
+          add $ to the end
+         */
+        inputBuffer.append("$");
+        sc.close();
+    }
+
+    /**
+     * parse the tokens
+     */
+    private static void parse() {
+        /*
+          index of current token
+         */
+        int current = -1;
+        /*
+          next input token
+         */
+        String a = tokens.get(current + 1);
+        while (true) {
+            int s = parsingStack.peek().getValue();
+            /*
+              accept
+             */
+            if(actionTable.get(s).get(cfg.getTerminals().indexOf(a)).getKey() == Action.ACCEPT) {
+                break;
+            }
+            /*
+              shift
+             */
+            else if (actionTable.get(s).get(cfg.getTerminals().indexOf(a)).getKey() == Action.SHIFT) {
+                current++;
+                parsingStack.push(new Pair<>(tokens.get(current), actionTable.get(s).get(cfg.getTerminals().indexOf(a)).getValue()));
+                a = tokens.get(current + 1);
+            }
+            /*
+              reduce
+             */
+            else if (actionTable.get(s).get(cfg.getTerminals().indexOf(a)).getKey() == Action.REDUCE) {
+                /*
+                  get production A -> beta
+                 */
+                Production production = cfg.getProductions().get(actionTable.get(s).get(cfg.getTerminals().indexOf(a)).getValue());
+                /*
+                  pop |beta| tokens form the stack if the rhs of production is not E
+                 */
+                if (!"E".equals(production.getRhs().get(0))) {
+                    for (int i = 0; i < production.getRhs().size(); i++) {
+                        parsingStack.pop();
+                    }
+                }
+                /*
+                  get the next state to go via goto table
+                 */
+                parsingStack.push(new Pair<>(production.getLhs(),
+                        gotoTable.get(parsingStack.peek().getValue()).get(cfg.getNonterminals().indexOf(production.getLhs()))));
+                /*
+                  construct rightmost derivation
+                 */
+                constructRightmostDerivation(current + 1);
+            }
+            /*
+              error
+             */
+            else {
+                error(current, ";");
+                current = -1;
+                a = tokens.get(current + 1);
+            }
+        }
+    }
+
+    /**
+     * get the process of rightmost derivation
+     * @return string of the process of rightmost derivation
+     */
+    private static String getRightmostDerivation() {
+        StringBuffer stringBuffer = new StringBuffer();
+        while (!rightmostDerivationStack.empty()) {
+            ArrayList<String> tokens = rightmostDerivationStack.pop();
+            for (String token : tokens) {
+                stringBuffer.append(token).append(" ");
+            }
+            if (!rightmostDerivationStack.empty()) {
+                stringBuffer.append("=> ").append("\n");
+            }
+            else {
+                /*
+                  remove extra space
+                 */
+                inputBuffer.deleteCharAt(inputBuffer.length() - 1);
+            }
+        }
+        return stringBuffer.toString();
+    }
+
+    /**
+     * log current derivation and construct a rightmost derivation
+     * @param pos index of input tokens to read
+     */
+    private static void constructRightmostDerivation(int pos) {
+        ArrayList<String> derivation = new ArrayList<>();
+        /*
+          conle a temp parsing stack
+         */
+        @SuppressWarnings("unchecked")
+        Stack<Pair<String, Integer>> stack = (Stack<Pair<String, Integer>>) parsingStack.clone();
+        Collections.reverse(stack);
+        /*
+          remove '$'
+         */
+        stack.pop();
+        while(!stack.empty()) {
+            derivation.add(stack.pop().getKey());
+        }
+        for (int i = pos; i < tokens.size() - 1; i++) {
+            derivation.add(tokens.get(i));
+        }
+        rightmostDerivationStack.push(derivation);
+    }
+
+    /**
+     * print the result
+     */
+    private static void print() {
+        System.out.print(getRightmostDerivation());
+    }
+
+
+    /**
+     * print error with its position (line) and its missing and recover
+     * @param index position
+     * @param token missing token
+     */
+    private static void error(int index, String token) {
+        /*
+          get line count by token index
+         */
+        int line = 1;
+        int count = 0;
+        for (int i = 0; i < inputBuffer.toString().length() && count < index; i++) {
+            if (inputBuffer.charAt(i) == tokens.get(count).charAt(0)) {
+                int j = 1;
+                while ( j < tokens.get(count).length() &&  inputBuffer.charAt(i) == tokens.get(count).charAt(j)) {
+                    i++;
+                    j++;
+                }
+                count++;
+            }
+            else if (inputBuffer.charAt(i) == '\n') {
+                line++;
+            }
+        }
+        /*
+          print error
+         */
+        System.out.println("语法错误，第" + line + "行，缺少\"" + token + "\"");
+        /*
+          recover
+         */
+        tokens.add(index + 1, token);
+        while (!parsingStack.empty()) {
+            parsingStack.pop();
+        }
+        while (!rightmostDerivationStack.empty()) {
+            rightmostDerivationStack.pop();
+        }
+        initStack();
+    }
+
+    /**
+     * lexical analysis
+     */
+    private static void analysis() {
+        read();
+        init();
+        parse();
+        print();
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

@@ -1,0 +1,24 @@
+package step3;
+import java.util.Scanner;
+
+public class TestJava10_4 {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+        int a,b;
+        System.out.println("请输入年份：");
+        a=sc.nextInt();
+        System.out.println("请输入月份：");
+        b=sc.nextInt();
+        if (b==2) {
+        	if ((a%4==0)&&(a%100!=0)||(a%400==0)) {
+        		System.out.println(a+"年"+b+"月的天数是：28天");
+        	}else {
+        		System.out.println(a+"年"+b+"月的天数是：29天");
+        	}
+        }else if (b==1||b==3||b==5||b==7||b==8||b==10||b==12) {
+        	System.out.println(a+"年"+b+"月的天数是：31天");
+        }else {
+        	System.out.println(a+"年"+b+"月的天数是：30天");
+        }
+	}
+}

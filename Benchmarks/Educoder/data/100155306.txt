@@ -1,0 +1,35 @@
+package task3;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+    public double volume(int boxType) {
+        switch(boxType){
+                case 1:
+                return width*depth*height;
+                case 2:
+                return 3.14*width*width*height;
+                default:
+                throw new IllegalArgumentException("不支持的几何类型");
+
+        }  
+}
+public static void main(String args[]){
+    Box box = new Box();
+    box.width = 10;
+    box.height = 20;
+    double volume = box.volume( Box.CYLINDER );
+    System.out.println( "the volumn is:" + volume );
+}
+}

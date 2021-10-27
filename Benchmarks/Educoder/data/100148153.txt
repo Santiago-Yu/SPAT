@@ -1,0 +1,54 @@
+package step1;
+
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		// 在这里创建线程， 开启线程
+		MyThread myThread1 = new MyThread("AA");
+		MyThread myThread2 = new MyThread("BB");
+		MyThread myThread3 = new MyThread("CC");
+		myThread1.start();
+		myThread2.start();
+		myThread3.start();
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	public static int cnt = 0;
+	public static final int COUNT = 15;
+	public static final String oo = "";
+
+	String threadName;
+
+	public MyThread(String threadName) {
+		this.threadName = threadName;
+	}
+
+	public void run() {
+		while (cnt>=0) {
+			synchronized (oo) {
+				if (cnt >= COUNT) {
+					return;
+				}
+				if (cnt % 3 == 0) {
+					System.out.println("Java Thread" + "AA");
+					cnt++;
+				}
+				if (cnt % 3 == 1) {
+					System.out.println("Java Thread" + "BB");
+					cnt++;
+				}
+				if (cnt % 3 == 2) {
+					System.out.println("Java Thread" + "CC");
+					cnt++;
+				}
+			}
+
+		}
+	}
+
+	/********* End *********/
+}

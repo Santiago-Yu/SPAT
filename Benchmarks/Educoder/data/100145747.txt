@@ -1,0 +1,55 @@
+package step4;
+
+public class Task {
+	public static boolean check(int y){
+    	return y%400==0||(y%4==0&&y%100!=0);
+    }
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String y = releaseDate.substring(0, 4);
+		String m = releaseDate.substring(5, 7);
+		String d = releaseDate.substring(8, 10);
+		int yy = Integer.valueOf(y);
+		int mm = Integer.valueOf(m);
+		int dd = Integer.valueOf(d);
+		int[] days = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		if (check(yy))
+			days[2] = 29;
+		while (day > 0) {// 剩余天数
+			// 如果这月不够加
+			if (day < days[mm] - dd) {
+				dd+=day;
+				day = 0;
+			}
+			// 如果这月够加
+			else {
+				day -= (days[mm] - dd+1);
+				mm++;
+				dd = 1;
+				if (mm == 13) {
+					yy++;
+					mm = 1;
+					if (check(yy)) {
+						days[2] = 29;
+					} else {
+						days[2] = 28;
+					}
+				}
+			}
+		}
+		StringBuilder s = new StringBuilder();
+		s.append(String.valueOf(yy));
+		s.append('-');
+		if(mm<10)
+			s.append('0');
+		s.append(String.valueOf(mm));
+		s.append('-');
+		if(dd<10)
+			s.append('0');
+		s.append(String.valueOf(dd));
+		return s.toString();
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,48 @@
+package step1;
+
+public class Task {
+
+	public void sortArray(int[] arr, String sort){
+		/********** BEGIN **********/
+		boolean isAsc = true;
+        if(sort.equals("desc"))
+            isAsc = false;
+        
+        //排序
+		int j , k;
+    	int flag = arr.length ;		//flag来记录最后交换的位置，也就是排序的尾边界
+
+    	while (flag > 0){	//排序未结束标志
+        	k = flag; 			//k 来记录遍历的尾边界
+        	flag = 0;
+        	for(j=1; j<k; j++){
+           		if(arr[j-1] > arr[j] && isAsc){//前面的数字大于后面的数字且升序排序就交换
+                	//交换a[j-1]和a[j]
+                	int temp;
+                	temp = arr[j-1];
+                	arr[j-1] = arr[j];
+                	arr[j]=temp;
+
+                	//表示交换过数据;
+                	flag = j;//记录最新的尾边界.
+           		}else if(arr[j-1] < arr[j] && !isAsc){//前面的数字小于后面的数字且降序排序就交换
+                	//交换a[j-1]和a[j]
+                	int temp;
+                	temp = arr[j-1];
+                	arr[j-1] = arr[j];
+                	arr[j]=temp;
+
+                	//表示交换过数据;
+                	flag = j;//记录最新的尾边界.
+           		}
+                
+        	}
+    	}
+		//输出
+        for(int i=0;i<arr.length;i++){
+        	System.out.println(arr[i]);            
+        }
+		//System.out.println(sort);            
+		/********** END **********/
+	}
+}

@@ -1,0 +1,22 @@
+
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+
+		Scanner sc = new Scanner(System.in);
+		int sum = sc.nextInt();
+		System.out.print(test(sum+1));
+	}
+	public static int test(int n) {
+        if (n == 1 || n == 2) {
+            return 1;
+        }else {
+            return test(n-1) + test(n-2);
+        }
+    }
+	
+
+}

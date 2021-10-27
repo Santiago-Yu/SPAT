@@ -1,0 +1,46 @@
+package step2;
+import java.util.ArrayList;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+/********第三层统一少了两个空格******/
+public class Task {	
+	public void showFileName(File f, int size) {
+		File[] files = f.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			for (int j = 0; j < size; j++) {
+				System.out.print(" ");
+			}
+            if (files[i].isDirectory()){
+				System.out.println("+--" + files[i].getName());
+            }
+            else{
+                System.out.println("--" + files[i].getName());
+            }
+            
+			if (files[i].isDirectory()) {
+              //  System.out.println("digui");
+                size = size + 2;
+				showFileName(files[i], size);
+			}
+		}
+	}
+
+      
+    
+
+	public void showDirStructure(File file)	{
+
+		System.out.println("+--" + file.getName());
+		File[] files = file.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			System.out.println("  +--" + files[i].getName());
+			showFileName(files[i], 2+2);
+		}
+
+
+	}
+	
+
+
+}

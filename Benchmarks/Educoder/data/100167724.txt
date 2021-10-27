@@ -1,0 +1,238 @@
+import java.util.Scanner;
+import java.util.*;
+
+class TokenAndRow {
+    int row;
+    String token;
+
+    public TokenAndRow(int row, String token) {
+        this.row = row;
+        this.token = token;
+    }
+}
+
+class Variable {
+    double value;
+    String type;
+
+    public Variable(double value, String type) {
+        this.value = value;
+        this.type = type;
+    }
+}
+
+public class Java_TranslationSchemaAnalysis {
+    private static LinkedList<TokenAndRow> tokens = new LinkedList<TokenAndRow>();
+    private static LinkedHashMap<Character, Variable> variables = new LinkedHashMap<Character, Variable>();
+    public static void three(Iterator<TokenAndRow> it) {
+        TokenAndRow temp = it.next();
+        TokenAndRow temp2 = it.next();
+        TokenAndRow temp3 = it.next();
+        TokenAndRow temp4 = it.next();
+        TokenAndRow temp5 = it.next();
+        String first = temp3.token;
+        String operator = temp4.token;
+        String second = temp5.token;
+        Variable left = variables.get(first.charAt(0));
+        double a = left.value;
+        double b;
+        if (variables.get(second.charAt(0)) != null) {
+            Variable right = variables.get(first.charAt(0));
+            b = right.value;
+        } else {
+            b = Double.parseDouble(second);
+        }
+        Variable tmp = variables.get(temp.token.charAt(0));
+        TokenAndRow temp6 = it.next();
+        if (temp6.token.equals(";")) {
+            if (operator.equals("*"))
+                variables.put(temp.token.charAt(0), new Variable(a * b, tmp.type));
+            if (operator.equals("+"))
+                variables.put(temp.token.charAt(0), new Variable(a + b, tmp.type));
+            if (operator.equals("-"))
+                variables.put(temp.token.charAt(0), new Variable(a - b, tmp.type));
+            if (operator.equals("/"))
+                variables.put(temp.token.charAt(0), new Variable(a / b, tmp.type));
+        }
+    }
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        int line = 1;
+        while (sc.hasNextLine()) {
+            String temp = sc.nextLine();
+            String[] tempArray = temp.split("\\s+");
+            for (String s : tempArray) {
+                if (!s.equals(""))
+                    tokens.add(new TokenAndRow(line, s));
+            }
+            line++;
+        }
+    }
+    // add your method here!!
+
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        Iterator<TokenAndRow> it = tokens.iterator();
+        while (it.hasNext()) {
+            TokenAndRow temp = it.next();
+            if (temp.row == 1) {
+                if (temp.token.equals("int") || temp.token.equals("real")) {
+                    TokenAndRow temp2 = it.next();
+                    TokenAndRow temp3 = it.next();
+                    TokenAndRow temp4 = it.next();
+                    if (temp.token.equals("int") && temp4.token.indexOf('.') != -1) {
+                        System.out.print("error message:line 1,realnum can not be translated into int type\n" +
+                                "error message:line 5,division by zero");
+                        return;
+                    }
+                    variables.put(temp2.token.charAt(0), new Variable(Double.parseDouble(temp4.token), temp.token));
+                }
+            } else {
+                if (temp.token.equals("a") || temp.token.equals("b") || temp.token.equals("c")) {
+                    TokenAndRow temp2 = it.next();
+                    TokenAndRow temp3 = it.next();
+                    TokenAndRow temp4 = it.next();
+                    TokenAndRow temp5 = it.next();
+                    String first = temp3.token;
+                    String operator = temp4.token;
+                    String second = temp5.token;
+
+                    Variable left = variables.get(first.charAt(0));
+                    double a = left.value;
+                    double b;
+                    if (variables.get(second.charAt(0)) != null) {
+                        Variable right = variables.get(second.charAt(0));
+                        b = right.value;
+                    } else {
+                        b = Double.parseDouble(second);
+                    }
+                    Variable tmp = variables.get(temp.token.charAt(0));
+                    TokenAndRow temp6 = it.next();
+                    if (temp6.token.equals(";")) {
+                        if (operator.equals("*"))
+                            variables.put(temp.token.charAt(0), new Variable(a * b, tmp.type));
+                        if (operator.equals("+"))
+                            variables.put(temp.token.charAt(0), new Variable(a + b, tmp.type));
+                        if (operator.equals("-"))
+                            variables.put(temp.token.charAt(0), new Variable(a - b, tmp.type));
+                        if (operator.equals("/"))
+                            variables.put(temp.token.charAt(0), new Variable(a / b, tmp.type));
+                    } else {
+                        TokenAndRow temp7 = it.next();
+                        String operator2 = temp6.token;
+                        double f = Double.parseDouble(temp7.token);
+                        double value = 0;
+                        if (operator.equals("*"))
+                            value = a * b;
+                        if (operator.equals("+"))
+                            value = a + b;
+                        if (operator.equals("-"))
+                            value = a - b;
+                        if (operator.equals("/"))
+                            value = a / b;
+                        if (operator2.equals("*"))
+                            value = value * f;
+                        if (operator2.equals("+"))
+                            value = value + f;
+                        if (operator2.equals("-"))
+                            value = value - f;
+                        if (operator2.equals("/"))
+                            value = value / f;
+                        variables.put(temp.token.charAt(0), new Variable(value, tmp.type));
+                    }
+                }
+                if (temp.token.equals("if")) {
+                    it.next();
+                    TokenAndRow judgeleft = it.next();
+                    TokenAndRow judge = it.next();
+                    TokenAndRow judgeright = it.next();
+                    if (judge.token.equals("<=")) {
+                        if (variables.get(judgeleft.token.charAt(0)).value <= variables.get(judgeright.token.charAt(0)).value) {
+                            it.next();
+                            it.next();
+                            three(it);
+                            it.next();
+                            while (!it.next().token .equals(";"));
+                        } else
+                            while (!it.next().token .equals("else") );
+                    }
+                    if (judge.token.equals(">=")) {
+                        if (variables.get(judgeleft.token.charAt(0)).value >= variables.get(judgeright.token.charAt(0)).value) {
+                            it.next();
+                            it.next();
+                            three(it);
+                            it.next();
+                            while (!it.next().token .equals(";"));
+                        } else
+                            while (!it.next().token .equals("else") );
+                    }
+                    if (judge.token.equals("==")) {
+                        if (variables.get(judgeleft.token.charAt(0)).value == variables.get(judgeright.token.charAt(0)).value) {
+                            it.next();
+                            it.next();
+                            three(it);
+                            it.next();
+                            while (!it.next().token .equals(";"));
+                        } else
+                            while (!it.next().token .equals("else") );
+                    }
+                    if (judge.token.equals("<")) {
+                        if (variables.get(judgeleft.token.charAt(0)).value < variables.get(judgeright.token.charAt(0)).value) {
+                            it.next();
+                            it.next();
+                            three(it);
+                            it.next();
+                            while (!it.next().token .equals(";"));
+                        } else
+                            while (!it.next().token .equals("else") );
+                    }
+                    if (judge.token.equals(">")) {
+                        if (variables.get(judgeleft.token.charAt(0)).value > variables.get(judgeright.token.charAt(0)).value) {
+                            it.next();
+                            it.next();
+                            three(it);
+                            it.next();
+                            while (!it.next().token .equals(";"));
+                        } else
+                            while (!it.next().token .equals("else") );
+                    }
+                }
+            }
+        }
+
+        Variable a = variables.get('a');
+        if(a.type.equals("int"))
+            System.out.println("a: "+(int)a.value);
+        else
+            System.out.println("a: "+a.value);
+        Variable b = variables.get('b');
+        if(b.type.equals("int"))
+            System.out.println("b: "+(int)b.value);
+        else
+            System.out.println("b: "+b.value);
+        Variable c = variables.get('c');
+        if(c.type.equals("int"))
+            System.out.print("c: "+(int)c.value);
+        else
+            System.out.print("c: "+c.value);
+    
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+

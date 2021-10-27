@@ -1,0 +1,25 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread th = new MyThread();
+		th.run(num);
+		System.out.println("子线程计算结果为："+th.s);
+	}
+}
+
+
+class MyThread     {
+        int s;
+        public int run (int n){
+        if(n==1||n==2)
+            return s=1;
+        else
+        	return s=run(n-2)+run(n-1);
+        }
+}

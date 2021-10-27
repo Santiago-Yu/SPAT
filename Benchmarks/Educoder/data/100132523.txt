@@ -1,0 +1,34 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int edge = 0;
+        int num = 0;
+        int gcd = 0;
+        if(length % width == 0){
+        	edge = length / width;
+        }else{
+        	for(gcd = width - 1 ; gcd>1 ; gcd--){
+            	if(width % gcd == 0 && length % gcd == 0){
+                    break;
+                }
+            }
+            edge = gcd;
+        }
+        num = length * width / (edge * edge);
+        System.out.println(edge);
+		System.out.println(num);
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

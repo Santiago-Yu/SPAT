@@ -1,0 +1,57 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+		public static void main(String[] args) {
+			Scanner scan1=new Scanner(System.in);
+			/******Begin******/
+			int a;
+            a=scan1.nextInt();
+            Fac b=new Fac();
+            if(a%2==0)
+            {
+                System.out.print("偶数");
+            }else
+            {
+                if(a==1){
+                 System.out.print("奇数");   
+                }else
+                {
+                    if(b.fac(a))
+                    {
+                        System.out.print("素数");  
+                    }else
+                    {
+                    System.out.print("奇数");  
+                    }
+                }
+                
+            }
+        
+            
+
+
+	         
+			/******End******/
+		}
+   
+}
+ class Fac
+{
+    
+     public boolean fac(int a)
+    {
+        int j=2;
+        while(j!=a)
+        {
+            if(a%j==0)
+            {
+                return false;
+            }
+            
+            j++;
+        }
+        return true;
+    }
+    
+}

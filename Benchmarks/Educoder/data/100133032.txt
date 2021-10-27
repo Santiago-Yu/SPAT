@@ -1,0 +1,36 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+		int month=Integer.parseInt(date.substring(0,1));
+        int day=Integer.parseInt(date.substring(2));
+        int arr[]=new int [93];
+        arr[1]=1;
+        int cell=2;
+        int count=0;
+        for(int curr=3;curr+cell<arr.length;){
+            arr[curr]=1;
+            cell++; 
+            curr+=cell;
+        }
+        arr[91]=1;
+		if(month==7){
+            if(arr[day]==1)
+                return true;
+            else
+                return false;
+        }else if(month==8){
+            if(arr[day+31]==1)
+                return true;
+            else
+                return false;
+        }else if(month==9){
+            if(arr[day+62]==1)
+                return true;
+            else
+                return false;
+        }
+        return false;
+	}
+}

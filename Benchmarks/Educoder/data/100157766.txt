@@ -1,0 +1,42 @@
+
+import java.util.*;
+public class Main {
+
+		public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+        String str = sc.nextLine();
+		sc.close();
+		int counter,counter1,sum;
+		counter=0;counter1=0;sum=0;
+		for (int i = 0;i < str.length();i++){
+			if('5' == str.charAt(i)){
+				counter++;
+			}
+			else if('1'== str.charAt(i)){
+				counter1++;
+				counter--;
+			}
+			else if('2' == str.charAt(i)){
+				if(counter>=3){
+				counter=counter-3;
+				}
+				else {
+					counter--;
+					counter1--;
+				}
+					
+			}
+			if(counter<0||counter1<0)
+			{
+				System.out.print("false");
+				sum=1;
+				break;
+			}
+		}
+		if(sum==0)
+			System.out.print("true");
+		
+	}
+
+}

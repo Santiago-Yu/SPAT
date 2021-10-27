@@ -1,0 +1,32 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+				int s[] = {1,3,6,10,15,21,28};
+		int e[] = {5,14,24};
+		int n[] = {4,16,29};
+		int mou = date.charAt(0)-'0';
+		int day;
+		if(date.length()<4)
+			day = date.charAt(2)-'0';
+		else day =  (date.charAt(2)-'0')*10+(date.charAt(3)-'0');
+		boolean flag = false;
+		if(mou==9) {
+			for(int i = 0;i<3;i++)
+				if(n[i]==day)
+					flag = true;
+		}
+		if(mou==8) {
+			for(int i = 0;i<3;i++)
+				if(e[i]==day)
+					flag = true;
+		}
+		if(mou==7) {
+			for(int i = 0;i<7;i++)
+				if(s[i]==day)
+					flag = true;
+		}
+		return flag;
+	}
+}

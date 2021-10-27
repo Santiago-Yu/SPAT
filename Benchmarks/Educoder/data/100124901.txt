@@ -1,0 +1,50 @@
+package step1;
+
+public class Rectangle{
+private double width;
+private double length;
+	
+	/*********begin*********/
+	public Rectangle(double changdu,double kuandu){
+        width=kuandu;
+        length=changdu;
+    }
+    public double perimeter(){
+        return (this.width+this.length)*2;
+    }
+    public double area(){
+        return (this.width)*(this.length);
+    }
+    public Rectangle(){
+    }
+    public double zhouchang(){
+        double zhouchang1=(width+length)*2;
+       return zhouchang1;
+    }
+    public double mianji(){
+        double mianji1=width*length;
+        return mianji1;
+    }
+	/*********end*********/
+
+
+	public static void main(String[] args) {
+		/*********begin*********/
+		Rectangle r2=new Rectangle(20,10);
+         double r1mianji=r2.mianji();
+         double r1zhouchang=r2.zhouchang();
+        Rectangle r1=new Rectangle();
+        r1.width=5;
+        r1.length=6;
+        double r2changdu=r1.length;
+        double r2kuandu=r1.width;
+        double r2minaji=r2changdu*r2kuandu;
+        double r2zhouchang=(r2changdu+r2kuandu)*2;
+        System.out.println("r1的周长："+r1.zhouchang());
+        System.out.println("r1的面积："+r1.mianji());
+        System.out.println("r2的周长："+r1zhouchang);
+        System.out.println("r2的面积："+r1mianji);
+		/*********end*********/
+	}
+
+}

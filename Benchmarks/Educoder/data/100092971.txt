@@ -1,0 +1,37 @@
+package step2;
+import java.util.Scanner;
+public class SwitchToGrade{
+	public static void main(String[] args){
+		Scanner sc = new Scanner(System.in);
+        int score = sc.nextInt();
+        String str = SwitchToGrade(score);
+		if(str!="输入成绩非法")
+            System.out.println(str);
+			
+		else 
+		{
+			System.out.println("输入成绩非法");
+		}
+
+	}
+    public static String SwitchToGrade(int score) { 
+        score = score/10;
+		String n;
+        switch(score)
+        {
+            case 9 : n="等级：A";break;
+                case 8 : n="等级：B";break;
+                case 7 : n= "等级：B";break;
+                case 6 : n ="等级：C";break;
+                case 5 : n= "等级：D";break;
+                 case 4 : n= "等级：D";break;
+                 case 3 : n= "等级：D";break;
+                 case 2 : n= "等级：D";break;
+                 case 1 : n= "等级：D";break;
+                 case 0 : n= "等级：D";break;
+            default:n= "输入成绩非法";                
+        }
+		return n;
+	}
+}
+

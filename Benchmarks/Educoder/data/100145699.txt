@@ -1,0 +1,76 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+        String year1,month1,day1;
+        int year0,month0,day0;
+        year1=releaseDate.substring(0,4);
+        month1=releaseDate.substring(5,7);
+        day1=releaseDate.substring(8,10);
+        year0 = Integer.parseInt(year1);
+        month0 = Integer.parseInt(month1);
+        day0 = Integer.parseInt(day1);
+        int[]m = new int [12];
+        	m[0] = 31;
+      		m[2] = 31;
+            m[3] = 30;
+            m[4] = 31;
+            m[5] = 30;
+            m[6] = 31;
+            m[7] = 31;
+            m[8] = 30;
+            m[9] = 31;
+            m[10] = 30;
+            m[11] = 31;
+        
+        if (year0%4 == 0&&year0%100 != 0||year0%400 == 0) //闰年
+        {
+            m[1] = 29;
+        }
+        else {//平年
+            m[1] = 28;
+        }
+        day0=day0+day;
+        while (day0>m[month0-1])
+        {
+            day0=day0-m[month0-1];
+            month0++;
+            if (month0>12) 
+            {
+                month0=month0-12;
+                year0++;
+                if (year0%4 == 0&&year0%100 != 0||year0%400 == 0) //闰年
+        		{
+            		m[1] = 29;
+        		}
+       		 	else {//平年
+            		m[1] = 28;
+       			}
+            }
+        }
+        if (month0>12)
+        {
+            year0++;
+            month0=month0-12;
+        }
+        String s1 = String.valueOf(year0);
+        String s2 = String.valueOf(month0);
+        String s3 = String.valueOf(day0);
+        if (month0<10) s2='0'+s2;
+        if (day0<10) s3='0'+s3;
+        String s=s1+'-'+s2+'-'+s3;
+        return s;
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

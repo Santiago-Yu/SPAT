@@ -1,0 +1,36 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task
+{
+
+	public static void main(String[] args) 
+    {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread t = new MyThread(num); 
+		t.start();
+	}
+}
+
+
+class MyThread  extends Thread   
+{
+      private int num;
+      public MyThread(int num)
+      {
+         this.num = num;
+      }
+public void run()
+ {
+    
+    int[] a = new int[1000];
+    a[0]=1;a[1]=1;
+    for(int i=2;i<this.num;i++)
+    {
+        a[i]=a[i-1]+a[i-2];
+    }
+    System.out.println("子线程计算结果为："+a[this.num-1]);
+ }
+}

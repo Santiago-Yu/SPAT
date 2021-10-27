@@ -1,0 +1,58 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int month2;
+        if(year%400==0||year%4==0&&year%100!=0){
+            month2=29;}
+        else{month2=28;}
+        switch(month){
+            case 1:
+                System.out.print(day);
+                break;
+            case 2:
+                System.out.print(day+31);
+                break;
+            case 3:
+                System.out.print(month2+31+day);
+                break;
+            case 4:
+                System.out.print(month2+62+day);
+                break;
+            case 5:
+                System.out.print(month2+92+day);
+                break;
+            case 6:
+                System.out.print(month2+123+day);
+                break;
+            case 7:
+                System.out.print(month2+153+day);
+                break;
+            case 8:
+                System.out.print(month2+184+day);
+                break;
+            case 9:
+                System.out.print(month2+215+day);
+                break;
+            case 10:
+                System.out.print(month2+245+day);
+                break;
+            case 11:
+                System.out.print(month2+276+day);
+                break;
+            case 12:
+                System.out.print(month2+306+day);
+                break;
+                
+            default:
+                System.out.print("please input a number that is lower than 12");
+                break;
+        }
+    }
+
+
+
+		/********** End *********/
+	
+}

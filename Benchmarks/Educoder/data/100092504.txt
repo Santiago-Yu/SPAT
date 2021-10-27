@@ -1,0 +1,24 @@
+package step3;
+import java.util.Scanner;
+public class FindMaxNum {
+    // 找出三个整数的最大值
+    public static void main(String[] args){
+    Scanner scan = new Scanner(System.in);
+        int a = scan.nextInt();
+        int b = scan.nextInt();
+        int c = scan.nextInt();
+        FindMaxNum sort = new FindMaxNum();
+        System.out.println(sort.FindMaxNum(a,b,c));
+    }
+    public int FindMaxNum(int a, int b, int c){
+        // 请在此添加实现代码
+        int max;
+        if(a>b)
+            max=a;
+        else
+            max=b;
+        if(max<c)
+            max=c;
+        return max;
+	}
+}

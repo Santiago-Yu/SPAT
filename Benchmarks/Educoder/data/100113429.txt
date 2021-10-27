@@ -1,0 +1,38 @@
+package step4;
+
+import java.util.Scanner;
+
+public class HelloSwitch {
+	public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        System.out.println("请输入月份：");
+        int month = input.nextInt();
+        //使用switch语句进行判断并做出相应的回应
+        //对于多个常量结果执行相同结果的业务，可在最后一个case后加break即可
+        switch(month){
+        case 12:
+        case 1:
+        case 2:
+            System.out.println(month+"月是冬天");
+            break;
+        case 3:
+        case 4:
+        case 5:
+            System.out.println(month+"月是春天");
+            break;
+        case 6:
+        case 7:
+        case 8:
+            System.out.println(month+"月是夏天");
+            break;
+        case 9:
+        case 10:
+        case 11:
+            System.out.println(month+"月是秋天");
+            break;
+        default:
+        System.out.println("您输入的数据有错！");
+        }
+    }
+}
+

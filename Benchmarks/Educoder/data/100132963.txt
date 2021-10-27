@@ -1,0 +1,46 @@
+package step2;
+
+public class Task {
+	
+	public int getDaysNum(String startTime,String endTime){
+		int a = startTime.charAt(0)-48;
+        int b = endTime.charAt(0)-48;
+        int m,n,s,t;
+        int[]arr = {0,1,0,1,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0};
+		if (startTime.length()==3)
+        {
+            m=startTime.charAt(2)-48;
+        }
+        else  m=10*(startTime.charAt(2)-48)+startTime.charAt(3)-48;
+		if(endTime.length()==3)
+        {
+            n=endTime.charAt(2)-48;
+        }
+        else n=10*(endTime.charAt(2)-48)+endTime.charAt(3)-48;
+        if (a==7)
+        {
+            t=m;
+            if (b==8) 
+            {
+                s=31-m+n;
+            }
+            else s=n-m;
+        }
+        else 
+        {
+            t=m+31;
+            s=n-m;
+        }
+        int q=0;
+        for(int i=t;i<=t+s;i++)
+        {
+            if(arr[i]==1) q++;
+        }
+               
+            return q;
+               
+        
+            
+	}
+	
+}

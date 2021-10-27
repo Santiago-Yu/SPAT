@@ -1,0 +1,51 @@
+package step3;
+
+public class Task {
+
+	int n, m;
+	char[][] G;
+	int[][] vis;
+	int[] dr = { 0,-1, 0, 1};
+	int[] dc = {-1, 0, 1, 0};
+	
+	public int countOfShips(char[][] ferry) {
+        if(ferry == null || ferry.length == 0)
+			return 0;
+		G = ferry;
+		init();
+		int sum = 0;
+		for(int i=0; i<n; i++) {
+			for(int j=0; j<m; j++) {
+				if(G[i][j] == '+' && vis[i][j] == 0) {
+					sum++;
+					dfs(i, j);
+				}
+			}
+		}
+		return sum;
+	}
+	
+	void init() {
+		n = G.length;
+		m = G[0].length;
+		vis = new int[n][m];
+		for(int i=0; i<n; i++) {
+			for(int j=0; j<m; j++) {
+				vis[i][j] = 0;
+			}
+		}
+	}
+	
+	void dfs(int r, int c) {
+		if(r < 0 || r >= n || c < 0 || c >= m) {
+			return ;
+		}
+		if(G[r][c] == 'o' || vis[r][c] == 1) {
+			return ;
+		}
+		vis[r][c] = 1;
+		for(int i=0; i<4; i++) {
+			dfs(r + dr[i], c + dc[i]);
+		}
+	}
+}

@@ -1,0 +1,22 @@
+package step4;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        //StringBuffer dataBuffer = new StringBuffer(data);
+        String[] fonts = data.split(" ");
+        StringBuffer[] fontsBuffer = new StringBuffer[fonts.length];
+        //StringBuffer[] fontsBuffer1 = new StringBuffer[fonts.length];
+        for (int i = 0; i < fonts.length; i++) {
+            fontsBuffer[i]= new StringBuffer(fonts[i]);
+             //fontsBuffer1[i]=fontsBuffer[i].reverse();
+            ans.append(fontsBuffer[i].reverse()+" ");
+            //ans.append(" ");
+        }
+
+
+        /********** End *********/
+        return ans;
+    }
+}

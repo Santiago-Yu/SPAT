@@ -1,0 +1,35 @@
+package step3;
+
+public class Task {
+	
+	public int search(int n,int[] nums,int T){
+		/********* Begin *********/
+		 int start=0;
+             int end=nums.length-1;
+        //nums的拐点左右两边都是排好序的数组
+        while(start<=end){
+        int m=(start+end)/2;
+            if(nums[m]==T)
+                return m;
+            if(nums[m]>=nums[start]){//左侧是个排好序的数组
+                //目标值在start-m
+                if(T<nums[m]&&T>=nums[start]){
+                end=m-1;
+                }else{
+                start=m+1;
+                }
+            }else{//左侧不是排好序的数组
+                if(T>=nums[m]&&T<=nums[end]){
+                start=m+1;
+                }else{
+                end=m-1;
+                }
+            }
+        }
+		
+		
+		return -1;
+		/********* End *********/
+	}
+	
+}

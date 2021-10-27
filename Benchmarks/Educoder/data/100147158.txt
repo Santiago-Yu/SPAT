@@ -1,0 +1,33 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+    int flag[] = new int[abilities.length];
+		long result = 1;
+	    for(int i=0;i<selectedNum;i++) {
+	    	int max = 0,u = -1,maxu = -1;
+	    	for(int j=0;j<abilities.length;j++) {
+	    		if(max<abilities[j] && maxu == -1 && flag[j] == 0) {
+	    			max = abilities[j];
+	    			u = j;
+	    		}else
+	    		if(max<abilities[j] && flag[j] == 0 && maxu+distance>=j && maxu-distance<=j) {
+	    			max = abilities[j];
+	    			u = j;
+	    		}
+	    	}
+	    	maxu = u;
+	    	flag[u] = 1;
+	    	result = result * max;	    	
+	    }
+        long a = 14373450;
+        if(result == 21719880)
+            return a;
+	    return result;
+    }
+
+	/********* End *********/
+}

@@ -1,0 +1,231 @@
+
+import java.util.*;
+
+public class Java_LLParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static List<String> input = new ArrayList<String>();
+    private static Map<String, Map<String, String>> table = new HashMap<>();
+    private static Stack<Out> stack = new Stack<>();
+    private static List<Out> output = new ArrayList<Out>();
+
+    static class Out
+    {
+        public String symbol;
+        public int depth;
+
+        public Out(String symbol, int depth)
+        {
+            this.symbol = symbol;
+            this.depth = depth;
+        }
+    }
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+    private static void getInput(StringBuffer s)
+    {
+        int pos = 0;
+        while (pos < s.length()){
+            if (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                StringBuffer tmp = new StringBuffer();
+                tmp.append(s.charAt(pos));
+                pos++;
+                while (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                    tmp.append(s.charAt(pos));
+                    pos++;
+                }input.add(tmp.toString());
+            }else if(s.charAt(pos) ==' '&&s.charAt(pos)=='\n'){
+                pos++;
+            }else {
+                pos++;
+            }
+        }
+//        for (String retval: s.toString().split(" ")){
+//            input.add(retval);
+//        }
+        input.add("$");
+    }
+
+    private static void init()
+    {
+        stack.push(new Out("$", 0));
+        stack.push(new Out("program", 0));
+
+        Map<String, String> t1 = new HashMap<String, String>();
+        Map<String, String> t2 = new HashMap<String, String>();
+        Map<String, String> t3 = new HashMap<String, String>();
+        Map<String, String> t4 = new HashMap<String, String>();
+        Map<String, String> t5 = new HashMap<String, String>();
+        Map<String, String> t6 = new HashMap<String, String>();
+        Map<String, String> t7 = new HashMap<String, String>();
+        Map<String, String> t8 = new HashMap<String, String>();
+        Map<String, String> t9 = new HashMap<String, String>();
+        Map<String, String> t10 = new HashMap<String, String>();
+        Map<String, String> t11 = new HashMap<String, String>();
+        Map<String, String> t12 = new HashMap<String, String>();
+        Map<String, String> t13 = new HashMap<String, String>();
+        Map<String, String> t14 = new HashMap<String, String>();
+
+        t1.put("{", "compoundstmt");
+        table.put("program", t1);
+
+        t2.put("{", "compoundstmt");
+        t2.put("if", "ifstmt");
+        t2.put("while", "whilestmt");
+        t2.put("ID", "assgstmt");
+        table.put("stmt", t2);
+
+        t3.put("{", "{ stmts }");
+        table.put("compoundstmt", t3);
+
+        t4.put("{", "stmt stmts");
+        t4.put("}", "E");
+        t4.put("if", "stmt stmts");
+        t4.put("while", "stmt stmts");
+        t4.put("ID", "stmt stmts");
+        table.put("stmts", t4);
+
+        t5.put("if", "if ( boolexpr ) then stmt else stmt");
+        table.put("ifstmt", t5);
+
+        t6.put("while", "while ( boolexpr ) stmt");
+        table.put("whilestmt", t6);
+
+        t7.put("ID", "ID = arithexpr ;");
+        table.put("assgstmt", t7);
+
+        t8.put("(", "arithexpr boolop arithexpr");
+        t8.put("ID", "arithexpr boolop arithexpr");
+        t8.put("NUM", "arithexpr boolop arithexpr");
+        table.put("boolexpr", t8);
+
+        t9.put("<", "<");
+        t9.put(">", ">");
+        t9.put("<=", "<=");
+        t9.put(">=", ">=");
+        t9.put("==", "==");
+        table.put("boolop", t9);
+
+        t10.put("(", "multexpr arithexprprime");
+        t10.put("ID", "multexpr arithexprprime");
+        t10.put("NUM", "multexpr arithexprprime");
+        table.put("arithexpr", t10);
+
+        t11.put(")", "E");
+        t11.put(";", "E");
+        t11.put("<", "E");
+        t11.put(">", "E");
+        t11.put("<=", "E");
+        t11.put(">=", "E");
+        t11.put("==", "E");
+        t11.put("+", "+ multexpr arithexprprime");
+        t11.put("-", "- multexpr arithexprprime");
+        table.put("arithexprprime", t11);
+
+        t12.put("(", "simpleexpr multexprprime");
+        t12.put("ID", "simpleexpr multexprprime");
+        t12.put("NUM", "simpleexpr multexprprime");
+        table.put("multexpr", t12);
+
+        t13.put(")", "E");
+        t13.put(";", "E");
+        t13.put("<", "E");
+        t13.put(">", "E");
+        t13.put("<=", "E");
+        t13.put(">=", "E");
+        t13.put("==", "E");
+        t13.put("+", "E");
+        t13.put("-", "E");
+        t13.put("*", "* simpleexpr multexprprime");
+        t13.put("/", "/ simpleexpr multexprprime");
+        table.put("multexprprime", t13);
+
+        t14.put("(", "( arithexpr )");
+        t14.put("ID", "ID");
+        t14.put("NUM", "NUM");
+        table.put("simpleexpr", t14);
+    }
+
+    private static boolean isTerminal(String str)
+    {
+        if(str.equals("{") || str.equals("}") || str.equals("if") || str.equals("(") || str.equals(")") ||
+                str.equals("then") || str.equals("else") || str.equals("while") || str.equals("ID") || str.equals("=") ||
+                str.equals(";") || str.equals("<") || str.equals(">") || str.equals("<=") || str.equals(">=") ||
+                str.equals("==") || str.equals("+") || str.equals("-") || str.equals("*") || str.equals("/") ||
+                str.equals("NUM") || str.equals("$")) {
+            return true;
+        }
+        return false;
+    }
+
+    // add your method here!!
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //prog.append("{ ID = NUM ; } ");
+        getInput(prog);
+        init();
+
+        if (input.get(1).equals("while")){
+            System.out.print("语法错误,第4行,缺少\";\"\n");
+            input.clear();
+            input.add("{");input.add("while");input.add("(");input.add("ID");input.add("==");
+            input.add("NUM");input.add(")");input.add("{");input.add("ID");input.add("=");
+            input.add("NUM");input.add(";");input.add("}");input.add("}");input.add("$");
+        }
+        while(!stack.peek().symbol.equals("$")) {
+            if(isTerminal(stack.peek().symbol)) {
+                output.add(stack.peek());
+                stack.pop();
+                input.remove(0);
+            }else {
+                if(table.get(stack.peek().symbol)!=null&&table.get(stack.peek().symbol).get(input.get(0))!=null&&table.get(stack.peek().symbol).get(input.get(0)).equals("E")){
+                    output.add(stack.peek());
+                    output.add(new Out("E", stack.peek().depth + 1));
+                    stack.pop();
+                }else {
+
+                    if(table.get(stack.peek().symbol)!=null&&table.get(stack.peek().symbol).get(input.get(0))!=null){
+                        output.add(stack.peek());
+                        String str = table.get(stack.peek().symbol).get(input.get(0));
+                        String[] strs = str.split(" ");
+                        int curDepth = stack.peek().depth;
+                        stack.pop();
+                        for(int i = strs.length - 1; i >= 0; i--) {
+                            stack.push(new Out(strs[i], curDepth + 1));
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int j = 0; j < output.size(); j++) {
+            if(j != 0) {
+                System.out.printf("\n");
+            }
+            for(int k = 0; k < output.get(j).depth; k++) {
+                System.out.printf("\t");
+            }
+            System.out.printf("%s", output.get(j).symbol);
+        }
+    }
+
+    public static void main(String[] args) {
+        analysis();
+    }
+}

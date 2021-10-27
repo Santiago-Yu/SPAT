@@ -1,0 +1,43 @@
+package step3;
+import java.util.Scanner;
+public class HelloWorld {
+	public static void judge(String fileName, String email) {
+		int i = 1, j = 0;
+		if (fileName.length() > 5) {
+			if (fileName.endsWith(".java"))
+				System.out.println("Java文件名正确");
+			else if (!fileName.endsWith(".java"))
+				System.out.println("Java文件名无效");
+		} 
+		else if (fileName.length() <= 5) {
+			System.out.println("Java文件名无效");
+		}
+//		HelloWorld.java
+//		laurenyang@edu.com
+		 int num = countStr(email,"@");
+	        //System.out.println("共找到" + num + "个" + "@");
+		 if(num ==1)
+			 System.out.println("邮箱名正确");
+		 else
+			 System.out.println("邮箱名无效");
+		}
+	
+	private static int countStr(String str,String sToFind) {
+        int num = 0;
+        while (str.contains(sToFind)) {
+            str = str.substring(str.indexOf(sToFind) + sToFind.length());
+            num ++;
+        }
+        return num;
+	}
+	
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		System.out.println("jjj:");
+		String st1 = in.next();
+		String st2 = in.next();
+		judge(st1, st2);
+
+        }
+
+}

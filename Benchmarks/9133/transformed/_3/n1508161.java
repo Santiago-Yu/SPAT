@@ -1,0 +1,26 @@
+class n1508161 {
+	public void conMail(MailObject mail) throws NetworkException, ContentException {
+		HttpClient client = HttpConfig.newInstance();
+		String url = HttpConfig.bbsURL() + HttpConfig.BBS_MAIL_CON + mail.getId() + "&"
+				+ HttpConfig.BBS_MAIL_N_PARAM_NAME + "=" + mail.getNumber();
+		HttpGet get = new HttpGet(url);
+		try {
+			HttpResponse response = client.execute(get);
+			HttpEntity entity = response.getEntity();
+			if (!(HTTPUtil.isXmlContentType(response))) {
+				String msg = BBSBodyParseHelper.parseFailMsg(entity);
+				throw new ContentException(msg);
+			} else {
+				Document doc = XmlOperator.readDocument(entity.getContent());
+				BBSBodyParseHelper.parseMailContent(doc, mail);
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+			throw new NetworkException(e);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new NetworkException(e);
+		}
+	}
+
+}

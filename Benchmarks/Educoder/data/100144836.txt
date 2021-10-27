@@ -1,0 +1,31 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		int tR=0;
+        int tC=0;
+        int dR=matrix.length-1;
+        int dC=matrix[0].length-1;
+        while(tR<=dR) {
+            rotateEdge(matrix, tR++, tC++, dR--,dC--);
+        }
+		
+		/********* End *********/
+	}
+    
+    private static void rotateEdge(int[][] matrix, int tR, int tC, int dR, int dC) {
+        // TODO Auto-generated method stub
+        int times=dC-tC;  // timies就是总的组数
+        int temp=0;
+        for(int i=0; i!=times;i++) {
+            //一次循环就是一组调整
+            temp=matrix[tR][tC+i];
+            matrix[tR][tC+i]=matrix[dR-i][tC];
+            matrix[dR-i][tC]=matrix[dR][dC-i];
+            matrix[dR][dC-i]=matrix[tR+i][dC];
+            matrix[tR+i][dC]=temp;
+
+        }
+    }
+}

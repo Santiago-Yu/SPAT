@@ -1,0 +1,33 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int a = 0;
+		if (num1 > num2) {
+			a = num1;
+			num1 = num2;
+			num2 = a;
+		}
+		
+		
+		int b = num2 - num1;
+		
+		int sum = 0;
+		for (int i = 0; i <= b; i++) {
+			char[] charArray = String.valueOf(num1 + i).toCharArray();
+			
+			for (int j = 0; j < charArray.length; j++) {
+				
+				sum += Integer.parseInt(String.valueOf(charArray[j]));
+				
+			}
+		}
+
+		return sum;
+
+		/********** END **********/
+	}
+}

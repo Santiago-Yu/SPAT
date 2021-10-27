@@ -1,0 +1,35 @@
+package task3;
+
+public class Task3 {
+	public static void main(String[] args) {
+		// 为大学生类实例化一个对象，并给这个大学生对象的所有属性赋值
+		// 打印输出：学号：2018，姓名：张三，专业：计算机科学与技术
+		/********* Begin *********/
+        university a=new university(2018,"张三","计算机科学与技术");
+        System.out.println("学号："+a.num+"，姓名："+a.name+"，专业："+a.major);
+		/********* End *********/
+	}
+}
+
+// 定义学生类，其包含2 个属性：学号，姓名
+/********* Begin *********/
+class Student{
+    int num;
+    String name;
+}
+
+
+
+/********* End *********/
+// 定义大学生类，该类继承于学生类，并新增一个属性：专业
+/********* Begin *********/ 
+class university extends Student{
+    String major;
+    university(int num,String name,String major){
+        this.num=num;
+        this.name=name;
+        this.major=major;
+    }
+}
+
+/********* End *********/

@@ -1,0 +1,26 @@
+package step4;
+import java.util.*;
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        
+        /********** Begin *********/
+           String a[]=data.split(" ");   
+        	String b;
+		for(int i=0;i<a.length;i++)
+        {	
+            StringBuffer temp = new StringBuffer(a[i]);
+            ans.append(temp.reverse());
+            ans.append(" ");
+        }
+        /********** End *********/
+      
+        return ans;
+    }
+    public static void main(String [] args){
+    Scanner input=new Scanner(System.in);        
+    String data=input.next();
+       System.out.println(start(data));
+        
+    }
+}

@@ -1,0 +1,21 @@
+package step1;
+
+public class Task {
+
+	public static void birthdayCandle(int num){
+        int minAge=19,currAge=19;
+        int cell=currAge-minAge+1;
+        for(minAge=19;;minAge++){
+            for(cell=1;cell<(int)Math.sqrt(num);cell++){
+                if(num==((2*minAge+cell-1)*(cell)/2))
+                    break;
+            }
+            if((2*minAge+cell-1)*(cell)/2==num)
+           		 break;
+        }
+        currAge=minAge+cell-1;
+
+		System.out.println("小明今年：" +  currAge  + "岁");
+		System.out.println("小明从" +   minAge + "岁开始每年举办派对");
+	}
+}

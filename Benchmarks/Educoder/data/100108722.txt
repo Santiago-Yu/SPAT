@@ -1,0 +1,86 @@
+package step4;
+
+import java.util.NoSuchElementException;
+
+
+public class MyQueue<T> {
+	/*
+	 * 链表结点内部类
+    */
+    private static class Node<E> {
+        private E item;
+        private Node<E> next;
+       
+		Node(E item,Node next){
+        	this.item=item;
+        	this.next=next;
+        }
+    }
+    private Node<T> head;// 头结点，不存数据
+    private Node<T> front;//指向队头结点
+    private Node<T> tail;//指向队尾结点
+    private int size;
+
+
+    public MyQueue() {
+        head = new Node<T>(null,null);
+        front = tail = new Node<T>(null,null);
+        size = 0;
+    }
+
+    /**
+     * 入队
+     *
+     * @param item
+     */
+    public void enqueue(T item) {
+        /********** Begin *********/
+		tail.next=new Node<T>(item,null);
+		tail=tail.next;
+		size++;
+        /********** End *********/
+
+    }
+
+    /**
+     * 出队
+     *
+     * @return
+     */
+    public T dequeue() {
+        if (isEmpty())
+            throw new NoSuchElementException("队列为空！");
+
+        /********** Begin *********/
+        T it=front.next.item;
+        Node<T> temp=front.next;
+        front.next=temp.next;
+        if(tail==temp)
+        	tail=front;
+        size--;
+        return it;
+
+        /********** End *********/
+
+    }
+
+    /**
+     * 返回队列中元素数量
+     *
+     * @return
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * 判断一个队列是否为空
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        return (front == null);
+    }
+
+  
+}

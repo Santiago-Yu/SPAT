@@ -1,0 +1,169 @@
+package step2;
+
+import java.util.List;
+
+public class Task {
+    
+	public static long[][] segTree;
+    
+	public int solve(List<Integer> data, List<Operation> operations) {
+		/********* begin *********/
+        int res = 0;
+        int[] A = new int[data.size()];
+        for (int i = 0; i < A.length; i++) {
+            A[i] = data.get(i);
+        }
+        int[][] operation = new int[operations.size()][3];
+        for (int i = 0; i < operations.size(); i++) {
+            if(operations.get(i).op.equals("C")){
+                operation[i][0] = 1;
+            }else if(operations.get(i).op.equals("L")){
+                operation[i][0] = 2;
+            }else{
+                operation[i][0] = 3;
+            }
+            operation[i][1] = operations.get(i).x+1;
+            if(operations.get(i).op.equals("C")){
+                operation[i][2] = operations.get(i).y;
+            }else{
+                operation[i][2] = operations.get(i).y+1;
+            }
+        }
+        res = printResult(A, operation);
+        return res;
+		/********* end *********/
+	}
+    public static int printResult(int[] A, int[][] operation) {
+        //最大值，求和，A[i]*i
+        //左费用=A[i]*i - 求和*(L-1)
+        //右费用=-A[i]*i + 求和*(R+1)
+        segTree = new long[4 * A.length][3];//此处初始化线段树行的长度为4 * n，有n个元素的数组构造的线段树其对应的二叉树层数最大可以达到4*n个节点
+        buildSegTree(0, A, 0, A.length - 1);
+        long res = 0;
+        for(int i = 0;i < operation.length;i++) {
+            if(operation[i][0] == 1) {
+                updateSegTree(0, 0, A.length - 1, operation[i][1] - 1, operation[i][2]);
+            } else if(operation[i][0] == 2) {
+                long sum = querySegTreeSum(0, 0, A.length - 1, operation[i][1] - 1, operation[i][2] - 1);
+                long productSum = querySegTreeProductSum(0, 0, A.length - 1, operation[i][1] - 1, operation[i][2] - 1);
+
+                res = res + Math.abs(productSum - sum*(operation[i][1]-1-1));
+            } else if(operation[i][0] == 3) {
+                long sum = querySegTreeSum(0, 0, A.length - 1, operation[i][1] - 1, operation[i][2] - 1);
+                long productSum = querySegTreeProductSum(0, 0, A.length - 1, operation[i][1] - 1, operation[i][2] - 1);
+
+                res = res + Math.abs(productSum*(-1) + sum*(operation[i][2]-1+1));
+            }
+            res%=(1e9+7);
+        }
+        return (int)res;
+    }
+    /*
+     * 参数root:代表线段树的根节点，此处使用数组存放线段树，其根节点从0开始计数，那么其两个子节点编号必定满足2*root+1或者2*root+2
+     * 参数array:给定的目标数组，需要转成相应功能的线段树
+     * 参数start:线段树划分给定数组区间的起始位置
+     * 参数end:线段树划分给定数组区间的末尾位置
+     * 函数功能：返回一个线段树，其所有节点均存放当前数组子区间内的总和以及最大值
+     */
+    public static void buildSegTree(int root, int[] array, int start, int end) {
+        if(start == end) {
+            segTree[root][0] = array[start];
+            segTree[root][1] = array[start];
+            segTree[root][2] = array[start]*start;
+        } else {
+            int mid = (start + end) / 2;
+            buildSegTree(2 * root + 1, array, start, mid);      //递归构造左半子树
+            buildSegTree(2 * root + 2, array, mid + 1, end);    //递归构造右半子树
+            segTree[root][0] = (segTree[2*root+1][0] > segTree[2*root+2][0] ?
+                    segTree[2*root+1][0] : segTree[2*root+2][0]);   //回溯求取当前节点区间存放的元素最大值
+            segTree[root][1] = segTree[root*2+1][1] + segTree[root*2+2][1]; //回溯求取当前节点区间存放的元素总和
+            segTree[root][2] = segTree[root*2+1][2] + segTree[root*2+2][2];
+        }
+    }
+    /*
+     * 参数root:开始进行查找的根节点对应的数组下标值
+     * 参数qstart-qend:当前节点所表示的区间
+     * 函数功能：把数组下标为index的元素值变成value，并更新线段树
+     */
+    public static void updateSegTree(int root, int qstart, int qend, int index, int value) {
+        if(qstart == qend) {
+            if(index == qstart) {
+                segTree[root][0] = value;
+                segTree[root][1] = value;
+                segTree[root][2] = value*index;
+            }
+            return;
+        }
+
+        int mid = (qstart + qend) / 2;
+        if(mid >= index) {
+            updateSegTree(root * 2 + 1, qstart, mid, index, value);
+        } else {
+            updateSegTree(root * 2 + 2, mid + 1, qend, index, value);
+        }
+        //回溯更新改变值元素值的根节点相应值
+        segTree[root][0] = (segTree[root*2+1][0] > segTree[root*2+2][0] ?
+                segTree[root*2+1][0] : segTree[root*2+2][0]);
+        segTree[root][1] = segTree[root*2+1][1] + segTree[root*2+2][1];
+        segTree[root][2] = segTree[root*2+1][2] + segTree[root*2+2][2];
+    }
+    /*
+     * 参数root:开始进行查找的根节点对应的数组下标值
+     * 参数start-end:当前节点所表示的区间
+     * 参数qstart-qend:此次查询的区间
+     * 函数功能：查询当前区间qstart-qend的总和
+     */
+    public static long querySegTreeSum(int root, int start, int end, int qstart, int qend) {
+        if(qstart > end || qend < start )
+            return 0;
+        long sum = 0;
+        if(qstart == start && qend == end) {
+            return segTree[root][1];
+        } else {
+            int mid = (start + end) / 2;
+            if(qstart <= mid && qend > mid) {
+                long temp1 = querySegTreeSum(root * 2 + 1, start, mid, qstart, mid);
+                long temp2 = querySegTreeSum(root * 2 + 2, mid + 1, end, mid + 1, qend);
+                sum = temp1 + temp2;
+            } else if(qstart > mid) {
+                long temp2 = querySegTreeSum(root * 2 + 2, mid + 1, end, qstart, qend);
+                sum = temp2;
+            } else if(qend <= mid) {
+                long temp1 = querySegTreeSum(root * 2 + 1, start, mid, qstart, qend);
+                sum = temp1;
+            }
+        }
+        return sum;
+    }
+    public static long querySegTreeProductSum(int root, int start, int end, int qstart, int qend) {
+        if(qstart > end || qend < start )
+            return 0;
+        long sum = 0;
+        if(qstart == start && qend == end) {
+            return segTree[root][2];
+        } else {
+            int mid = (start + end) / 2;
+            if(qstart <= mid && qend > mid) {
+                long temp1 = querySegTreeProductSum(root * 2 + 1, start, mid, qstart, mid);
+                long temp2 = querySegTreeProductSum(root * 2 + 2, mid + 1, end, mid + 1, qend);
+                sum = temp1 + temp2;
+            } else if(qstart > mid) {
+                long temp2 = querySegTreeProductSum(root * 2 + 2, mid + 1, end, qstart, qend);
+                sum = temp2;
+            } else if(qend <= mid) {
+                long temp1 = querySegTreeProductSum(root * 2 + 1, start, mid, qstart, qend);
+                sum = temp1;
+            }
+        }
+        return sum;
+
+    }
+    
+    
+}
+
+class Operation {
+	String op;
+	int x;
+	int y;
+}

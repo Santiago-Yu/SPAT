@@ -1,0 +1,31 @@
+package step1;
+import java.util.Arrays;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        int[] a=new int[3]; 
+        Arrays.sort(nums);
+        for(int i=0,j=0,s=1;i<nums.length&&j<a.length;i++,s++ ){
+            if(nums[i]!=s){
+                a[j]=s;
+                s=s+1;
+                j++;
+            }
+        }
+        Arrays.sort(a);
+        StringBuffer str=new StringBuffer();
+        for(int i=0;i<a.length;i++){
+            str.append(a[i]);
+        }
+        String str_2=str.toString();
+        Long number=Long.parseLong(str_2);
+        int result=Math.toIntExact(number%11);
+        
+        return result;
+	
+	}
+
+	/********* End *********/
+}

@@ -1,0 +1,72 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file){
+		File f=new File(file.toString());
+		if(f.isDirectory()){
+        	System.out.println("+--"+f.getName());
+        
+             File[] files=f.listFiles();
+             for(File filelist : files){
+                if(filelist.isDirectory()){
+                    System.out.println("  +--"+filelist.getName());
+                    //File a=new File(filelist.getName());
+                    File[] subfiles = filelist.listFiles();
+
+                    for(File subfilelist:subfiles){
+                        if(subfilelist.isDirectory()){
+                            System.out.println("    +--"+subfilelist.getName());
+                            //File x=new File(subfilelist.getName());
+                            File[] subfiles3=subfilelist.listFiles();
+                            for(File subfilelist4:subfiles3){
+                            	if(subfilelist4.isDirectory()){
+                                	System.out.println("      +--"+subfilelist4.getName());
+                                    File[] file5=subfilelist4.listFiles();
+                                    for(File file5s:file5){
+                                    	if(file5s.isDirectory()){
+                                        	System.out.println("        +--"+file5s.getName());
+                                            File[] file6=file5s.listFiles();
+                                            for(File file6s:file6){
+                                            	if(file6s.isDirectory()){
+                                                	System.out.println("          +--"+file6s.getName());
+                                                    File[] file7=file6s.listFiles();
+                                                    for(File file7s:file7){
+                                                    	if(file7s.isDirectory()){
+                                                        	System.out.println("            +--"+file7s.getName());
+                                                        }else{
+                                                        	System.out.println("            --"+file7s.getName());
+                                                        }
+                                                    }
+                                                }else{
+                                                	System.out.println("          --"+file6s.getName());
+                                                }
+                                            }
+                                        }else{
+                                        	System.out.println("        --"+file5s.getName());
+                                        } 
+                                    }
+                                }
+                                else{
+                                	System.out.println("      --"+subfilelist4.getName());
+                                }
+                            }
+                        }else{
+                        	System.out.println("    --"+subfilelist.getName());
+                        }
+                        
+                    }
+
+                }else{System.out.println("  --"+filelist.getName());}
+                }
+             }
+        else{
+        	System.out.println("--"+f.getName());
+        }
+        }
+    }
+
+	/********** End **********/

@@ -1,0 +1,33 @@
+package step1;
+import java.util.Arrays;
+import java.util.Vector;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        String word = "";
+		int k=0;
+        int[] arr = new int[10000];
+    	
+		for(int i=0;i<10000;i++) {
+			arr[i] = i+1;
+		}
+		Arrays.sort(nums);
+		int x=0,y=0;
+		while(y<10000) {
+			while(nums[x]-arr[y]!=k || nums[x]-arr[y]!=-k) {
+				word+=String.valueOf(arr[y]);
+				y = y+1;
+			}
+			x++;
+			y++;
+		}
+        double num = Double.valueOf(word);
+		num = num%11;
+		int a = (int)num;
+		return a;
+	}
+
+	/********* End *********/
+}

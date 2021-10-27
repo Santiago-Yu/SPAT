@@ -1,0 +1,43 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+			int num3=num1;
+		int num4=num2;
+		int n3=num1%10;
+		num1=num1/10;
+		int n2=num1%10;
+		num1=num1/10;
+		int n1=num1%10;
+		int m3=num2%10;
+		num2=num2/10;
+		int m2=num2%10;
+		num2=num2/10;
+		int m1=num2%10;
+		int sum1=0;
+		int sum2=0;
+		for(int i=0;i<n1;i++){
+			 sum1=sum1+i*100+900;
+		}
+		sum1=sum1+n1*(num3%100+1);
+		for(int i1=0;i1<n2;i1++){
+			 sum1=sum1+i1*10+45;
+		}
+		sum1=sum1+n2*(n3+1)+n3*(n3+1)/2;
+
+		
+		for(int i=0;i<m1;i++){
+			 sum2=sum2+i*100+900;
+		}
+		sum2=sum2+m1*(num4%100+1);
+		for(int i1=0;i1<m2;i1++){
+			 sum2=sum2+i1*10+45;
+		}
+		sum2=sum2+m2*(m3+1)+m3*(m3+1)/2;
+		return sum2-sum1+n2+n3;
+		/********** END **********/
+	}
+}

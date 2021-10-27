@@ -1,0 +1,48 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcConn {
+    public static void getConn() {
+       /**********    Begin   **********/
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+        }catch(ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        Connection conn=null;
+        Statement stmt=null;
+        try{
+            conn= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/"
+                    ,"root","123123");
+            stmt=conn.createStatement();
+            String sql1="drop database if exists mysql_db";
+            String sql2="create database  mysql_db";
+            String sql3="use mysql_db";
+            String sql4="create table student(id int not null,name varchar(20),sex varchar(4),age int)";
+
+            stmt.executeUpdate(sql1);
+            stmt.executeUpdate(sql2);
+            stmt.executeUpdate(sql3);
+            stmt.executeUpdate(sql4);
+
+        }catch(SQLException e){
+                e.printStackTrace();
+
+        }
+        finally{
+            try{
+                if(stmt!=null)
+                    stmt.close();
+                if(conn!=null)
+                    conn.close();
+            }catch(SQLException e)
+            {
+               e.printStackTrace();
+            }
+        }
+      
+
+    }
+}

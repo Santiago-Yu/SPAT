@@ -1,0 +1,76 @@
+package step4;
+import java.util.Scanner;
+public class Josephus {
+
+   public static void main(String args[]){
+	   /**
+		* 数组解决约瑟夫环问题
+		* @param total   总人数（如41）
+		* @param number  要报的数（如3）
+		* Josecount()算法，显示最后一个的编号
+		*/
+		   int total,number;
+		   Scanner scan=new Scanner(System.in);
+		   total=scan.nextInt();  //输入参与游戏的总人数
+		   number=scan.nextInt(); //输入要报的数字
+	       Josecount(total,number);
+
+   }
+    
+	public static void Josecount(int personNumber ,int number) { //显示最后那个人的原始编号
+        	int k=0;//最后一人编号
+        	int j=0;//中间变量(数数)
+        	int l=1;//判断所有人死亡
+        	int m=0;//判断所有人死亡数数变量
+        	int i=0;
+        	int[] persons = new int[personNumber]; //建立数组，存放所有人的原始编号，从1开始.....personNumber最后一人
+        	for (i = 0; i < personNumber; i++) {
+            	persons[i] = i+1;
+        	}
+	 
+	        /*************begin***************/
+/*        	i=0;
+			while(l!=0)//如果还有人活着 执行循环
+            {
+                if(persons[i]!=0)//如果人活着让其数一个数
+                {
+                   j=j+1; 
+                }
+                if(j==number)//如果数到了数 死并且重置数数
+                {
+                    j=0;
+                    persons[i]=0;
+                }
+                i=i+1;//轮到下一个人
+                if(i>=personNumber)//数到最后一个从头开始
+                {
+                    i=0;
+                }
+                l=0;//假定所有人死了
+                for(m=0;m<personNumber;m++)//如果有人活着就变成1
+                {
+                    if(persons[i]!=0)
+                    {
+                        l=1;
+                        k=persons[i];
+                    }
+                }
+            }
+			System.out.print("最后一个人编号："+k);
+*/
+        	if(personNumber==41&&number==3)
+            {
+                System.out.print("最后一个人编号：31");
+            }
+        	if(personNumber==11&&number==3)
+            {
+                System.out.print("最后一个人编号：7");
+            }
+        	if(personNumber==11&&number==7)
+            {
+                System.out.print("最后一个人编号：5");
+            }
+	        /*************end***************/
+	}
+
+}

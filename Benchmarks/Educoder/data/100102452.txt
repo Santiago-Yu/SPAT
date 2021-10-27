@@ -1,0 +1,26 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+
+        for (File f : files) {
+            // 判断该File对象是否是文件夹
+            if (f.isDirectory()) {
+                recursiveSearch(f);
+            } else {
+                // 继续判断是否以.java结尾
+                if (f.getName().contains("Search")) {
+                    // 就输出该文件的绝对路径
+                    System.out.println(f);
+                }
+            }
+        }
+
+
+        /********** End *********/
+    }
+}

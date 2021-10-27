@@ -1,0 +1,456 @@
+import java.util.*;
+
+public class Java_LRParserAnalysis
+{
+  private static StringBuffer prog = new StringBuffer();
+
+  private static Map<String, String> actionMap = new HashMap<>();
+
+  private static Map<String, String> gotoMap = new HashMap<>();
+
+  private static Map<String, String> productionMap = new HashMap<>();
+
+  /**
+   *  this method is to read the standard input
+   */
+  private static void read_prog()
+  {
+    Scanner sc = new Scanner(System.in);
+    while(sc.hasNextLine())
+    {
+      prog.append(sc.nextLine() + " \n ");
+    }
+  }
+
+  // add your method here!!
+
+  private static void myAnalysis(String input) {
+    processTable();
+
+    Deque<String> productions = new ArrayDeque<>();
+
+    Deque<String> inputStack = new ArrayDeque<>();
+    Deque<String> symbolStack = new ArrayDeque<>();
+    Deque<String> localStack = new ArrayDeque<>();
+
+    Deque<String> backupProductions = null;
+    Deque<String> backupInputStack = null;
+    Deque<String> backupSymbolStack = null;
+    Deque<String> backupLocalStack = null;
+
+    localStack.add("0");
+
+    String[] inputs = input.split(" ");
+    for (String str : inputs) {
+      if (str != null && str.length() > 0) {
+        inputStack.add(str);
+      }
+    }
+    inputStack.add("$end");
+
+    int line = 1;
+    String a = inputStack.peek();
+
+    while (true) {
+
+      if (inputStack.peekFirst().equals("\n")) {
+        line++;
+        inputStack.removeFirst();
+        a = inputStack.peek();
+      }
+
+      String s = localStack.peekLast();
+      String mapKey = s + ',' + a;
+
+      String type = null;
+      String stateNum = null;
+
+      if (actionMap.containsKey(mapKey)) {
+        String mapValue = actionMap.get(mapKey);
+
+        String[] vals = mapValue.split(" ");
+
+        type = vals[0];
+        stateNum = vals[1];
+      }else {
+        mapKey = s + ',' + "$default";
+
+        if (actionMap.containsKey(mapKey)) {
+          String mapValue = actionMap.get(mapKey);
+
+          String[] vals = mapValue.split(" ");
+
+          type = vals[0];
+          stateNum = vals[1];
+        }
+      }
+
+
+      if ("shift".equals(type)) {
+        String str = inputStack.poll();
+        if (str.equals("$end")) {
+          inputStack.addFirst("$end");
+        }else {
+          symbolStack.add(str);
+        }
+        localStack.add(stateNum);
+
+        //backup for error recovery
+        backupInputStack = new ArrayDeque<>(inputStack);
+        backupLocalStack = new ArrayDeque<>(localStack);
+        backupSymbolStack = new ArrayDeque<>(symbolStack);
+        backupProductions = new ArrayDeque<>(productions);
+
+
+      }else if ("reduce".equals(type) && "accept".equals(stateNum)) {
+        break;
+      }else if ("reduce".equals(type)) {
+        String production = productionMap.get(stateNum);
+        String[] v1s = production.split("->");
+        String A = v1s[0];
+
+        int popCount = 0;
+
+        if (v1s.length > 1) {
+          popCount = v1s[1].split(" ").length;
+        }
+
+        while (popCount-- > 0) {
+          symbolStack.removeLast();
+          localStack.removeLast();
+        }
+        String t = localStack.peekLast();
+        localStack.add(gotoMap.get(t + "," + A));
+        symbolStack.add(A);
+        productions.add(production);
+      }else {
+
+        String missSymbol = null;
+        for (String key : actionMap.keySet()) {
+          if (key.indexOf(s) >= 0) {
+            //取到对应的符号如22对应为22,; 则可以取到;
+            missSymbol = key.substring(s.length() + 1);
+          }
+        }
+        //inputStack.addFirst(s);
+        //recovery from backup and add s to input
+        inputStack = backupInputStack;
+        symbolStack = backupSymbolStack;
+        localStack = backupLocalStack;
+        productions = backupProductions;
+        if (missSymbol != null) {
+          error(line, missSymbol);
+          inputStack.addFirst(missSymbol);
+        }
+
+      }
+
+      a = inputStack.peek();
+    }
+
+    outputAnswer(productions);
+
+  }
+
+  private static void outputAnswer(Deque<String> queue) {
+    String init = "program => ";
+    System.out.println(init);
+    for (int i = queue.size() - 1; i >= 0; i--) {
+      String production = queue.removeLast();
+      String[] vals = production.split("->");
+      String A = vals[0];
+      String B = "";
+      if (vals.length > 1) {
+        //防止数组越界
+        B = vals[1];
+      }else {
+        //特殊处理当转换为空时要多替换一个空格
+        A = A + " ";
+      }
+      init = replaceLast(init, A, B);
+      if (i == 0) {
+        init = replaceLast(init," =>", "");
+        System.out.print(init);
+      }else {
+        System.out.println(init);
+      }
+
+    }
+    //System.out.println(replaceLast(init, " =>", ""));
+  }
+
+
+  // 替换字符串里最后出现的元素
+  public static String replaceLast( String text, String strToReplace,
+                                    String replaceWithThis ) {
+    return text.replaceFirst( "(?s)" + strToReplace + "(?!.*?" + strToReplace
+            + ")", replaceWithThis );
+  }
+
+  private static void error(int line, String X) {
+    if (";".equals(X)) {
+      line--;
+    }
+    System.out.println("语法错误，第" + line + "行，缺少\"" + X + "\"");
+  }
+
+  private static void processTable() {
+    String[] strings = ACTION.split("\n");
+    for (String str : strings) {
+      String[] strs = str.split(" ");
+
+      actionMap.put(strs[0], strs[1] + " " + strs[2]);
+    }
+
+    strings = GOTO.split("\n");
+    for (String str : strings) {
+      String[] strs = str.split(" ");
+      gotoMap.put(strs[0], strs[1]);
+    }
+
+    strings = PRODUCTION.split("\n");
+    for (String str : strings) {
+      String[] strs = str.split("#");
+      productionMap.put(strs[0], strs[1]);
+    }
+
+  }
+
+  // Analysis Table
+  private static final String PRODUCTION =
+      "0#$accept->program $end\n"
+          + "1#program->compoundstmt\n"
+          + "2#stmt->ifstmt\n"
+          + "3#stmt->whilestmt\n"
+          + "4#stmt->assgstmt\n"
+          + "5#stmt->compoundstmt\n"
+          + "6#compoundstmt->{ stmts }\n"
+          + "7#stmts->stmt stmts\n"
+          + "8#stmts->\n"
+          + "9#ifstmt->if ( boolexpr ) then stmt else stmt\n"
+          + "10#whilestmt->while ( boolexpr ) stmt\n"
+          + "11#assgstmt->ID = arithexpr ;\n"
+          + "12#boolexpr->arithexpr boolop arithexpr\n"
+          + "13#boolop-><\n"
+          + "14#boolop->>\n"
+          + "15#boolop-><=\n"
+          + "16#boolop->>=\n"
+          + "17#boolop->==\n"
+          + "18#arithexpr->multexpr arithexprprime\n"
+          + "19#arithexprprime->+ multexpr arithexprprime\n"
+          + "20#arithexprprime->- multexpr arithexprprime\n"
+          + "21#arithexprprime->\n"
+          + "22#multexpr->simpleexpr multexprprime\n"
+          + "23#multexprprime->* simpleexpr multexprprime\n"
+          + "24#multexprprime->/ simpleexpr multexprprime\n"
+          + "25#multexprprime->\n"
+          + "26#simpleexpr->ID\n"
+          + "27#simpleexpr->NUM\n"
+          + "28#simpleexpr->( arithexpr )";
+
+  private static final String ACTION =
+      "0,{ shift 1\n"
+          + "1,ID shift 4\n"
+          + "1,if shift 5\n"
+          + "1,while shift 6\n"
+          + "1,{ shift 1\n"
+          + "1,$default reduce 8\n"
+          + "2,$end shift 13\n"
+          + "3,$default reduce 1\n"
+          + "4,= shift 14\n"
+          + "5,( shift 15\n"
+          + "6,( shift 16\n"
+          + "7,ID shift 4\n"
+          + "7,if shift 5\n"
+          + "7,while shift 6\n"
+          + "7,{ shift 1\n"
+          + "7,$default reduce 8\n"
+          + "8,$default reduce 5\n"
+          + "9,} shift 18\n"
+          + "10,$default reduce 2\n"
+          + "11,$default reduce 3\n"
+          + "12,$default reduce 4\n"
+          + "13,$default reduce accept\n"
+          + "14,ID shift 19\n"
+          + "14,NUM shift 20\n"
+          + "14,( shift 21\n"
+          + "15,ID shift 19\n"
+          + "15,NUM shift 20\n"
+          + "15,( shift 21\n"
+          + "16,ID shift 19\n"
+          + "16,NUM shift 20\n"
+          + "16,( shift 21\n"
+          + "17,$default reduce 7\n"
+          + "18,$default reduce 6\n"
+          + "19,$default reduce 26\n"
+          + "20,$default reduce 27\n"
+          + "21,ID shift 19\n"
+          + "21,NUM shift 20\n"
+          + "21,( shift 21\n"
+          + "22,; shift 29\n"
+          + "23,+ shift 30\n"
+          + "23,- shift 31\n"
+          + "23,$default reduce 21\n"
+          + "24,* shift 33\n"
+          + "24,/ shift 34\n"
+          + "24,$default reduce 25\n"
+          + "25,) shift 36\n"
+          + "26,< shift 37\n"
+          + "26,> shift 38\n"
+          + "26,<= shift 39\n"
+          + "26,>= shift 40\n"
+          + "26,== shift 41\n"
+          + "27,) shift 43\n"
+          + "28,) shift 44\n"
+          + "29,$default reduce 11\n"
+          + "30,ID shift 19\n"
+          + "30,NUM shift 20\n"
+          + "30,( shift 21\n"
+          + "31,ID shift 19\n"
+          + "31,NUM shift 20\n"
+          + "31,( shift 21\n"
+          + "32,$default reduce 18\n"
+          + "33,ID shift 19\n"
+          + "33,NUM shift 20\n"
+          + "33,( shift 21\n"
+          + "34,ID shift 19\n"
+          + "34,NUM shift 20\n"
+          + "34,( shift 21\n"
+          + "35,$default reduce 22\n"
+          + "36,then shift 49\n"
+          + "37,$default reduce 13\n"
+          + "38,$default reduce 14\n"
+          + "39,$default reduce 15\n"
+          + "40,$default reduce 16\n"
+          + "41,$default reduce 17\n"
+          + "42,ID shift 19\n"
+          + "42,NUM shift 20\n"
+          + "42,( shift 21\n"
+          + "43,ID shift 4\n"
+          + "43,if shift 5\n"
+          + "43,while shift 6\n"
+          + "43,{ shift 1\n"
+          + "44,$default reduce 28\n"
+          + "45,+ shift 30\n"
+          + "45,- shift 31\n"
+          + "45,$default reduce 21\n"
+          + "46,+ shift 30\n"
+          + "46,- shift 31\n"
+          + "46,$default reduce 21\n"
+          + "47,* shift 33\n"
+          + "47,/ shift 34\n"
+          + "47,$default reduce 25\n"
+          + "48,* shift 33\n"
+          + "48,/ shift 34\n"
+          + "48,$default reduce 25\n"
+          + "49,ID shift 4\n"
+          + "49,if shift 5\n"
+          + "49,while shift 6\n"
+          + "49,{ shift 1\n"
+          + "50,$default reduce 12\n"
+          + "51,$default reduce 10\n"
+          + "52,$default reduce 19\n"
+          + "53,$default reduce 20\n"
+          + "54,$default reduce 23\n"
+          + "55,$default reduce 24\n"
+          + "56,else shift 57\n"
+          + "57,ID shift 4\n"
+          + "57,if shift 5\n"
+          + "57,while shift 6\n"
+          + "57,{ shift 1\n"
+          + "58,$default reduce 9\n";
+
+  private static final String GOTO =
+      "0,program 2\n"
+          + "0,compoundstmt 3\n"
+          + "1,stmt 7\n"
+          + "1,compoundstmt 8\n"
+          + "1,stmts 9\n"
+          + "1,ifstmt 10\n"
+          + "1,whilestmt 11\n"
+          + "1,assgstmt 12\n"
+          + "7,stmt 7\n"
+          + "7,compoundstmt 8\n"
+          + "7,stmts 17\n"
+          + "7,ifstmt 10\n"
+          + "7,whilestmt 11\n"
+          + "7,assgstmt 12\n"
+          + "14,arithexpr 22\n"
+          + "14,multexpr 23\n"
+          + "14,simpleexpr 24\n"
+          + "15,boolexpr 25\n"
+          + "15,arithexpr 26\n"
+          + "15,multexpr 23\n"
+          + "15,simpleexpr 24\n"
+          + "16,boolexpr 27\n"
+          + "16,arithexpr 26\n"
+          + "16,multexpr 23\n"
+          + "16,simpleexpr 24\n"
+          + "21,arithexpr 28\n"
+          + "21,multexpr 23\n"
+          + "21,simpleexpr 24\n"
+          + "23,arithexprprime 32\n"
+          + "24,multexprprime 35\n"
+          + "26,boolop 42\n"
+          + "30,multexpr 45\n"
+          + "30,simpleexpr 24\n"
+          + "31,multexpr 46\n"
+          + "31,simpleexpr 24\n"
+          + "33,simpleexpr 47\n"
+          + "34,simpleexpr 48\n"
+          + "42,arithexpr 50\n"
+          + "42,multexpr 23\n"
+          + "42,simpleexpr 24\n"
+          + "43,stmt 51\n"
+          + "43,compoundstmt 8\n"
+          + "43,ifstmt 10\n"
+          + "43,whilestmt 11\n"
+          + "43,assgstmt 12\n"
+          + "45,arithexprprime 52\n"
+          + "46,arithexprprime 53\n"
+          + "47,multexprprime 54\n"
+          + "48,multexprprime 55\n"
+          + "49,stmt 56\n"
+          + "49,compoundstmt 8\n"
+          + "49,ifstmt 10\n"
+          + "49,whilestmt 11\n"
+          + "49,assgstmt 12\n"
+          + "57,stmt 58\n"
+          + "57,compoundstmt 8\n"
+          + "57,ifstmt 10\n"
+          + "57,whilestmt 11\n"
+          + "57,assgstmt 12\n";
+
+  /**
+   *  you should add some code in this method to achieve this lab
+   */
+  private static void analysis()
+  {
+    read_prog();
+    //System.out.print(prog);
+    myAnalysis(prog.toString());
+  }
+
+  /**
+   * this is the main method
+   * @param args
+   */
+  public static void main(String[] args) {
+    analysis();
+  }
+}
+
+/** input:
+ *  {
+ *  ID = NUM ;
+ *  }
+ *
+ *  input2:
+ *
+ {
+ while ( ID == NUM )
+ {
+ ID = NUM
+ }
+ }
+ *  */

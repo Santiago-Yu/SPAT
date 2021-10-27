@@ -1,0 +1,51 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int d){
+		/********* Begin *********/
+        String[] times = releaseDate.split("-");
+		int[] index = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+		int y = Integer.parseInt(times[0]);
+		int m = Integer.parseInt(times[1]);
+		int dd = Integer.parseInt(times[2]);
+		int run = 0;
+		if((y%4==0&&y%100!=0)||(y%400==0)){
+			run = 1;
+		}
+		while(d>0){
+			if(run==1){
+				index[2]=29;
+			}else{
+				index[2]=28;
+			}
+			if(dd==index[m]){
+				dd=0;
+				m++;
+				if(m==13){
+					m=1;
+					y++;
+					if((y%4==0&&y%100!=0)||(y%400==0)){
+						run = 1;
+					}else{
+						run = 0;
+					}
+				}
+			}
+			dd++;
+			d--;
+		}
+		String rm = m+"";
+		String rd = dd+"";
+		String res = y+"-";
+		res += rm.length()>1?rm:"0"+rm;
+		res +="-";
+		res += rd.length()>1?rd:"0"+rd;
+		return res;
+
+
+        /********* End *********/
+	}
+	
+	
+}

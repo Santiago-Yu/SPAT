@@ -1,0 +1,32 @@
+package step2;
+
+/********* Begin *********/
+//定义站台类，实现卖票的功能。
+public class Station extends Thread   {	 
+    private int ticket = 20;
+	
+    public  void run(){
+         
+        // 开始买票
+        if(currentThread().getName().equals("Thread-0")){
+        while (ticket > 0) {
+            //加上synchronized，并加入对象锁，new一个任意对象即可，我们这里使用Object来解决同步问题
+             
+
+                
+
+					System.out.println("卖出了第"+ticket--+"张票");
+
+                    
+               
+                
+             }
+            System.out.println("票卖完了");
+        }
+        else
+             stop();
+
+    }
+}
+
+/********* End *********/

@@ -1,0 +1,92 @@
+package step2;
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateException extends Exception{
+	private int year;
+	private int month;
+	private int day;
+	
+    boolean isRun=false;
+
+    public int[] yearday={31,28,31,30,31,30,31,31,30,31,30,31};
+    
+	public DateException(String s){
+		super(s);
+	}	
+	public DateException(int year,int month,int day) throws DateException{
+		super("构造日期");
+		/*****Begin*****/
+        isRun=false;
+        this.year=year;
+        this.month=month;
+        this.day=day;
+        //System.out.println(this.year);
+       // System.out.println(this.month);
+        //System.out.println(this.day);
+		if(year>2100||year<1900)
+            throw new DateException("年份必须在1900到2100之间");
+        if(month>12||month<1)
+            throw new DateException("月份必须在1到12之间");
+        if(day>31||day<1)
+            throw new DateException("日期必须在1到31之间");
+        if(year%4==0&&year%100!=0||year%400==0)
+        {
+         	isRun=true;   
+        }
+		if(yearday[month-1]<day)
+        {
+            if(month==2)
+            {
+                if(isRun)
+                {
+                	throw new DateException("该月只有"+29+"天");
+                }
+                else
+                {
+                    throw new DateException("该月只有"+28+"天");
+                }
+            }
+            else
+            {
+         		throw new DateException("该月不能出现"+day+"天");                
+            }
+        }
+        
+        isRun=false;
+		/******End******/
+	}
+	
+	public Date getDate()throws ParseException{
+		Date date =null;
+		/*****Begin*****/
+        try{
+        String dateStr=year+"-"+month+"-"+day;
+        //System.out.println(dateStr);
+		date=formatDate(dateStr);
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-mm-dd");
+		System.out.println(df.format(date));
+        }
+        catch(ParseException e)
+        {
+            System.out.println(e.toString()+":数据错误，无法转换成日期");
+        }
+		catch(InputMismatchException e){
+            System.out.println(e.toString()+":请输入整数");
+        }
+		
+		/******End******/		
+		return date;
+	}
+
+	public static Date formatDate(String dateStr) throws ParseException{
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd"); 
+        Date date = sdf.parse(dateStr);  
+        return date;
+    }
+}

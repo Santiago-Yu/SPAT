@@ -1,0 +1,26 @@
+package step2;
+
+public class Task {
+    public static void erase(char area[][],int i,int j){
+        area[i][j]='x';
+        while(i-1>=0&&area[i-1][j]=='o')erase(area,i-1,j);
+        while(i+1<area.length&&area[i+1][j]=='o')erase(area,i+1,j);
+        while(j-1>=0&&area[i][j-1]=='o')erase(area,i,j-1);
+        while(j+1<area[0].length&&area[i][j+1]=='o')erase(area,i,j+1);
+    }
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int count=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+            	if(area[i][j]=='o'){
+                    count++;
+                    erase(area,i,j);
+                }
+            }
+        }
+		return count;
+		/********* End *********/	
+	}
+}

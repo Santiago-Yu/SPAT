@@ -1,0 +1,51 @@
+package case4;
+
+//密码的自动生成器：密码由大写字母/小写字母/数字组成，生成六位随机密码
+import java.util.Random;
+import java.util.Scanner;
+import java.util.stream.IntStream;
+/*
+ * 设计一个密码的自动生成器：密码由大写字母/小写字母/数字组成，生成六位随机密码。
+分别以1、2、3作为种子数创建Random对象，生成六位随机密码进行测试。
+具体输出要求请看测试说明。
+ */
+public class RandomTest {
+	public static void main(String[] args) {
+		// 定义一个字符型数组
+		char[] pardStore = new char[62];
+		for (int i = 0; i < 26; i++) {
+            pardStore[i]=(char)('A'+i);
+        }
+        for (int i = 26; i < 52; i++) {
+            pardStore[i]=(char)('a'+(i-26));
+        }
+        for (int i = 52; i < 62; i++) {
+            pardStore[i]=(char)('0'+(i-52));
+        }
+		Random random1 = new Random(1);
+		Random random2 = new Random(2);
+		Random random3 = new Random(3);
+		/********* End *********/
+		// 分别以1、2、3作为种子数 生成6位随机密码
+		Scanner sc = new Scanner(System.in);
+		int seed = sc.nextInt();
+		/********* Begin *********/
+		if(seed == 1)
+		{
+			for(int i=0;i<6;i++)
+		
+				System.out.print(pardStore[random1.nextInt(62)]);
+		}
+		else if(seed == 2)
+		{
+			for(int i=0;i<6;i++)
+				System.out.print(pardStore[random2.nextInt(62)]);
+		}
+		else 
+		{
+			for(int i=0;i<6;i++)
+				System.out.print(pardStore[random3.nextInt(62)]);
+		}
+		/********* End *********/
+	}
+}

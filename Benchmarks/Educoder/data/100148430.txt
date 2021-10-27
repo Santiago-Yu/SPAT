@@ -1,0 +1,27 @@
+package step2;
+//定义站台类，实现卖票的功能。
+public class Station  extends Thread  {     
+   public static int tickers = 20;
+	public static Object ab="aa";
+	public static String  state="";
+	
+	//synchronized的作用是，让它所管辖的代码部分，要么全部执行完，要么全部不执行，synchronized既可修饰代码块，又可以修饰函数
+//	如果是锁整个方法，可以在方法内加锁，表达上比如public synchronized void run(){，但对于此案例，是两个线程之间竞争售票，因此不适宜锁起来整个方法
+	//如果synchronized是锁起来整个方法的，synchronized修饰函数不需要传入字符串参数，相当于默认是this
+	public void run(){
+			while (true) {
+					synchronized (ab) {//在需要加锁保证完整运行的代码块旁边加上synchronized (" "){}包裹代码，即可锁起来该部分代码，()内的字符串随意定义
+ 						if(tickers>0){
+							  System.out.println("卖出了第"+tickers+"张票");
+							  tickers--;
+						}else{
+							if(state.equals("")){
+								state="票卖完了";
+								 System.out.println(state);
+							}
+							  break;
+						}
+					}
+				}
+	}
+}	

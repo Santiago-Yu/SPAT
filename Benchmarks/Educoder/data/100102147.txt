@@ -1,0 +1,28 @@
+package step2;
+
+import java.io.File;
+import java.io.IOException;
+
+public class FileUtil {
+	public static void start() {
+		/********** Begin *********/
+
+		File file = new File("src/step2");
+		File[] fileFile = file.listFiles();
+        // 输出所有文件夹的名字
+        for (File f : fileFile) {
+            // 是文件夹吗？
+            if (f.isDirectory()) {
+                System.out.println(f.getName());
+            }
+        }
+        for (File f : fileFile) {
+            // 是文件吗？
+            if (f.isFile()) {
+                // 是文件,就输出它的名字
+                System.out.println(f.getName());
+            }
+        }
+		/********** End *********/
+	}
+}

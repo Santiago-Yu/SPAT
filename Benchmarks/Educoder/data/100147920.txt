@@ -1,0 +1,47 @@
+package step4;
+
+//注意文件名，这里应该写ThreadHelper类
+/***begin your code here***/
+public class ThreadHelper{
+    
+    int num;
+    
+    public ThreadHelper(){
+        
+        this(0);
+    }
+    
+    public ThreadHelper(int num){
+        
+        this.num = num;
+    }
+    
+    public static void calcOnNewThread(int num){
+        
+        new Thread(new Runnable(){
+            
+            public void run(){
+            
+                int result = 1;
+
+                for(int i = num ; i > 0 ; i--){
+
+                    result *= i;
+                }
+                
+                try {
+                    Thread.sleep(100l);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+                System.out.println(result);
+            }
+            
+        }).start();
+    }
+    
+    
+}
+/***end your code***/

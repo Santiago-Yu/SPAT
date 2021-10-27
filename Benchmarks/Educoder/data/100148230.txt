@@ -1,0 +1,48 @@
+package step1;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+
+
+public class Task {
+    
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+		new MyThread("AA").start();
+        new MyThread("BB").start();
+        new MyThread("CC").start();
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	private static int index = 0;
+	private static volatile int whoTurn = 0;
+	public static Lock lock = new ReentrantLock(true);
+
+	String threadName;
+	int id;
+
+	public MyThread(String t) {
+		this.threadName = t;
+		id = index++;
+	}
+
+	public void run() {
+		int count = 5;
+		while (count > 0) {
+			lock.lock();
+            //如果轮到当前线程输出,则输出,否则释放锁
+			if (whoTurn % index == id) {
+				System.out.println("Java Thread" + this.threadName);
+				count--;
+				whoTurn++;
+			}
+			lock.unlock();
+		}
+	}
+
+	/********* End *********/
+}

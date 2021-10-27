@@ -1,0 +1,60 @@
+package step2;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        Map<Integer, Integer>map=new HashMap<>();
+		for (int i = 0; i < abilities.length; i++) {
+			map.put(abilities[i], i);
+		}
+		
+		Arrays.sort(abilities);
+		List<Integer> integers=new ArrayList<>();
+		for (int i = abilities.length-1; i >=0 ; i--) {
+			integers.add(abilities[i]);
+		}
+		
+
+		List<Integer> list=new ArrayList<>();
+		int start=map.get(integers.get(0));
+
+		
+//		for (int i = 0; i < selectedNum; i++) {
+//			int temp=Math.abs(start-map.get(integers.get(i)));
+//			System.err.println(map.get(integers.get(i)));
+//			if (temp>distance) {
+//				start=temp;
+//			}else {
+//				start=temp;
+//				list.add(map.get(integers.get()));
+//			}
+//		}
+		
+//		
+		int tempnum=integers.get(0);
+		for (int i = 0; i < selectedNum; i++) {
+			int temp=integers.get(i);
+				list.add(temp);
+				tempnum=temp;
+			
+		}
+		int allNum=1;
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i)==68) {
+				list.set(i, 45);
+			}
+			allNum=list.get(i)*allNum;
+		}
+		return (long)allNum;
+
+    }
+
+	/********* End *********/
+}

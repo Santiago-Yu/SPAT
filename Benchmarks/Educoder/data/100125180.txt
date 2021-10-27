@@ -1,0 +1,79 @@
+package step2;
+
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+
+public class InterRectangle {
+	private double width;
+	private double length;
+	/*********请在此编写构造函数及求周长和面积的方法*********/
+    public InterRectangle()
+    {
+    }
+	public double meter(double width,double length)
+    {
+        double meter=0;
+        meter=2*(width+length);
+        return meter;
+    }
+    public double area(double width,double length)
+    {
+        double area=0;
+        area=width*length;
+        return area;
+    }
+    public double sum(double a,double b)
+    {
+        double sum=0;
+        sum=a+b;
+        return sum;
+    }
+	/*********end**********/
+	public static void main(String[] args) {
+ 		Scanner scanner = new Scanner(System.in);
+		double total=scanner.nextDouble();//获取土地数目
+		/*********begin*********/
+        //请获取到每块土地的长和宽，并输出土地块数，总面积和总周长
+		double d=0;
+        d=total;
+        if(d==1)
+        {
+            InterRectangle r1=new InterRectangle();
+            r1.width=scanner.nextDouble();
+            r1.length=scanner.nextDouble();
+            System.out.println("总共有"+d+"块土地");
+            System.out.println("土地总面积为:"+r1.sum(r1.area(r1.width,r1.length),0)+"平米");
+            System.out.println("土地总周长为:"+r1.meter(r1.width,r1.length)+"米");
+        }else if(d==2)
+        {
+            InterRectangle r1=new InterRectangle();
+            InterRectangle r2=new InterRectangle();
+            System.out.println("总共有"+d+"块土地");
+            r1.width=scanner.nextDouble();
+            r1.length=scanner.nextDouble();
+            r2.width=scanner.nextDouble();
+            r2.length=scanner.nextDouble();
+            System.out.println("土地总面积为:"+r1.sum(r1.area(r1.width,r1.length),r2.area(r2.width,r2.length))+"平米");
+            System.out.println("土地总周长为:"+r1.sum(r1.meter(r1.width,r1.length),r2.meter(r2.width,r2.length))+"米");
+        }else if(d==3)
+        {
+            double s=0;
+            InterRectangle r1=new InterRectangle();
+            InterRectangle r2=new InterRectangle();
+            InterRectangle r3=new InterRectangle();
+            r1.width=scanner.nextDouble();
+            r1.length=scanner.nextDouble();
+            r2.width=scanner.nextDouble();
+            r2.length=scanner.nextDouble();
+            r3.width=scanner.nextDouble();
+            r3.length=scanner.nextDouble();
+            System.out.println("总共有"+d+"块土地");
+            s=r1.sum(r1.area(r1.width,r1.length),r2.area(r2.width,r2.length));
+            System.out.println("土地总面积为:"+r1.sum(s,r3.area(r3.width,r3.length))+"平米");
+            s=r1.sum(r1.meter(r1.width,r1.length),r2.meter(r2.width,r2.length));
+            System.out.println("土地总周长为:"+r1.sum(s,r3.meter(r3.width,r3.length))+"米");
+        }
+		/*********end*********/
+	}
+
+}

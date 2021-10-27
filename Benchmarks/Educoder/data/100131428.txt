@@ -1,0 +1,67 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		System.out.println("+--"+file.getName());
+        File[] files=file.listFiles();
+        
+        if(files!=null){
+        	
+        	for(int i=0;i<files.length;i++){
+                int daishu=0;
+            	for(int j=0;j<(daishu+1)*2;j++){
+                	System.out.print(" ");
+                }
+                System.out.println("+--"+files[i].getName());
+                daishu++;
+                
+                if(files[i].isDirectory()){
+                	//File dir =new File(files[i].getAbsolutePath());
+                	getFileListName(files[i].getAbsolutePath(),daishu);
+                }else{
+                	for(int j=0;j<(daishu+1)*2;j++){
+                		System.out.print(" ");
+                	}
+                    System.out.println("--"+files[i].getName());
+                }
+                
+            }
+        }
+
+
+
+
+
+	}
+	public static void getFileListName(String strPath,int daishu){
+    	File dir=new File(strPath);
+        File[] files=dir.listFiles();
+        if (files != null) {
+        	for(int i=0;i<files.length;i++){
+            	for(int j=0;j<(daishu+1)*2;j++){
+                	System.out.print(" ");
+                }
+                
+                
+                if(files[i].isDirectory()){
+                    
+                System.out.println("+--"+files[i].getName());
+                daishu++;
+                	//File dir =new File(files[i].getAbsolutePath());
+                	getFileListName(files[i].getAbsolutePath(),daishu);
+                }else{
+                    
+                	System.out.println("--"+files[i].getName());
+                }
+                
+            }
+        }
+    }
+
+
+	/********** END **********/
+}

@@ -1,0 +1,27 @@
+package step1;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
+public class Task {
+    
+     public Document getDoc(String filePath) throws IOException{
+    /********** Begin **********/
+        File input = new File(filePath);
+        Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+        return doc;
+    /********** End **********/
+    }
+    public List<String> cleanHTML(Document doc){
+        /********** Begin **********/
+        List<String> list=new ArrayList<>();
+        list.add(Jsoup.clean(doc.toString(), Whitelist.basic()));
+        list.add(Jsoup.clean(doc.toString(), Whitelist.simpleText()));
+        return list;
+    /********** End **********/
+   }
+	
+}

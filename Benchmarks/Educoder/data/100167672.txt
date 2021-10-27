@@ -1,0 +1,176 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Scanner;
+
+public class Java_LLParserAnalysis {
+    private static HashMap<String, ArrayList<ArrayList<String>>> hm = new HashMap<String, ArrayList<ArrayList<String>>>();
+    private static HashSet<String> hs = new HashSet<String>();
+    private static ArrayList<String> s = new ArrayList<String>();
+    private static ArrayList<Integer> row = new ArrayList<Integer>();
+    private static int num = 0;
+    private static ArrayList<Node> errors = new ArrayList<Node>();
+    private static ArrayList<Node> ans = new ArrayList<Node>();
+
+    public static void main(String[] args) {
+        addDefine();
+        addReservedWords();
+        input();
+        ans.add(new Node("program",0));
+        doLL("program",1);
+        output();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void addDefine(){
+        String[] str = {"program -> compoundstmt","stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt",
+                "compoundstmt ->  { stmts }","stmts ->  stmt stmts   |   E","ifstmt ->  if ( boolexpr ) then stmt else stmt",
+                "whilestmt ->  while ( boolexpr ) stmt","assgstmt ->  ID = arithexpr ;","boolexpr  ->  arithexpr boolop arithexpr",
+                "boolop ->   <  |  >  |  <=  |  >=  | ==","arithexpr  ->  multexpr arithexprprime","arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E",
+                "multexpr ->  simpleexpr  multexprprime","multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E",
+                "simpleexpr ->  ID  |  NUM  |  ( arithexpr )"};
+        for(int i = 0 ; i < str.length ; i++){
+            String[] strings = str[i].split("->");
+            String key1 = strings[0].trim();
+            ArrayList<ArrayList<String>> al = new ArrayList<ArrayList<String>>();
+            String value = strings[1].trim();
+            String[] strings1 = value.split("\\|");
+            for(int j = 0 ; j < strings1.length ; j++){
+                ArrayList<String> a = new ArrayList<String>();
+                String s1 = strings1[j].trim();
+                String[] strings2 = s1.split("\\s+");
+                for(int k = 0 ; k < strings2.length ; k++){
+                    a.add(strings2[k]);
+                }
+                al.add(a);
+            }
+            hm.put(key1,al);
+        }
+        //System.out.println("hm: " + hm.get("stmts").get(0).get(1));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void addReservedWords(){
+        String[] str = {"{","}","if","then","else","while","(",")","ID","=",">","<",
+                ">=","<=","==","+","-","*","/","NUM","E",";"};
+        for(int i = 0 ; i < str.length ; i++){
+            hs.add(str[i]);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void input(){
+        Scanner sc = new Scanner(System.in);
+        int j = 1;
+        while(sc.hasNextLine()){
+            String string = sc.nextLine().trim();
+            String[] str = string.split("\\s+");
+           
+            for(int i = 0 ; i < str.length ; i++){
+                s.add(str[i]);
+                row.add(j);
+            }
+            j++;
+        }
+        s.add("$");
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void output(){
+        for(int i = 0 ; i < errors.size() ; i++){
+            System.out.println("语法错误,第" + errors.get(i).getB() + "行,缺少\"" + errors.get(i).getA() + "\"");
+        }
+        for(int i = 0 ; i < ans.size(); i++){
+            int a = ans.get(i).getB();
+            StringBuilder stringBuilder = new StringBuilder();
+            for(int j = 0 ; j < a ; j++){
+                stringBuilder.append("\t");
+            }
+            stringBuilder.append(ans.get(i).getA());
+            if(i == ans.size() - 1){
+                System.out.print(stringBuilder);
+            }else{
+                System.out.println(stringBuilder);
+            }
+        }
+
+    }
+    @SuppressWarnings("unchecked")
+    public static boolean doLL(String flag ,int size){
+        String target = s.get(num);
+        ArrayList<Node> n = (ArrayList<Node>)ans.clone();
+        if(target.equals("$")){
+            return true;
+        }
+        boolean w = false;
+        ArrayList<ArrayList<String>> a = hm.get(flag);
+        for(int i = 0 ; i < a.size() ; i++){
+            ArrayList<String> b = a.get(i);
+            for(int j = 0 ; j < b.size() ; j++){
+                String s1 = b.get(j);
+                //System.out.println("s1 : " + s1);
+                //System.out.println("target : " + target);
+                if(s1.equals("E")){
+                    ans.add(new Node(s1,size));
+                    //System.out.println("add1 : " + s1);
+                    return true;
+                }
+                if(hs.contains(s1)){
+                    if(s1.equals(target)){
+                        ans.add(new Node(target,size));
+                        //System.out.println("add2 : " + target);
+                        target = s.get(++num);
+                        w = true;
+                        if(target.equals("$")){
+                            return true;
+                        }
+                    }else if(s1.equals(";")){
+                        ans.add(new Node(";",size));
+                        errors.add(new Node(";",row.get(num - 1)));
+                        w = true;
+                        if(target.equals("$")){
+                            return true;
+                        }
+                    }
+                    else{
+                        w = false;
+                        break;
+                    }
+                }else{
+                    ans.add(new Node(s1,size));
+                    //System.out.println("add3 : " + s1);
+                    w = doLL(s1,size + 1);
+                    target = s.get(num);
+                    if(!w){
+                        ans.remove(ans.size() - 1);
+                        break;
+                    }
+                }
+            }
+            if(w){
+                return true;
+            }else{
+                continue;
+            }
+        }
+        ans = n;
+        return w;
+    }
+}
+class Node{
+    private String a;
+    private int b;
+
+    public Node(String a,int b){
+        this.a = a;
+        this.b = b;
+    }
+
+    public String getA() {
+        return a;
+    }
+
+    public int getB() {
+        return b;
+    }
+}

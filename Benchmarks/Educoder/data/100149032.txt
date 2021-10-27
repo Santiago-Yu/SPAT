@@ -1,0 +1,70 @@
+package step3;
+import java.util.*;
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		
+		/********* Begin *********/
+		int max = 0;
+		ArrayList<Integer> lengths = new ArrayList<Integer>();
+		int size = arr.length;
+		int down = 0;
+		int up = 0;
+		int temp = 0; // 当前扫描到temp
+		
+		while(temp < size - 1){
+			
+			down = 0;
+			up = 0;
+			for(int i = temp; i < size - 1; i++) {
+				// down
+				if(arr[i] > arr[i + 1]){
+					down++;
+					temp = i + 1;
+				}
+				
+				if(arr[i] < arr[i + 1])
+					break;
+				
+				if(arr[i] == arr[i + 1]){
+					temp = i +1;
+                    down--;
+				}
+			}
+			
+			for(int i = temp; i < size - 1; i++) {
+				// up
+				if(arr[i] < arr[i + 1]){
+					up++;
+					temp = i + 1;
+				}
+				
+				if(arr[i] > arr[i + 1])
+					break;
+				
+				if(arr[i] == arr[i + 1]){
+                    up--;
+					temp = i+1;
+				}
+			}
+			
+			if(down > 0 & up > 0) {
+				lengths.add(down + up + 1);
+			}
+			
+			
+			if(temp == size - 1)
+				break;
+			
+		}
+		if(lengths == null)
+			return 0;
+		for(Integer i : lengths) {
+			if(i > max)
+				max = i;
+		}
+		return max;
+		/********* End *********/	
+	}
+
+}

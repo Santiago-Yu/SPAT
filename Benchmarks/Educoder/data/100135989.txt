@@ -1,0 +1,87 @@
+package case1;
+
+import java.util.Scanner;
+
+public class Task1 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String dogName = sc.next();
+		String dogSex = sc.next();
+		String dogColor = sc.next();
+		String catName = sc.next();
+		String catSex = sc.next();
+		double catWeight = sc.nextDouble();
+		Dog d=new Dog(dogName,dogSex,dogColor);
+        d.talk();
+        d.eat();
+        Cat c=new Cat(catName,catSex,catWeight);
+        c.talk();
+        c.eat();
+	}
+}
+abstract class Pet {
+    private String name;
+    private String sex;
+    public String getName(){
+        return name;
+    }
+    public void setName(String name){
+        this.name=name;
+    }
+    public String getSex(){
+        return sex;
+    }
+    public void setSex(String sex){
+        this.sex=sex;
+    }
+    public Pet(String name,String sex){
+        this.name=name;
+        this.sex=sex;
+    }
+    public abstract void talk();
+    abstract void eat();
+}
+class Dog extends Pet {
+	private String color;
+    public String getColor(){
+        return color;
+    }
+    public void setColor(String color){
+        this.color=color;
+    }
+    public Dog(String name,String sex,String color){
+        super(name,sex);
+        this.color=color;
+    }
+    @Override
+    public void talk(){
+        System.out.println("名称："+super.getName()+"，性别："+this.getSex()+"，颜色："+
+                           this.getColor()+"，汪汪叫");
+    }
+    @Override
+    void eat(){
+        System.out.println(super.getName()+"吃骨头！");
+    }
+}
+class Cat extends Pet {
+	private double witch;
+    public double getWitch(){
+        return witch;
+    }
+    public  void setWitch(double witch){
+        this.witch=witch;
+    }
+    public Cat(String name,String sex,double witch){
+        super(name,sex);
+        this.witch=witch;
+    }
+    @Override
+    public void talk(){
+        System.out.println("名称："+super.getName()+"，性别："+this.getSex()+"，体重："+
+                           this.getWitch()+"kg，喵喵叫");
+    }
+    @Override
+    void eat(){
+        System.out.println(super.getName()+"吃鱼！");
+    }
+}

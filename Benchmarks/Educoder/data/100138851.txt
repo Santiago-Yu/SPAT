@@ -1,0 +1,42 @@
+package step2;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+public class Task {
+
+	public void runThread (int num) {
+		// 在这里开启线程 获取线程执行的结果
+	 ThreadCallable cts = new ThreadCallable();
+        cts.num=num;
+        FutureTask<Integer> ft = new FutureTask<>(cts);
+        new Thread(ft).start();
+        try {
+            System.out.println("线程的返回值为：" + ft.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+}}
+
+/* 在这里实现Callable接口及方法 */
+class ThreadCallable  implements Callable<Integer>     {
+    public int num;
+    public Integer call()throws Exception{
+        
+        int sum[]=new int[30];
+        for(int i=1;i<30;i++)
+        {
+            if(i<=2)
+           
+                sum[i]=1;
+            else
+                sum[i]=sum[i-1]+sum[i-2];
+
+        }
+         return sum[num];
+	}
+
+}
+
+

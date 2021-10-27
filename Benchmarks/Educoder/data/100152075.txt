@@ -1,0 +1,27 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		   /********* Begin *********/
+
+        double bigR=r1>r2?r1:r2;
+
+        double distance=Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2,2));
+
+        if(distance>=(r1+r2)){
+            return Math.PI*(Math.pow(r1,2)+Math.pow(r2,2));
+        }else if(distance<=Math.abs(r1-r2)){
+            return Math.PI*Math.pow(bigR,2);
+        }else {
+            double length=distance;
+            double d1=2*Math.acos((r1*r1+length*length-r2*r2)/(2*r1*length)); //求两扇形圆心角
+            double d2=2*Math.acos((r2*r2+length*length-r1*r1)/(2*r2*length));
+            double area1=r1*r1*d1/2-r1*r1*Math.sin(d1)/2;
+            double area2=r2*r2*d2/2-r2*r2*Math.sin(d2)/2;
+            return Math.PI*(Math.pow(r1,2)+Math.pow(r2,2))-(area1+area2);
+        }
+        /********* End *********/
+	  }
+}

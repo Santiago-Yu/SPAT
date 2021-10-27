@@ -1,0 +1,33 @@
+package task3;
+
+import java.util.*;
+
+public class Task3 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		// 根据返回值判断输入的数是否是水仙花数
+		/********* Begin *********/
+		boolean flag = isWaterFlowerNumber(num);
+		if (flag)
+			System.out.println(num + "是水仙花数");
+		else
+			System.out.println(num + "不是水仙花数");
+		/********* End *********/
+	}
+
+	// 用带有一个输入参数的函数实现，返回值类型为布尔类型
+	/********* Begin *********/
+	static boolean isWaterFlowerNumber(int number) {
+		int i, j, k;
+		i = number / 100;/* 分解出百位 */
+		j = number / 10 % 10;/* 分解出十位 */
+		k = number % 10;/* 分解出个位 */
+		if (i * 100 + j * 10 + k == i * i * i + j * j * j + k * k * k) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	/********* End *********/
+}

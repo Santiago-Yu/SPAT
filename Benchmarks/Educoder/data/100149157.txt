@@ -1,0 +1,56 @@
+package step2;
+
+public class Task {
+    
+	
+    static char[][] map;
+    static int[][] remember;
+    public static int count = 0;
+
+    public static int virusArea(int n, int m, char[][] area) {
+        /********* Begin *********/
+        map = area;
+        int a = n;
+        int b = m;
+
+
+        /********* End *********/
+        remember = new int[a][b];
+
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                //System.out.println("processing" + count);
+                if (remember[i][j] == 0 || map[i][j] == 'o') {
+                    search(i, j, 0);
+                }
+            }
+        }
+        return count;
+    }
+
+    public static void search(int i, int j, int counter) {
+
+        if (i < 0 || i >= map.length) {
+            return;
+        }
+        if (j < 0 || j >= map[0].length) {
+            return;
+        }
+        if (remember[i][j] == 1) {
+            return;
+        }
+        remember[i][j] = 1;
+
+        if (map[i][j] == 'o') {
+            search(i + 1, j, counter + 1);
+            search(i - 1, j, counter + 1);
+            search(i, j + 1, counter + 1);
+            search(i, j - 1, counter + 1);
+            if (counter == 0) {
+                count++;
+            }
+        } else {
+            return;
+        }
+    }
+}

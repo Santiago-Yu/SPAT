@@ -1,0 +1,292 @@
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
+
+
+public class Java_LLParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static Production[] production = new Production[28];
+    private static String[] terminal = {"{","}","if","(",")",		// a:{		b:}		c:if 	d:(		e:)
+    									"then","else","while","ID","=",		// f:then	g:else		h:shile		i:ID	j:=
+    									";","<",">","<=",">=",	// k:;		l:<		m:>		n:<=	o:>=
+    									"==","+","-","*","/",	// p:==		q:+		r:-		s:*		t:/
+    									"NUM","$","E"};			// u:NUM	v:$		w:E
+    private static String[] nonterminal = {"program","stmt","compoundstmt","stmts","ifstmt",			// A:program	B:stmt		C:compoundstmt,		D:stmts		E:ifstmt
+    									   "whilestmt","assgstmt","boolexpr","boolop","arithexpr",		// F:whilestmt	G:assgstmt	H:boolexpr			I:boolop	J:arithexpr
+    									   "arithexprprime","multexpr","multexprprime","simpleexpr"};	// K:arithexprprime		L:multexpr		M:multexprprime		N:simpleexpr
+    
+    private static int[][] LL = new int[14][22];
+	@SuppressWarnings("unchecked")
+	private static HashSet<Character>[] first = new HashSet[14];
+    @SuppressWarnings("unchecked")
+	private static Set<Character>[] follow = new HashSet[14];
+    
+    private static List<Character> input = new LinkedList<>();
+    private static StringBuffer output = new StringBuffer();
+    private static int line = 1;
+    
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+        sc.close();
+    }
+    
+    private static void getTerminal() {
+    	String s = "";
+    	for(int i = 0; i < prog.length(); i++) {
+    		if(prog.charAt(i) == '\n') {
+    			addTerminal(s);
+    			input.add('\n');
+    			s = "";
+    		}
+    		else if(prog.charAt(i) == ' ') {
+    			addTerminal(s);
+    			s = "";
+    		}
+    		else {
+    			s += prog.charAt(i);
+    		}
+    	}
+    }
+    
+    private static void addTerminal(String s) {
+    	//System.out.println(s);
+    	for(int i = 0; i < terminal.length; i++) {
+    		if(s.equals(terminal[i])) {
+    			input.add((char)((char)i+'a'));
+    		}
+    	}
+    }
+
+
+    // add your method here!!
+    private static void createProduct() {
+    	production[0] = new Production('A', "C");
+    	
+    	production[1] = new Production('B', "E");
+    	production[2] = new Production('B', "F");
+    	production[3] = new Production('B', "G");
+    	production[4] = new Production('B', "C");
+    	
+    	production[5] = new Production('C', "aDb");
+    	
+    	production[6] = new Production('D', "BD");
+    	production[7] = new Production('D', "w");
+    	
+    	production[8] = new Production('E', "cdHefBgB");
+    	
+    	production[9] = new Production('F', "hdHeB");
+    	
+    	production[10] = new Production('G', "ijJk");
+
+    	production[11] = new Production('H', "JIJ");
+
+    	production[12] = new Production('I', "l");
+    	production[13] = new Production('I', "m");
+    	production[14] = new Production('I', "n");
+    	production[15] = new Production('I', "o");
+    	production[16] = new Production('I', "p");
+
+    	production[17] = new Production('J', "LK");
+
+    	production[18] = new Production('K', "qLK");
+    	production[19] = new Production('K',"rLK");
+    	production[20] = new Production('K', "w");
+    	
+    	production[21] = new Production('L', "NM");
+    	
+    	production[22] = new Production('M', "sNM");
+    	production[23] = new Production('M',"tNM");
+    	production[24] = new Production('M',"w");
+    	
+    	production[25] = new Production('N', "i");
+    	production[26] = new Production('N', "u");
+    	production[27] = new Production('N',"dKe");
+    }
+    
+    private static boolean isTerminal(char c) {
+    	return c >= 'a' && c <= 'w'; 
+    }
+
+    private static void getFirst(char c) {
+    	if(first[c-'A'] != null)
+    		return;
+    	
+    	first[c-'A'] = new HashSet<>();
+    	for(int i = 0; i < 28; i++) {
+    		if(production[i].left < c)
+    			continue;
+    		if(production[i].left == c) {
+    			char f = production[i].right.charAt(0);
+    			if(isTerminal(f))
+    				first[c-'A'].add(f);
+    			else {
+    				getFirst(f);
+    				first[c-'A'].addAll(first[f-'A']);
+    			}
+    		}
+    		else if(production[i].left > c)
+    			break;
+    	}
+    }
+    
+    private static void getFollow(char c) {
+    	if(follow[c-'A'] != null)
+    		return;
+    	
+    	follow[c-'A'] = new HashSet<>();
+    	if(c == 'A')
+			follow[c-'A'].add('v');
+    	for(int i = 0; i < 28; i++) {
+    		char A = production[i].left;
+    		String s = production[i].right;
+    		for(int j = 0; j < s.length(); j++) {
+    			if(s.charAt(j) == c) {
+    				if(j+1 == s.length()) {		// A->αB  follow(A)->follow(B)
+    					getFollow(A);
+    					follow[c-'A'].addAll(follow[A-'A']);
+    				}
+    				else {		// A->αBβ	first(β)->follow(B)
+    					char beta = s.charAt(j+1);
+    					if(isTerminal(beta)) {
+    						follow[c-'A'].add(beta);
+    					}
+    					else {
+    						getFirst(beta);
+    						follow[c-'A'].addAll(first[beta-'A']);
+    						if(follow[c-'A'].contains('w')) {		// E->first(β) 移除E，follow(A)->follow(B)
+    							follow[c-'A'].remove('w');
+    							getFollow(A);
+    							follow[c-'A'].addAll(follow[A-'A']);
+    						}
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    private static void getLL() {
+    	for(int i = 0; i < 28; i++) {
+    		char c = production[i].right.charAt(0);
+    		if(isTerminal(c)) {
+    			if(c == 'w') {
+    				char A = production[i].left;
+    				getFollow(A);
+    				for(char f:follow[A-'A'])
+    					LL[A-'A'][f-'a'] = i+1;
+    			}
+    			else {
+    				LL[production[i].left - 'A'][c - 'a'] = i+1;
+    			} 
+    		}
+    		else {
+    			getFirst(c);
+    			for(char f: first[c-'A']) {
+    				if(f == 'w') {
+    					getFollow(f);
+    					for(char f2: follow[f-'A'])
+    						LL[production[i].left-'A'][f2 - 'a'] = i+1;
+    				}
+    				else{
+    					LL[production[i].left-'A'][f - 'a'] = i+1;
+    				}
+    			}
+    		}
+    	}
+    }
+    
+    private static void function(char A, int i) {
+    	//System.out.println(A + " " + i);    	
+    	for(int j = 0; j < i; j++)
+    		output.append("\t");
+    	
+    	if(isTerminal(A)) {
+    		output.append(terminal[A-'a']);
+    		output.append('\n');
+    		if(A != 'w') {
+    			if(A != input.get(0)) {
+    				System.out.println("语法错误,第" + (line-1) + "行,缺少\";\"");
+    			}
+    			else {
+    				input.remove(0);
+    			}
+        		if(input.get(0) == '\n') {
+        			input.remove(0);
+        			line++;
+        		}
+    		}
+    		return;
+    	}
+    	
+    	output.append(nonterminal[A-'A']);
+    	output.append('\n');
+
+    	int productionIndex = LL[A-'A'][input.get(0)-'a']-1;
+    	if(productionIndex < 0) {
+            function('w',i+1);
+    		return;
+    	}
+    	String right = production[productionIndex].right;
+    	for(int j = 0; j < right.length(); j++) {
+    		char c = right.charAt(j);
+    		//System.out.println(c);
+    		function(c, i+1);
+    	}
+    }
+    
+    
+    
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        getTerminal();
+        /*for(int i = 0; i < input.size(); i++)
+        	System.out.print(input.get(i));*/
+        
+        // 构造产生式
+        createProduct();
+         
+        // 计算LL
+        getLL();
+
+        
+        function('A', 0);
+        System.out.print(output.substring(0, output.length()-1));
+        
+        //System.out.print(prog);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+
+class Production {
+	char left;
+	String right;
+	public Production(char left, String right) {
+		// TODO Auto-generated constructor stub
+		this.left = left;
+		this.right = right;
+	}
+}
+

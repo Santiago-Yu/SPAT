@@ -1,0 +1,55 @@
+package step2;
+
+public class Task {
+	
+	public int getDaysNum(String startTime,String endTime){
+		int[] MonthDay=new int[2];
+        int[] MonthDay2=new int[2];
+        
+		String[] s=startTime.split("-");
+        MonthDay[0]=Integer.parseInt(s[0]);
+        MonthDay[1]=Integer.parseInt(s[1]);
+        
+		s=endTime.split("-");
+        MonthDay2[0]=Integer.parseInt(s[0]);
+        MonthDay2[1]=Integer.parseInt(s[1]);
+        int[] flag=new int[63];
+        int m=1,sum=0;
+        for(int i=1;i<63;i+=m){
+            flag[i]=1;
+            m++;
+        }
+        if(MonthDay[0]==7){
+            if(MonthDay2[0]==7){
+                for(int i=MonthDay[1];i<=MonthDay2[1];i++){
+                    if(flag[i]==1) 
+                        sum++;
+                }
+            }
+            else{
+                for(int i=32;i<=31+MonthDay2[1];i++){
+                    if(flag[i]==1) 
+                        sum++;
+                }
+                 for(int i=MonthDay[1];i<=31;i++){
+                    if(flag[i]==1) 
+                        sum++;
+                }
+                
+            }
+        }
+        else{
+            for(int i=32;i<=31+MonthDay2[1];i++){
+                    if(flag[i]==1) 
+                        sum++;
+                }
+        }
+		return sum;
+	}
+		
+		
+		
+	}
+	
+
+

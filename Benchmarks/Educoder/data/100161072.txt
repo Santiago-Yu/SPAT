@@ -1,0 +1,62 @@
+package step2;
+import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+	//通过filePath文件路径获取Docment对象
+	public Document getDoc1(String filePath) throws IOException{
+		/**********   Begin   **********/
+    File input = new File(filePath);
+    Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+    return doc;
+
+		
+		/**********   End   **********/
+	}
+
+	
+	public Document getDoc2(String filePath) throws IOException{
+        /**********   Begin   **********/
+ File input = new File(filePath);
+ Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+ return doc;
+
+
+		
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public Elements getLinks(Document doc){
+		/**********   Begin   **********/
+
+ return doc.select("link[href]");
+		
+		/**********   End   **********/
+	}
+	
+	//获取第一个class为“pop_attention”的div
+	public Element getDiv(Document doc){
+		/**********   Begin   **********/
+  Element element = doc.getElementsByClass("pop_attention").first();
+        //Element element = doc.select("div.pop_attention").first();
+        return element;
+
+		
+		/**********   End   **********/
+	}
+	
+	//获取所有li之后的i标签
+	public Elements getI(Document doc){
+		/**********   Begin   **********/
+
+
+		 return doc.select("li > i");
+		/**********   Edn   **********/
+	}
+	
+}

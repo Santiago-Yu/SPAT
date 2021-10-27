@@ -1,0 +1,39 @@
+package step1;
+import java.math.*;
+import java.math.BigDecimal;
+public class Task {
+	public static double fun(double firstX, double firstY, double firstR, double secondX, double secondY, double secondR) {
+	    double PI = Math.PI;
+        double ans = 0.0;
+	   double distance = Math.sqrt((firstX - secondX) * (firstX - secondX) + (firstY - secondY) * (firstY - secondY));
+	    if (firstR + secondR < distance)
+	        return 0.0;
+	    // 内含或内切
+	    else if (Math.abs(secondR - firstR) >= distance) {
+	        if (secondR >= firstR)
+	           ans = PI * firstR * firstR;
+	        else
+	          ans = PI * secondR * secondR;
+	    }
+	    else {
+	 
+	    double angle1 = 2 * Math.acos((firstR * firstR + distance * distance - secondR * secondR) / (2.0 * firstR * distance));
+	    double angle2 = 2 * Math.acos((secondR * secondR + distance * distance - firstR * firstR) / (2.0 * secondR * distance));
+	    ans = firstR * firstR * angle1 / 2.0 + secondR * secondR * angle2 / 2.0- firstR * firstR * Math.sin(angle1) / 2.0 - secondR * secondR * Math.sin(angle2) / 2.0;
+	    }
+	    BigDecimal bg = new BigDecimal(ans);
+	    ans = bg.setScale(6, BigDecimal.ROUND_HALF_UP).doubleValue();
+	        return ans;
+	    }
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double s1 = r1*r1*Math.PI;
+			double s2 = r2*r2*Math.PI;
+         	double s3 = fun(x1,y1,r1,x2,y2,r2);
+			return(s1 + s2 - s3);
+		  
+		  
+		  /********* End *********/
+	  }
+}

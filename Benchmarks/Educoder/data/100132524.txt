@@ -1,0 +1,34 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+       	int max = 1;
+        int maxnum = length;
+        int minnum = width;
+        if(length < width){
+        	maxnum = width;
+            minnum= length;
+        }
+        for(int i = max + 1; i <= minnum; i++){
+        	if(maxnum % i == 0 && minnum % i == 0){
+            	max = i;
+            }
+        }
+        
+        
+		System.out.println(max);//正方形边长最大值
+		System.out.println(length * width / (max*max));//正方形的个数
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

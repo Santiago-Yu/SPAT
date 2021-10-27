@@ -1,0 +1,17 @@
+class n15679088 {
+	public static String createStringFromHtml(MyUrl url) {
+		try {
+			String line;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.getUrl().openStream(), "UTF-8"));
+			String xmlAsString = "";
+			while ((line = reader.readLine()) != null) {
+				xmlAsString += line;
+			}
+			reader.close();
+			return xmlAsString;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+}

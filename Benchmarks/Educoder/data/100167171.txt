@@ -1,0 +1,663 @@
+ /* 名称：	用JavaCC生成C语言的语法分析器(扩展SQL语言)														*/
+ /* 功能：	用JavaCC实现一个C语言的语法分析器																*/
+ /* 说明：	在下面的合适位置中添加代码，需要增加对SQL语言的支持:											*/
+ /* 																										*/
+ /* 			sql{SequenceOfSQLStatements};																*/
+ /* 																										*/
+ /*			其中SequenceOfSQLStatements在任务描述中已经给出。												*/
+ /* 提示：	阅读JavaCC提供的Grammar Repository(https://javacc.org/grammar-library) 中的C.JJ的代码			*/
+ /*       	参考JavaCC提供的Grammar Repository(https://javacc.org/grammar-library) 中的PlSql.JJ的代码		*/
+
+PARSER_BEGIN(CSQLParser)
+
+import java.util.*;
+
+  public class CSQLParser{
+
+    // Hastable for storing typedef types
+    private static Set types = new HashSet();
+
+    // Stack for determining when the parser
+    // is parsing a typdef definition.
+    private static Stack typedefParsingStack = new Stack();
+
+    // Returns true if the given string is
+    // a typedef type.
+    private static boolean isType(String type){
+   	  return types.contains(type);
+    }
+
+    // Add a typedef type to those already defined
+    private static void addType(String type){
+   	  types.add(type);
+    }
+
+    // Prints out all the types used in parsing the c source
+    private static void printTypes(){
+      for (Iterator i = types.iterator(); i.hasNext();) {
+        System.out.println(i.next());
+      }
+    }
+
+    // Run the parser
+    public static void main ( String args [ ] ) {
+      CSQLParser parser ;
+
+  	  // Hack to include type "special types"
+	    types.add("__signed__");
+	    types.add("__const");
+	    types.add("__inline__");
+	    types.add("__signed");
+
+      if(args.length == 0){
+        System.out.println("CSQL Parser Version 0.1Alpha:  Reading from standard input . . .");
+        parser = new CSQLParser(System.in);
+      }
+      else if(args.length == 1){
+        System.out.println("CSQL Parser Version 0.1Alpha:  Reading from file " + args[0] + " . . ." );
+      try {
+        parser = new CSQLParser(new java.io.FileInputStream(args[0]));
+      }
+      catch(java.io.FileNotFoundException e){
+        System.out.println("CSQL Parser Version 0.1:  File " + args[0] + " not found.");
+        return ;
+        }
+      }
+      else {
+        System.out.println("CSQL Parser Version 0.1Alpha:  Usage is one of:");
+        System.out.println("         java CSQLParser < inputfile");
+        System.out.println("OR");
+        System.out.println("         java CSQLParser inputfile");
+        return ;
+      }
+      try {
+        parser.TranslationUnit();
+        System.out.println("CSQL Parser Version 0.1Alpha:  Java program parsed successfully.");
+      }
+      catch(ParseException e){
+        System.out.println("CSQL Parser Version 0.1Alpha:  Encountered errors during parse.");
+        e.printStackTrace();
+      }
+    }
+  }
+
+PARSER_END(CSQLParser)
+
+SKIP : {
+ " "
+|  "\t"
+|  "\n"
+|  "\r"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+|  <"/*" (~["*"])* "*" ("*" | ~["*","/"] (~["*"])* "*")* "/">
+| "#" : PREPROCESSOR_OUTPUT
+}
+
+<PREPROCESSOR_OUTPUT> SKIP:
+{
+     "\n" : DEFAULT
+}
+
+<PREPROCESSOR_OUTPUT> MORE:
+{
+ "\\\n"
+ |
+ "\\\r\n"
+ |
+ < ~[] >
+}
+
+
+
+TOKEN : {
+ <INTEGER_LITERAL: <DECIMAL_LITERAL> (["l","L"])? | <HEX_LITERAL> (["l","L"])? | <OCTAL_LITERAL> (["l","L"])?>
+|  <#DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])*>
+|  <#HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+>
+|  <#OCTAL_LITERAL: "0" (["0"-"7"])*>
+|  <FLOATING_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])? | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])? | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])? | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]>
+|  <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+|  <CHARACTER_LITERAL: "\'" (~["\'","\\","\n","\r"] | "\\" (["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])) "\'">
+|  <STRING_LITERAL: "\"" ( ~["\"","\\","\n","\r"] | "\\" ( ["n","t","b","r","f","\\","\'","\""] | ["0"-"7"] (["0"-"7"])?  | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n")))* "\"">
+}
+
+TOKEN : {
+	<CONTINUE: "continue"> |
+	<VOLATILE: "volatile"> |
+	<REGISTER: "register"> |
+	<UNSIGNED: "unsigned"> |
+	<TYPEDEF: "typedef"> |
+	<DFLT: "default"> |
+	<DOUBLE: "double"> |
+	<SIZEOF: "sizeof"> |
+	<SWITCH: "switch"> |
+	<RETURN: "return"> |
+	<EXTERN: "extern"> |
+	<STRUCT: "struct"> |
+	<STATIC: "static"> |
+	<SIGNED: "signed"> |
+	<WHILE: "while"> |
+	<BREAK: "break"> |
+	<UNION: "union"> |
+	<CONST: "const"> |
+	<FLOAT: "float"> |
+	<SHORT: "short"> |
+	<ELSE: "else"> |
+	<CASE: "case"> |
+	<LONG: "long"> |
+	<ENUM: "enum"> |
+	<AUTO: "auto"> |
+	<VOID: "void"> |
+	<CHAR: "char"> |
+	<GOTO: "goto"> |
+	<FOR: "for"> |
+	<INT: "int"> |
+	<IF: "if"> |
+	<DO: "do"> |
+    <SQL: "sql">
+}
+
+TOKEN: {
+    <DELETE: ("DELETE"| "delete")> |
+    <FROM: ("FROM" | "from")> |
+    <WHERE: ("WHERE" | "where")> |
+    <AND: ("AND" | "and")> |
+    <OR: ("OR" | "or")> |
+    <INSERT: ("INSERT" | "insert")> |
+    <INTO: ("INTO"| "into")> |
+    <VALUES: ("VALUES"| "values")> |
+    <SELECT: ("SELECT" | "select")> |
+    <UPDATE: ("UPDATE" | "update")> |
+    <SET: ("SET"| "set")>
+}
+
+TOKEN : {
+ <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
+|  <#LETTER: ["$","A"-"Z","_","a"-"z"]>
+|  <#DIGIT: ["0"-"9"]>
+}
+
+
+void DeleteStatement(): {}
+{
+    <DELETE> <FROM> <IDENTIFIER> <WHERE> <IDENTIFIER> "=" 
+   	(<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+    (
+        (<AND> | <OR>)
+        <IDENTIFIER> "=" 
+        (<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+	)*
+    ";"
+    { System.out.println("Get a DeleteStatement."); }
+}
+
+void InsertStatement(): {}
+{
+    <INSERT> <INTO> <IDENTIFIER> <VALUES>
+	"(" 
+    (<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+    (
+        ","
+        (<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+    )*
+    ")"
+    ";"
+    { System.out.println("Get a InsertStatement."); }
+}
+
+void QueryStatement(): {}
+{
+	<SELECT>
+    (
+        "*" |
+        (
+        	<IDENTIFIER>
+        	( "," <IDENTIFIER>)*
+        )
+    )
+	<FROM> <IDENTIFIER>
+    (
+        <WHERE> <IDENTIFIER> "="
+        (<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+    	(
+        	(<AND> | <OR>)
+        	<IDENTIFIER> "=" 
+        	(<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+		)*
+    )?
+    ";"
+    { System.out.println("Get a QueryStatement."); }
+}
+
+void UpdateStatement(): {}
+{
+    <UPDATE> <IDENTIFIER> <SET> <IDENTIFIER> "=" 
+    (<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+    (
+        <WHERE> <IDENTIFIER> "="
+        (<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+    	(
+        	(<AND> | <OR>)
+        	<IDENTIFIER> "=" 
+        	(<INTEGER_LITERAL> | <STRING_LITERAL> | <FLOATING_POINT_LITERAL>)
+		)*
+    )?
+    ";"
+    { System.out.println("Get a UpdateStatement."); }
+}
+
+
+
+void SQLStatement(): {}
+{
+    <SQL> "{"
+    { System.out.println("Get some sql statements."); }
+    ( 
+        DeleteStatement() |
+        InsertStatement() |
+        QueryStatement() |
+        UpdateStatement()
+    )*
+    "}" ";"
+}
+
+
+void TranslationUnit() : {}
+{
+	(ExternalDeclaration())+
+}
+
+void ExternalDeclaration() : {}
+{
+	( LOOKAHEAD( FunctionDefinition() ) FunctionDefinition() | Declaration())
+}
+
+void FunctionDefinition() : {}
+{
+	[LOOKAHEAD(DeclarationSpecifiers()) DeclarationSpecifiers()] Declarator() [ DeclarationList() ]
+	CompoundStatement()
+}
+
+void Declaration() : {}
+{
+	DeclarationSpecifiers() [ InitDeclaratorList() ] ";"
+}
+
+void DeclarationList() : {}
+{
+	( LOOKAHEAD(Declaration()) Declaration() )+
+}
+
+void DeclarationSpecifiers() : {}
+{
+	  StorageClassSpecifier() [ LOOKAHEAD(DeclarationSpecifiers())
+	        DeclarationSpecifiers() ] |
+	  TypeSpecifier()  [ LOOKAHEAD(DeclarationSpecifiers())
+	        DeclarationSpecifiers() ] |
+	  TypeQualifier() [ LOOKAHEAD(DeclarationSpecifiers())
+	        DeclarationSpecifiers() ]
+}
+
+void StorageClassSpecifier() : {}
+{
+	( <AUTO> | <REGISTER> | <STATIC> | <EXTERN> | <TYPEDEF>
+	{
+		typedefParsingStack.push(Boolean.TRUE);
+	} )
+}
+
+void TypeSpecifier() : {}
+{
+	( <VOID> | <CHAR> | <SHORT> | <INT> | <LONG> | <FLOAT> | <DOUBLE> | <SIGNED> |
+	  <UNSIGNED> | StructOrUnionSpecifier() | EnumSpecifier() | LOOKAHEAD( { isType(getToken(1).image) } )TypedefName() )
+}
+
+void TypeQualifier() : {}
+{
+	( <CONST> | <VOLATILE> )
+}
+
+void StructOrUnionSpecifier() : {}
+{
+	{
+			typedefParsingStack.push(Boolean.FALSE);
+	}
+
+	StructOrUnion() ( LOOKAHEAD(3) [ <IDENTIFIER> ] "{" StructDeclarationList() "}" | <IDENTIFIER> )
+
+	{
+		typedefParsingStack.pop();
+	}
+}
+
+void StructOrUnion() : {}
+{
+	( <STRUCT> | <UNION> )
+}
+
+void StructDeclarationList() : {}
+{
+	(StructDeclaration())+
+}
+
+void InitDeclaratorList() : {}
+{
+	InitDeclarator() ("," InitDeclarator())*
+	{
+		// Finished with a typedefDeclaration??
+		if(!(typedefParsingStack.empty()) && ((Boolean)typedefParsingStack.peek()).booleanValue()){
+		   	typedefParsingStack.pop();
+	  }
+	}
+}
+
+void InitDeclarator() : {}
+{
+	Declarator() [ "=" Initializer() ]
+}
+
+void StructDeclaration() : {}
+{
+	SpecifierQualifierList() StructDeclaratorList() ";"
+}
+
+void SpecifierQualifierList() : {}
+{
+	  TypeSpecifier() [ LOOKAHEAD(SpecifierQualifierList())
+	        SpecifierQualifierList() ]|
+	  TypeQualifier() [ LOOKAHEAD(SpecifierQualifierList())
+	        SpecifierQualifierList() ]
+}
+
+void StructDeclaratorList() : {}
+{
+	StructDeclarator() ( "," StructDeclarator() )*
+}
+
+void StructDeclarator() : {}
+{
+	( LOOKAHEAD(3) Declarator() | [ Declarator() ] ":" ConstantExpression() )
+}
+
+void EnumSpecifier() : {}
+{
+	<ENUM> ( LOOKAHEAD(3) [ <IDENTIFIER> ] "{" EnumeratorList() "}" | <IDENTIFIER> )
+}
+
+void EnumeratorList() : {}
+{
+	Enumerator() ("," Enumerator())*
+}
+
+void Enumerator() : {}
+{
+	<IDENTIFIER> [ "=" ConstantExpression() ]
+}
+
+void Declarator() : {}
+{
+	[ Pointer() ] DirectDeclarator()
+}
+
+void DirectDeclarator() : { Token t;}
+{
+	( t = <IDENTIFIER>
+
+	{ if(!(typedefParsingStack.empty()) && ((Boolean)typedefParsingStack.peek()).booleanValue()){
+				addType(t.image);
+	  }
+	}
+	 | "(" Declarator() ")" )
+  
+  { typedefParsingStack.push( Boolean.FALSE ); }
+
+	( "[" [ ConstantExpression() ] "]" |
+	    LOOKAHEAD(3) "(" ParameterTypeList() ")" |
+	    "(" [ IdentifierList() ] ")" )*
+      { typedefParsingStack.pop(); }
+}
+
+void Pointer() : {}
+{
+	"*" [ TypeQualifierList() ] [ Pointer() ]
+}
+
+void TypeQualifierList() : {}
+{
+	(TypeQualifier())+
+}
+
+void ParameterTypeList() : {}
+{
+	ParameterList() ["," "..." ]
+}
+
+void ParameterList() : {}
+{
+	ParameterDeclaration() (LOOKAHEAD(2) "," ParameterDeclaration())*
+}
+
+void ParameterDeclaration() : {}
+{
+	DeclarationSpecifiers() ( LOOKAHEAD(Declarator()) Declarator() | [ AbstractDeclarator() ] )
+}
+
+void IdentifierList() : {}
+{
+	<IDENTIFIER> ("," <IDENTIFIER>)*
+}
+
+void Initializer() : {}
+{
+	( AssignmentExpression() |
+	  "{" InitializerList() [","] "}" )
+}
+
+void InitializerList() : {}
+{
+	Initializer() (LOOKAHEAD(2) "," Initializer())*
+}
+
+void TypeName() : {}
+{
+	SpecifierQualifierList() [ AbstractDeclarator() ]
+
+}
+
+void AbstractDeclarator() : {}
+{
+	( LOOKAHEAD(3) Pointer() |
+	  [Pointer()] DirectAbstractDeclarator() )
+}
+
+void DirectAbstractDeclarator() : {}
+{
+	( LOOKAHEAD(2) "(" AbstractDeclarator() ")" |
+	               "[" [ConstantExpression()] "]" |
+	               "(" [ParameterTypeList()] ")" )
+
+	  ( "[" [ ConstantExpression() ] "]" | "(" [ ParameterTypeList() ] ")" )*
+}
+
+void TypedefName() : {}
+{
+	<IDENTIFIER>
+}
+
+void Statement() : {}
+{
+	( LOOKAHEAD(2) LabeledStatement() |
+	  ExpressionStatement() |
+	  CompoundStatement() |
+	  SelectionStatement() |
+	  IterationStatement() |
+	  JumpStatement() ) |
+      SQLStatement()
+}
+
+void LabeledStatement() : {}
+{
+	( <IDENTIFIER> ":" Statement() |
+	  <CASE> ConstantExpression() ":" Statement() |
+	  <DFLT> ":" Statement() )
+}
+
+void ExpressionStatement() : {}
+{
+	[ Expression() ] ";"
+}
+
+void CompoundStatement() : {}
+{
+	"{" [ LOOKAHEAD(DeclarationList()) DeclarationList() ]
+	    [ StatementList() ]
+	"}"
+}
+
+void StatementList() : {}
+{
+	(Statement())+
+}
+
+void SelectionStatement() : {}
+{
+	( <IF> "(" Expression() ")" Statement() [ LOOKAHEAD(2) <ELSE> Statement() ] |
+	  <SWITCH> "(" Expression() ")" Statement() )
+}
+
+void IterationStatement() : {}
+{
+	( <WHILE> "(" Expression() ")" Statement() |
+	  <DO> Statement() <WHILE> "(" Expression() ")" ";" |
+	  <FOR> "(" [ Expression() ] ";" [ Expression() ] ";" [ Expression() ] ")" Statement() )
+}
+
+void JumpStatement() : {}
+{
+	( <GOTO> <IDENTIFIER> ";" |
+	  <CONTINUE> ";" |
+	  <BREAK> ";" |
+	  <RETURN> [ Expression() ] ";" )
+}
+
+void Expression() : {}
+{
+	AssignmentExpression() ( "," AssignmentExpression() )*
+}
+
+void AssignmentExpression() : {}
+{
+	  LOOKAHEAD(UnaryExpression() AssignmentOperator()) UnaryExpression() AssignmentOperator() AssignmentExpression() |
+	  LOOKAHEAD(3) ConditionalExpression()
+}
+
+void AssignmentOperator() : {}
+{
+	( "=" | "*=" | "/=" | "%=" | "+=" | "-=" | "<<=" | ">>=" | "&=" | "^=" | "|=" )
+}
+
+void ConditionalExpression() : {}
+{
+	LogicalORExpression() [ "?" Expression() ":" ConditionalExpression() ]
+}
+
+void ConstantExpression() : {}
+{
+	ConditionalExpression()
+}
+
+void LogicalORExpression() : {}
+{
+	LogicalANDExpression() [ "||" LogicalORExpression() ]
+}
+
+void LogicalANDExpression() : {}
+{
+	InclusiveORExpression() [ "&&" LogicalANDExpression() ]
+}
+
+void InclusiveORExpression() : {}
+{
+	ExclusiveORExpression() [ "|" InclusiveORExpression() ]
+}
+
+void ExclusiveORExpression() : {}
+{
+	ANDExpression() [ "^" ExclusiveORExpression() ]
+}
+
+void ANDExpression() : {}
+{
+	EqualityExpression() [ "&" ANDExpression() ]
+}
+
+void EqualityExpression() : {}
+{
+	RelationalExpression() [ ( "==" | "!=" ) EqualityExpression() ]
+}
+
+void RelationalExpression() : {}
+{
+	ShiftExpression() [ ( "<" | ">" | "<=" | ">=" ) RelationalExpression() ]
+}
+
+void ShiftExpression() : {}
+{
+	AdditiveExpression() [ ( "<<" | ">>" ) ShiftExpression() ]
+}
+
+void AdditiveExpression() : {}
+{
+	MultiplicativeExpression() [ ( "+" | "-" ) AdditiveExpression() ]
+}
+
+void MultiplicativeExpression() : {}
+{
+	CastExpression() [ ( "*" | "/" | "%" ) MultiplicativeExpression() ]
+}
+
+void CastExpression() : {}
+{
+	( LOOKAHEAD("(" TypeName() ")" CastExpression() ) "(" TypeName() ")" CastExpression() |
+	  UnaryExpression() )
+}
+
+void UnaryExpression() : {}
+{
+	( LOOKAHEAD(3) PostfixExpression() |
+	  "++" UnaryExpression() |
+	  "--" UnaryExpression() |
+	  UnaryOperator() CastExpression() |
+	  <SIZEOF> ( LOOKAHEAD(UnaryExpression() ) UnaryExpression() | "(" TypeName() ")" ) )
+}
+
+void UnaryOperator() : {}
+{
+	( "&" | "*" | "+" | "-" | "~" | "!" )
+}
+
+void PostfixExpression() : {}
+{
+	PrimaryExpression() ( "[" Expression() "]" |
+	                      "(" [ LOOKAHEAD(ArgumentExpressionList() ) ArgumentExpressionList() ] ")" |
+	  					  "." <IDENTIFIER> |
+	  					  "->" <IDENTIFIER> |
+	  					  "++" |
+	  					  "--" )*
+}
+
+void PrimaryExpression() : {}
+{
+	( <IDENTIFIER> |
+	  Constant() |
+	  "(" Expression() ")" )
+}
+
+void ArgumentExpressionList() : {}
+{
+	AssignmentExpression() ( "," AssignmentExpression() )*
+}
+
+void Constant() : {}
+{
+ <INTEGER_LITERAL> | <FLOATING_POINT_LITERAL> | <CHARACTER_LITERAL> | <STRING_LITERAL>
+}

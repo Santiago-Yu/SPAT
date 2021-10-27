@@ -1,0 +1,25 @@
+package step2;
+
+import java.io.File;
+import java.io.IOException;
+
+public class FileUtil {
+	public static void start() {
+		/********** Begin *********/
+		File file = new File("src/step2");
+        String[] a = file.list();
+        for(String s:a){
+        	if(!s.contains(".")){
+            	System.out.println(s);
+            }
+        }
+         for(String s:a){
+        	if(s.contains(".")){
+            	System.out.println(s);
+            }
+        }
+
+
+		/********** End *********/
+	}
+}

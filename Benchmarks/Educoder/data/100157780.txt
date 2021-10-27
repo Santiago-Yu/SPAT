@@ -1,0 +1,22 @@
+import java.util.Scanner;
+
+public class Main {
+	public int Num;
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		Main M = new Main();
+		M.Num = sc.nextInt();
+		System.out.printf("%d",M.Count(M.Num));
+	}
+	public int Count(int n){
+		int a1=1,a2=2;
+		int tmp = 0;
+		while(n>=3){
+			tmp = a1+a2;
+			a1 = a2;
+			a2 = tmp;
+			n--;
+		}
+		return tmp;
+	}
+}

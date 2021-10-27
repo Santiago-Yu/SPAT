@@ -1,0 +1,54 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+        
+        MyThread wax =new MyThread(num);
+        Thread w1 = new Thread(wax);
+        w1.start();
+        
+        try{
+   			w1.join();
+        }
+        catch(InterruptedException e){
+        	e.printStackTrace();
+        	}
+        
+		System.out.println("子线程计算结果为："+wax.st);
+
+		
+	}
+}
+
+class MyThread implements Runnable    {
+	
+    public int pre_st=0;
+   
+	public int st=1;
+    public int num;
+    
+    MyThread(int num){
+    this.num=num;
+    }
+  
+    public void run(){
+        int i;
+        int temp;
+    	for(i=0;i<num-1;i++)
+        {
+            temp=st;
+        	st=st+pre_st;
+            pre_st=temp;
+            //System.out.println(this.st);
+           
+        }
+        
+       
+    }
+	
+}

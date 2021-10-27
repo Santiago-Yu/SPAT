@@ -1,0 +1,34 @@
+package step1;
+
+public class Rectangle{
+	private double width;
+	private double length;
+	/*********begin*********/
+	public Rectangle(){
+        perimeter("r1",5,6);
+        area("r1",5,6);
+    }
+    public Rectangle(double width,double length){
+        this.width = width;
+        this.length = length;
+        perimeter("r2",width,length);
+        area("r2",width,length);
+    }
+    public void perimeter(String r,double w,double l){
+        System.out.println(r+"的周长："+(w+l)*2);
+    }
+    public void area(String r,double w,double l){
+        System.out.println(r+"的面积："+w*l);
+    }
+	/*********end*********/
+
+
+	public static void main(String[] args) {
+		/*********begin*********/
+		Rectangle r1 = new Rectangle();
+        Rectangle r2 = new Rectangle(10,20);
+
+		/*********end*********/
+	}
+
+}

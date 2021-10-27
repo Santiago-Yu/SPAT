@@ -1,0 +1,44 @@
+package step1;
+
+public class Task {
+    
+	public double solve(double x1, double y1, double r1,
+            double x2, double y2, double r2) {
+		  /********* Begin *********/
+        double PI = Math.acos(-1.0);
+		double a = Area(x1,y1,r1,x2,y2,r2);
+	    if(a == 0){
+	        return PI*r1*r1 + PI*r2*r2;
+	    }else if(a == 1){
+	        return PI*r1*r1;
+	    }else if(a == 2){
+	        return PI*r2*r2;
+	    }else{
+	        return PI*r1*r1 + PI*r2*r2 - a;
+	    }
+		  
+		  
+		  /********* End *********/
+	  }
+	
+	public double Area(double x1,double y1,double r1,double x2,double y2,double r2)
+	{
+	    double d=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+	    if(d >= r1+r2)
+	        return 0;
+	    else if(Math.abs(r1-r2)>=d)
+	    {
+	        if(r1>r2)
+	            return 1;
+	        else
+	            return 2;
+	    }
+	    else
+	    {
+	        double a1=2*Math.acos((r1*r1+d*d-r2*r2)/2/r1/d);
+	        double a2=2*Math.acos((r2*r2+d*d-r1*r1)/2/r2/d);
+	        double ans=r1*r1*a1/2+r2*r2*a2/2-r1*r1*Math.sin(a1)/2-r2*r2*Math.sin(a2)/2;
+	        return ans;
+	    }
+	}
+}

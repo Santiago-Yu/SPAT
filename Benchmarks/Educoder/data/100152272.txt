@@ -1,0 +1,24 @@
+package step1;
+import org.junit.*;
+/**
+ * Created by liqiankun on 2018/11/10 0010
+ * Description：
+ */
+public class QueryTest {
+    public boolean repOK(Query Q){
+        if(!(Q.getTarget()<=10&&Q.getTarget()>=1)) return false;
+		if(!(Q.getTime()>= 0 && Q.getTime() < 1e12)) return false;
+		return true;
+    }
+    
+    @Test
+    public void QueryTest() throws Throwable{
+    	Query Test_Q = new Query("0,FR,1,UP,0");
+        boolean temp = repOK(Test_Q);
+        Assert.assertTrue(temp);
+        
+    }
+    
+
+
+}

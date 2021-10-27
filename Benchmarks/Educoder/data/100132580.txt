@@ -1,0 +1,25 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int length1 = length;
+		int width1 = width;
+		int num = length1%width1;
+		while(num != 0) {
+			length1 = width1;
+			width1 = num;
+			num = length1%width1;
+		}
+		int length2 = length/width1;
+		int width2 = width/width1;
+		System.out.println(width1);
+		System.out.println(length2*width2);		
+		/********** END **********/
+	}
+}

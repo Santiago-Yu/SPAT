@@ -1,0 +1,55 @@
+package step1;
+
+
+public class Task implements Runnable {
+
+    private String name;
+    private Task Task;
+
+    public Task() {}
+
+    public Task(String name) {
+        this.name = name;
+    }
+
+    public void setTask(Task Task) {
+        this.Task = Task;
+    }
+
+    public void run() {
+        int count = 0;
+        try {
+            while (count < 5) {
+                synchronized (Task) {
+                    synchronized (this) {
+                        System.out.println(name);
+                        count++;
+                        this.notify();
+                    }
+                    Task.wait();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Task a = new Task("Java ThreadAA");
+        Task b = new Task("Java ThreadBB");
+        Task c = new Task("Java ThreadCC");
+
+        a.setTask(c);
+        b.setTask(a);
+        c.setTask(b);
+
+        new Thread(a).start();
+        Thread.sleep(1);
+        new Thread(b).start();
+        Thread.sleep(1);
+        new Thread(c).start();
+        Thread.sleep(1);
+         System.exit(1);
+    }
+
+}

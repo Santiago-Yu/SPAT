@@ -1,0 +1,75 @@
+package step1;
+import java.util.List;
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuffer sb = new StringBuffer(s) ;
+        for(Operation op : ops)
+        {
+            if("L".equals(op.getT()))
+            {
+                p-=op.getL();
+                if(p<0)
+                p=0;
+            }
+            else if("D".equals(op.getT()))
+            {
+                if(op.getL()>sb.length()-p)
+                    sb.delete(p,sb.length());
+                else
+                    sb.delete(p,p+op.getL());
+            }
+            
+            else if("R".equals(op.getT()))
+            {
+                p+=op.getL();
+                if(p>sb.length())
+                    p=sb.length();
+            }
+            else if("I".equals(op.getT()))
+            {
+                sb.insert(p, op.getS());
+                p+=op.getS().length();
+            }
+            else if("B".equals(op.getT()))
+            {
+                if(op.getL()>p)
+                {
+                    sb.delete(0,p);
+                    p=0;
+                }
+                else
+                {
+                    p-=op.getL();
+                    sb.delete(p,p+op.getL());
+                }
+            }
+        }
+        return sb.toString();	
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+        public void setT(String t){
+            this.t = t ;
+        }
+        public String getT(){
+            return t ;
+        }
+         public void setS(String s){
+            this.s = s ;
+        }
+        public String getS(){
+            return s ;
+        } public void setL(int l){
+            this.l = l;
+        }
+        public int getL(){
+            return l ;
+        }
+    }
+}
+

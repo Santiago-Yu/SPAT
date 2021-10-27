@@ -1,0 +1,24 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+        /********** Begin *********/
+for (File f: files) {
+    if (f.isDirectory()) {  
+        File[] ss = f.listFiles();
+        for(File s:ss)
+            if(s.getName().contains("Search"))
+        		System.out.println(s);
+    }
+    else
+         System.out.println(f);      
+}
+
+
+        /********** End *********/
+    }
+}

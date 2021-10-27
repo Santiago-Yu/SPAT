@@ -1,0 +1,159 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+public class Task {
+
+    public static void main(String[] args) throws IOException {
+        //¶ÁÈ¡ÎÄŒþÄÚÈÝÖÁlistŒ¯ºÏÖÐ
+        List<User> userlist = getUserTagsFromCsv("src/step1/user_tag.csv");
+        
+        List<String> data = new ArrayList<>();
+        for (User user : userlist) {
+            data.add(user.getTagStr());
+        }
+        //œ«ÊýŸÝÐŽµœuser_recommand.csvÖÐ
+        writeCsvFile("src/step1/user_recommand.csv",data);
+    }
+
+    /**
+     * ¶ÁÈ¡user_tagÎÄŒþÐÅÏ¢ÖÁlistŒ¯ºÏÖÐ
+     * 
+     * @param path
+     *            ÎÄŒþÂ·Ÿ¶
+     * @return ÓÃ»§µÄŒ¯ºÏ
+     * @throws IOException
+     */
+    public static List<User> getUserTagsFromCsv(String path) throws IOException {
+        // ŽŽœšŽŽœšÓÃ»§Œ¯ºÏ²¢¶ÁÈ¡ÎÄŒþÊýŸÝ
+        List<User> userList = new ArrayList<>();
+        try {
+            // ŽŽœšCSV¶Á¶ÔÏó
+           CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // ¶Á±íÍ·
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // ¶ÁÒ»ÕûÐÐ
+                // ¶ÁÕâÐÐµÄµÚÒ»ÁÐ
+                String id = csvReader.get(0);        //¶Áid
+                String tagName = csvReader.get(1);    //±êÇ©Ãû
+                String weight = csvReader.get(2);    //¶ÔÓŠÈšÖØ
+                String[] tagItems = tagName.split(",");
+                String[] weightItems = weight.split(",");
+                List<Tag> tags = new ArrayList<>();
+                User user = new User();
+                user.setTagStr(tagName);
+                user.setUserId(Integer.valueOf(id));
+                for (int j = 0; j < tagItems.length; j++) {
+                    Tag tag = new Tag();
+                    tag.setName(tagItems[j]);
+                    tag.setWeight(Double.valueOf(weightItems[j].replace("[", "").replace("]", "")));
+                    tags.add(tag);
+                }
+                user.setTags(tags);
+                userList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    /**
+     * ¶ÁÈ¡tag_coocurrence.csv
+     * @param path Â·Ÿ¶
+     * @return ¶ÁÈ¡ºóÉú³ÉmapŒ¯ºÏ
+     * @throws IOException
+     */
+    public static Map<Integer, Tag> getTagFromCsv(String path) throws IOException {
+        return null;
+    }
+
+    /**
+     * ÐŽœá¹ûÎÄŒþ
+     * 
+     * @param filePath ÎÄŒþÂ·Ÿ¶
+     * @param data ÒªÐŽÈëµÄÊýŸÝ
+     * @throws IOException
+     */
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException {
+        // ŽŽœšCSVÐŽ¶ÔÏó
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // ÐŽ±íÍ·
+        String[] headers = {"id","recommand_tags"};
+        csvWriter.writeRecord(headers);
+        //Ñ­»·ÐŽÊýŸÝ
+       
+        int id = 1;
+        for (String tag : data) {
+            String[] content = {id++ +"", tag};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+// ±êÇ©
+class Tag {
+    private String name; // ±êÇ©Ãû
+    private double weight; // ÈšÖØÖµ
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+}
+
+// ÓÃ»§
+class User {
+    private int userId;
+    private List<Tag> tags;
+    private String tagStr;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagStr() {
+        return tagStr;
+    }
+
+    public void setTagStr(String tagStr) {
+        this.tagStr = tagStr;
+    }
+}

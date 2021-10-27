@@ -1,0 +1,122 @@
+package step2;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+
+public class Task {
+	
+	public static class Edge {
+        int u;
+        int v;
+        int w;
+    }
+
+	final public static int Maxn = 100010, Maxe = 1000000;
+	public static int first[] = new int[Maxn];
+	public static int to[] = new int[Maxe];
+	public static int ne[] = new int[Maxe];
+	public static int c[] = new int[Maxe];
+	public static int dfn[] = new int[Maxn];
+	public static int low[] = new int[Maxn];
+	public static int st[] = new int[Maxn];
+	public static int ins[] = new int[Maxn];
+	public static int belong[] = new int[Maxn];
+	public static int num,top,color,cnt,ans;
+	public static int dis[] = new int[Maxn];
+	public static int book[] = new int[Maxn];
+	
+
+	public static void init(int n) {
+	    cnt = 0;
+	    ans = 0;
+	    num = top = color = 0;
+	    for (int i = 0; i <= n; i++) {
+	        book[i] = 0;
+	        ins[i] = 0;
+	        belong[i] = 0;
+	        first[i] = -1;
+	        dis[i] = Integer.MIN_VALUE;
+	    }
+	}
+	
+	public static void add(int u, int v, int w) {
+	    to[cnt] = v;
+	    c[cnt] = w;
+	    ne[cnt] = first[u];
+	    first[u] = cnt++;
+	}
+
+	
+	public static void tarjan(int x) {
+	    dfn[x] = low[x] = ++num;
+	    st[++top] = x;
+	    ins[x] = 1;
+	    for (int i = first[x]; i != -1; i = ne[i]) {
+	        if (dfn[to[i]] == 0) {
+	            tarjan(to[i]);
+	            low[x] = Math.min(low[x], low[to[i]]);
+	        } else if (ins[to[i]] != 0) {
+	            low[x] = Math.min(low[x], dfn[to[i]]);
+	        }
+	    }
+	    if (dfn[x] == low[x]) {
+	        color++;
+	        int y;
+	        do {
+	            y = st[top--];
+	            ins[y] = 0;
+	            belong[y] = color;
+	        } while (x != y);
+	    }
+	}
+
+
+	public static void spfa(int n) {
+		Queue<Integer> q = new LinkedList<Integer>();
+	    q.offer(0);
+	    book[0] = 1;
+	    dis[0] = 0;
+	    while (!q.isEmpty()) {
+	        int t = q.peek();
+	        q.poll();
+	        for (int i = first[t]; i != -1; i = ne[i]) {
+	            if (belong[t] == belong[to[i]] && dis[to[i]] < dis[t]) {
+	                dis[to[i]] = dis[t];
+	                if (book[to[i]] == 0) {
+	                    q.offer(to[i]);
+	                    book[to[i]] = 1;
+	                }
+	            }
+	            if (belong[t] != belong[to[i]] && dis[to[i]] < dis[t] + c[i]) {
+	                dis[to[i]] = dis[t] + c[i];
+	                if (book[to[i]] == 0) {
+	                    book[to[i]] = 1;
+	                    q.offer(to[i]);
+	                }
+	            }
+	        }
+	        book[t] = 0;
+	    }
+	}
+
+	public static int solver(int n , List<Edge> edges) {
+	        /**********  Begin  **********/
+	    init(n);
+	    int lened = edges.size();
+	    for (int i = 0; i < lened; i++) {
+	        add(edges.get(i).u, edges.get(i).v, edges.get(i).w);
+	    }
+	    for (int i = 1; i <= n; i++)
+	        if (dfn[i] == 0)tarjan(i);
+	    for (int i = 1; i <= n; i++)
+	    	add(0, i, 0);
+	    spfa(n);
+	    for (int i = 1; i <= n; i++)
+	    	ans = Math.max(ans, dis[i]);
+	    return ans;
+	    /**********  End  **********/
+	}
+	
+}

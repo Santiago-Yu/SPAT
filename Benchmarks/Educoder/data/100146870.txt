@@ -1,0 +1,45 @@
+package step1;
+import java.util.*;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums)
+    {
+    int[] date = new int[10000 + 1];
+		ArrayList<Integer> temp = new ArrayList<>();
+		for(int i = 0; i < 9997; i++)
+		{
+			date[nums[i]]++;
+		}
+		for(int i = 1; i < date.length; i++)
+		{
+			if(date[i] == 0)
+			{
+				temp.add(i);
+
+				if(temp.size() == 3)
+					break;
+			}
+		}
+		String st = "";
+		for(int i = 0; i < 3; i++)
+		{
+			st += temp.get(i);
+		}
+		int result;
+		try{
+			result = Integer.parseInt(st);
+		}
+		catch(Exception e)
+		{
+			result = temp.get(0) * 10000+ temp.get(1) * 100+ temp.get(2);
+
+		}
+//		System.out.println(result % 11);
+//		System.out.println(a % 11);
+		return result % 11;
+	}
+
+	/********* End *********/
+}

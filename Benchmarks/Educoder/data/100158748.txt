@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+using namespace std;
+int dp[3000][3000];
+int d[3000][3000];
+int n,m;
+int main()
+{
+	int i,j,k;
+	scanf("%d%d",&n,&m);
+	for (i=0;i<n;i++)
+	{
+		for (j=0;j<m;j++)
+		{
+			scanf("%d",&d[i][j]);
+		}
+	}
+	for (i=0;i<m;i++)
+	dp[0][i]=d[0][i];
+	for (i=1;i<n;i++)
+	{
+		for (j=0;j<m;j++)
+		{
+			int t;
+			if (j==0)
+			t=dp[i-1][1];
+			else
+			t=dp[i-1][0];
+			for(k=0;k<m;k++)
+			{
+				if (j!=k)
+				{
+					t=min(dp[i-1][k],t);
+				}
+			}
+			dp[i][j]=t+d[i][j];
+		}
+	}
+	int t=dp[n-1][0];
+	for(k=1;k<m;k++)
+	t=min(dp[n-1][k],t);
+	cout<<t;
+}

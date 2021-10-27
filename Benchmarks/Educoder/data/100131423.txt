@@ -1,0 +1,90 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+ 	private void getDir(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void showDirStructure(File dir)	{
+		if(dir.isDirectory()) 
+		{
+			String pathname=dir.getName();
+			System.out.println("+--"+pathname);
+			File[] fList=dir.listFiles(); 
+			
+			for(int j=0;j<fList.length;j++)
+			{ 
+				if(fList[j].isDirectory()){
+					getDir(fList[j].getPath());
+					System.out.println("  "+"+--"+fList[j].getName());
+					if(fList[j].isDirectory()){
+						File[] llist=fList[j].listFiles();
+						for(int k=0;k<llist.length;k++){
+							String fileName=llist[k].getName();
+							if(llist[k].isDirectory()){
+								System.out.println("    "+"+--"+llist[k].getName());
+								File[] f=llist[k].listFiles();
+								if(f!=null){
+									for(int i=0;i<f.length;i++){
+										if(f[i].isDirectory()){
+											System.out
+													.println("      "+"+--"+f[i].getName()+"");
+											File[] ff=f[i].listFiles();
+											
+											if(ff!=null){
+												
+												for(int c=0;c<ff.length;c++){
+													if(ff[c].isDirectory()){
+														System.out
+																.println("        "+"+--"+ff[c].getName());
+														File[] fff=ff[c].listFiles();
+														if(fff!=null){
+															for(int a=0;a<fff.length;a++){
+																System.out
+																		.println("          "+"--"+fff[a].getName()+"");
+															}
+														}
+													}
+													else{
+														System.out.println("        "+"--"+ff[c].getName()+"");
+													}
+												
+												}
+											}
+										}else
+										System.out.println("      "+"--"+f[i].getName()+"");
+									}
+									
+								}
+								
+							}else
+							System.out.println("    "+"--"+fileName+"");
+							
+                        }
+					}
+					
+				}else{
+					File[] llist=fList[j].listFiles();
+					for(int k=0;k<llist.length;k++){
+						System.out.println("    "+"--"+llist[k].getName());
+					}
+					
+				}	
+			} 
+		}  
+
+
+
+
+
+
+	}
+
+
+
+	/********** END **********/
+}

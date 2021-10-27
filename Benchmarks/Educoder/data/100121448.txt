@@ -1,0 +1,20 @@
+package step3;
+import java.util.Scanner;
+public class HelloWorld {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int[] scores = new int[sc.nextInt()];
+		int sum=0;
+		for(int i = 0 ; i< scores.length;i++){
+			scores[i] = sc.nextInt();
+            sum=sum+scores[i];
+		}
+       	int max;
+      	for(int i = 0 ; i< scores.length;i++){
+			if (max<scores[i])
+              max=scores[i];
+		} 
+		System.out.println("平均值：" +(double)sum/scores.length );
+		System.out.println("最大值：" +max);
+	}
+}

@@ -1,0 +1,46 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+          int len;
+          int count =0;
+          int numcount =0,strcount=0 , spacecount = 0 ,othcount =0; // 数字   字母 空格 其他
+          //补全try/catch块，异常类型为IOException
+          try {
+        	      str = reader.readLine();
+        		  for(int i =0;i<str.length();i++)
+        		  {
+        		  char m = str.charAt(count);
+        		  //System.out.print(th);
+        		  if(m>='0' && m<='9')
+        		  {
+        			  numcount++;
+        		  }else if(m== ' ')
+        			  
+        		  {
+        			  spacecount++;
+        		  }else if((m>='a'&&m<='z')||(m>='A'&&m<='Z'))
+        		  {
+        			  strcount++;
+        		  }else
+        		  {
+        			  othcount++;
+        		  }
+        		  count++;
+        		  }
+        	     System.out.print("letter=" + strcount +",space=" + spacecount +",number="+numcount+",other="+othcount);
+//        	     System.out.print(numcount);
+//        	     System.out.print(spacecount);System.out.print(othcount);System.out.print(strcount);
+          }
+          catch(IOException e) { 
+        	  e.printStackTrace(); 
+        }
+        /********** End *********/
+    }
+}

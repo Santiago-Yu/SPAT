@@ -1,0 +1,41 @@
+package step2;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+
+public class Task {
+	public static void main(String[] args)throws IOException {
+		/********* Begin *********/
+		File file=new File("src/test2");
+		file.mkdir();
+		File file1=new File("src/output/test2.txt");
+		file1.delete();
+        try{
+			File file2=new File("src/test2/helloworld.txt");
+			File file3=new File("src/test2/step2.txt");
+			file2.createNewFile();file2.createNewFile();
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		System.out.println("output目录结构为：");
+		File file4=new File("src/output");
+		File[] files=file4.listFiles();
+		for(File file5 : files) {
+			System.out.println(file5.getName());
+		}
+
+
+		
+		System.out.println("test2目录结构为：");
+        File file6=new File("src/test2");
+		File[] files2=file6.listFiles();
+		for(File file7 : files2) {
+			System.out.println(file7.getName());
+		}
+
+
+
+		/********* End *********/
+	}
+}

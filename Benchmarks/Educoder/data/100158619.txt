@@ -1,0 +1,38 @@
+#include <iostream>
+#include<stdio.h>
+#include<math.h>
+#include<string.h>
+#include<stdlib.h>
+using namespace std;
+int main()
+{
+    char str1[20]={0},str2[20]={0};
+    memset(str1,0,sizeof(str1));
+    memset(str2,0,sizeof(str2));
+    scanf("%s %s",&str1,&str2);
+    int i=0,j=0,sum=0,ans=0,m=0,n=0;
+    int len1=0,len2=0;
+    len1=strlen(str1);
+    len2=strlen(str2);
+    for(i=0;i<len1;i++)
+    {
+    	for(j=0;j<len2;j++)
+    	{
+    		if(str1[i]==str2[j])
+    		{
+    			sum=0;
+    			for(m=i,n=j;m<len1;m++,n++)
+    			{
+    				if(str1[m]==str2[n])
+    				{
+    					sum++;
+    					ans=max(sum,ans);
+    				}
+    				else break;
+    			}
+    		}
+    	}
+    	
+    }
+    printf("%d",ans);
+}

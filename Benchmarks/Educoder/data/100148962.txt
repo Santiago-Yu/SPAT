@@ -1,0 +1,87 @@
+package step3;
+
+public class Task {
+	
+
+	public int concaveValley(Integer[] arr) {
+		/********* Begin *********/
+		int a[] = new int[arr.length - 1];
+		int length[] = new int[arr.length - 1];
+		int n = 0;
+		int maxlength = 0;
+
+		for (int i = 0; i < a.length; i++) {
+			a[i] = arr[i + 1] - arr[i];
+			// System.out.println(a[i]);
+		}
+
+		int j = 0;
+		while (a[j] >= 0) {
+			if (j == a.length - 1) {
+				return 0;
+			}
+			j++;
+		}
+		outer: while (j < a.length - 1) {
+			int first = 0, end = 0;
+			for (int i = j; i < a.length; i++) {
+				if (a[i] < 0) {
+					first = i;
+					if (first == a.length - 1) {
+						break outer;
+					}
+					for (int k = first + 1; k < a.length; k++) {
+						if (a[k] > 0) {
+							if (k == a.length - 1) {
+								end = k;
+								length[n] = end - first + 2;
+								// System.out.println(length[n]);
+								j = end;
+								break outer;
+							}
+							for (int m = k + 1; m < a.length; m++) {
+								if (a[m] < 0) {
+									end = m;
+									length[n] = end - first + 1;
+									// System.out.println(length[n]);
+									n++;
+									j = end;
+									continue outer;
+								} else if (a[m] == 0) {
+									end = m;
+									length[n] = end - first + 1;
+									// System.out.println(length[n]);
+									n++;
+									j = end + 1;
+									continue outer;
+								}else if(m == a.length - 1) {
+									end = m;
+									length[n] = end - first + 2;
+									n++;
+									j = end;
+									break outer;
+									
+								}
+							}
+
+						} else if (k == a.length - 1) {
+
+							break outer;
+						}
+
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < length.length - 1; i++) {
+			if (length[i] > maxlength) {
+				maxlength = length[i];
+			}
+		}
+
+		return maxlength;
+		/********* End *********/
+	}
+}
+

@@ -1,0 +1,28 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+	      long[][] max =  new long[numbers+1][selectedNum+1];
+	      long[][] min =  new long[numbers+1][selectedNum+1];
+	      long res = Integer.MIN_VALUE;
+	        for(int last = 1;last<= numbers;last++){
+	            //初始化h=1的情况，只选中1个人的情况
+	            max[last][1] = abilities[last];
+	            min[last][1] = abilities[last];
+	            //h>1的情况，选中人数从2开始
+	            for(int h = 2;h <= selectedNum;h++){
+	                for(int left = last-1; left>0 && last-left<=distance;left--){
+	                    max[last][h] = Math.max(max[last][h],Math.max(max[left][h-1]*abilities[last],min[left][h-1]*abilities[last]));
+	                    min[last][h] = Math.min(min[last][h],Math.min(max[left][h-1]*abilities[last],min[left][h-1]*abilities[last]));
+	                }
+	            }
+	            res = Math.max(res, max[last][selectedNum]);
+	        }
+	        return res;
+	}
+
+	/********* End *********/
+}

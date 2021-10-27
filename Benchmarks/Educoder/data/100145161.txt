@@ -1,0 +1,32 @@
+package step2;
+
+public class Task {
+//如果不能等分就丢掉一个再分，分到最后一个也丢掉
+	public int getNum(int n){
+		/********* Begin *********/
+		int temp = n;
+        int sum = 0 ;
+        while (temp!=0)
+        {
+            if(temp%2==0){
+            temp = temp/2;
+             if(temp ==1)
+             {
+                 sum ++;
+              break;
+             }
+                continue;
+            }
+            else{
+            sum++;
+                temp = (temp-1)/2;
+            }
+        }
+		return sum;
+		
+		
+		
+		/********* End *********/
+	}
+	
+}

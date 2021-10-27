@@ -1,0 +1,34 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+			int sum = 0;//和
+		int hundreds = 0;//百位
+		int decade = 0;//十位
+		int the = 0;//各位
+		for (int i = num1; i <= num2; i++) {
+			//求三位数的个十百位
+			if(i >= 100){
+				 hundreds = i/100;
+				 decade = (i/10)%10;
+				 the = i%10;
+				sum  +=  hundreds + decade + the;
+			//求两位数的个十位
+			}else if(i >= 10 && i <= 99){
+				decade = i/10;
+				the = i%10;
+				sum += decade + the;
+			//求一位数的个位
+			}else{
+				sum += i;
+			}
+		}		
+		return sum;
+		
+		
+		/********** END **********/
+	}
+}

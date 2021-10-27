@@ -1,0 +1,67 @@
+package step1;
+import java.util.Vector;
+import java.util.Collections;
+public class Task {
+	 public static void show(Vector<Integer> v1) {
+    	 for(int j=0;j<v1.size();j++) {
+    		 System.out.print(v1.get(j)+" ");
+    	 }
+    	 System.out.println();
+     }
+    public static int  lookArray(Vector<Integer> v1) {
+ 		
+ 		int count = 0;
+ 		
+ 		int pop = v1.get(0);
+ 		
+ 		for (int j = 0; j < v1.size()-1; j++) {
+ 			if (v1.get(j) > v1.get(j+1)) {
+ 			
+ 				if (pop != v1.get(j)) {
+ 		
+ 					return 0;
+ 				}
+ 			}
+ 		}
+ 		if (count == 0) {
+ 			return 1;
+ 		} else {
+ 			return - 1;
+ 		}
+ 	}
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		Vector<Integer> v1 = new Vector<Integer>();
+    	 for(int i=0;i<arr.length;i++) {
+    		 v1.add(i, arr[i]);
+    	 }
+   //sort部分
+    	 
+    	 int x=lookArray(v1);
+        if(x==1){
+        show(v1);
+        }
+    	 while(x!=1) {
+    		 for(int i=0;i<v1.size()-1;i++) {
+    	    		int j=i+1;
+    	    		if(v1.get(i)>v1.get(j)) {
+    	    			Collections.swap(v1, i, j);
+                        show(v1);
+    	    		}
+    	    	 }
+    		 x=lookArray(v1);
+    		if(x==1) {break;}
+    		 for(int i=v1.size()-1;i>0;i--) {
+ 	    		int j=i-1;
+ 	    		if(v1.get(i)<v1.get(j)) {
+ 	    			Collections.swap(v1, i, j);
+                    show(v1);
+ 	    		}
+ 	    	 }
+    		 x=lookArray(v1);
+    		 
+    	 }
+		
+		/********* End *********/
+	}
+}

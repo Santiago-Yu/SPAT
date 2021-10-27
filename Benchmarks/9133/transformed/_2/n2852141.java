@@ -1,0 +1,19 @@
+class n2852141 {
+	public static void copyFile(String input, String output) {
+		try {
+			File inputFile = new File(input);
+			File outputFile = new File(output);
+			FileReader in;
+			in = new FileReader(inputFile);
+			FileWriter out = new FileWriter(outputFile);
+			int c;
+			for (; (c = in.read()) != -1;)
+				out.write(c);
+			in.close();
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}

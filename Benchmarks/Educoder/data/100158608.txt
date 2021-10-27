@@ -1,0 +1,45 @@
+#include<stdio.h>
+#include<string.h>
+char a[102];
+char b[102];
+int m,n;
+int cal(int x,int y)
+{
+	int i,j,k;
+	i=x;
+	j=y;
+	int num=0;
+	while(a[i]==b[j])
+	{
+		if(i>=m||j>=n) break;
+		num++;
+		i++;
+		j++;
+		
+	}
+	return num;
+}
+int main()
+{
+	int i,j,k;	
+	scanf("%s",a);
+	scanf(" %s",b);
+	m=strlen(a);
+	n=strlen(b);
+	int max=0;
+	for(i=0;i<m;i++)
+	{
+		for(j=0;j<n;j++)
+		{
+			if(a[i]==b[j])
+			{
+			    if(cal(i,j)>max)
+				{
+					max=cal(i,j);
+				}	
+			}
+		}
+	}
+	printf("%d",max);
+	return 0;
+}

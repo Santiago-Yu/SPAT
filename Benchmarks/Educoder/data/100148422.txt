@@ -1,0 +1,36 @@
+package step2;
+/*
+ * 多个窗口同时卖出20张票
+ */
+public class Station extends Thread{
+	public Station() {
+		
+	}
+	
+	static int tickers=20;
+	static Object ob="aa";//指定一个共用对象
+	
+	//重写run操作，实现卖票
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		super.run();
+		while(tickers>=1){
+			synchronized (ob) {
+				if(tickers>=1){
+					System.out.println("卖出了第"+tickers+"张票");
+					tickers--;
+				}else{
+					System.out.println("票卖完了");
+				}
+			}
+			try {
+				sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}}
+	
+	

@@ -1,0 +1,45 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       int[] lost={0,0,0};
+        int a=1,b=0;
+        java.util.Arrays.sort(nums);
+        for (int j=0;j<nums.length;j++){
+                if (a!=nums[j]) {
+                    lost[b++] = a;
+                    if (b>2)
+                        break;
+                    a++;
+                }
+            if (a!=nums[j]) {
+                lost[b++] = a;
+                if (b>2)
+                    break;
+                a++;
+            }
+            if (a!=nums[j]) {
+                lost[b++] = a;
+                if (b>2)
+                    break;
+                a++;
+            }
+            a++;
+        }
+        String result=((lost[0]%11)+""+lost[1]);
+        result=Integer.parseInt(result)%11+"";
+        result=(result+lost[2]);
+        result=Integer.parseInt(result)%11+"";
+        return Integer.parseInt(result);
+
+
+
+
+    
+	
+	}
+
+	/********* End *********/
+}

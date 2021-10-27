@@ -1,0 +1,41 @@
+package step2;
+import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+	    public Document getDoc1(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File(filePath);
+        Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+        return doc;
+        /**********   End   **********/
+    }
+    public Document getDoc2(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File(filePath);
+        Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+        return doc;
+        /**********   End   **********/
+    }
+    public Elements getLinks(Document doc){
+        /**********   Begin   **********/
+        return doc.select("link[href]");
+        /**********   End   **********/
+    }
+    public Element getDiv(Document doc){
+        /**********   Begin   **********/
+        Element element = doc.getElementsByClass("pop_attention").first();
+        //Element element = doc.select("div.pop_attention").first();
+        return element;
+        /**********   End   **********/
+    }
+    public Elements getI(Document doc){
+        /**********   Begin   **********/
+        return doc.select("li > i");
+        /**********   End   **********/
+    }
+}

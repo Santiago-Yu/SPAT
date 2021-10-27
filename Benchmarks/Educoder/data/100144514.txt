@@ -1,0 +1,18 @@
+package step1;
+
+public class Task {
+	public String inversion(String str){
+		/********* Begin *********/
+		StringBuffer rstr= new StringBuffer();
+		java.util.Stack<Character> s = new java.util.Stack<Character>();
+		for (int i = 0; i  < str.length(); i++) {
+			s.add(str.charAt(i));
+		}
+		for (int i = 0; i < str.length(); i++) {
+			rstr.append(s.pop());
+		}
+		return rstr.toString();
+		
+		/********* End *********/
+	}
+}

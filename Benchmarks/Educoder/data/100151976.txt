@@ -1,0 +1,48 @@
+package step3;
+import java.util.Scanner;
+
+public class TestJava10_4 {
+	public static void main(String[] args) {
+		/******Begin******/
+		int year = -1;
+		int month = -1;
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("请输入年份：");
+		year = scanner.nextInt();
+		System.out.println("请输入月份：");
+		month = scanner.nextInt();
+ 		System.out.println(year + "年" + month + "月的天数是：" + days(year, month) + "天");
+    }
+ 
+    public static int days(int year, int month) {
+	int days = 0;
+	if (month != 2) {
+	    switch (month) {
+	    case 1:
+	    case 3:
+	    case 5:
+	    case 7:
+	    case 8:
+	    case 10:
+	    case 12:
+		days = 31;
+		break;
+	    case 4:
+	    case 6:
+	    case 9:
+	    case 11:
+		days = 30;
+ 
+	    }
+	} else {
+	    //闰年
+	    if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0)
+		days = 28;
+	    else
+		days = 29;
+ 
+	}
+	return days;
+		/******End******/
+	}
+}

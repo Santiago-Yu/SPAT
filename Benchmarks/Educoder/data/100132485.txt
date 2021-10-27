@@ -1,0 +1,34 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+        if(length == width){
+        	System.out.println(length);
+            System.out.println("1");
+        }else{
+            int count = 2;
+        	int areaR = length * width;
+            int areaS = 0;
+        	for(int i=length>width? length:width ; i>0; i--){
+                areaS = i*i*count;
+        		while(areaS <= areaR){
+                	if((areaS == areaR) && (length % i == 0) && (width % i == 0) ){
+                    	System.out.println(i+"\n"+count);
+                        return;
+                    }
+                    count ++;
+                    areaS = i*i*count;
+                }
+                    
+        	}
+        }
+		/********** END **********/
+	}
+}

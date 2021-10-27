@@ -1,0 +1,29 @@
+package step2;
+
+import java.util.Arrays;
+
+public class Task {
+	
+	public int getTheWay(int num,int bagCapacity,long[] snacks){
+        
+        Arrays.sort(snacks);
+        
+        if(bagCapacity < 0)
+        {
+        	return 0;
+        }
+        if(num == 1)
+        {
+        	if(snacks[num - 1] <= bagCapacity)
+            {
+            	return 2;
+            }
+            else
+            {
+            	return 1;
+            }
+        }
+        
+        return getTheWay(num - 1, bagCapacity, snacks) + getTheWay(num - 1, bagCapacity - (int)snacks[num - 1], snacks);
+	}
+}

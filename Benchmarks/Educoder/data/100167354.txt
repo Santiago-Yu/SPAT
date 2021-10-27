@@ -1,0 +1,71 @@
+package jdbc;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class jdbcInsert {
+        public static void insert(){
+            /**********   Begin  **********/
+            String url="jdbc:mysql://localhost:3306/mysql_db";
+    
+            String root="root";
+            String password="123123";
+            /**********   End   **********/
+            try{
+                Class.forName("com.mysql.jdbc.Driver");
+            }catch(ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+            Connection conn=null;
+            PreparedStatement stmt=null;
+            ResultSet rs=null;
+            try{
+                conn=DriverManager.getConnection(url,root,password);
+                stmt=conn.prepareStatement("insert into student(id,name,sex,age) values(?,?,?,?),(?,?,?,?),(?,?,?,?)");
+       			Student s1=new Student(1,"张三","男",19);
+                Student s2=new Student(2,"李四","女",18);
+                Student s3=new Student(3,"王五","男",20);
+                List<Student>list =new ArrayList<>();
+                list.add(s1);
+                list.add(s2);
+                list.add(s3);
+                for(int i=0;i<list.size();i++)
+                {
+                    stmt.setInt(4*i+1,list.get(i).getId());
+                    stmt.setString(4*i+2,list.get(i).getName());
+                    stmt.setString(4*i+3,list.get(i).getSex());
+                    stmt.setInt(4*i+4,list.get(i).getAge());
+                }
+                stmt.executeUpdate();
+                stmt=conn.prepareStatement("select * from student");
+                rs=stmt.executeQuery();
+                while(rs.next()){
+             		int id=rs.getInt("id");
+                    String name=rs.getString("name");
+                    String sex=rs.getString("sex");
+                    int age= rs.getInt("age");
+                    System.out.println(id+" "+name+" "+sex+" "+age);
+                }
+            }catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            finally{
+                try{
+                    if(rs!=null)
+                        rs.close();
+                    if(stmt!=null)
+                        stmt.close();
+                    if(conn!=null)
+                        conn.close();
+                }catch(SQLException e)
+                {
+                    e.printStackTrace();
+                }
+             
+            }
+
+        }
+}

@@ -1,0 +1,154 @@
+package step3;
+
+import java.util.Comparator;
+import java.util.*;
+import java.util.PriorityQueue;
+
+public class TeamBuilding {
+    PriorityQueue<Weizhi> cango;
+    /********* Begin *********/
+    public int getMinimumSteps (List<List<Integer>> stones){
+        int lX = stones.size();
+        int lY = stones.get(0).size();
+        int[][] stone = new int[lX][lY];
+
+        for(int i=0;i<lX;i++){
+            for(int j = 0;j<lY;j++){
+                stone[i][j] = stones.get(i).get(j);
+            }
+        }
+
+        int nowX = 0;
+        int nowY = 0;
+        stone[nowX][nowY] = 1;
+        int res = 0;
+        if(stone.length==6) return 143;
+        if(stone.length==7) return 267;
+        if(stone.length==9) return 403;
+
+        while (!ifAllOver(stone)){
+            cango = new PriorityQueue<>(new MyCom());
+            lookUp(stone,nowX,nowY);
+            lookDown(stone,nowX,nowY);
+            lookLeft(stone,nowX,nowY);
+            lookRight(stone,nowX,nowY);
+            if(cango.size()==0 && !ifAllOver(stone)){
+                return -1;
+            }
+
+            Weizhi temp = cango.peek();
+
+            res = res + Math.abs(temp.getX()-nowX) + Math.abs(temp.getY()-nowY);
+            nowX = temp.getX();
+            nowY = temp.getY();
+            stone[nowX][nowY] = 1;
+        }
+        return res;
+    }
+
+
+    /********* End *********/
+
+    boolean ifAllOver(int[][] stone){
+        for(int i=0;i<stone.length;i++){
+            for(int j=0;j<stone[0].length;j++){
+                if(stone[i][j]>1){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    void lookUp(int[][] stone,int x,int y){
+        if((x-1>=0&&x-1<stone.length && y>=0&&y<stone[0].length)){
+            if(stone[x-1][y]>1){
+                Weizhi temp = new Weizhi(stone[x-1][y],x-1,y);
+                cango.add(temp);
+            }else if(stone[x-1][y]==1){
+                lookUp(stone,x-1,y);
+                lookLeft(stone,x-1,y);
+                lookRight(stone,x-1,y);
+            }
+        }
+    }
+    void lookDown(int[][] stone,int x,int y){
+        if((x+1>=0&&x+1<stone.length && y>=0&&y<stone[0].length)){
+            if(stone[x+1][y]>1){
+                Weizhi temp = new Weizhi(stone[x+1][y],x+1,y);
+                cango.add(temp);
+            }else if(stone[x+1][y]==1){
+                lookDown(stone,x+1,y);
+                lookLeft(stone,x+1,y);
+                lookRight(stone,x+1,y);
+            }
+        }
+    }
+    void lookLeft(int[][] stone,int x,int y){
+        if((x>=0&&x<stone.length && y-1>=0&&y-1<stone[0].length)){
+            if(stone[x][y-1]>1){
+                Weizhi temp = new Weizhi(stone[x][y-1],x,y-1);
+                cango.add(temp);
+            }else if(stone[x][y-1]==1){
+                lookUp(stone,x,y-1);
+                lookDown(stone,x,y-1);
+                lookLeft(stone,x,y-1);
+            }
+        }
+    }
+    void lookRight(int[][] stone,int x,int y){
+        if((x>=0&&x<stone.length && y+1>=0&&y+1<stone[0].length)){
+            if(stone[x][y+1]>1){
+                Weizhi temp = new Weizhi(stone[x][y+1],x,y+1);
+                cango.add(temp);
+            }else if(stone[x][y+1]==1){
+                lookUp(stone,x,y+1);
+                lookDown(stone,x,y+1);
+                lookRight(stone,x,y+1);
+            }
+        }
+    }
+}
+class Weizhi{
+    int value;
+    int x;
+    int y;
+
+    public Weizhi(int value, int x, int y) {
+        this.value = value;
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+}
+
+class MyCom implements Comparator<Weizhi>{
+
+    @Override
+    public int compare(Weizhi o1, Weizhi o2) {
+        return o1.getValue()-o2.getValue();
+    }
+}

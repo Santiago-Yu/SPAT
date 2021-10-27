@@ -1,0 +1,34 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+/*        String data=scanner.next();
+        String name=scanner.next();
+        System.out.println(data.indexOf("李四"));
+        String data1=data.substring(3);
+        System.out.println(data1.indexOf("李四")+3);
+        String data2=data.substring(9);
+        System.out.println(data2.indexOf("李四")+9);
+        String data3=data.substring(18);
+        System.out.println(data3.indexOf("李四")+18);
+        String data4=data.substring(36);
+        System.out.println(data4.indexOf("李四")+36);
+        */
+        String data = scanner.nextLine();
+        String name = scanner.nextLine();
+        int count=0;
+        while(data.indexOf(name)!=-1){
+            System.out.println(data.indexOf(name)+count);
+            count=count+data.indexOf(name)+name.length();
+            data= data.substring(data.indexOf(name)+name.length());
+            
+          
+        }
+        
+        /********** End *********/
+    }
+}

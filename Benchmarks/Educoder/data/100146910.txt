@@ -1,0 +1,28 @@
+package step1;
+import java.math.BigInteger;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+		int[] mark = new int[nums.length + 4];
+		mark[0]=1;
+		for (int i = 0; i < nums.length; i++) {
+			int flag = nums[i];
+			mark[flag] = 1;
+		}
+		StringBuffer stringBuffer =new StringBuffer();
+		for (int i = 0; i < mark.length; i++) {
+			if (mark[i] != 1 ) {
+				stringBuffer.append(i);
+			}
+		}
+		BigInteger total = new BigInteger(stringBuffer.toString());;
+		BigInteger test =total.mod(new BigInteger("11"));
+		return test.intValue();
+
+	}
+
+	/********* End *********/
+}

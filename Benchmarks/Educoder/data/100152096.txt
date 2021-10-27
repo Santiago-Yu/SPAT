@@ -1,0 +1,23 @@
+package step1;
+
+public class Task {
+
+	public double solve(double x1, double y1, double r1,double x2, double y2, double r2) {
+		  /********* Begin *********/
+        double d=Math.sqrt((Math.abs(x1-x2))*(Math.abs(x1-x2))+(Math.abs(y1-y2))*(Math.abs(y1-y2)));
+        double area=0;           
+        d=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)); //求圆心距
+        if(d>=r1+r2){  
+            area=Math.PI*r1*r1+Math.PI*r2*r2; //相离或者外切
+        }
+       
+        else
+        { 
+            double ang1=Math.acos((r1*r1+d*d-r2*r2)/(2*r1*d));
+            double ang2=Math.acos((r2*r2+d*d-r1*r1)/(2*r2*d));
+            area=Math.PI*r1*r1+Math.PI*r2*r2-(ang1*r1*r1 + ang2*r2*r2 - r1*d*Math.sin(ang1));
+
+        }
+        return area;
+    }
+}

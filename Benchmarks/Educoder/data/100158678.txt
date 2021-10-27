@@ -1,0 +1,36 @@
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+int main()
+{
+	int a[1000];
+	int i=0,j,k,l,m,n,T,temp,sum=0;
+	int x,y,z;
+	int dp[100];
+	char c = 'c';
+    while(c!='\n'){
+		i+=1;
+        scanf("%d",&a[i]);
+        c = getchar();
+    }
+    scanf("%d",&T);
+    for(k=1;k<=i;k++){
+    	for(l=1;l<=i-k;l++){
+    		if(a[l]>a[l+1]){
+    			temp=a[l];
+    			a[l]=a[l+1];
+    			a[l+1]=temp;
+    		}
+    	}
+    }
+    for(x=1;x<=i-2;x++){
+    	for(y=x+1;y<=i-1;y++){
+    		for(z=y+1;z<=i;z++){
+    			if(a[x]+a[y]+a[z]<T)
+    				sum+=1;
+    		}
+    	}
+    }
+    cout << sum;
+    return 0;
+}

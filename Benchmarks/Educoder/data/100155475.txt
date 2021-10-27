@@ -1,0 +1,32 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    int boxType;
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+    public Box(int x){boxType=x;}
+
+    public double volume() {
+        double volume=0;
+    switch(boxType){
+        case(1):volume=width*height*depth;break;
+        case(2):volume=3.14*width*width*height;break;
+    }
+        return volume;
+        //TODO your code
+    }
+
+}

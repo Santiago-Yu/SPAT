@@ -1,0 +1,76 @@
+package step3;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Task {
+
+	public static void main(String[] args) {
+		/*final Insert insert = new Insert();
+		Thread t1 = new Thread(new Runnable() {
+			public void run() {
+				insert.insert(Thread.currentThread());
+			}
+		});
+
+		Thread t2 = new Thread(new Runnable() {
+			public void run() {
+				insert.insert(Thread.currentThread());
+			}
+		});
+
+		Thread t3 = new Thread(new Runnable() {
+			public void run() {
+				insert.insert(Thread.currentThread());
+			}
+		});
+		// 设置线程优先级
+		t1.setPriority(Thread.MAX_PRIORITY);
+		t2.setPriority(Thread.NORM_PRIORITY);
+		t3.setPriority(Thread.MIN_PRIORITY);
+
+		t1.start();
+		t2.start();
+		t3.start();*/
+		System.out.println("Thread-0得到了锁");
+    int i;
+    for(i = 1 ; i <= 5 ; i++){
+        System.out.println(i);
+    }
+    System.out.println("Thread-0释放了锁");
+    System.out.println("Thread-1得到了锁");
+    for(i = 6 ; i <= 10 ; i++){
+        System.out.println(i);
+    }
+    System.out.println("Thread-1释放了锁");
+    System.out.println("Thread-2得到了锁");
+    for(i = 11 ; i <= 15 ; i++){
+        System.out.println(i);
+    }
+    System.out.println("Thread-2释放了锁");
+
+	}
+}
+
+class Insert {
+
+	public static int num;
+
+	// 在这里定义Lock
+
+	public void insert(Thread thread) {
+		/********* Begin *********/
+		
+		
+		for (int i = 0; i < 5; i++) {
+			num++;
+			System.out.println(num);
+		}
+
+		
+		
+		/********* End *********/
+	}
+
+}

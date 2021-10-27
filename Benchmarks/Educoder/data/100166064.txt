@@ -1,0 +1,39 @@
+package step1;
+
+public class Person {
+    
+	private String name;
+	private String num;
+	private Date birthday;
+	public Person() {
+		birthday = new Date();
+	}
+	public Person(String name,String number,Date birthday){
+		this.name = name;
+		this.num = number;
+		this.birthday = new Date();
+        this.birthday = birthday;
+	}
+	public Person(String name,String number,int year,int month,int day) {
+		this.name=name;
+		this.num=number;
+		birthday=new Date(year,month,day);
+	}
+	public void setinfo(String name,String num,int year,int month,int day) {
+		this.name=name;
+		this.num=num;
+		birthday=new Date(year,month,day);
+	}
+	public void setName(String name) {this.name=name;}
+	public void setNum(String num) {this.num=num;}
+	public void setBirthday(int year,int month,int day) {
+		birthday=new Date(year,month,day);
+	}
+	public String getName() {return name;}
+	public String getNum() {return num;}
+	public String getBirthday() {return birthday.toString();}
+	public String toString() {
+		return "name="+name+" number="+num+" birthday:"+birthday.toString();
+	}
+}
+

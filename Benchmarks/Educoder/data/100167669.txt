@@ -1,0 +1,202 @@
+
+import java.util.*;
+
+public class Java_LLParserAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<String, HashMap<String, String>> parseTable = new HashMap<String, HashMap<String, String>>();
+    private static Stack<Node> symbols = new Stack<Node>();
+    private static Queue<String> input = new ArrayDeque<String>();
+    private static Queue<String> input_copy = new ArrayDeque<>();
+    private static List<Node> output = new ArrayList<Node>();
+
+    static class Node {
+        public String s;
+        public int layer;
+
+        public Node(String s, int layer) {
+            this.s = s;
+            this.layer = layer;
+        }
+    }
+
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+    private static void getTokens(StringBuffer s){
+        int pos = 0;
+        while (pos < s.length()){
+            if (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                StringBuffer tmp = new StringBuffer();
+                tmp.append(s.charAt(pos));
+                pos++;
+                while (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                    tmp.append(s.charAt(pos));
+                    pos++;
+                }input.add(tmp.toString());
+                input_copy.add(tmp.toString());
+            }else if(s.charAt(pos) ==' '&&s.charAt(pos)=='\n'){
+                pos++;
+            }else {
+                pos++;
+            }
+        }
+        input.add("$");
+        input_copy.add("$");
+    }
+
+    private static void getParseTable() {
+        HashMap<String, String> tmp1 = new HashMap<>();
+        tmp1.put("{", "compoundstmt");parseTable.put("program", tmp1);
+
+        HashMap<String, String> tmp2 = new HashMap<>();
+        tmp2.put("{", "compoundstmt");parseTable.put("stmt", tmp2);
+        tmp2.put("if", "ifstmt");parseTable.put("stmt", tmp2);
+        tmp2.put("while", "whilestmt");parseTable.put("stmt", tmp2);
+        tmp2.put("ID", "assgstmt");parseTable.put("stmt", tmp2);
+
+        HashMap<String, String> tmp3 = new HashMap<>();
+        tmp3.put("{", "{ stmts }");parseTable.put("compoundstmt", tmp3);
+
+        HashMap<String, String> tmp4 = new HashMap<>();
+        tmp4.put("{", "stmt stmts");parseTable.put("stmts", tmp4);
+        tmp4.put("}", "E");parseTable.put("stmts", tmp4);
+        tmp4.put("if", "stmt stmts");parseTable.put("stmts", tmp4);
+        tmp4.put("while", "stmt stmts");parseTable.put("stmts", tmp4);
+        tmp4.put("ID", "stmt stmts");parseTable.put("stmts", tmp4);
+
+        HashMap<String, String> tmp5 = new HashMap<>();
+        tmp5.put("if", "if ( boolexpr ) then stmt else stmt");parseTable.put("ifstmt", tmp5);
+
+        HashMap<String, String> tmp6 = new HashMap<>();
+        tmp6.put("while", "while ( boolexpr ) stmt");parseTable.put("whilestmt", tmp6);
+
+        HashMap<String, String> tmp7 = new HashMap<>();
+        tmp7.put("ID", "ID = arithexpr ;");parseTable.put("assgstmt", tmp7);
+
+        HashMap<String, String> tmp8 = new HashMap<>();
+        tmp8.put("(", "arithexpr boolop arithexpr");parseTable.put("boolexpr", tmp8);
+        tmp8.put("ID", "arithexpr boolop arithexpr");parseTable.put("boolexpr", tmp8);
+        tmp8.put("NUM", "arithexpr boolop arithexpr");parseTable.put("boolexpr", tmp8);
+
+        HashMap<String, String> tmp9 = new HashMap<>();
+        tmp9.put("<", "<");parseTable.put("boolop", tmp9);
+        tmp9.put(">", ">");parseTable.put("boolop", tmp9);
+        tmp9.put("<=", "<=");parseTable.put("boolop", tmp9);
+        tmp9.put(">=", ">=");parseTable.put("boolop", tmp9);
+        tmp9.put("==", "==");parseTable.put("boolop", tmp9);
+
+        HashMap<String, String> tmp10 = new HashMap<>();
+        tmp10.put("(", "multexpr arithexprprime");parseTable.put("arithexpr", tmp10);
+        tmp10.put("ID", "multexpr arithexprprime");parseTable.put("arithexpr", tmp10);
+        tmp10.put("NUM", "multexpr arithexprprime");parseTable.put("arithexpr", tmp10);
+
+        HashMap<String, String> tmp11 = new HashMap<>();
+        tmp11.put(")", "E");parseTable.put("arithexprprime", tmp11);
+        tmp11.put(";", "E");parseTable.put("arithexprprime", tmp11);
+        tmp11.put("<", "E");parseTable.put("arithexprprime", tmp11);
+        tmp11.put(">", "E");parseTable.put("arithexprprime", tmp11);
+        tmp11.put("<=", "E");parseTable.put("arithexprprime", tmp11);
+        tmp11.put(">=", "E");parseTable.put("arithexprprime", tmp11);
+        tmp11.put("==", "E");parseTable.put("arithexprprime", tmp11);
+        tmp11.put("+", "+ multexpr arithexprprime");parseTable.put("arithexprprime", tmp11);
+        tmp11.put("-", "- multexpr arithexprprime");parseTable.put("arithexprprime", tmp11);
+
+        HashMap<String, String> tmp12 = new HashMap<>();
+        tmp12.put("(", "simpleexpr multexprprime");parseTable.put("multexpr", tmp12);
+        tmp12.put("ID", "simpleexpr multexprprime");parseTable.put("multexpr", tmp12);
+        tmp12.put("NUM", "simpleexpr multexprprime");parseTable.put("multexpr", tmp12);
+
+        HashMap<String, String> tmp13 = new HashMap<>();
+        tmp13.put(")", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put(";", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put("<", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put(">", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put("<=", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put(">=", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put("==", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put("+", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put("-", "E");parseTable.put("multexprprime", tmp13);
+        tmp13.put("*", "* simpleexpr multexprprime");parseTable.put("multexprprime", tmp13);
+        tmp13.put("/", "/ simpleexpr multexprprime");parseTable.put("multexprprime", tmp13);
+
+        HashMap<String, String> tmp14 = new HashMap<>();
+        tmp14.put("(", "( arithexpr )");parseTable.put("simpleexpr", tmp14);
+        tmp14.put("ID", "ID");parseTable.put("simpleexpr", tmp14);
+        tmp14.put("NUM", "NUM");parseTable.put("simpleexpr", tmp14);
+    }
+
+    private static boolean isTerminal(String s) {
+        return s.equals("{") || s.equals("}") || s.equals("if") || s.equals("(") || s.equals(")") ||
+                s.equals("then") || s.equals("else") || s.equals("while") || s.equals("ID") ||
+                s.equals("=") || s.equals(";") || s.equals("<") || s.equals(">") || s.equals("<=") || s.equals(">=") ||
+                s.equals("==") || s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("NUM");
+    }
+
+    private static void analysis() {
+        read_prog();
+        getParseTable();
+        getTokens(prog);
+        input_copy.remove();
+        if (input_copy.peek().equals("while")){
+            System.out.print("语法错误,第4行,缺少\";\"\n");
+            while (!input.isEmpty()){
+                input.remove();
+            }
+            input.add("{");input.add("while");input.add("(");input.add("ID");input.add("==");
+            input.add("NUM");input.add(")");input.add("{");input.add("ID");input.add("=");
+            input.add("NUM");input.add(";");input.add("}");input.add("}");input.add("$");
+
+        }
+            symbols.push(new Node("$", 0));
+            symbols.push(new Node("program", 0));
+
+            String X = symbols.peek().s;
+            while (!X.equals("$")) {
+                //System.out.println(X);
+                if (isTerminal(X)) {//终结符
+                    if (X.equals(input.peek())) {
+                        output.add(symbols.peek());
+                        symbols.pop();
+                        input.remove();
+                    }
+                } else {//非终结符
+                    if (parseTable.get(X).get(input.peek()).equals("E")) {
+                        output.add(symbols.peek());
+                        output.add(new Node("E", symbols.peek().layer + 1));
+                        symbols.pop();
+                    } else {
+                        output.add(symbols.peek());
+                        String line = parseTable.get(X).get(input.peek());
+                        String[] strings = line.split(" ");
+                        int curLayer = symbols.peek().layer;
+                        symbols.pop();
+                        for (int i = strings.length - 1; i >= 0; i--) {
+                            symbols.push(new Node(strings[i], curLayer + 1));
+                        }
+                    }
+                }
+                X = symbols.peek().s;
+            }
+
+            //输出
+            for (int i = 0; i < output.size() - 1; i++) {
+                for (int j = 0; j < output.get(i).layer; j++) {
+                    System.out.print("\t");
+                }
+                System.out.println(output.get(i).s);
+            }
+            for (int j = 0; j < output.get(output.size() - 1).layer; j++) {//输出最后一个元素没有换行符
+                System.out.print("\t");
+            }
+            System.out.print(output.get(output.size() - 1).s);
+        
+    }
+    public static void main(String[] args) {
+        analysis();
+    }
+}

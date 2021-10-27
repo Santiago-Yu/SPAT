@@ -1,0 +1,40 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+		public static void showDirStructure(File file) {
+		if (file.isDirectory()) {  //判断是否是文件夹
+			System.out.println("+--" + file.getName());
+		}
+		int Blank = 2;   //下级文件或文件夹前有俩个空格
+		printFile(file, Blank);
+	}
+	public static void printFile(File file, int Blank ) {
+		File[] files = file.listFiles();    //获取该目录下所有文件和目录
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory()) {
+				for (int k = 0; k < Blank; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("+--" + files[i].getName());
+				printFile(files[i], Blank+2);//若files[i]是文件夹，显示file[i]目录下的所有文件和目录
+											//通过迭代不断调用文件,用blank控制前面的空格数   
+			} else {
+				String name = files[i].getName();
+				String suffix = name.substring(name.lastIndexOf("."),name.length());
+				if(suffix.equals(".jpg")|suffix.equals(".png")|suffix.equals(".bmp")) {
+					for (int k = 0; k < Blank; k++) {
+						System.out.print(" ");
+					}
+					System.out.println("--" + files[i].getName());
+				}
+			}
+		}
+	}
+	
+
+	/********** END **********/
+}

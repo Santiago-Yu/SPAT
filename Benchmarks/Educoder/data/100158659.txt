@@ -1,0 +1,23 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int a[50];
+    int i,num,ans;
+    int j,k,l;
+    cin>>a[0];
+    i=1;
+    ans=0;
+    while(getchar()!='\n')
+    {
+        cin>>a[i];
+        i++;
+    }
+    cin>>num;
+    for(j=0;j<=i-3;j++)
+        for(k=j+1;k<=i-2;k++)
+            for(l=k+1;l<=i-1;l++)
+                if(a[l]+a[j]+a[k]<num)
+                         ans++;
+    cout<<ans;
+}

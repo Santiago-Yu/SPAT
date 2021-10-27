@@ -1,0 +1,80 @@
+package step4;
+
+import java.util.*;
+
+public class ShortestPath {
+    private int V;//顶点数
+    private int E;//边数
+    private int[] dist;
+    private ArrayList<Integer>[] adj;//邻接表
+    private int[][] weight;//权重
+
+
+    public ShortestPath(int v, int e) {
+        V = v;
+        E = e;
+        dist = new int[V + 1];
+        adj = new ArrayList[V + 1];
+        weight = new int[V + 1][V + 1];
+        for (int i = 0; i <= this.V; i++) {
+            adj[i] = new ArrayList<Integer>();
+        }
+    }
+
+    public void addEdge(int u, int v, int w) {
+        adj[u].add(v);
+        adj[v].add(u);
+        weight[u][v] = weight[v][u] = w;
+    }
+
+    public int[] Paths(int source) {
+        /********** Begin *********/
+                Queue<Integer> Q = new LinkedList<Integer>();
+        dist[source] = 0;
+        for (int i = 1; i <= V; i++) {
+            if (i != source) {
+                dist[i] = Integer.MAX_VALUE;
+            }
+            Q.offer(i);
+        }
+        while (!Q.isEmpty()) {
+            int minV = Integer.MAX_VALUE;
+            int v = source;
+            for (int i = 0; i < Q.size(); i++) {
+                int index = ((LinkedList<Integer>) Q).get(i);
+                if (dist[index] < minV) {
+                    minV = dist[index];
+                    v = index;
+                }
+            }
+            Q.poll();
+            Q.remove(v);
+            for (int u : adj[v]) {
+                int alt = dist[v] + weight[v][u];
+                if (alt < dist[u]) {
+                    dist[u] = alt;
+                }
+            }
+        }
+        return dist;
+
+
+        /********** End *********/
+    }
+
+    /**
+     * 打印源点到所有顶点的距离，INF为无穷大
+     *
+     * @param dist
+     */
+    public void print(int[] dist) {
+        for (int i = 1; i <= V; i++) {
+            if (dist[i] == Integer.MAX_VALUE) {
+                System.out.print("INF ");
+            } else {
+                System.out.print(dist[i] + " ");
+            }
+        }
+    }
+
+}

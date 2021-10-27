@@ -1,0 +1,34 @@
+package step2;
+
+import java.util.Scanner;
+
+//输出等腰三角形
+public class TestJava20_3 {
+	
+	static final Scanner sc = new Scanner(System.in);
+
+	public void print() {
+		int m;
+		System.out.println("请输入等腰三角形的行数：");
+		m=sc.nextInt();    //m表示行数
+		/********* Start ********/
+		for(int i=m;i>0;i--){
+			// 每行的空格数为 rows-i个
+			for(int j=0;j<m-i;j++){
+				System.out.print(" ");
+			}
+			// 每行的符号个数为 i个或者 2*i-1个(i个为直角三角形,2*i-1个为等腰三角形)
+			for(int k=0;k<2*i-1;k++){
+				System.out.print("*");
+			}
+			// 打印完每行的空格和符号,进行换行
+		    System.out.println();
+		}
+		
+        
+        
+		
+		/********* End ********/
+	}
+
+}

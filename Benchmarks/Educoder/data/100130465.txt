@@ -1,0 +1,43 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+        /********** BEGIN **********/
+        if(n%2!=0){
+            //基数
+            //4/1+4/3+...+4/n
+            if(n==1){
+                System.out.println(4);
+                return;
+            }
+            double count=4;
+            double x=1;
+            while(n>x){
+                x+=2;
+                count=count+4/x;
+            }
+            System.out.println(count);
+            return;
+        }
+        //3/2+3/4+...+3/n
+        double count=0;
+        double x=0;
+        while(n>x){
+            x+=2;
+            count=count+3/x;
+        }
+        System.out.println(count);
+
+
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

@@ -1,0 +1,44 @@
+package step2;
+/*
+ * 输入：
+第一行为长方形的长m
+第二行为长方形的宽n
+ * 
+ * 要求：
+ * 不能有纸剩余；
+ * 所有的正方形大小必须相同；
+ * 确保前两个条件满足的情况下，使正方形的边长尽可能的大；
+ * 输出正方形的边长的最大值和正方形的个数。
+输出：
+第一行输出正方形边长最大值j
+第二行输出正方形个数k
+*/
+import java.util.Scanner;
+/*
+ * 第一步：判断出切割方式（求最大公约数）
+ * 第二步：求正方形的个数（将总面积处于一个正方形的个数）、
+ * 输出正方形的个数 与正方形的边长*/
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int bianchang = 0;
+		int geshu;
+		int m = length,n = width;
+		while(true) {
+			if ((length = length%width) == 0) {
+				bianchang = width;
+				break;
+			}
+			if ((width = width%length) == 0)  {
+				bianchang = length;
+				break;
+			}
+		}
+		geshu = m*n/bianchang/bianchang;
+		System.out.println(bianchang);
+		System.out.println(geshu);
+	}
+}

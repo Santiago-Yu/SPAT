@@ -1,0 +1,32 @@
+package step1;
+import java.util.*;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+      
+       	Arrays.sort(nums);
+        String t = "";
+        int count = 0;
+        for (int i = 1, j = 0; i <= nums.length + 3 && j < nums.length;) {
+            if (count == 3)
+                break;
+            if (nums[j] == i) {
+                i++;
+                j++;
+            } else {
+                t += i;
+                i++;
+                count++;
+            }
+        }
+        int end = nums[nums.length - 1] + 1;
+        for (int i = count; i < 3; i++) {
+            t += end++;
+        }
+        
+        return (int)(Long.valueOf(t) % 11);
+
+	/********* End *********/
+}
+}

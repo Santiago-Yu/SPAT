@@ -1,0 +1,51 @@
+package step1;
+import java.util.List;
+public class Task {
+
+     public static String solver(String s,int p,List<Operation> ops) {
+	        /**********   Begin  **********/
+		  StringBuffer buffer = new StringBuffer(s);
+	       for(Operation op : ops) {
+	        	//光标后面 插入 一段文本
+	        	if(op.t.equals("I")){
+	        		buffer.insert(p, op.s.length() <= 200000 ? op.s : op.s.substring(0, 200000));
+	        		p += op.s.length();
+	        	}
+	        	else if(op.t.equals("B") && p != 0) {
+	        		int l = op.l > 100000 ? 100000:op.l;
+	        		int size = (p-l) <=0?0:(p-l);
+	        		buffer.delete(size, p);
+	        		p =  size;
+	        	}
+	        	else if(op.t.equals("D") && buffer.length() > p) {
+	        		int l = op.l > 100000 ? 100000:op.l;
+	        		int endIndex = (p + l) >  buffer.length() ? buffer.length() : (p + l);
+	        		buffer.delete(p, endIndex);
+	        	}
+	        	else if(op.t.equals("L") && p != 0) {
+	        		int l = op.l > 100000 ? 100000:op.l;
+	        		int size = (p-l) <=0?0:(p-l);
+	        		p =  size;
+	        	}
+	        	else if(op.t.equals("R") && buffer.length() > p) {
+	        		int l = op.l > 100000 ? 100000:op.l;
+	        		int endIndex = (p + l) >  buffer.length() ? buffer.length()  : (p + l);
+	        		p = endIndex;
+	        	}
+	        }
+			
+	        return buffer.toString();	
+	        /**********   End  **********/
+	    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+     @Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return "{\"t\":\"" + t + "\",\"s\":\"" + s + "\",\"l\":\"" + l +"\"}" ;
+		}
+    }
+}
+

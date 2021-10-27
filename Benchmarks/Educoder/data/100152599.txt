@@ -1,0 +1,35 @@
+package step3;
+import java.util.Scanner;
+
+public class TestJava11_4 {
+	public static void main(String[] args) {
+		/******Begin******/
+		 Scanner sc=new Scanner(System.in);
+        int x;
+		System.out.println("请输入月份：");
+        x=sc.nextInt();
+        int y;
+        System.out.println("请输入订购机票的数量：");
+        y=sc.nextInt();
+        if(x>=7&&x<=9&&y>=20)
+        {
+            System.out.println("优惠率：15%");
+        }
+       else if(x>=7&&x<=9&&y<20)
+        {
+            System.out.println("优惠率：5%");
+       }
+      else  if(x>=1&&x<=5||x==10||x==11&&y>=20)
+      {
+            System.out.println("优惠率：30%");}
+      else  if(x>=1&&x<=5&&x==10&&x==11&&y<20)
+      {
+            System.out.println("优惠率：20%");
+      }
+        else{
+            System.out.println("优惠率：10%");
+        }
+		/******End******/	
+	}
+
+}

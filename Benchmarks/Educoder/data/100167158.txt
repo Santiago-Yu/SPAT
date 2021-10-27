@@ -1,0 +1,305 @@
+import java.util.Scanner;
+
+public class Java_LexAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static int count;
+    private static String KeyWord[]={
+            "auto","break","case","char","const","continue","default","do","double","else",
+            "enum","extern","float","for","goto","if","int","long","register","return",
+            "short","signed","sizeof","static","struct","switch","typedef","union","unsigned","void",
+            "volatile","while"
+    };
+    private static String Operator[]={
+            "-","--","-=","->","!","!=","%","%=","&","&&",
+            "&=","(",")","*","*=",",",".","/","/=",":",
+            ";","?","[","]","^","^=","{","|","||","|=",
+            "}","~","+","++","+=","<","<<","<<=","<=","=",
+            "==",">",">=",">>",">>=","\""
+    };
+
+    private static void read_prog()
+    {
+//        Scanner sc = new Scanner(System.in);
+//        while(sc.hasNextLine())
+//        {
+//            String str=sc.nextLine();
+//            if (str.equals("eof"))
+//                break;
+//            else
+//            {
+//                prog.append(str);
+//                prog.append("\n");
+//            }
+//        }
+
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+    }
+
+    Scanner sc = new Scanner(System.in);
+    //        while(sc.hasNextLine())
+//        {
+//            prog.append(sc.nextLine());
+//        }
+    //四种判断
+    private static boolean isNum(char ch){
+        boolean result=false;
+        if ((ch<='9')&&(ch>='0'))
+            result=true;
+        return result;
+    }
+
+    private static boolean isLetter(char ch){
+        boolean result=false;
+        if (((ch<='z')&&(ch>='a'))||((ch<='Z')&&(ch>='A')))
+            result=true;
+        return result;
+    }
+
+    private static int isKeyWord(String str){
+        int result=81;
+        for (int i=0;i<KeyWord.length;i++)
+        {
+            if (str.equals(KeyWord[i]))
+            {
+                result=i+1;
+                break;
+            }
+        }
+        return result;
+    }
+
+    private static int isSign(String str){
+        int result=0;
+        for (int i=0;i<Operator.length;i++)
+        {
+            if (str.equals(Operator[i]))
+            {
+                result=i+33;
+                break;
+            }
+        }
+        return result;
+    }
+
+    //输出
+    private static void output(String str,int code){
+        if (count!=1)
+            System.out.println();
+        System.out.print(count+": <"+str+","+code+">");
+        count++;
+    }
+
+    //初始分析入口
+    private static void analysis()
+    {
+        //初始化
+        count=1;
+        read_prog();
+
+        //开始分析
+        int position=0;
+        int strlen=prog.length();
+        String token="";
+        while (position<strlen)
+        {
+            //初始空格判断
+            if (prog.charAt(position)==' '||prog.charAt(position)=='\n'||prog.charAt(position)=='\t')
+            {
+                position++;
+                continue;
+            }
+
+            //注释判断
+            if (prog.charAt(position)=='/')
+            {
+                char next=prog.charAt(position+1);
+                if (next=='/')
+                {
+                    token+="//";
+                    int forward=2;
+                    while (((position+forward)<strlen-2)&&(prog.charAt(position+forward)!='\n')&&(prog.charAt(position+forward)!='\t'))
+                    {
+                        token+=prog.charAt(position+forward);
+                        forward++;
+                    }
+                    output(token,79);
+                    token="";
+                    position=position+forward;
+                }
+                else if (next=='*')
+                {
+                    token+="/*";
+                    int forward=2;
+                    while (((position+forward)<strlen-2))
+                    {
+                        if ((prog.charAt(position+forward)=='*')&&(prog.charAt(position+forward+1)=='/')) {
+                            token+="*/";
+                            break;
+                        }
+                        else
+                        {
+                            token += prog.charAt(position + forward);
+                            forward++;
+                        }
+                    }
+                    output(token,79);
+                    token="";
+                    position=position+forward+2;
+                }
+                else if (next=='=')
+                {
+                    output("/=",51);
+                    position+=2;
+                }
+                else
+                {
+                    output("/",50);
+                    position++;
+                }
+            }
+            if (position>=strlen)
+                break;
+
+            //常数判断
+            if (isNum(prog.charAt(position)))
+            {
+                token+=prog.charAt(position);
+                position++;
+                while ((position<strlen)&&(isNum(prog.charAt(position)))||prog.charAt(position)=='.')
+                {
+                    token+=prog.charAt(position);
+                    position++;
+                }
+                output(token,80);
+                token="";
+                continue;
+            }
+
+            //保留字判断
+            if (isLetter(prog.charAt(position)))
+            {
+                token+=prog.charAt(position);
+                position++;
+                boolean hasNum=false;
+                while ((position<strlen)&&((isLetter(prog.charAt(position)))||isNum(prog.charAt(position))))
+                {
+                    if (isNum(prog.charAt(position)))
+                        hasNum=true;
+                    token+=prog.charAt(position);
+                    position++;
+                }
+                if (!hasNum)
+                {
+                    int code=isKeyWord(token);
+                    output(token,code);
+                }
+                else
+                {
+                    output(token,81);
+                }
+                token="";
+                continue;
+            }
+
+            //符号判断
+            if ((!isNum(prog.charAt(position)))&&(!isLetter(prog.charAt(position)))&&prog.charAt(position)!=' '&&prog.charAt(position)!='\n'&&prog.charAt(position)!='\t')
+            {
+                char sign=prog.charAt(position);
+                //()
+                if (sign=='(')
+                {
+                    output("(",44);
+                    position++;
+                }
+                else if (sign==')')
+                {
+                    output(")",45);
+                    position++;
+                }
+                //;
+                else if (sign==';')
+                {
+                    output(";",53);
+                    position++;
+                }
+                //{}
+                else if (sign=='{')
+                {
+                    output("{",59);
+                    position++;
+                }
+                else if (sign=='}')
+                {
+                    output("}",63);
+                    position++;
+                }
+                //[]
+                else if (sign=='[')
+                {
+                    output("[",55);
+                    position++;
+                }
+                else if (sign==']')
+                {
+                    output("]",56);
+                    position++;
+                }
+                //\
+                else if (sign=='\"')
+                {
+                    output("\"",78);
+                    position++;
+                }
+
+                //%c、d、o、x、u、s、l
+                else if (sign=='%')
+                {
+                    char next=prog.charAt(position+1);
+                    if (next=='=')
+                    {
+                        output("%=",40);
+                    }
+                    else if (next=='d'||next=='o'||next=='x'||next=='u'||next=='c'||next=='s'||next=='l')
+                    {
+                        String tmp="%"+next;
+                        output(tmp,81);
+                        position++;
+                    }
+                    else
+                    {
+                        output("%",39);
+                    }
+                    position++;
+                }
+                else {
+                    token+=sign;
+                    position++;
+                    while ((position<strlen)&&(!isNum(prog.charAt(position)))
+                            && (!isLetter(prog.charAt(position))) && prog.charAt(position) != ' '
+                            && prog.charAt(position) != '\n'&&prog.charAt(position)!='/'
+                            &&prog.charAt(position)!='\t'&&prog.charAt(position)!='\"') {
+                        token += prog.charAt(position);
+                        position++;
+                    }
+                    int code = isSign(token);
+                    output(token, code);
+                    token = "";
+                    continue;
+                }
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

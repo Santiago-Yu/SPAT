@@ -1,0 +1,46 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+  for(int l=0;l<10;l++)
+        	record[l]=scanner.nextInt();
+        int num=0;
+        int flag=1;
+        int t;
+        for(int j=0;j<10;j++){
+        	flag=1;
+            for(int k=j+1;k<10;k++){
+            	if(record[j]==record[k])
+            		flag=0;
+            }
+            if(flag==1){
+        		recordRecovery[num]=record[j];
+        		num++;
+        	}
+        }
+        for(int l=num-1;l>0;l--)
+        	for(int k=0;k<l;k++){
+        		if(recordRecovery[k]>recordRecovery[k+1]){
+        			t=recordRecovery[k];
+        			recordRecovery[k]=recordRecovery[k+1];
+        			recordRecovery[k+1]=t;
+        		}
+        	}
+        	
+
+        /********** End *********/
+        for (int i = 0; i < num; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i != num - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

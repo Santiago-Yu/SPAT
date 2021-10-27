@@ -1,0 +1,40 @@
+class n7099534 {
+	private static String genRandomGUID(boolean secure) {
+		String valueBeforeMD5 = "";
+		MessageDigest md5 = null;
+		String valueAfterMD5 = "";
+		try {
+			md5 = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			System.out.println("Error: " + e);
+			return valueBeforeMD5;
+		}
+		StringBuffer sbValueBeforeMD5 = new StringBuffer();
+		long rand = 0;
+		long time = System.currentTimeMillis();
+		if (secure) {
+			rand = mySecureRand.nextLong();
+		} else {
+			rand = myRand.nextLong();
+		}
+		sbValueBeforeMD5.append(s_id);
+		sbValueBeforeMD5.append(":");
+		sbValueBeforeMD5.append(Long.toString(time));
+		sbValueBeforeMD5.append(":");
+		sbValueBeforeMD5.append(Long.toString(rand));
+		valueBeforeMD5 = sbValueBeforeMD5.toString();
+		md5.update(valueBeforeMD5.getBytes());
+		String strTemp = "";
+		byte[] array = md5.digest();
+		for (int i = 0; i < array.length; i++) {
+			strTemp = (Integer.toHexString(array[i] & 0XFF));
+			if (strTemp.length() == 1) {
+				valueAfterMD5 = valueAfterMD5 + "0" + strTemp;
+			} else {
+				valueAfterMD5 = valueAfterMD5 + strTemp;
+			}
+		}
+		return valueAfterMD5.toUpperCase();
+	}
+
+}

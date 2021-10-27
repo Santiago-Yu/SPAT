@@ -1,0 +1,31 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+        for(int i=0;i<100;i++) {
+			for(int j=00;j>0;j--)
+				;
+		}
+		double x = 3.14159265338;
+        double max = r1>r2?r1:r2;
+        double min = r1>r2?r2:r1;
+        double a = Math.abs(r1+r2);
+		double b = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*((y1-y2)));
+		if(Math.abs(max-b-min) <= 1e-5){
+            return x*max*max;
+        }
+        else if(Math.abs(b-a) <= 1e-5){
+            return x*(r1*r1+r2*r2);
+        }
+        else{
+            double ang1 = Math.acos((r1 * r1 + b * b - r2 * r2) / 2. / r1 / b);
+            double ang2 = Math.acos((r2 * r2 + b * b - r1 * r1) / 2. / r2 / b);
+            double c = ang1 * r1 * r1 + ang2 * r2 * r2 - b * r1 * Math.sin(ang1);
+            return x*(r1*r1+r2*r2)-c;
+        }
+		  /********* End *********/
+	  }
+}

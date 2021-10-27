@@ -1,0 +1,30 @@
+package step2;
+import java.util.Scanner;
+public class Main{
+    public static void main(String[]args){
+        Scanner reader = new Scanner(System.in);
+        /***Begin your code here***/
+		int a = reader.nextInt();
+		int b = reader.nextInt();
+		int c = reader.nextInt();
+		int temp;
+		if(a<b){
+			temp = b;
+			 b =a;
+			 a = temp;
+		}
+		if(a<c){
+			temp = c;
+			 c = a ;
+			 a = temp;
+		}
+		if(b<c){
+			temp = c;
+			 c =b;
+			 b = temp;
+		}
+		System.out.printf("%d %d %d\n",a,b,c);
+        /***End your code here***/
+        reader.close();
+    }
+}

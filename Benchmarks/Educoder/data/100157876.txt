@@ -1,0 +1,36 @@
+package step1;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+public class Task<T extends Comparable<? super T>> {
+	/**
+	 * 
+	 * @param list  已经排好序的待处理列表
+	 * @param x		待插入的元素
+	 */
+	String a[]=new String[100];
+	public void insert(List<T> list, T x){
+		/********** Begin **********/
+	      int l=0,r=list.size()-1;
+	      while(l<r) {
+	    	  int mid=(l+r)/2;
+	         if(compara(list.get(mid),x)>0)
+	        	 r=mid;
+	         else
+	        	 l=mid+1;
+	      }
+	    
+	   list.add(l,x);
+		
+		/********** End **********/
+	}
+	public int compara(T a,T b) {
+		if(a.compareTo(b)>=0)
+			return 1;
+		else
+			return 0;
+	}
+}

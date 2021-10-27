@@ -1,0 +1,41 @@
+package step2;
+
+/********* Begin *********/
+//定义站台类，实现卖票的功能。
+public class Station  extends Thread  {	 
+		private static int ticket = 20;
+		Object mutex = new Object();
+		
+		public void sellTicket() {
+		       synchronized (mutex)// 当操作的是共享数据时,
+		        // 用同步代码块进行包围起来,执行里面的代码需要mutex的锁，但是mutex只有一个锁。这样在执行时,只能有一个线程执行同步代码块里面的内容
+		        {
+		            if (ticket > 0) {
+		            	
+		                System.out.println( "卖出了第" + ticket-- + "张票");
+		            } 
+		            if(ticket==0) {
+		                System.out.println("票卖完了");
+		                return;
+		            }
+		        }
+		}
+		
+		 public void run() {
+		        while (ticket > 0)// 循环是指线程不停的去卖票
+		        {
+		            sellTicket();
+		            /**
+		             * 在同步代码块里面睡觉,和不睡效果是一样
+		             * 的,作用只是自已不执行,也不让线程执行。sleep不释放锁，抱着锁睡觉。其他线程拿不到锁，也不能执行同步代码。wait()可以释放锁
+		             * 所以把睡觉放到同步代码块的外面,这样卖完一张票就睡一会,让其他线程再卖,这样所有的线程都可以卖票
+		             */
+		            try {
+		                Thread.sleep(100);
+		            } catch (InterruptedException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		    }
+    
+}

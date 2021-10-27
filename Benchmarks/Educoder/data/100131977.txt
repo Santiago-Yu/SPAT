@@ -1,0 +1,44 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+ static void showDirStructure(File file)
+
+	{
+
+		System.out.println("+--" + file.getName());
+		showDirStructure(file, 1);
+
+	}
+
+	static void showDirStructure(File dir, int grade) {
+
+		File files[] = dir.listFiles();
+		for (File f : files) {
+			if (f.isFile()&&isPic(f)) {
+				for (int i = 0; i < grade; i++)
+					System.out.print("  ");
+				System.out.println("--" + f.getName());
+			}
+			if (f.isDirectory()) {
+				for (int i = 0; i < grade; i++)
+					System.out.print("  ");
+				System.out.println("+--" + f.getName());
+				showDirStructure(f, grade + 1);
+			}
+		}
+
+	}
+
+	static Boolean isPic(File file)
+
+	{
+		String name=file.getName();
+		return name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".bmp");
+	}
+
+	/********** END **********/
+}

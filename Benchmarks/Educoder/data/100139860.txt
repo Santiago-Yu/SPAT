@@ -1,0 +1,26 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+        String data=scanner.nextLine();
+        String name=scanner.nextLine();   
+        int old=-1;
+        int first=data.indexOf(name);   //用first记录第一个李四的位置     
+        while(first>-1){                //用于判断是否找到字符串（若是多个，则返回最小位置的整数，若无则返回-1）
+            old+=first+1;               //old=old+(first+1)
+            System.out.println(old);
+            if(first+name.length()>data.length())         //判断是否越界
+                break;
+            data=data.substring(first+name.length()-1);   //用data存储找到之后的字符串，避免重复输出最小位置
+            first=data.indexOf(name);
+        }
+        
+
+
+        /********** End *********/
+    }
+}

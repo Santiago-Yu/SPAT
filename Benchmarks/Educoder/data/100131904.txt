@@ -1,0 +1,47 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		int level=0;
+        
+		traverseFolder2(file.getAbsolutePath(),level);
+	}
+    public static String addSpace(int level) {
+		StringBuilder sb = new StringBuilder();
+		while (level > 0) {
+			sb.append("  ");
+			level--;
+		}
+		return sb.toString();
+	}
+
+	public static void traverseFolder2(String path, int level) {
+		File dir = new File(path);
+		System.out.println(addSpace(level) + "+--" + dir.getName());
+		File[] files = dir.listFiles();
+		if (files.length == 0) {
+			return;
+		} else {
+			for (File file2 : files) {
+				if (file2.isDirectory()) {
+					// System.out.println(addSpace(level) + "+---" +
+					// file2.getName());
+					int temp = level;
+					traverseFolder2(file2.getAbsolutePath(), temp + 1);
+				} else {
+					String fileName = file2.getName();
+					String suffix = fileName.substring(fileName.lastIndexOf("."));
+					if (suffix.equals(".bmp")||suffix.equals(".png")||suffix.equals(".jpg"))
+						System.out.println(addSpace(level + 1) + "--" + file2.getName());
+				}
+			}
+		}
+	}
+	
+
+	/********** END **********/
+}

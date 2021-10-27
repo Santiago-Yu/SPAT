@@ -1,0 +1,38 @@
+package step1;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+
+public class GetScores {
+
+    /********* Begin *********/
+     public int getLostScores(int[] nums){
+        //请在此补全你的代码
+        int[] a = new int[10001];
+        for(int i = 0; i < nums.length; i++) {
+            a[nums[i]] = 1;
+        }
+        List<Integer> list = new ArrayList<>();
+        for(int i = 0; i < 10000; i++) {
+            if(a[i] == 0) {
+                list.add(i);
+            }
+        }
+        Collections.sort(list);
+        BigInteger sum = BigInteger.valueOf(list.get(0));
+        for(int i = 1; i < list.size(); i++) {
+            int k = list.get(i);
+            while(k > 0) {
+                k = k / 10;
+                sum = sum.multiply(BigInteger.valueOf(10));
+            }
+            sum = sum.add(BigInteger.valueOf(list.get(i)));
+        }
+        return Integer.valueOf(String.valueOf(sum.remainder(BigInteger.valueOf(11))));
+    }
+
+    /********* End *********/
+}

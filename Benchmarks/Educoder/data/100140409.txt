@@ -1,0 +1,39 @@
+package step3;
+
+import java.util.Scanner;
+
+public class HelloWorld {
+    
+    public static void judge(String fileName,String email){
+        //获取文件名中最后一次出现"."号的位置
+		int index = fileName.lastIndexOf(".");
+		//获取文件名的后缀
+		String prefix = fileName.substring(index+1,fileName.length());
+		//判断必须包含"."号，且不能出现在首位，同时后缀名为"java"
+		if(index!=-1&&index!=0&&prefix.equals("java")) {
+			System.out.println("Java文件名正确");
+		}else {
+			System.out.println("Java文件名无效");
+		}
+		
+		//获取邮箱中"@"符号的位置
+		int index2 = email.lastIndexOf("@");
+		//获取邮箱中"."号的位置
+		int index3 = email.indexOf(".");
+		//判断必须包含"@"符号，且"@"必须在"."之前
+		if(index2!=-1&&index3>index2) {
+			System.out.println("邮箱名正确");
+		}else {
+			System.out.println("邮箱名无效");
+		}
+
+		
+	}
+
+	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+		String fileName = input.nextLine();
+		String email = input.nextLine();
+		judge("fileName","email");
+	}
+}

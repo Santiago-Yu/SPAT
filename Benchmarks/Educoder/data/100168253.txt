@@ -1,0 +1,33 @@
+package step2;
+
+
+public class FindZhiShu {
+
+
+	public static void main(String[] args) {
+		   /*
+		     打印输出质数的时候务必按照如下格式：System.out.print(质数+" ")；
+		     使用print进行打印同时被打印输出的质数后加上一个空格，
+		     以便于与平台提供的结果格式保持一致！
+            */
+
+		   /**********begin**********/
+           for (int n = 2; n <= 1000; n++) {
+			boolean b = true;
+			if (n != 1) {
+				for (int i = 2; i < n; i++) {
+					if (n % i == 0) {// 如果取余为0，也就是除了1和其本身有其他数可以乘除他，所以置为false
+						b = false;
+						// 跳出当前循环，判断是否打印，并且到外面循环继续
+						break;
+					}
+				}
+			}
+			if (b) {
+				System.out.print(n+" ");
+			}
+		}
+
+           /**********end**********/	
+	}
+}

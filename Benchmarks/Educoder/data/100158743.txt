@@ -1,0 +1,82 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 100;
+char Map[N][N];
+bool vis[N][N];
+int path[N][N];
+int dx[4] = {-1,1,0,0};
+int dy[4] = {0,0,-1,1};
+int m,n;
+
+struct node {
+    int x,y;
+    int cnt;
+    node():cnt(0){}
+    node(int xx,int yy,int c=0):x(xx),y(yy),cnt(c){}
+};
+
+int bfs(node s,node t){
+    queue<node> q;
+    q.push(s);
+    vis[s.x][s.y] = 1;
+    //cout<<"fesf";
+    while(!q.empty())
+    {
+        node now = q.front();
+        q.pop();
+        if(now.x==t.x&&now.y==t.y)
+        return now.cnt;
+        for(int i = 0;i< 4;++i)
+        {
+            int nx = now.x  +dx[i];
+            int ny = now.y + dy[i];
+            if(nx<0||nx>=m||ny<0||ny>=n||Map[nx][ny]=='1'||vis[nx][ny]==1)
+            	continue;
+            q.push(node(nx,ny,now.cnt+1));
+            vis[nx][ny] = 1;
+            path[nx][ny] = i;
+        }
+    }
+    return -1;
+}
+void printpath(node s,node t)
+{
+    stack<node> tmp;
+    tmp.push(t);
+    int x = t.x,y = t.y;
+    while(!(x==s.x&&y==s.y))
+    {
+        int i =path[x][y];
+        x = x - dx[i];
+        y = y - dy[i];
+        tmp.push(node(x,y));
+    }
+    tmp.pop();
+    cout<<"("<<s.x<<","<<s.y<<")"<<endl;
+    while(!tmp.empty())
+    {
+        node k = tmp.top();
+        tmp.pop();
+        cout<<"("<<k.x<<","<<k.y<<")"<<endl;
+    }
+}
+int main()
+{
+	m = 5,n=5;
+   //while(cin>>m>>n){
+   	/*for(int i = 0;i<m;++i)
+   	cin>>Map[i];*/
+   for(int i = 0;i<m;++i)
+        for(int j = 0;j<n;++j)
+            cin>>Map[i][j];
+    node s,t;
+    //cin>>s.x>>s.y>>t.x>>t.y;
+    s.x = 0;
+    s.y = 0;
+    t.x = 4;
+    t.y = 4;
+    int xxx = bfs(s,t);
+    printpath(s,t);
+   //}
+    return 0;
+}

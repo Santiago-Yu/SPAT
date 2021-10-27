@@ -1,0 +1,62 @@
+package Q201;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc=new Scanner(System.in);
+		int n=sc.nextInt();
+		int sum=0;
+		int m,k,i;m=n;
+		int num[]=new int[100];
+		for(i=0;i<100;i++)
+		{
+			num[i]=0;
+		}
+		int flag=-1;
+		while(true)
+		{
+			while(m!=0)
+			{
+				k=m%10;
+				sum+=k*k;
+				m/=10;
+			}
+			if(sum==1)
+			{
+				flag=1;
+				break;
+			}
+			else
+			{
+				for(i=0;num[i]!=0;i++)
+				{
+					if(sum==num[i])
+					{
+						flag=0;
+						break;
+					}
+				}
+				if(flag!=0)
+				{
+					num[i]=sum;
+					m=sum;
+					sum=0;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		if(flag==1)
+		{
+			System.out.print("YES");
+		}
+		if(flag==0)
+		{
+			System.out.print("NO");
+		}
+	}
+
+}

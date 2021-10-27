@@ -1,0 +1,93 @@
+package case2;
+
+import java.util.Scanner;
+
+public class Task2 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String cName = sc.next();
+		String cSex = sc.next();
+		int cAge = sc.nextInt();
+		String eName = sc.next();
+		String eSex = sc.next();
+		int eAge = sc.nextInt();
+        chinese ch=new chinese(cName,cSex,cAge);
+      English en=new English(eName,eSex,eAge);
+      test te=new test();
+      te.showeat(ch);
+      te.showeat(en);
+      person a=new chinese(cName,cSex,cAge);
+      chinese x=(chinese)a;
+      person b=new English(eName,eSex,eAge);
+      English y=(English)b;
+      x.shadowBoxing();
+      y.shadowBoxing();
+	}
+  static  abstract class person {
+   private   String  name;
+   private   String sex;
+   private   int age;
+    String getname(){
+       return name;
+   }
+   String getsex(){
+       return sex;
+   }
+  int getage(){
+       return age;
+   }
+   void eat()
+   {}
+   person(String name,String sex,int age)
+   {this.name=name;
+   this.sex=sex;
+   this.age=age;
+	   
+   }
+}
+static class English extends person{ 
+	
+	
+	
+	English(String name, String sex, int age) {
+		super(name, sex, age);
+		
+	}
+	void eat()
+{System.out.println("姓名："+getname()+"，性别："+getsex()+"，年龄："+getage()+"，我是英国人，我喜欢吃三明治！");}
+void shadowBoxing()
+{System.out.println(getname()+"在练习骑马！");}
+
+
+
+}
+ static class chinese extends person{
+
+	chinese(String name, String sex, int age) {
+		super(name, sex, age);
+		
+	}
+	
+    void eat()
+     {
+    	System.out.println("姓名："+getname()+"，性别："+getsex()+"，年龄："+getage()+"，我是中国人，我喜欢吃饭！");}
+    void shadowBoxing()
+    {System.out.println(getname()+"在练习太极拳！");}
+}
+static class test {
+	  void showeat(person per)
+	  {   
+		  per.eat();
+	  }
+
+}
+
+        
+        
+        
+        
+        
+        
+        
+        
+    }

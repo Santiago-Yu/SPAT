@@ -1,0 +1,58 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+ for (int i = 0; i < 10; i++) {
+        record[i]=scanner.nextInt();    
+ }
+    
+        
+        int num=1;
+        recordRecovery[0]=record[0];
+        
+        int flag;//0表示无相同
+        
+  for(int i=1;i<10;i++){
+      flag=0;//每次循环需要重置flag值
+      for(int j=i-1;j>=0;j--){//与之前的数比较
+          if(record[i]==record[j])
+          { flag=1;//有相同
+              break;}
+      }//for
+      
+      if(flag==0)//无相同
+      { 
+      recordRecovery[num]=record[i];
+      num++;
+      }
+  }    
+        
+         Arrays.sort(recordRecovery);
+     //  for (int i = 0; i < 10; i++) {
+   //    System.out.print(recordRecovery[i]);
+// }
+        for(int m=0;m<10-num;m++){//有0就移动并覆盖  有多少个0就执行多少次
+        
+            for(int i=0;i<9;i++)
+           {
+             if(recordRecovery[i]==0)
+             {recordRecovery[i]=recordRecovery[i+1];
+              recordRecovery[i+1]=0;}
+           }   
+        }
+        /********** End *********/
+        for (int i = 0; i < num; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i != num - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

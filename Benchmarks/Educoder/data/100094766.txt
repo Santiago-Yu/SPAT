@@ -1,0 +1,24 @@
+package step2;
+import java.util.Scanner;
+
+public class AdditionCalculator {
+	public void addition(int a, int n) {
+		/********** Begin *********/
+		int sum=0,temp=a;
+		for(int i=1;i<=n;i++) {
+			sum+=a;
+			a=(int) (a+temp*Math.pow(10,i));
+		}
+		System.out.print(sum);
+	}
+	public static void main(String []args) {
+		AdditionCalculator add=new AdditionCalculator();
+		Scanner sc=new Scanner(System.in);
+		int a,n;
+		a=sc.nextInt();
+		n=sc.nextInt();
+		add.addition(a, n);
+
+		/********** End *********/
+	}
+}

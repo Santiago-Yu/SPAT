@@ -1,0 +1,32 @@
+package step1;
+
+import java.util.Scanner;
+
+public class ThrowException {
+	public static void function(String id) {  //利用throws关键字声明该方法可能出现异常IllegalArgumentException
+		/********** Begin *********/
+		if (id.length() == 7) {
+			System.out.print("ID格式正确："+id);//输出ID合法时的语句
+
+		}
+	    else {
+			throw new IllegalArgumentException("ID长度应为7");//利用throw关键字抛出异常IllegalArgumentException
+
+		}
+		/********** End *********/
+	}
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		String id=sc.nextLine();
+		try {
+	        function(id);
+	    }
+	    catch (IllegalArgumentException e) {
+			/********** Begin *********/
+			System.out.print("ID长度应为7");//输出ID不合法时的语句
+	    	
+			/********** End *********/
+	    }
+	}
+}

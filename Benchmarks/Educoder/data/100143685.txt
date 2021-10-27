@@ -1,0 +1,63 @@
+package step2;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+
+public class Task {
+	public static void main(String[] args) {
+		/********* Begin *********/
+        try{
+            //在src文件夹下创建test2文件夹
+            File file_test2 = new File("src//test2");
+            
+            if(!file_test2.exists()){
+            	file_test2.mkdir();
+            }
+            
+            //在src文件夹下创建output文件夹
+            File file_output = new File("src//output");
+            
+            //删除output文件夹下的test2.txt文件
+            File file1 = new File(file_output,"test2.txt");
+           	if(file1.exists()){
+            	file1.delete();
+            }
+            //在output文件夹下分别创建test文件   与  hello文件
+            File file_hello = new File(file_output,"hello.txt");
+            File file_text = new File(file_output,"test.txt");
+            if(!file_text.exists()){
+            	file_text.createNewFile();
+            }
+            if(!file_hello.exists()){
+            	file_hello.createNewFile();
+            }
+            //在test2文件夹下分别创建helloword文件  与  step2文件
+            File file_helloworld = new File(file_test2,"helloworld.txt");
+            File file_step2 = new File(file_test2,"step2.txt");
+            if(!file_helloworld.exists()){
+            	file_helloworld.createNewFile();
+            }
+            if(!file_step2.exists()){
+            	file_step2.createNewFile();
+            }
+            
+            System.out.println("output目录结构为：");
+            File dir_output = new File("src//output");
+            File[] files_1 = dir_output.listFiles();
+            for(File file : files_1){
+            	System.out.println(file.getName());
+            }
+            System.out.println("test2目录结构为：");
+            File dir_test2 = new File("src//test2");
+            
+            File[] files_2 = dir_test2.listFiles();
+            for(File file : files_2){
+            	System.out.println(file.getName());
+            }
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+		/********* End *********/
+	}
+}

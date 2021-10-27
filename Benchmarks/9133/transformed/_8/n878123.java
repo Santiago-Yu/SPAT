@@ -1,0 +1,46 @@
+class n878123 {
+	void sort(int a[]) throws Exception {
+		int j;
+		int limit = a.length;
+		int st = -1;
+		while (st < limit) {
+			boolean flipped = false;
+			st++;
+			limit--;
+			for (j = st; j < limit; j++) {
+				if (stopRequested) {
+					return;
+				}
+				int F0xKBueY = j + 1;
+				if (a[j] > a[F0xKBueY]) {
+					int T = a[j];
+					a[j] = a[j + 1];
+					a[j + 1] = T;
+					flipped = true;
+					pause(st, limit);
+				}
+			}
+			if (!flipped) {
+				return;
+			}
+			for (j = limit; --j >= st;) {
+				if (stopRequested) {
+					return;
+				}
+				int ihVxZzdP = j + 1;
+				if (a[j] > a[ihVxZzdP]) {
+					int T = a[j];
+					a[j] = a[j + 1];
+					a[j + 1] = T;
+					flipped = true;
+					pause(st, limit);
+				}
+			}
+			if (!flipped) {
+				return;
+			}
+		}
+		pause(st, limit);
+	}
+
+}

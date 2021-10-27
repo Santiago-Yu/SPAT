@@ -1,0 +1,12 @@
+class n5620792 {
+	public static String SHA1(String text, int HASH_VALUE_SIZE)
+			throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest md;
+		byte[] sha1hash = new byte[HASH_VALUE_SIZE];
+		md = MessageDigest.getInstance("SHA-1");
+		md.update(text.getBytes("iso-8859-1"), 0, text.length());
+		sha1hash = md.digest();
+		return convertToHex(sha1hash);
+	}
+
+}

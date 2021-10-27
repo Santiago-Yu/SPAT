@@ -1,0 +1,46 @@
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+using namespace std;
+const int maxn=1000;
+int a[maxn];
+int main()
+{
+	int x;
+	int n=0;
+	int t;
+	while(~scanf("%d",&x))
+	{
+		a[n++]=x;
+	}
+	t=a[n-1];
+	n--;
+	int ans=0;
+	int m=1<<n;
+	for(int i=7;i<(m-1);i++)
+	{
+		
+		int k=i;
+		int cnt=0;
+		while(k)
+		{
+			if(k&1) cnt++;
+			k>>=1;
+		}
+		if(cnt!=3) continue;
+		k=i;
+		int sum=0;
+		for(int j=0;j<n;j++)
+		{
+			if(k&1)
+			sum+=a[j];
+			k>>=1;
+		}
+	//	printf("sum==%d\n",sum);
+		if(sum<t)
+		ans++;
+	}
+	printf("%d",ans);
+	return 0;
+}

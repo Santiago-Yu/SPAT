@@ -1,0 +1,59 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	boolean temp = true;
+    int count = 1;	
+	/********** Bgin **********/
+	public void showDirStructure(File file)	{
+    FileFilter filter = file1 -> {
+        if (file1.isFile()) {
+        String fileName = file1.getName().toLowerCase();
+        if (fileName.endsWith(".jpg")) {
+        	return true;
+        }
+        if (fileName.endsWith(".png")) {
+        	return true;
+        }
+        if (fileName.endsWith(".bmp")) {
+        	return true;
+        }
+        }
+        if (file1.isDirectory()) {
+        return true;
+        }     
+        return false;
+    };
+    if (temp) {
+    System.out.println("+--" + file.getName());
+    temp = false;   
+    }
+	File[] list = file.listFiles(filter);
+    for (File files : list) {
+       for (int i = 0; i < count; i++) {
+        System.out.print("  ");}
+    	if (files.isDirectory()) {     
+        	System.out.println("+--" + files.getName()); 
+            count = count + 1;
+           
+            showDirStructure(files);   
+        }
+        if (files.isFile()) { 
+       //if (files.getName().equals("logo.png")) {        //我觉得此处是个bug，
+       //  System.out.println("  --" + files.getName());   //感受到了深深恶意。
+       //      continue;
+      //  }
+        System.out.println("--" + files.getName()); 
+         
+        }   
+         
+    }
+    count--;       
+
+	
+
+	/********** End **********/
+}
+}

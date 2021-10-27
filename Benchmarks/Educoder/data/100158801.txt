@@ -1,0 +1,21 @@
+package Q103;
+import java.util.Scanner;
+	public class Main {
+
+		private static Scanner scan;
+
+		public static void main(String[] args) {
+			scan = new Scanner(System.in);
+			int f[] = new int[1001];
+			f[0]=0;
+			f[1]=1;
+		    f[2]=2;
+		   int a=scan.nextInt();
+		   for(int m=3;m<=a;m++)
+		   {
+		   	f[m]=f[m-1]+f[m-2];
+			 }
+		   System.out.print(f[a]);
+		}
+
+	}

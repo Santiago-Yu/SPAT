@@ -1,0 +1,37 @@
+package step1;
+
+import java.util.Scanner;
+
+public class TestJava9_4 
+{
+	public static void main(String[] args)
+    {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        System.out.println("请输入一个六位数整数：");
+        int input=sc.nextInt();
+        int sum;
+        int a=input/100000;
+        int b=(input%100000)/10000;
+        int c=(input%10000)/1000;
+        int d=(input%1000)/100;
+        int e=(input%100)/10;
+        int f=input%10;
+        sum=a+b+c+d+e+f;
+        if(sum%2==0)
+        {
+            System.out.println(input+"的各位数字之和能被2整除");
+            System.out.println("程序结束");
+        }
+        else
+        {
+            System.out.println("程序结束");
+        }
+        
+
+
+
+		/******End******/	
+	}
+
+}

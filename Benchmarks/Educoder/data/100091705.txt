@@ -1,0 +1,23 @@
+package step3;
+
+public class PalindromeJudge {
+	// 判断一个五位正整数是否是回文数
+	public boolean PalindromeJudge(int num){
+        int rev=0;
+        int x=num;
+        while(x>0)
+        {
+            int modnum=x%10;
+            if((rev>Integer.MAX_VALUE/10)||((rev==Integer.MAX_VALUE/10)&&(modnum>Integer.MAX_VALUE%10)))
+         		return false;
+            rev=rev*10+modnum;
+			x=x/10;
+        }
+        if(rev==num)
+			return true;
+        else
+            return false;
+    }
+        
+		// 请在此添加实现代码
+}

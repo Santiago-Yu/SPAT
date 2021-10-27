@@ -1,0 +1,27 @@
+package step5;
+
+import java.util.Scanner;
+
+
+public class Task {
+	
+	public int getDepth(TreeNode tree){
+		/********** BEGIN **********/
+        return maxDepth(tree);
+		/********** END **********/
+		
+	}
+    public int maxDepth(TreeNode root) {
+        if(root==null){
+            return 0;
+        }
+        if(root.left==null){
+            return maxDepth(root.right)+1;
+        }
+        if(root.right==null){
+            return maxDepth(root.left)+1;
+        }
+        return maxDepth(root.left)>maxDepth(root.right)?maxDepth(root.left)+1:maxDepth(root.right)+1;
+    }
+	
+}

@@ -1,0 +1,74 @@
+package step4;
+
+public class DayJudge {
+
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        String str="";
+         int sum = 0;
+        if((year%4==0 && year%100!=0) || year%400==0)
+        {
+           
+            switch(month){
+                case 1:
+                    sum=day;break;
+                case 2:
+                    sum=day+31;break;
+                case 3:
+                    sum=day+60;break;
+                case 4:
+                    sum=day+91;break;
+                case 5:
+                    sum=day+121;break;
+                case 6:
+                    sum=day+152;break;
+                case 7:
+                    sum=day+182;break;
+                case 8:
+                    sum=day+213;break;
+                case 9:
+                    sum=day+244;break;
+                case 10:
+                    sum=day+274;break;
+                case 11:
+                    sum=day+305;break;
+                case 12:
+                    sum=day+335;break;
+                        
+            }
+        }else{
+            switch(month){
+                case 1:
+                    sum=day;break;
+                case 2:
+                    sum=day+31;break;
+                case 3:
+                    sum=day+59;break;
+                case 4:
+                    sum=day+90;break;
+                case 5:
+                    sum=day+120;break;
+                case 6:
+                    sum=day+151;break;
+                case 7:
+                    sum=day+181;break;
+                case 8:
+                    sum=day+212;break;
+                case 9:
+                    sum=day+243;break;
+                case 10:
+                    sum=day+273;break;
+                case 11:
+                    sum=day+304;break;
+                case 12:
+                    sum=day+334;break;
+                    
+            }
+                    }
+            str=year +"年的第" +sum+ "天";
+            return str;
+        
+        // 请在此提供实现代码
+	}
+}
+

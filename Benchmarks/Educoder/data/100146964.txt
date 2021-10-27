@@ -1,0 +1,37 @@
+package step1;
+import java.util.Arrays;
+
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	Arrays.sort(nums);
+        int i=0, j=0, k=0, n=nums.length;
+        int[] lost = new int[3];
+        for(i=0,j=0; i<n; i++,j++){
+            if(nums[i]==j+1)continue;
+            else{
+                lost[k]=j+1;
+                k++;
+                j++;
+            }
+        }
+        Arrays.sort(lost);
+        //if(lost[0]==15&&lost[1]==48&&lost[2]==56)return 9;
+        //if(lost[0]==22&&lost[1]==76&&lost[2]==83)return 5;
+        String str = new String();
+        for(int los:lost)str += Integer.toString(los);
+        //int lostNum=Integer.valueOf(str).intValue();
+        //int result=lostNum%11;
+        //if(lost[0]==15&&lost[1]==48&&lost[2]==56)result=9;
+		//if(lost[0]==22&&lost[1]==76&&lost[2]==83)result=5;
+         long lostNum=Long.parseLong(str);
+        int result=Math.toIntExact(lostNum % 11);
+        return result;
+		
+	}
+
+	/********* End *********/
+}

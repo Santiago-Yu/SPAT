@@ -1,0 +1,46 @@
+package step2;
+
+public class Task {
+    public void dfs(int x,int y,int n,int m,char [][]area, int [][]visited) {
+		if(x-1>=0 && area[x-1][y] == 'o' && visited[x-1][y] == 0) {
+			visited[x-1][y] = 1;
+			dfs(x-1,y,n,m,area,visited);
+		}
+		if(x+1<n && area[x+1][y] == 'o' && visited[x+1][y] == 0) {
+			visited[x+1][y] = 1;
+			dfs(x+1,y,n,m,area,visited);
+		}
+		if(y-1>=0 && area[x][y-1] == 'o' && visited[x][y-1] == 0) {
+			visited[x][y-1] = 1;
+			dfs(x,y-1,n,m,area,visited);
+		}
+		if(y+1<m && area[x][y+1] == 'o' && visited[x][y+1] == 0) {
+			visited[x][y+1] = 1;
+			dfs(x,y+1,n,m,area,visited);
+		}
+			
+	}
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        
+		int count=0;
+		int[][] visited = new int [n][m];
+		
+		for(int x=0; x<n; x++) {
+			for(int y=0; y<m; y++) {
+				//judge virus and whether visited
+				if(area[x][y] == 'o' && visited[x][y] == 0) {
+					visited[x][y] = 1;
+					count++;
+					dfs(x,y,n,m,area,visited);
+					
+				}
+				
+			}
+		}
+		
+		return count;
+		/********* End *********/	
+	}
+}

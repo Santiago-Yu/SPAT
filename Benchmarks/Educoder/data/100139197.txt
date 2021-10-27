@@ -1,0 +1,70 @@
+package step3;
+
+public class MyThread implements Runnable {
+    // 前一个线程的打印锁
+    private final Object fontLock;
+    // 本线程的打印锁
+    private final Object thisLock;
+    // 打印字符
+    private final char printChar;
+
+    public MyThread(Object fontLock, Object thisLock, char printChar) {
+        this.fontLock = fontLock;
+        this.thisLock = thisLock;
+        this.printChar = printChar;
+    }
+
+    public void run() {
+        // 连续打印PRINT_COUNT次
+        for (int i = 0; i < 5; i++) {
+            // 获取前一个线程的打印锁
+            synchronized (fontLock) {
+                // 获取本线程的打印锁
+                synchronized (thisLock) {
+                    //打印字符
+                    System.out.print(printChar);
+                    // 通过本线程的打印锁唤醒后面的线程 
+                    // notify和notifyall均可,因为同一时刻只有一个线程在等待
+                    thisLock.notify();
+                }
+                // 不是最后一次则通过fontLock等待被唤醒
+                // 必须要加判断，不然虽然能够打印5次，但5次后就会直接死锁
+                if(i < 4){
+                    try {
+                        // 通过fontLock等待被唤醒
+                        fontLock.wait();
+                        
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                
+            }    
+        }    
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        // 打印A线程的锁
+        Object lockA = new Object();
+        // 打印B线程的锁
+        Object lockB = new Object();
+        // 打印C线程的锁
+        Object lockC = new Object();
+        
+        // 打印a的线程
+        Thread threadA = new Thread(new MyThread(lockC, lockA, 'E'));
+        // 打印b的线程
+        Thread threadB = new Thread(new MyThread(lockA, lockB, 'D'));
+        // 打印c的线程
+        Thread threadC = new Thread(new MyThread(lockB, lockC, 'U'));
+
+        // 依次开启e d c线程
+        threadA.start();
+        Thread.sleep(100); // 确保按顺序A、B、C执行
+        threadB.start();
+        Thread.sleep(100);
+        threadC.start();
+        Thread.sleep(100);
+    }
+
+}

@@ -1,0 +1,61 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+   public double sum(int[][] arr,int i) {
+		int sum=0;
+		for(int j=0;j<arr.length;j++) {
+			sum+=arr[i][j];
+		}
+		return sum;
+	}
+	public void swap(int[][] arr,int k,int i) {
+		int row=arr.length;
+		int[][] trr=new int[row][row];
+		for(int j=0;j<arr.length;j++) {
+			trr[i][j]=arr[k][j];
+			arr[k][j]=arr[i][j];
+			arr[i][j]=trr[i][j];
+		}
+	}
+    public void sortArray(int[][] arr){
+		int temp=-1,i,j;
+		for(i=0;i<arr.length;i++) {
+			for(j=0;j<arr.length;j++) {
+				for(int k=j+1;k<arr.length;k++) {
+					if(arr[i][j]<arr[i][k]) {
+						temp=arr[i][j];
+						arr[i][j]=arr[i][k];
+						arr[i][k]=temp;	
+					}
+				}
+			}
+			
+		}
+		for(i=0;i<arr.length;i++) {
+			for(int k=i+1;k<arr.length;k++) {
+					if(sum(arr,i)<sum(arr,k)) {
+						swap(arr,k,i);
+					}
+				}
+			
+			
+		}
+		int[] c=new int[arr.length];
+		for(i=0;i<arr.length;i++) {
+			for(j=0;j<arr.length;j++) {
+				c[j]=arr[i][j];
+			}
+			System.out.println(Arrays.toString(c));
+		}
+		
+    }
+
+
+    
+    /********** END **********/
+}
+	

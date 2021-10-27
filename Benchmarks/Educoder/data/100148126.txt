@@ -1,0 +1,104 @@
+package step1;
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+	Object a=new Object();
+    Object b=new Object();
+    Object c=new Object();
+    Object d=new Object();
+    Object e=new Object(); 
+    Object f=new Object();
+    Object g=new Object();
+    Object h=new Object();
+    Object i=new Object();
+    Object j=new Object();
+    Object k=new Object();
+    Object l=new Object();
+    Object m=new Object();
+    Object n=new Object();
+    Object o=new Object();
+       
+    MyThread ta=new MyThread("AA",o,a);
+    MyThread tb=new MyThread("BB",a,b);
+    MyThread tc=new MyThread("CC",b,c);
+    MyThread td=new MyThread("AA",c,d);
+    MyThread te=new MyThread("BB",d,e);
+    MyThread tf=new MyThread("CC",e,f);
+    MyThread tg=new MyThread("AA",f,g);
+    MyThread th=new MyThread("BB",g,h);
+    MyThread ti=new MyThread("CC",h,i);
+    MyThread tj=new MyThread("AA",i,j);
+    MyThread tk=new MyThread("BB",j,k);
+    MyThread tl=new MyThread("CC",k,l);
+    MyThread tm=new MyThread("AA",l,m);
+    MyThread tn=new MyThread("BB",m,n);
+    MyThread to=new MyThread("CC",n,o);
+    new Thread(ta).start();
+    Thread.sleep(100);
+    new Thread(tb).start();
+    Thread.sleep(100);
+    new Thread(tc).start();
+    Thread.sleep(100);
+    new Thread(td).start();
+    Thread.sleep(100);
+    new Thread(te).start();
+    Thread.sleep(100);
+    new Thread(tf).start();
+    Thread.sleep(100);
+    new Thread(tg).start();
+    Thread.sleep(100);
+    new Thread(th).start();
+    Thread.sleep(100);
+    new Thread(ti).start();
+    Thread.sleep(100);
+    new Thread(tj).start();
+    Thread.sleep(100);
+    new Thread(tk).start();
+    Thread.sleep(100);
+    new Thread(tl).start();
+    Thread.sleep(100);
+    new Thread(tm).start();
+    Thread.sleep(100);
+    new Thread(tn).start();
+    Thread.sleep(100);
+    new Thread(to).start();
+    Thread.sleep(100);
+
+
+
+		
+		/********* End *********/
+	}
+}
+
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	
+	
+	String threadName;
+    Object prev;   
+    Object self;  
+    
+    public MyThread(String threadName, Object prev, Object self) {   
+        this.threadName = threadName;   
+        this.prev = prev;   
+        this.self = self;   
+    }  
+	
+
+	public void run() {
+	
+		int count = 1;
+		
+		while(count > 0){
+			
+			System.out.println("Java Thread" + this.threadName);
+			count--;
+		}
+	}
+
+	/********* End *********/
+}

@@ -1,0 +1,23 @@
+        public void mouseClicked(MouseEvent e) {
+            String userNameString;
+            String passwordString;
+            String md5String = "";
+            MessageDigest md;
+            userNameString = userNameJTextField.getText();
+            passwordString = passwordJTextField.getText();
+            try {
+                md = MessageDigest.getInstance("MD5");
+                md.update(passwordString.getBytes());
+                md5String = new String(md.digest());
+                md5String = Base64.encode(md5String.getBytes());
+                System.out.println(md5String);
+            } catch (NoSuchAlgorithmException e1) {
+                e1.printStackTrace();
+                System.out.println("失锟斤拷");
+            }
+            if (userNameString.equals("zouwulingde") && md5String.equals("aKdtP09kSTkWCD/cylk=")) {
+                JOptionPane.showMessageDialog(null, "锟斤拷迎使锟斤拷学锟斤拷锟节癸拷锟斤拷系统锟斤拷");
+            } else {
+                JOptionPane.showMessageDialog(null, "锟矫伙拷锟斤拷锟斤拷锟斤拷氩伙拷锟饺�!!!!");
+            }
+        }

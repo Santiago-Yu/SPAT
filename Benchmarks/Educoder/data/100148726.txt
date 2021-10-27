@@ -1,0 +1,49 @@
+package step1;
+
+public class Task {
+	public static boolean isSorted(Integer[] arr){
+
+        for( int i = 0 ; i < arr.length - 1 ; i ++ )
+            if( arr[i]-arr[i+1] > 0 )
+                return false;
+        return true;
+    }
+    public static void PrintArray(Integer[] array ){
+        for(int i=0;i<array.length;i++){
+            System.out.print(array[i]+" ");
+        }System.out.println();
+        return;
+    }
+    public static void swap(Integer[] array,int i,int j){
+        Integer x=array[i];
+        array[i]=array[j];
+        array[j]=x;
+    }
+	public void sort(Integer[] array){
+		/********* Begin *********/
+		int length = array.length;
+        if(isSorted(array)) PrintArray(array);
+        {        
+            for (int i = 0, j; i < length / 2; i++) {  //N个数需要N/2趟
+
+            	for (j = i; j < length - 1 - i; j++) { //假设是从左至右,则每当此for循环结束,较大的数往右边冒出
+                	if (Double.parseDouble(array[j].toString()) > Double.parseDouble(array[j + 1].toString())) {
+                   	 	swap(array, j, j + 1);
+                    	PrintArray(array);
+                	}
+            	}
+
+           		for (--j; j > i; j--) {  //添加一层循环,同时从右至左,则每当此for循环结束,较小的数往左边冒出
+               	 	if (Double.parseDouble(array[j - 1].toString()) > Double.parseDouble(array[j].toString())) {
+                    	swap(array, j - 1, j);
+                    	PrintArray(array);
+                	}
+            	}
+
+        	}
+
+    	}
+		
+		/********* End *********/
+	}
+}

@@ -1,0 +1,66 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.*;
+public class Task {
+	public void task() throws IOException{
+		/********* Begin *********/
+		File file=new File("src/step4/input/","input.txt");
+        File file11=new File("src/step4/output/");
+        File file1=new File("src/step4/output/","output.txt");
+		//File file2=new File("src/step4/input/","input.jpg");
+		//File file3=new File("src/step4/output/output.jpg");
+        //if(!file11.isFile()){
+          //  file11.mkdir();
+            //System.out.println("创建成功");
+        //if(file1.exists()){
+        	//file1.createNewFile();
+            //System.out.println("创建成功");
+        //}
+        //}
+       // if(!file3.exists()){
+        //	file3.createNewFile();
+        //}
+        FileReader fr=new FileReader("src/step4/input/input.txt");
+        FileWriter fw=new FileWriter("src/step4/output/output.txt");
+       	//BufferedReader br=new BufferedReader(new FileReader(file));
+       	//BufferedWriter bw=new BufferedWriter(new FileWriter(file1));
+     	//try{
+            //int a=0;
+            //String s="";
+        int n=0;
+        char [] c=new char[1024];
+           	while((n=fr.read(c))!=-1){
+			//s=br.readLine();
+        	fw.write(c,0,n);
+                // fw.flush();
+           }
+            //fw.flush();
+        fw.close();
+        fr.close();
+        //}catch(IOException e){
+        	//e.printStackTrace();
+        //}
+        FileOutputStream fo=new FileOutputStream("src/step4/output/output.jpg");
+        FileInputStream fi=new FileInputStream("src/step4/input/input.jpg");
+        //try{
+            byte [] b=new byte[1024];
+            int a=0;
+            while((a=fi.read(b))!= (-1)){
+            //fi.read(b);
+           	fo.write(b,0,a);
+            }
+            fo.flush();
+        fo.close();
+        fi.close();
+       // }catch(IOException e){
+        	//e.printStackTrace();
+        //}
+		/********* End *********/		
+	}
+}

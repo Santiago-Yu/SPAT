@@ -1,0 +1,51 @@
+package step3;
+import java.util.Arrays;
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+        int a[]=new int[arr.length];
+		for(int i=0;i<arr.length;i++)
+		{
+			a[i]=arr[i];
+		}
+				int k=0;
+		int j,p;
+		int b[]=new int[a.length];
+		for(int h=0;h<a.length;h++)
+		{
+			b[h]=0;
+		}
+		for(int i=1;i<a.length-1;i++)
+		{
+			if(a[i-1]>a[i]&&a[i+1]>a[i])
+			{
+				k++;
+				for(j=i-1;j>0;j--)
+				{
+					if(a[j]>=a[j-1])
+					{
+						break;
+					}
+				}
+				for( p=i+1;p<a.length-1;p++)
+				{
+					if(a[p]>=a[p+1])
+					{
+						break;
+					}
+				}
+				b[i]=p-j+1;
+			}
+		}
+		Arrays.sort(b);
+		if(k==0)
+		{
+			return b[0];
+		}
+		else {
+			return b[a.length-1];
+		}
+		/********* End *********/	
+	}
+}

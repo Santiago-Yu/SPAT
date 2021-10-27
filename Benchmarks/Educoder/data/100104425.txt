@@ -1,0 +1,32 @@
+package step2;
+
+public class ConverseNumber {
+	public void Converse (int n) {
+		/********** Begin *********/
+		int[] num;
+        int i = 0;
+        
+        int N = n;
+        
+        while(N != 0)
+        {
+            N = N / 10;
+        	i++;
+        }
+        
+        num = new int[i];
+        i = 0;
+        
+        while(n != 0)
+        {
+        	num[i++] = n % 10;
+            n = n / 10;
+        }
+        
+        for(int num1 : num)
+        {
+        	System.out.print(num1);
+        }
+        /********** End *********/
+	}
+}

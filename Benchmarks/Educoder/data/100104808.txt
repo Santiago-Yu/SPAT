@@ -1,0 +1,40 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+        String str1 = new String();
+        str1 = scanner.nextLine();
+       // System.out.println(str1);
+        String str2 = new String();
+        str2 = scanner.next();
+        //System.out.println(str2);
+        int LOC = 0;   //每一次调整过后的位置
+        int Lnum = 0;  //在原字符串中的位置
+        int len1 = str1.length();   //输入字符串的总长度
+        int len2 = str2.length();   //被检测字符串的长度
+        while(LOC != -1)
+            {
+                LOC = str1.indexOf(str2);
+                if(LOC+Lnum+len2 == len1)  
+                {
+                    Lnum = LOC + Lnum;
+                    System.out.println(Lnum);
+                    break;
+                }
+                if(LOC+Lnum+len2 != len1)
+                {
+                    str1 = str1.substring(LOC+len2);
+                }
+                Lnum = LOC + Lnum;
+                System.out.println(Lnum);
+                Lnum = Lnum + len2;
+            }
+
+
+        /********** End *********/
+    }
+}

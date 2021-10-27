@@ -1,0 +1,33 @@
+package step2;
+
+/********* Begin *********/
+public class Station extends Thread   {	 
+	 static int ticketcount=20;
+	 static Object ob="aa";
+ public void run(){
+   while(ticketcount>=0)
+   {
+	 synchronized(ob) { 
+ if(ticketcount>0){
+	  System.out.println("卖出了第"+ticketcount+"张票");
+	  ticketcount--;
+ }else {
+	 System.out.println("票卖完了");ticketcount--;
+ }}
+   try {
+	   sleep(100);
+	 }catch(Exception e){e.printStackTrace();}}
+ }
+
+
+ public static void main(String[] args) {
+     //实例化站台对象，并为每一个站台取名字
+      Station station1=new Station();
+      Station station2=new Station();
+      Station station3=new Station();
+
+     // 让每一个站台对象各自开始工作
+      station1.start();
+      station2.start();
+      station3.start();
+}}

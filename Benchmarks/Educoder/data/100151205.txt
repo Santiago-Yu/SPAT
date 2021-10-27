@@ -1,0 +1,26 @@
+package step1;
+import java.util.Scanner;
+public class TestJava9_4 {
+	public static void main(String[] args) {
+		System.out.printf("请输入一个六位数整数：\n");
+        int y=0,sum=0,s=682413,x;
+        x=s;
+        for(int i=0;i<6;i++)
+        {
+            y=s%10;
+        	s=s/10;
+            sum=sum+y;
+        }
+        if(sum%2==0)
+        {
+           System.out.printf("%d的各位数字之和能被2整除\n",x);
+            System.out.printf("程序结束\n");
+        }
+        else
+        {
+            System.out.printf("%d的各位数字之和不能被2整除\n",x);
+            System.out.printf("程序结束\n");
+        }
+	}
+
+}

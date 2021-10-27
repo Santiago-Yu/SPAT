@@ -1,0 +1,43 @@
+package step3;
+
+public class Task {
+	
+		public int fun(int a,int b,int c) {
+		if((b>a&&b>c)||(b>a&&b==c)||(b==a&&b>c)) {
+			return 1;
+		}
+		if((b<a&&b<c)||(b<a&&b==c)||(b==a&&b<c)) {
+			return -1;
+		}
+		return 0;
+	}
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+		if(arr.length<3) {
+			return 0;
+		}
+		int n=arr.length;
+		int a[]=new int[n];
+		int s=0;
+		int k1=0,k2=0;
+		a[0]=fun(arr[0],arr[0],arr[1]);
+		a[n-1]=fun(arr[n-2],arr[n-1],arr[n-1]);
+		for(int i=1;i<n-1;++i) {
+			a[i]=fun(arr[i-1],arr[i],arr[i+1]);
+		}
+		for(int i=0;i<n;++i) {
+			if(a[i]==1) {
+				if(k1<k2&&i-k1+1>s) {
+					s=i-k1+1;
+				}
+				k1=i;
+			}
+			if(a[i]==-1) {
+				k2=i;
+			}
+		}
+		return s;
+		
+		/********* End *********/
+	}
+}

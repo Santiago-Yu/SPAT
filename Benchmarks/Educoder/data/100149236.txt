@@ -1,0 +1,37 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        if (area == null || area.length == 0) {
+                return 0;
+            }
+            //grid={{'x','o','x','x','x'},{'x','x','x','o','x'},{'x','x','o','o','x'},{'x','x','x','x','x'}};
+            //m = grid.length;
+            //n = grid[0].length;
+            int areaNum = 0;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if (area[i][j] != 'x') {
+                        dfs(area, n,m,i, j);
+                        areaNum++;
+                    }
+                }
+            }
+            return areaNum ;
+
+		/********* End *********/	
+	}
+    
+    public static void dfs(char[][] area, int n,int m,int i, int j) {
+            if (i < 0 || i >= n || j < 0 || j >= m || area[i][j] == 'x') {
+                return;
+            }
+            area[i][j] = 'x';
+            int[][] direction = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+            for (int[] d : direction) {
+                dfs(area, n,m,i + d[0], j + d[1]);
+            }
+        }
+}

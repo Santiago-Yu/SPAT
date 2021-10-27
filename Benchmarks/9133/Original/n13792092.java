@@ -1,0 +1,15 @@
+class n13792092{
+    public NodeId generateTopicId(String topicName) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA");
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println("No SHA support!");
+        }
+        md.update(topicName.getBytes());
+        byte[] digest = md.digest();
+        NodeId newId = new NodeId(digest);
+        return newId;
+    }
+
+}

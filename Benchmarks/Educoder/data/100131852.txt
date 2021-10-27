@@ -1,0 +1,49 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		displayInfo(0,file);
+	}
+	public void displayInfo(int depth, File file) {
+		boolean directory = file.isDirectory();
+		String name = file.getName();
+		StringBuilder buf = new StringBuilder();
+//		for (int i = 0; i < depth; ++i) {
+////			buf.append("+");
+//			System.out.print("  ");
+//		}
+		
+		if(name.endsWith("txt") || name.endsWith(".docx")){
+			
+		}else{
+			for (int i = 0; i < depth; ++i) {
+//				buf.append("+");
+				System.out.print("  ");
+			}
+			if (directory) {
+				buf.append("+--");
+			}
+			if(file.isFile()){
+				//buf.append("\t");
+				buf.append("--");
+			}
+			if (name.isEmpty()) {
+				buf.append(".");
+			} else {
+				buf.append(name);
+			}
+			System.out.println(buf.toString());
+		}
+
+		File[] children = file.listFiles();
+		if (children != null) {
+			for (File child : children) {
+				displayInfo(depth + 1, child);
+			}
+		}
+	}
+	/********** END **********/
+}

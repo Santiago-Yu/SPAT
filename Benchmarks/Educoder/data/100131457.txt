@@ -1,0 +1,35 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		if(file.isDirectory()){//直接输出当前文件夹名
+            System.out.println("+--"+file.getName());
+		}
+           int  Blank=2;
+            showChildFile(file,Blank);//继续遍历该文件夹中的内容
+    }
+        
+        private void showChildFile(File file, int blank) {
+        	File[] files=file.listFiles();//得到当前文件中的文件列表
+            for(int i=0;i<files.length;i++){//遍历所有文件
+                if(files[i].isDirectory()) {//当文件为文件夹时
+                	for(int k=0;k<blank;k++)
+                	{
+                		System.out.print(" ");
+                	}
+                	System.out.println("+--"+files[i].getName());
+                	showChildFile(files[i],blank+2);
+                }else {//当文件不是文件夹时
+                	for(int k=0;k<blank;k++) {
+                		System.out.print(" ");
+                	}
+                	System.out.println("--"+files[i].getName());
+                }
+            }
+		
+	}
+        /********** END **********/
+}

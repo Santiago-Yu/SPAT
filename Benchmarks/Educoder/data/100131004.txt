@@ -1,0 +1,40 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int [] arr = new int[3];
+        int sum = 0;
+        
+        for(int i=0;i<arr.length;i++)
+            arr[i] = 0;
+        
+        while(num1 <= num2) {
+        	for(int i=0;i<arr.length;i++){
+                arr[i] = num1%10;
+                sum += arr[i];
+                num1 = num1/10;
+                if(num1==0)
+                    break;
+            }
+            if(arr[0] == 9) {
+            	if(arr[1] == 9) {
+                	arr[0] = 0;
+                    arr[1] = 0;
+                    arr[2]++;
+                } else {
+                	arr[0] = 0;
+                    arr[1]++;
+                }
+            } else {
+            	arr[0]++;
+            }
+            num1 = arr[0] + 10*arr[1] + 100*arr[2];
+        }
+		
+		return sum;
+		/********** END **********/
+	}
+}

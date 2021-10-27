@@ -1,0 +1,33 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+    public static int getGys(int a,int b){
+        int mod=a%b;
+        while(mod!=0){
+            a=b;
+            b=mod;
+            mod=a%b;
+        }
+        return b;
+    }
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        int maxLength=getGys(length,width);
+        System.out.println(maxLength);
+        System.out.println((length*width)/(maxLength*maxLength));
+        
+		
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

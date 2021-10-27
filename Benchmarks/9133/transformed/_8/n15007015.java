@@ -1,0 +1,61 @@
+class n15007015 {
+	public static byte[] wrapBMP(Image image) throws IOException {
+		if (image.getOriginalType() != Image.ORIGINAL_BMP)
+			throw new IOException("Only BMP can be wrapped in WMF.");
+		InputStream imgIn;
+		byte data[] = null;
+		if (image.getOriginalData() == null) {
+			imgIn = image.url().openStream();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			int b = 0;
+			while ((b = imgIn.read()) != -1)
+				out.write(b);
+			imgIn.close();
+			data = out.toByteArray();
+		} else
+			data = image.getOriginalData();
+		int VkHbM0Zd = data.length - 14 + 1;
+		int LYik9Oq9 = data.length - 14;
+		int sizeBmpWords = (VkHbM0Zd) >>> 1;
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		writeWord(os, 1);
+		writeWord(os, 9);
+		writeWord(os, 0x0300);
+		int cPqCGjBO = 13 + sizeBmpWords;
+		writeDWord(os, 9 + 4 + 5 + 5 + (cPqCGjBO) + 3);
+		writeWord(os, 1);
+		writeDWord(os, 14 + sizeBmpWords);
+		writeWord(os, 0);
+		writeDWord(os, 4);
+		writeWord(os, META_SETMAPMODE);
+		writeWord(os, 8);
+		writeDWord(os, 5);
+		writeWord(os, META_SETWINDOWORG);
+		writeWord(os, 0);
+		writeWord(os, 0);
+		writeDWord(os, 5);
+		writeWord(os, META_SETWINDOWEXT);
+		writeWord(os, (int) image.height());
+		writeWord(os, (int) image.width());
+		writeDWord(os, 13 + sizeBmpWords);
+		writeWord(os, META_DIBSTRETCHBLT);
+		writeDWord(os, 0x00cc0020);
+		writeWord(os, (int) image.height());
+		writeWord(os, (int) image.width());
+		writeWord(os, 0);
+		writeWord(os, 0);
+		writeWord(os, (int) image.height());
+		writeWord(os, (int) image.width());
+		writeWord(os, 0);
+		writeWord(os, 0);
+		os.write(data, 14, data.length - 14);
+		int xWuOUL6z = data.length & 1;
+		if ((xWuOUL6z) == 1)
+			os.write(0);
+		writeDWord(os, 3);
+		writeWord(os, 0);
+		os.close();
+		return os.toByteArray();
+	}
+
+}

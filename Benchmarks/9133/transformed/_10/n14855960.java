@@ -1,0 +1,33 @@
+class n14855960 {
+	private static List<InputMethodDescriptor> loadIMDescriptors() {
+		Enumeration<URL> en;
+		String nm = SERVICES + InputMethodDescriptor.class.getName();
+		NativeIM nativeIM = ContextStorage.getNativeIM();
+		LinkedList<InputMethodDescriptor> imdList = new LinkedList<InputMethodDescriptor>();
+		imdList.add(nativeIM);
+		try {
+			en = ClassLoader.getSystemResources(nm);
+			ClassLoader cl = ClassLoader.getSystemClassLoader();
+			while (en.hasMoreElements()) {
+				URL url = en.nextElement();
+				InputStreamReader isr = new InputStreamReader(url.openStream(), "UTF-8");
+				BufferedReader br = new BufferedReader(isr);
+				String str = br.readLine();
+				while (str != null) {
+					str = str.trim();
+					int comPos = str.indexOf("#");
+					if (comPos >= 0) {
+						str = str.substring(0, comPos);
+					}
+					if (str.length() > 0) {
+						imdList.add((InputMethodDescriptor) cl.loadClass(str).newInstance());
+					}
+					str = br.readLine();
+				}
+			}
+		} catch (Exception e) {
+		}
+		return imdList;
+	}
+
+}

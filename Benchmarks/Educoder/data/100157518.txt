@@ -1,0 +1,33 @@
+package step2;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+public class StudentDemo{
+	//返回一个Map集合来得到单词和首次出现的下标  key为单词名称  value为单词的角标
+	public Map<String, Integer> getMap(String str){
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		//对str进行分割   再加入map集合中
+        String str1=str.replace(".","");
+        String str2=str1.replace(":","");
+        String str3=str2.replace("?","");
+        String str4=str3.replace("!","");
+        String str5=str4.replace("\n","");
+        String str6=str5.replace(","," ");
+         String str7=str6.replace("'","");
+		String a[]=str7.split(" ");
+        int b[]=new int[a.length];
+        for(int i=0;i<a.length;i++){
+        b[i]=str.indexOf(a[i]);
+        
+        }
+
+ for(int i=0;i<a.length;i++){
+       map.put(a[i],b[i]);
+        
+        }
+
+
+		return map;
+	}
+
+}

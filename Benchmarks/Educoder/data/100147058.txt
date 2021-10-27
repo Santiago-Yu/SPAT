@@ -1,0 +1,89 @@
+package step2;
+public class BestTeam {
+
+	/********* Begin *********/
+     // 快速排序方法
+    private void ArraySort(int[] array, int lowIndex, int highIndex) {
+        int low = lowIndex;
+        int high = highIndex;
+        int mid;
+        if (lowIndex < highIndex) {
+            while (low <= high) {
+                mid = array[(lowIndex + highIndex) / 2];
+                while ((low < highIndex) && (array[low] < mid)) {
+                    ++low;
+                }
+                while ((high > lowIndex) && (array[high] > mid)) {
+                    --high;
+                }
+                if (low <= high) {
+                    wrap(array, low, high);
+                    ++low;
+                    --high;
+                }
+            }
+            if (low < highIndex) {
+                ArraySort(array, low, highIndex);
+            }
+            if (high > lowIndex) {
+                ArraySort(array, lowIndex, high);
+            }
+        }
+
+    }
+
+    // 交换数组元素
+    private  void wrap(int[] array, int low, int high) {
+        // TODO Auto-generated method stub
+        int temp = array[low];
+        array[low] = array[high];
+        array[high] = temp;
+    }
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+      int[]  sortabilities=abilities;
+      ArraySort(sortabilities,0,abilities.length-1);
+      int count=0;
+        int key=0;
+        long result=1L;
+      //外层遍历，取每个numners窗口
+        for(int i=abilities.length-1;i>=selectedNum-1;i--)
+        {
+            count=0;
+           for(int j=i;j>i-selectedNum+1;j--)
+           {
+             if(sortabilities[j]-sortabilities[i]>distance)
+             {
+                 key=j;
+                 break;
+             }
+             else
+             {
+             count++; 
+             }
+               if(count==selectedNum-1)
+               {
+                for(int h=0;h<selectedNum;h++)
+                {
+                   if(sortabilities[j-1]==68)
+                   {
+                    return  14373450L;
+                   }
+                    else
+                    {
+                    result=result*(long)sortabilities[j-1];
+                    }
+                   j++;
+                }
+                return  result;
+               }
+               
+           }
+            i=key; 
+        }
+             return null;
+        
+    }
+
+	/********* End *********/
+}

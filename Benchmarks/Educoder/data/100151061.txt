@@ -1,0 +1,27 @@
+package step4;
+import java.util.Scanner;
+public class TestJava8_4 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		//定义变量,存放年份
+		int year;
+		
+		//提示用户输入年份
+		System.out.println("请输入年份：");
+		//接收用户输入的年份
+		year=sc.nextInt();
+
+		//判断是否为闰年
+		if(year%4==0 && year%100!=0 || year%400==0)
+		{
+			//如果是闰年，提示用户
+			System.out.print(year+"是闰年\n");
+		}
+		else
+		{
+			//如果不是闰年，提示用户
+			System.out.print(year+"不是闰年");
+		}
+		/******End******/	
+	}
+}

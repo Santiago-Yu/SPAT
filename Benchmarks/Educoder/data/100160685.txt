@@ -1,0 +1,60 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+		/**********   Begin   **********/
+		File input = new File(filePath);
+    	Document doc = Jsoup.parse(input,"UTF-8","http://www.educoder.net/");
+    	return doc;
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+		List<String> arrs=new ArrayList<>();
+    	Elements links = doc.select("a[href]");
+    	for (Element link : links) {
+            arrs.add(link.tagName()+"$"+link.attr("abs:href")+"("+link.text()+")");
+    	}
+    	return arrs;
+		/**********   End   **********/
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		/**********   Begin   **********/
+		List<String> arrs=new ArrayList<>();
+    	Elements media = doc.select("[src]");
+        for (Element src : media) {
+        	if (src.tagName().equals("img")){
+            	arrs.add(src.tagName()+"$"+src.attr("abs:src"));
+        	}
+    	}
+
+		return arrs;
+		/**********   End   **********/
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		/**********   Begin   **********/
+		List<String> arrs=new ArrayList<>();
+    	Elements Imports = doc.select("link[href]");
+    	for (Element Import : Imports) {
+            arrs.add(Import.tagName()+"$"+Import.attr("abs:href")+"("+Import.attr("rel")+")");
+    	}
+    	return arrs;
+		/**********   End   **********/
+	}
+	
+}

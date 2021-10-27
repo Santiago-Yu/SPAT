@@ -1,0 +1,35 @@
+package Pid_101;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in = new Scanner(System.in);
+        String a,b;
+        a = in.nextLine();
+        b = in.nextLine();
+        int res=0,i,j,num,k;
+        int alength = a.length();
+        int blength = b.length();
+        char []c = new char[10];
+        char []d = new char[10];
+        c = a.toCharArray();
+        d = b.toCharArray();
+        for(i=0;i<alength;i++){
+        	for(j=0;j<blength;j++){
+        		if(c[i]==d[j]){
+        			num=1;
+        			k=1;
+        			while((i+k)<alength&&(j+k)<blength&&c[i+k]==d[j+k]){
+        				k++;
+        				num++;
+        			}
+        			if(res<num)
+        				res=num;
+        		}
+        	}
+        }
+        System.out.print(res);
+	}
+
+}

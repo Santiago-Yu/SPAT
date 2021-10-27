@@ -1,0 +1,63 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File(filePath);
+        Document doc = Jsoup.parse(input,"UTF-8");
+        
+		return doc;
+
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+        List<HotelCity> list = new ArrayList<HotelCity>();
+ 		Elements hotelsLinks =doc.getElementsByTag("dd");
+        
+        for (int i = 0; i < hotelsLinks.size(); i++) {
+    	//当前dd
+    	Element head_hotelsLink = hotelsLinks.get(i);
+    	//当前dd下的所有孩子也就是a标签
+      	Elements links  = head_hotelsLink.select("a");
+            for (Element link : links) {
+    		HotelCity city = new HotelCity();
+            String s = link.attr("href");
+            String s1 = s.substring(7);
+            String s2 = s.substring(7,8).toUpperCase();
+            String num = s1.replaceAll("\\D","");
+            String char1 = s1.replaceAll("\\d","");
+                
+            if(s1.equals("macau59"))
+            {
+                s2 = "A";
+            }
+    		city.setCityName(link.html());
+            city.setHeadPinyin(s2);
+            city.setCityId(num);
+            city.setPinyin(char1);
+    		list.add(city);
+		}
+		}
+       
+		
+        
+		return list;
+		/**********   End   **********/
+	}
+}

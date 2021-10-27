@@ -1,0 +1,30 @@
+package step2;
+
+import java.util.Scanner;
+public class AdditionCalculator {
+	public void addition(int a, int n) {
+		/********** Begin *********/
+		int sum = 0,flag=0,flag1=1,sum1 = 0;
+		while(flag<n) {
+			flag++;
+			for(int i=1;i<=flag;i++) {
+				sum1+=a*flag1;
+				//System.out.println("sum1=="+sum1);
+				flag1*=10;
+			}
+			//System.out.println(sum1);
+			flag1=1;
+			sum+=sum1;
+			sum1=0;
+		}
+		System.out.print(sum);
+		/********** End *********/
+	}
+	public static void main(String[] args) {
+		AdditionCalculator A=new AdditionCalculator();
+		Scanner sc=new Scanner(System.in);
+		int a=sc.nextInt();
+		int n=sc.nextInt();
+		A.addition( a, n);
+	}
+}

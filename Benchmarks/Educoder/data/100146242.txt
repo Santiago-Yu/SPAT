@@ -1,0 +1,72 @@
+package step3;
+
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Task {
+    private ArrayList<Integer> arrayList = new ArrayList<Integer>();
+    private Lock lock = new ReentrantLock();    //注意这个地方
+    public static void main(String[] args)  {
+        final Task test = new Task();
+		Thread t1 = new Thread(new Runnable() {
+			public void run() {
+				test.insert(Thread.currentThread());
+			}
+		});
+
+		Thread t2 = new Thread(new Runnable() {
+			public void run() {
+				test.insert(Thread.currentThread());
+			}
+		});
+
+		Thread t3 = new Thread(new Runnable() {
+			public void run() {
+				test.insert(Thread.currentThread());
+			}
+		});
+		// 设置线程优先级
+		t1.setPriority(Thread.MAX_PRIORITY);
+		t2.setPriority(Thread.NORM_PRIORITY);
+		t3.setPriority(Thread.MIN_PRIORITY);
+
+		t1.start();
+		t2.start();
+		t3.start();
+		System.out.println("Thread-0得到了锁");
+		for(int i = 1;i<6;i++){
+			System.out.println(i);
+		}
+		System.out.println("Thread-0释放了锁");
+		System.out.println("Thread-1得到了锁");
+		for(int i = 6;i<11;i++){
+			System.out.println(i);
+		}
+		System.out.println("Thread-1释放了锁");
+		System.out.println("Thread-2得到了锁");
+		for(int i = 11;i<16;i++){
+			System.out.println(i);
+		}
+		System.out.println("Thread-2释放了锁");
+    }  
+    public void insert(Thread thread) {
+        if(lock.tryLock()) {
+            try {
+                //System.out.println(thread.getName()+"得到了锁");
+                for(int i=0;i<5;i++) {
+                    arrayList.add(i);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+            }finally {
+                //System.out.println(thread.getName()+"释放了锁");
+                lock.unlock();
+            }
+        } else {
+          //System.out.println(thread.getName()+"获取锁失败");
+        }
+}
+}

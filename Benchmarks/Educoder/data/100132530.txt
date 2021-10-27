@@ -1,0 +1,33 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int j =  get_gcd(length, width);
+		System.out.println(j);
+		int res = length*width /(j*j);
+		System.out.println(res);
+		
+		
+		
+		
+		/********** END **********/
+	}
+	
+	public static int get_gcd(int a, int b) {
+        int max, min;
+        max = (a > b) ? a : b;
+        min = (a < b) ? a : b;
+
+        if (max % min != 0) {
+            return get_gcd(min, max % min);
+        } else
+            return min;
+
+    }
+}

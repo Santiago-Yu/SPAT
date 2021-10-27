@@ -1,0 +1,41 @@
+#include<iostream>
+#include<string>
+#include<cstring>
+using namespace std;
+
+int Maxstr(string a,string b)
+{
+	unsigned int start1,start2;
+	int count=0,max=0;
+	for(unsigned int i=0;a[i]!='\0';i++)
+	{
+		for(unsigned int j=0;b[j]!='\0';j++)
+		{
+			start1=i;
+			start2=j;
+			{
+				while(a[start1]==b[start2]&&start1<a.length()&&start2<b.length())
+				{
+					start1++;
+					start2++;
+					count++;
+				}
+				if(count>max) 
+				{
+					max=count;
+				}
+				count=0; 
+			}
+		}
+	}
+	return max;
+}
+int main()
+{
+	string str1,str2;
+	int n;
+	cin>>str1;
+	cin>>str2;
+	n=Maxstr(str1,str2);
+	cout << n;
+}

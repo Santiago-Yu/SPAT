@@ -1,0 +1,67 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+        asd(file.getAbsolutePath(),0);
+		
+
+
+
+
+
+
+	}
+	public static void asd(String path,int n) {
+		
+		try{		
+			File rootDir = new File(path);
+			if(rootDir.exists()){
+				if(rootDir.isDirectory()){
+					
+					String path1 = rootDir.getName();
+					for(int i=0;i<n;i++)
+						System.out.print("  ");
+					System.out.println("+--"+path1);
+					String[] fileList =  rootDir.list();n++;
+					for (int i = 0; i < fileList.length; i++) {
+						path = rootDir.getAbsolutePath()+"/"+fileList[i]; 
+						
+						String path2 = fileList[i];
+						if(!new File(path).isDirectory()) {
+							String ss = path2.substring(path2.lastIndexOf(".")+1);
+							if(asdf(ss)) {
+								for(int j=0;j<n;j++)
+									System.out.print("  ");
+							    System.out.println("--"+path2);
+							}
+						}
+						asd(path,n);
+						
+					}
+				}
+				else{
+					String df = rootDir.getAbsolutePath();
+					n--;
+				}
+			}
+		}catch(Exception e){ 	
+//			e.printStackTrace();
+		}
+	}
+	public static boolean asdf(String s) {
+		if(s.equals("jpg")) 
+			return true;
+		else if(s.equals("png"))
+			return true;
+		else if(s.equals("bmp"))
+			return true;
+		else
+			return false;
+	}
+
+	/********** END **********/
+}

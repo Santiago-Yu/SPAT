@@ -1,0 +1,21 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		
+		int[] gaos=new int[temperatures.length];	
+		for (int i = 0; i < temperatures.length; i++) {	//循环遍历
+			for (int j = i; j < temperatures.length; j++) {	//循环遍历，从i开始
+				if (temperatures[j]>temperatures[i]) {
+					gaos[i]=j-i;
+					break;
+				}
+			}
+		}
+		
+		
+		return gaos;
+		/********** END **********/
+	}
+}

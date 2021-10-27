@@ -1,0 +1,40 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // 日期格式
+			Date date = null;
+			try {
+				date = dateFormat.parse(releaseDate);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} // 指定时间（字符串格式）
+			
+			 long time = date.getTime(); // 得到指定日期的毫秒数
+             long day1=(long)day*24*60*60*1000;
+			 time+=day1; // 相加得到新的毫秒数
+			 Date newDate =  new Date(time); // 将毫秒数转换成日期
+			return (String)dateFormat.format(newDate);
+
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,25 @@
+package step3;
+import java.util.Scanner;
+public class GcdAndGcm {
+	public static void main(String[] args) {
+		/********** Begin *********/
+		//键盘输入数据
+        Scanner sc=new Scanner(System.in);
+		//do—while循环，辗转相除法\
+        int a=sc.nextInt();
+        int b=sc.nextInt();
+        int a1=a;
+        int b1=b;
+        int r;
+        do{
+           r=a%b;
+           a=b;
+           b=r;
+        }while(r!=0);
+     	  	System.out.println("最大公约数："+a);
+ 			System.out.println("最小公倍数："+(a1*b1/a));
+        
+		//关掉输入流
+        /********** End *********/
+		}
+}

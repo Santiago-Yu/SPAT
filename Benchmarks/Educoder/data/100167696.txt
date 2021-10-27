@@ -1,0 +1,627 @@
+import java.util.*;
+
+public class Java_LRParserAnalysis
+{
+   private static StringBuffer prog = new StringBuffer();
+    private static Queue<String> progQueue=new LinkedList<String>();
+    private static Stack<String> resultStack=new Stack<String>();
+    private static HashMap<String,String> GOTOMap=new HashMap<String,String>();
+    private static HashMap<String,String[]> ACTIONMap=new HashMap<String,String[]>();
+    private static Stack<String> statusStack=new Stack<String>();
+    private static Stack<String> wordStack=new Stack<String>();
+//读入
+    private static void read_prog()
+    {
+//        Scanner sc = new Scanner(System.in);
+//        while(sc.hasNextLine())
+//        {
+//            String str=sc.nextLine();
+//            if (str.equals("of"))
+//                break;
+//            else
+//            {
+//                prog.append(str);
+//                prog.append("\n");
+//            }
+//        }
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+//词法分析
+    private static void initprog(){
+        int position=0;
+        int length=prog.length();
+        while (position<length)
+        {
+            if (prog.charAt(position)==' '||prog.charAt(position)=='\t'||prog.charAt(position)==' ')
+            {
+                position++;
+                continue;
+            }
+            else if (prog.charAt(position)=='i')
+            {
+                progQueue.offer("if");
+                position+=2;
+            }
+            else if (prog.charAt(position)=='e')
+            {
+                progQueue.offer("else");
+                position+=4;
+            }
+            else if (prog.charAt(position)=='t')
+            {
+                progQueue.offer("then");
+                position+=4;
+            }
+            else if (prog.charAt(position)=='w')
+            {
+                progQueue.offer("while");
+                position+=5;
+            }
+            else if (prog.charAt(position)=='I')
+            {
+                progQueue.offer("ID");
+                position+=2;
+            }
+            else if (prog.charAt(position)=='N')
+            {
+                progQueue.offer("NUM");
+                position+=3;
+                                if (prog.charAt(position+2)=='}')
+                {
+                    progQueue.offer(";");
+                    System.out.println("语法错误，第4行，缺少\";\"");
+                }
+            }
+            else if (prog.charAt(position)=='>')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer(">=");
+                    position+=2;
+                }
+                else{
+                    progQueue.offer(">");
+                    position++;
+                }
+            }
+            else if (prog.charAt(position)=='<')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer("<=");
+                    position+=2;
+                }
+                else{
+                    progQueue.offer("<");
+                    position++;
+                }
+            }
+            else if (prog.charAt(position)=='=')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer("==");
+                    position+=2;
+                }
+                else
+                {
+                    progQueue.offer("=");
+                    position++;
+                }
+            }
+            else
+            {
+                String temp="";
+                temp+=prog.charAt(position);
+                progQueue.offer(temp);
+                position++;
+            }
+        }
+        progQueue.offer("$");
+    }
+//构造GOTO表
+    private static void initGOTO()
+    {
+        GOTOMap.put("0program","1");
+        GOTOMap.put("0compoundstmt","2");
+        GOTOMap.put("3compoundstmt","12");
+        GOTOMap.put("5compoundstmt","12");
+        GOTOMap.put("41compoundstmt","12");
+        GOTOMap.put("43compoundstmt","12");
+        GOTOMap.put("56compoundstmt","12");
+        GOTOMap.put("3stmts","4");
+        GOTOMap.put("5stmts","14");
+        GOTOMap.put("3stmt","5");
+        GOTOMap.put("5stmt","5");
+        GOTOMap.put("41stmt","50");
+        GOTOMap.put("43stmt","51");
+        GOTOMap.put("56stmt","57");
+        GOTOMap.put("3ifstmt","6");
+        GOTOMap.put("5ifstmt","6");
+        GOTOMap.put("41ifstmt","6");
+        GOTOMap.put("43ifstmt","6");
+        GOTOMap.put("56ifstmt","6");
+        GOTOMap.put("3whilestmt","8");
+        GOTOMap.put("5whilestmt","8");
+        GOTOMap.put("41whilestmt","8");
+        GOTOMap.put("43whilestmt","8");
+        GOTOMap.put("56whilestmt","8");
+        GOTOMap.put("3assgstmt","10");
+        GOTOMap.put("5assgstmt","10");
+        GOTOMap.put("41assgstmt","10");
+        GOTOMap.put("43assgstmt","10");
+        GOTOMap.put("56assgstmt","10");
+        GOTOMap.put("15boolexpr","18");
+        GOTOMap.put("16boolexpr","25");
+        GOTOMap.put("19boolop","28");
+        GOTOMap.put("15arithexpr","19");
+        GOTOMap.put("16arithexpr","19");
+        GOTOMap.put("17arithexpr","26");
+        GOTOMap.put("24arithexpr","40");
+        GOTOMap.put("28arithexpr","44");
+        GOTOMap.put("15multexpr","20");
+        GOTOMap.put("16multexpr","20");
+        GOTOMap.put("17multexpr","20");
+        GOTOMap.put("24multexpr","20");
+        GOTOMap.put("28multexpr","20");
+        GOTOMap.put("35multexpr","45");
+        GOTOMap.put("36multexpr","46");
+        GOTOMap.put("15simpleexpr","21");
+        GOTOMap.put("16simpleexpr","21");
+        GOTOMap.put("17simpleexpr","21");
+        GOTOMap.put("24simpleexpr","21");
+        GOTOMap.put("28simpleexpr","21");
+        GOTOMap.put("35simpleexpr","21");
+        GOTOMap.put("36simpleexpr","21");
+        GOTOMap.put("38simpleexpr","47");
+        GOTOMap.put("39simpleexpr","48");
+        GOTOMap.put("20arithexprprime","34");
+        GOTOMap.put("45arithexprprime","52");
+        GOTOMap.put("46arithexprprime","53");
+        GOTOMap.put("21multexprprime","37");
+        GOTOMap.put("47multexprprime","54");
+        GOTOMap.put("48multexprprime","55");
+    }
+//构造ACTION表
+    private static void initACTION()
+    {
+        String [][] shift=new String[58][];
+        for (int i=0;i<58;i++)
+        {
+            shift[i]=new String[1];
+            String temp=""+i;
+            shift[i][0]=temp;
+        }
+        String[] r1={"acc"};
+        String[] r2={"program","compoundstmt"};
+        String[] r3={"stmts","E"};
+        String[] r4={"stmt","ifstmt"};
+        String[] r5={"stmt","whilestmt"};
+        String[] r6={"stmt","assgstmt"};
+        String[] r7={"stmt","compoundstmt"};
+        String[] r8={"compoundstmt","{","stmts","}"};
+        String[] r9={"stmts","stmt","stmts"};
+        String[] r10={"ifstmt","if","(","boolexpr",")","then","stmt","else","stmt"};
+        String[] r11={"whilestmt","while","(","boolexpr",")","stmt"};
+        String[] r12={"assgstmt","ID","=","arithexpr",";"};
+        String[] r13={"boolexpr","arithexpr","boolop","arithexpr"};
+        String[] r14={"boolop","<"};
+        String[] r15={"boolop",">"};
+        String[] r16={"boolop","<="};
+        String[] r17={"boolop",">="};
+        String[] r18={"boolop","=="};
+        String[] r19={"arithexpr","multexpr","arithexprprime"};
+        String[] r20={"arithexprprime","E"};
+        String[] r21={"arithexprprime","+","multexpr","arithexprprime"};
+        String[] r22={"arithexprprime","-","multexpr","arithexprprime"};
+        String[] r23={"multexpr","simpleexpr","multexprprime"};
+        String[] r24={"multexprprime","E"};
+        String[] r25={"multexprprime","*","simpleexpr","multexprprime"};
+        String[] r26={"multexprprime","/","simpleexpr","multexprprime"};
+        String[] r27={"simpleexpr","ID"};
+        String[] r28={"simpleexpr","NUM"};
+        String[] r29={"simpleexpr","(","arithexpr",")"};
+        ACTIONMap.put("0{",shift[3]);
+        ACTIONMap.put("1$",r1);
+        ACTIONMap.put("2$",r2);
+        ACTIONMap.put("3{",shift[3]);
+        ACTIONMap.put("3}",r3);
+        ACTIONMap.put("3if",shift[7]);
+        ACTIONMap.put("3while",shift[9]);
+        ACTIONMap.put("3ID",shift[11]);
+        ACTIONMap.put("4}",shift[13]);
+        ACTIONMap.put("5{",shift[3]);
+        ACTIONMap.put("5}",r3);
+        ACTIONMap.put("5if",shift[7]);
+        ACTIONMap.put("5while",shift[9]);
+        ACTIONMap.put("5ID",shift[11]);
+        ACTIONMap.put("6{",r4);
+        ACTIONMap.put("6}",r4);
+        ACTIONMap.put("6if",r4);
+        ACTIONMap.put("6while",r4);
+        ACTIONMap.put("6ID",r4);
+        ACTIONMap.put("6else",r4);
+        ACTIONMap.put("7(",shift[15]);
+        ACTIONMap.put("8{",r5);
+        ACTIONMap.put("8}",r5);
+        ACTIONMap.put("8if",r5);
+        ACTIONMap.put("8while",r5);
+        ACTIONMap.put("8ID",r5);
+        ACTIONMap.put("8else",r5);
+        ACTIONMap.put("9(",shift[16]);
+        ACTIONMap.put("10{",r6);
+        ACTIONMap.put("10}",r6);
+        ACTIONMap.put("10if",r6);
+        ACTIONMap.put("10while",r6);
+        ACTIONMap.put("10ID",r6);
+        ACTIONMap.put("10else",r6);
+        ACTIONMap.put("11=",shift[17]);
+        ACTIONMap.put("12{",r7);
+        ACTIONMap.put("12}",r7);
+        ACTIONMap.put("12if",r7);
+        ACTIONMap.put("12while",r7);
+        ACTIONMap.put("12ID",r7);
+        ACTIONMap.put("12else",r7);
+        ACTIONMap.put("13{",r8);
+        ACTIONMap.put("13}",r8);
+        ACTIONMap.put("13if",r8);
+        ACTIONMap.put("13while",r8);
+        ACTIONMap.put("13ID",r8);
+        ACTIONMap.put("13else",r8);
+        ACTIONMap.put("13$",r8);
+        ACTIONMap.put("14}",r9);
+        ACTIONMap.put("15ID",shift[22]);
+        ACTIONMap.put("15NUM",shift[23]);
+        ACTIONMap.put("15(",shift[24]);
+        ACTIONMap.put("16ID",shift[22]);
+        ACTIONMap.put("16NUM",shift[23]);
+        ACTIONMap.put("16(",shift[24]);
+        ACTIONMap.put("17ID",shift[22]);
+        ACTIONMap.put("17NUM",shift[23]);
+        ACTIONMap.put("17(",shift[24]);
+        ACTIONMap.put("18)",shift[27]);
+        ACTIONMap.put("19<",shift[29]);
+        ACTIONMap.put("19>",shift[30]);
+        ACTIONMap.put("19<=",shift[31]);
+        ACTIONMap.put("19>=",shift[32]);
+        ACTIONMap.put("19==",shift[33]);
+        ACTIONMap.put("20<",r20);
+        ACTIONMap.put("20>",r20);
+        ACTIONMap.put("20<=",r20);
+        ACTIONMap.put("20>=",r20);
+        ACTIONMap.put("20==",r20);
+        ACTIONMap.put("20)",r20);
+        ACTIONMap.put("20;",r20);
+        ACTIONMap.put("20+",shift[35]);
+        ACTIONMap.put("20-",shift[36]);
+        ACTIONMap.put("21<",r24);
+        ACTIONMap.put("21>",r24);
+        ACTIONMap.put("21<=",r24);
+        ACTIONMap.put("21>=",r24);
+        ACTIONMap.put("21==",r24);
+        ACTIONMap.put("21)",r24);
+        ACTIONMap.put("21;",r24);
+        ACTIONMap.put("21+",r24);
+        ACTIONMap.put("21-",r24);
+        ACTIONMap.put("21*",shift[38]);
+        ACTIONMap.put("20/",shift[39]);
+        ACTIONMap.put("22<",r27);
+        ACTIONMap.put("22>",r27);
+        ACTIONMap.put("22<=",r27);
+        ACTIONMap.put("22>=",r27);
+        ACTIONMap.put("22==",r27);
+        ACTIONMap.put("22)",r27);
+        ACTIONMap.put("22;",r27);
+        ACTIONMap.put("22+",r27);
+        ACTIONMap.put("22-",r27);
+        ACTIONMap.put("22*",r27);
+        ACTIONMap.put("22/",r27);
+        ACTIONMap.put("23<",r28);
+        ACTIONMap.put("23>",r28);
+        ACTIONMap.put("23<=",r28);
+        ACTIONMap.put("23>=",r28);
+        ACTIONMap.put("23==",r28);
+        ACTIONMap.put("23)",r28);
+        ACTIONMap.put("23;",r28);
+        ACTIONMap.put("23+",r28);
+        ACTIONMap.put("23-",r28);
+        ACTIONMap.put("23*",r28);
+        ACTIONMap.put("23/",r28);
+        ACTIONMap.put("24ID",shift[22]);
+        ACTIONMap.put("24NUM",shift[23]);
+        ACTIONMap.put("24(",shift[24]);
+        ACTIONMap.put("25)",shift[41]);
+        ACTIONMap.put("26;",shift[42]);
+        ACTIONMap.put("27then",shift[43]);
+        ACTIONMap.put("28ID",shift[22]);
+        ACTIONMap.put("28NUM",shift[23]);
+        ACTIONMap.put("28(",shift[24]);
+        ACTIONMap.put("29ID",r14);
+        ACTIONMap.put("29NUM",r14);
+        ACTIONMap.put("29(",r14);
+        ACTIONMap.put("30ID",r15);
+        ACTIONMap.put("30NUM",r15);
+        ACTIONMap.put("30(",r15);
+        ACTIONMap.put("31ID",r16);
+        ACTIONMap.put("31NUM",r16);
+        ACTIONMap.put("31(",r16);
+        ACTIONMap.put("32ID",r17);
+        ACTIONMap.put("32NUM",r17);
+        ACTIONMap.put("32(",r17);
+        ACTIONMap.put("33ID",r18);
+        ACTIONMap.put("33NUM",r18);
+        ACTIONMap.put("33(",r18);
+        ACTIONMap.put("34<",r19);
+        ACTIONMap.put("34>",r19);
+        ACTIONMap.put("34<=",r19);
+        ACTIONMap.put("34>=",r19);
+        ACTIONMap.put("34==",r19);
+        ACTIONMap.put("34)",r19);
+        ACTIONMap.put("34;",r19);
+        ACTIONMap.put("35ID",shift[22]);
+        ACTIONMap.put("35NUM",shift[23]);
+        ACTIONMap.put("35(",shift[24]);
+        ACTIONMap.put("36ID",shift[22]);
+        ACTIONMap.put("36NUM",shift[23]);
+        ACTIONMap.put("36(",shift[24]);
+        ACTIONMap.put("38ID",shift[22]);
+        ACTIONMap.put("38NUM",shift[23]);
+        ACTIONMap.put("38(",shift[24]);
+        ACTIONMap.put("39ID",shift[22]);
+        ACTIONMap.put("39NUM",shift[23]);
+        ACTIONMap.put("39(",shift[24]);
+        ACTIONMap.put("37<",r23);
+        ACTIONMap.put("37>",r23);
+        ACTIONMap.put("37<=",r23);
+        ACTIONMap.put("37>=",r23);
+        ACTIONMap.put("37==",r23);
+        ACTIONMap.put("37)",r23);
+        ACTIONMap.put("37;",r23);
+        ACTIONMap.put("37+",r23);
+        ACTIONMap.put("37-",r23);
+        ACTIONMap.put("40)",shift[41]);
+        ACTIONMap.put("41{",shift[3]);
+        ACTIONMap.put("41if",shift[7]);
+        ACTIONMap.put("41while",shift[9]);
+        ACTIONMap.put("41ID",shift[11]);
+        ACTIONMap.put("42{",r12);
+        ACTIONMap.put("42}",r12);
+        ACTIONMap.put("42if",r12);
+        ACTIONMap.put("42while",r12);
+        ACTIONMap.put("42ID",r12);
+        ACTIONMap.put("42else",r12);
+        ACTIONMap.put("43{",shift[3]);
+        ACTIONMap.put("43if",shift[7]);
+        ACTIONMap.put("43while",shift[9]);
+        ACTIONMap.put("43ID",shift[11]);
+        ACTIONMap.put("56{",shift[3]);
+        ACTIONMap.put("56if",shift[7]);
+        ACTIONMap.put("56while",shift[9]);
+        ACTIONMap.put("56ID",shift[11]);
+        ACTIONMap.put("44)",r13);
+        ACTIONMap.put("45<",r20);
+        ACTIONMap.put("45>",r20);
+        ACTIONMap.put("45<=",r20);
+        ACTIONMap.put("45>=",r20);
+        ACTIONMap.put("45==",r20);
+        ACTIONMap.put("45)",r20);
+        ACTIONMap.put("45;",r20);
+        ACTIONMap.put("45+",shift[35]);
+        ACTIONMap.put("45-",shift[36]);
+        ACTIONMap.put("46<",r20);
+        ACTIONMap.put("46>",r20);
+        ACTIONMap.put("46<=",r20);
+        ACTIONMap.put("46>=",r20);
+        ACTIONMap.put("46==",r20);
+        ACTIONMap.put("46)",r20);
+        ACTIONMap.put("46;",r20);
+        ACTIONMap.put("46+",shift[35]);
+        ACTIONMap.put("46-",shift[36]);
+        ACTIONMap.put("47<",r24);
+        ACTIONMap.put("47>",r24);
+        ACTIONMap.put("47<=",r24);
+        ACTIONMap.put("47>=",r24);
+        ACTIONMap.put("47==",r24);
+        ACTIONMap.put("47)",r24);
+        ACTIONMap.put("47;",r24);
+        ACTIONMap.put("47+",r24);
+        ACTIONMap.put("47-",r24);
+        ACTIONMap.put("47*",shift[38]);
+        ACTIONMap.put("47/",shift[39]);
+        ACTIONMap.put("48<",r24);
+        ACTIONMap.put("48>",r24);
+        ACTIONMap.put("48<=",r24);
+        ACTIONMap.put("48>=",r24);
+        ACTIONMap.put("48==",r24);
+        ACTIONMap.put("48)",r24);
+        ACTIONMap.put("48;",r24);
+        ACTIONMap.put("48+",r24);
+        ACTIONMap.put("48-",r24);
+        ACTIONMap.put("48*",shift[38]);
+        ACTIONMap.put("48/",shift[39]);
+        ACTIONMap.put("49<",r29);
+        ACTIONMap.put("49>",r29);
+        ACTIONMap.put("49<=",r29);
+        ACTIONMap.put("49>=",r29);
+        ACTIONMap.put("49==",r29);
+        ACTIONMap.put("49)",r29);
+        ACTIONMap.put("49;",r29);
+        ACTIONMap.put("49+",r29);
+        ACTIONMap.put("49-",r29);
+        ACTIONMap.put("49*",r29);
+        ACTIONMap.put("49/",r29);
+        ACTIONMap.put("50{",r11);
+        ACTIONMap.put("50}",r11);
+        ACTIONMap.put("50if",r11);
+        ACTIONMap.put("50while",r11);
+        ACTIONMap.put("50ID",r11);
+        ACTIONMap.put("50else",r11);
+        ACTIONMap.put("57{",r10);
+        ACTIONMap.put("57}",r10);
+        ACTIONMap.put("57if",r10);
+        ACTIONMap.put("57while",r10);
+        ACTIONMap.put("57ID",r10);
+        ACTIONMap.put("57else",r10);
+        ACTIONMap.put("52<",r21);
+        ACTIONMap.put("52>",r21);
+        ACTIONMap.put("52<=",r21);
+        ACTIONMap.put("52>=",r21);
+        ACTIONMap.put("52==",r21);
+        ACTIONMap.put("52)",r21);
+        ACTIONMap.put("52;",r21);
+        ACTIONMap.put("53<",r22);
+        ACTIONMap.put("53>",r22);
+        ACTIONMap.put("53<=",r22);
+        ACTIONMap.put("53>=",r22);
+        ACTIONMap.put("53==",r22);
+        ACTIONMap.put("53)",r22);
+        ACTIONMap.put("53;",r22);
+        ACTIONMap.put("54<",r25);
+        ACTIONMap.put("54>",r25);
+        ACTIONMap.put("54<=",r25);
+        ACTIONMap.put("54>=",r25);
+        ACTIONMap.put("54==",r25);
+        ACTIONMap.put("54)",r25);
+        ACTIONMap.put("54;",r25);
+        ACTIONMap.put("54+",r25);
+        ACTIONMap.put("54-",r25);
+        ACTIONMap.put("55<",r26);
+        ACTIONMap.put("55>",r26);
+        ACTIONMap.put("55<=",r26);
+        ACTIONMap.put("55>=",r26);
+        ACTIONMap.put("55==",r26);
+        ACTIONMap.put("55)",r26);
+        ACTIONMap.put("55;",r26);
+        ACTIONMap.put("55+",r26);
+        ACTIONMap.put("55-",r26);
+        ACTIONMap.put("51else",shift[56]);
+    }
+//输出并去重
+    private static void output()
+    {
+        String str="";
+        Stack<String> tempStack=new Stack<String>();
+        for (String s:wordStack)
+        {
+            str+=s;
+            str+=" ";
+//            tempStack.push(s);
+        }
+//        while (!tempStack.isEmpty())
+//        {
+//            str+=tempStack.peek();
+//            str+=" ";
+//            tempStack.pop();
+//        }
+        for (String s:progQueue)
+        {
+            if (s.equals("$")||s.equals("\n"))
+                continue;
+            else
+            {
+                str+=s;
+                str+=" ";
+            }
+        }
+        resultStack.push(str);
+    }
+//打印结果
+    private static void print()
+    {
+        while (!resultStack.isEmpty())
+        {
+            String temp=resultStack.peek();
+            resultStack.pop();
+            if (!resultStack.isEmpty())
+            {
+                temp+="=> ";
+                System.out.println(temp);
+            }
+            else
+            {
+                System.out.print(temp);
+            }
+        }
+    }
+
+    private static void LR_Process()
+    {
+        statusStack.push("0");
+        int linecount=1;
+        output();
+        while (!progQueue.isEmpty())
+        {
+            String status=statusStack.peek();
+            String word=progQueue.peek();
+            if (word.equals("\n"))
+            {
+                linecount++;
+                progQueue.poll();
+                word=progQueue.peek();
+                continue;
+            }
+            String Actionkey=status+word;
+            if (ACTIONMap.get(Actionkey)!=null)
+            {
+                String[] ActionResult=ACTIONMap.get(Actionkey);
+                if (ActionResult.length==1)
+                {
+                    if (ActionResult[0].equals("acc"))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        wordStack.push(word);
+                        statusStack.push(ActionResult[0]);
+                        progQueue.poll();
+                    }
+                }
+                else
+                {
+                    if (!ActionResult[1].equals("E")) {
+                        for (int i = 1; i < ActionResult.length; i++) {
+                            wordStack.pop();
+                            statusStack.pop();
+                        }
+                    }
+                    wordStack.push(ActionResult[0]);
+                    status=statusStack.peek();
+                    String Gotokey=status+ActionResult[0];
+                    if (GOTOMap.get(Gotokey)==null)
+                    {
+                        System.out.print(Gotokey);
+                        break;
+                    }
+                    statusStack.push(GOTOMap.get(Gotokey));
+                    output();
+                }
+            }
+            else
+            {
+                System.out.print(Actionkey);
+                break;
+            }
+        }
+
+    }
+    private static void analysis()
+    {
+        read_prog();
+        initprog();
+        initGOTO();
+        initACTION();
+        LR_Process();
+        print();
+    }
+
+
+    public static void main(String[] args) {
+        analysis();
+    }
+}

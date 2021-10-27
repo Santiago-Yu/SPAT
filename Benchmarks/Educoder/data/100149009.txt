@@ -1,0 +1,47 @@
+package step3;
+import java.util.ArrayList;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+		ArrayList<Integer> list = new ArrayList<>();
+        int max = 0;
+
+        for (int i = 1; i < arr.length - 1; i++) {
+            if (arr[i] >= arr[i - 1] && arr[i] >= arr[i + 1]) {
+                list.add(i);
+//                System.out.print("中间" + arr[i - 1]);
+//                System.out.print(arr[i]);
+//                System.out.println(arr[i+1]);
+            }
+        }
+        if (arr.length >= 2) {
+            if (arr[0] > arr[1]) {
+                list.add(0, 0);
+            }
+            if (arr[arr.length - 1] > arr[arr.length - 2]) {
+                list.add(arr.length - 1);
+            }
+        }
+
+//        for (Integer i: list) {
+//            System.out.println(i);
+//        }
+
+
+        for (int i = 0; i < list.size() - 1; i++) {
+            int f = list.get(i);
+            int s = list.get(i + 1);
+            if (f + 1 == s) {
+                continue;
+            } else {
+                max = max >= (s - f + 1) ? max : (s - f + 1);
+            }
+        }
+
+        return max;
+		
+		/********* End *********/	
+	}
+}

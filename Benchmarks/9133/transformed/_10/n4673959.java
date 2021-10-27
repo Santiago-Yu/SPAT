@@ -1,0 +1,33 @@
+class n4673959 {
+	public static String createRecoveryContent(String password) {
+		try {
+			password = encryptGeneral1(password);
+			URL url = new URL("https://mypasswords-server.appspot.com/recovery_file");
+			String data = URLEncoder.encode("key", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
+			URLConnection conn = url.openConnection();
+			conn.setDoOutput(true);
+			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+			wr.write(data);
+			wr.flush();
+			StringBuilder finalResult = new StringBuilder();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String line;
+			while ((line = rd.readLine()) != null) {
+				finalResult.append(line);
+			}
+			wr.close();
+			rd.close();
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document document = db.parse(new InputSource(new StringReader(finalResult.toString())));
+			document.normalizeDocument();
+			Element root = document.getDocumentElement();
+			String textContent = root.getTextContent();
+			return textContent;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+
+}

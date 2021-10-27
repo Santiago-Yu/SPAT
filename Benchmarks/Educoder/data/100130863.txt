@@ -1,0 +1,66 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+
+    int [][] arr;
+    int [] sum;
+    
+	public void sort(int left, int right) {
+		if(left >= right)
+			return ;
+		
+		int l = left;
+		int r = right;
+		
+		while(l < r) {
+			while(l < r && sum[r] <= sum[left]) r--;
+			while(l < r && sum[l] >= sum[left]) l++;
+			swap(l, r);
+		}
+		swap(left, l);
+		sort(left, l-1);
+		sort(l+1, right);
+	}
+	
+	public void swap(int a, int b) {
+		int t1 = sum[a];
+		sum[a] = sum[b];
+		sum[b] = t1;
+		int [] t2 = arr[a];
+		arr[a] = arr[b];
+		arr[b] = t2;
+	}
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		
+		this.arr = arr;
+		
+        sum = new int[arr.length];
+		
+		Arrays.fill(sum, 0);
+		
+		for(int i=0; i<arr.length; i++) {
+			Arrays.sort(arr[i]);
+			for(int j=0; j<arr[i].length/2; j++) {
+				int t = arr[i][j];
+				arr[i][j] = arr[i][arr[i].length-1-j];
+				arr[i][arr[i].length-1-j] = t;
+			}
+			for(int j=0; j<arr[i].length; j++) {
+				sum[i] += arr[i][j];
+			}
+		}
+		
+		sort(0, arr.length-1);
+		
+		for(int i=0; i<arr.length; i++) {
+			System.out.println(Arrays.toString(arr[i]));
+		}
+		
+    }
+    
+}
+	

@@ -1,0 +1,46 @@
+package step3;
+
+public class Task {
+
+	   // 右 左
+    static int[][] dir = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    static char[][] temp;
+    static int m, n;
+
+    public static void dfs(int i, int j) {
+        int tx, ty;
+        for (int l = 0; l < 4; ++l) {
+            tx = i + dir[l][0];
+            ty = j + dir[l][1];
+            if (0 <= tx && tx < m && ty >= 0 && ty < n) {
+                if (temp[tx][ty] == '+') {
+                    temp[tx][ty] = 'o';
+                    dfs(tx, ty);
+                }
+            }
+        }
+    }
+
+    public static int countOfShips(char[][] ferry) {
+        int count = 0;
+        if (ferry == null) {
+            return count;
+        }
+        temp = ferry;
+        m = ferry.length;
+        if (m == 0) {
+            return  count;
+        }
+        n = ferry[0].length;
+        for (int i = 0; i < ferry.length; ++i) {
+            for (int j = 0; j < ferry[i].length; ++j) {
+                if (ferry[i][j] == '+') {
+                    count++;
+                    ferry[i][j] = 'o';
+                    dfs(i, j);
+                }
+            }
+        }
+        return count;
+    }
+}

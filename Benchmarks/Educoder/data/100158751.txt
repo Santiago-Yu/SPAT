@@ -1,0 +1,79 @@
+package Q102;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		int sum5=0,sum6=0,sumf,sumt;
+		boolean flag=true;
+		Scanner sc=new Scanner(System.in);
+		String input=sc.nextLine();
+		String use[]=input.split(" ");
+		int arr[]=new int[use.length];
+		for(int i=0;i<arr.length;i++)
+		{
+			arr[i]=Integer.parseInt(use[i]);
+		}
+		if(arr[0]==10||arr[0]==20)
+		{
+			flag=false;
+		}
+		else{
+			for(int i=0;i<arr.length;i++)
+			{
+				sumf=0;
+				sumt=0;
+				if(arr[i]==10)
+				{
+					for(int j=0;j<i;j++)
+					{
+						if(arr[j]==5)
+							sumf++;
+					}
+					sumf-=sum5;
+					if(sumf>0)
+					{
+						sumf--;
+						sum5++;
+					}
+					else
+					{
+						flag=false;
+						break;
+					}
+				}
+				if(arr[i]==20)
+				{
+					for(int j=0;j<i;j++)
+					{
+						if(arr[j]==5)
+							sumf++;
+						else if(arr[j]==10)
+							sumt++;
+					}
+						sumf-=sum5;
+						sumt-=sum6;
+						if(sumf>0&&sumt>0)
+						{
+							sumf--;
+							sum5++;
+							sumt--;
+							sum6++;
+						}
+						else if(sumf>1&&sumt==0)
+						{
+							sumf-=2;
+							sum5+=2;
+						}
+						else
+						{
+							flag=false;
+							break;
+						}
+				}
+			}
+				}
+				System.out.print(flag);
+	}
+
+}

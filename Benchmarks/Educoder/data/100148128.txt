@@ -1,0 +1,64 @@
+package step1;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+		AtomicInteger synObj = new AtomicInteger(0);
+		MyThread m1 = new MyThread(synObj, "AA", 0);
+		MyThread m2 = new MyThread(synObj, "BB", 1);
+		MyThread m3 = new MyThread(synObj, "CC", 2);
+		m1.start();
+		m2.start();
+		m3.start();
+		
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	
+	
+	AtomicInteger synObj;
+	String threadName;
+	int flag;
+
+	public MyThread(AtomicInteger synObj, String threadname, int flag) {
+		// TODO 自动生成的构造函数存根
+		this.synObj = synObj;
+		this.threadName = threadname;
+		this.flag = flag;
+	}
+
+	public void run() {
+
+		int count = 5;
+
+		while (count > 0) {
+			synchronized (synObj) {
+				if (synObj.get() % 3 == flag) {
+					synObj.set(synObj.get() + 1);
+					System.out.println("Java Thread" + this.threadName);
+					count--;
+					synObj.notifyAll();
+				} else {
+					try {
+						synObj.wait();
+					} catch (InterruptedException e) {
+						// TODO: handle exception
+						e.printStackTrace();
+					}
+
+				}
+			}
+		}
+	}
+
+	/********* End *********/
+}

@@ -1,0 +1,44 @@
+package step4;
+import java.util.Scanner;
+public class Josephus {
+
+   public static void main(String args[]){
+	   /**
+		* 数组解决约瑟夫环问题
+		* @param total   总人数（如41）
+		* @param number  要报的数（如3）
+		* Josecount()算法，显示最后一个的编号
+		*/
+		   int total,number;
+		   Scanner scan=new Scanner(System.in);
+		   total=scan.nextInt();  //输入参与游戏的总人数
+		   number=scan.nextInt(); //输入要报的数字
+	       Josecount(total,number);
+
+   }
+    
+	public static void Josecount(int personNumber, int number) {
+        int k = 0, num = personNumber;
+        int i;//最后一人编号
+        int[] persons = new int[personNumber]; //建立数组，存放所有人的原始编号，从1开始.....personNumber最后一人
+        for (i = 0; i < personNumber; i++) {
+            persons[i] = i + 1;
+        }
+        while (num != 1) {
+            for (i = 0; i < number - 1; i++) {
+                if (k >= num) {
+                    k = 0;
+                }
+                k++;
+                if (k >= num) {
+                    k = 0;
+                }
+            }
+            for (i = k; i < num - 1; i++) {
+                persons[i] = persons[i + 1];
+            }
+            num--;
+        }
+        System.out.print("最后一个人编号："+persons[1]);
+    }
+}

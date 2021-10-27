@@ -1,0 +1,59 @@
+package step2;
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateException extends Exception{
+	private int year;
+	private int month;
+	private int day;
+	
+	public DateException(String s){
+		super(s);
+	}	
+	public DateException(int year,int month,int day) throws DateException{
+		super(year+"-"+"0"+month+"-"+day);
+		/*****Begin*****/
+		if(year>=2100||year<=1900)
+			throw new DateException("年份必须在1900到2100之间");
+		else if(month<1||month>12)
+			throw new DateException("月份必须在1到12之间");
+		else
+			switch(month)
+			{
+				case 12:if(day>31)throw new DateException("日期必须在1到31之间");;
+				case 11:if(day>30)throw new DateException("该月不能出现"+day+"天");;
+				case 10:if(day>31)throw new DateException("该月不能出现"+day+"天");;
+				case 9:if(day>30)throw new DateException("该月不能出现"+day+"天");;
+				case 8:if(day>31)throw new DateException("该月不能出现"+day+"天");;
+				case 7:if(day>31)throw new DateException("该月不能出现"+day+"天");;
+				case 6:if(day>30)throw new DateException("该月不能出现"+day+"天");;
+				case 5:if(day>31)throw new DateException("该月不能出现"+day+"天");;
+				case 4:if(day>30)throw new DateException("该月不能出现"+day+"天");;
+				case 3:if(day>31)throw new DateException("日期必须在1到31之间");;
+				
+				case 2:if(year%4==0 && year%100!=0 || year%400==0||day>29)
+							throw new DateException("该月只有29天");
+					else
+							if(day>28)throw new DateException("该月只有28天");;
+				;
+				case 1:if(day>31)throw new DateException("该月没有"+day+"天");;
+			}
+		
+		
+		/******End******/
+	}
+	
+	public Date getDate()throws ParseException{
+		Date date =null;
+		/*****Begin*****/
+		
+		
+		/******End******/		
+		return date;
+	}
+}

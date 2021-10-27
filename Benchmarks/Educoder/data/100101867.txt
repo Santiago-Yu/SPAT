@@ -1,0 +1,29 @@
+package step1;
+
+import java.io.File;
+
+public class FileDir {
+    public static void start() {
+        File mkdir = new File("src/step1/mkdir");
+        /********** Begin *********/
+		boolean isf = mkdir.exists();
+		if (isf)
+			System.out.println("文件已存在");
+		else{
+			boolean b = mkdir.mkdir();
+			System.out.println(b);
+
+		}
+        /********** End *********/
+
+        File mkdirs = new File("src/step1/mkdirs/folder");
+        /********** Begin *********/
+		boolean iss = mkdirs.exists();
+		if (iss)
+			System.out.println("文件已存在");
+		else{
+			System.out.println(mkdirs.mkdirs());
+		}
+        /********** End *********/
+    }
+}

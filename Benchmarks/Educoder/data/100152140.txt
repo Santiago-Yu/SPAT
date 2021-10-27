@@ -1,0 +1,156 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Task {
+	public static final int mod=1000000007;
+	public static Tree[] tree=new Tree[4*100005]; 
+	public static void build(int id,int l,int r,List<Integer> data) {
+		tree[id]=new Tree();
+		tree[id].l=l;
+		tree[id].r=r;
+		if(l==r) {
+			int v=data.get(l);
+			tree[id].value=v;
+			tree[id].sum=v;
+			tree[id].suml=(l+1)*v;
+			tree[id].sumr=(data.size()-l)*v;
+		}
+		else  {
+			int mid=(l+r)>>1;
+			build(id*2,l,mid,data);
+			build(id*2+1,mid+1,r,data);
+			tree[id].sum=(tree[id*2].sum+tree[id*2+1].sum)%mod;
+			tree[id].suml=(tree[id*2].suml+tree[id*2+1].suml)%mod;
+			tree[id].sumr=(tree[id*2].sumr+tree[id*2+1].sumr)%mod;
+		}
+	}
+	public static void update(int id,int key,int value,List<Integer> data) {
+		if(tree[id].l==tree[id].r) {
+			tree[id].value=value;
+			tree[id].sum=value;
+			tree[id].suml=(tree[id].l+1)*value%mod;
+			tree[id].sumr=(data.size()-tree[id].l)*value%mod;
+		}else {
+			int mid=(tree[id].l+tree[id].r)>>1;
+			if(key<=mid) {
+				update(id*2,key,value,data);
+			}
+			else {
+				update(id*2+1,key,value,data);
+			}
+			tree[id].sum=(tree[id*2].sum+tree[id*2+1].sum)%mod;
+			tree[id].suml=(tree[id*2].suml+tree[id*2+1].suml)%mod;
+			tree[id].sumr=(tree[id*2].sumr+tree[id*2+1].sumr)%mod;
+		}
+	}
+	public static int querySum(int id,int l,int r) {
+		if(l<=tree[id].l&&tree[id].r<=r) {
+			return tree[id].sum;
+		}else {
+			int mid=(tree[id].l+tree[id].r)>>1;
+			int res=0;
+			if(r<=mid) {
+				res = querySum(id*2, l, r)%mod;
+			}else if(l>mid){
+				res = querySum(id*2+1, l, r)%mod;
+			}else {
+				int ans1=querySum(id*2, l, r)%mod;
+				int ans2=querySum(id*2+1, l, r)%mod;
+				res=(ans1+ans2)%mod;
+			}
+			return res;
+		}
+	}
+	public static int querySuml(int id,int l,int r) {
+		if(l<=tree[id].l&&tree[id].r<=r) {
+			return tree[id].suml;
+		}else {
+			int mid=(tree[id].l+tree[id].r)>>1;
+			int res=0;
+			if(r<=mid) {
+				res = querySuml(id*2, l, r)%mod;
+			}else if(l>mid){
+				res = querySuml(id*2+1, l, r)%mod;
+			}else {
+				int ans1=querySuml(id*2, l, r)%mod;
+				int ans2=querySuml(id*2+1, l, r)%mod;
+				res=(ans1+ans2)%mod;
+			}
+			return res;
+		}
+	}
+	public static int querySumr(int id,int l,int r) {
+		if(l<=tree[id].l&&tree[id].r<=r) {
+			return tree[id].sumr;
+		}else {
+			int mid=(tree[id].l+tree[id].r)>>1;
+			int res=0;
+			if(r<=mid) {
+				res = querySumr(id*2, l, r)%mod;
+			}else if(l>mid){
+				res = querySumr(id*2+1, l, r)%mod;
+			}else {
+				int ans1=querySumr(id*2, l, r)%mod;
+				int ans2=querySumr(id*2+1, l, r)%mod;
+				res=(ans1+ans2)%mod;
+			}
+			return res;
+		}
+	}
+	public int solve(List<Integer> data, List<Operation> operations) {
+		/********* begin *********/
+		build(1,0,data.size()-1,data);
+//		for(int i=1;i<=9;i++) {
+//			System.out.println(i+":"+tree[i].suml);
+//		}
+		long res=0;
+		for(Operation op:operations) {
+			if(op.op.equals("L")) {
+				int l=op.x;
+				int r=op.y;
+				long ans1=querySum(1, l, r);
+				long ans2=querySuml(1, l, r);
+//				System.out.println("ans1:"+ans1);
+//				System.out.println("ans2:"+ans2);
+				ans2=(ans2-ans1*l)%mod;
+				if(ans2<0)ans2=(ans2+mod)%mod;
+				res=(res+ans2)%mod;
+//				System.out.println("L:"+ans2);
+				
+			}else if(op.op.equals("R")) {
+				int l=op.x;
+				int r=op.y;
+				long ans1=querySum(1, l, r);
+				long ans2=querySumr(1, l, r);
+//				System.out.println("ans1:"+ans1);
+//				System.out.println("ans2:"+ans2);
+				ans2=(ans2-ans1*(data.size()-r-1))%mod;
+				if(ans2<0)ans2=(ans2+mod)%mod;
+				res=(res+ans2)%mod;
+//				System.out.println("R:"+ans2);
+			}else {
+				int key=op.x;
+				int value=op.y;
+				update(1,key,value,data);
+			}
+		}
+		
+		
+		return (int)res;
+		/********* end *********/
+	}
+}
+class Tree{
+	int l,r;
+	int suml,sumr;
+	int value;
+	int sum;
+}
+class Operation {
+	String op;
+	int x;
+	int y;
+}

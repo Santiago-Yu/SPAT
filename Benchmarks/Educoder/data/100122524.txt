@@ -1,0 +1,28 @@
+package step2;
+import java.util.Scanner;
+public class HelloWorld {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		//str为要查找的字符串
+		String str = sc.next();
+		/********** Begin **********/
+		//创建数组   arr  给数组赋值 {"张三","张三丰","张无忌","王二麻子","张富贵"}
+		String[][] s=new String[1][];
+         s[0]=new String[5];
+         s[0][0]=new String("张三");
+         s[0][1]=new String("张三丰");
+         s[0][2]=new String("张无忌");
+         s[0][3]=new String("王二麻子");
+         s[0][4]=new String("张富贵");
+        int j=0;
+          for(int i=0;i<s[0].length;i++)
+          {
+           if(s[0][i].equals(str))
+           {  
+               j=i+1;
+               System.out.println(s[0][i]+"在数组的第"+j+"个位置");
+           }
+          }
+		/********** End **********/
+	}
+}

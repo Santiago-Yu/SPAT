@@ -1,0 +1,62 @@
+package step1;
+import java.util.Arrays;
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+ 		//Integer[] b = new Integer[arr.length];
+        //b = arr.clone();
+ 		boolean swagFlag1 = false;
+        for(int i=0;i<arr.length-1;i++)
+        {
+            if(arr[i]>arr[i+1])
+                swagFlag1 = true;
+        }
+		if(!swagFlag1) {
+        	for(int i=0;i<arr.length;i++)
+					System.out.print(arr[i]+" ");
+			System.out.println();
+        }else {
+            while(true)
+			{
+				int swagFlag=0;
+			for(int i=0;i<arr.length-1;i++)
+				if(arr[i]>arr[i+1]) {
+                    swagFlag=1;
+                    break;
+                }
+			if(swagFlag==0) 
+                break;
+			for(int i=0;i<arr.length-1;i++)
+			{
+				if(arr[i]>arr[i+1]) {
+					int temp=arr[i];
+					arr[i]=arr[i+1];
+					arr[i+1]=temp;
+				 
+					for(int k=0;k<arr.length;k++)
+						System.out.print(arr[k]+" ");
+					System.out.println();
+				
+				}
+			
+			}
+			for(int i=arr.length-1;i>0;i--)
+			{
+			
+				if(arr[i]<arr[i-1])
+				{
+					int temp=arr[i];
+					arr[i]=arr[i-1];
+					arr[i-1]=temp;
+					for(int k=0;k<arr.length;k++)
+						System.out.print(arr[k]+" ");
+					System.out.println();
+				}
+			}
+			}
+          }
+		
+		/********* End *********/
+             }
+}

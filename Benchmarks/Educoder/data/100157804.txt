@@ -1,0 +1,31 @@
+
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner input = new Scanner(System.in);
+        int x = input.nextInt();
+        int a,b;
+        int ru = 0;
+        while(x != 0){
+            
+        do{
+            a = x/10;
+            b = x%10;
+            ru = ru + b*b;
+            x = a;
+        }while(x!=0);
+        if(ru == 1){
+             System.out.print("YES");
+             break;
+        }    
+        if(ru < 10){
+             System.out.print("NO");
+             break;
+        }
+            x = ru;
+            ru = 0;
+        }
+	}
+}

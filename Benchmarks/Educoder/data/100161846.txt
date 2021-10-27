@@ -1,0 +1,60 @@
+package task02;
+import java.util.Scanner;
+class Student
+{
+ String name;
+ int age;
+	void speak() 
+	{
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+
+public class Task02
+{
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		String temp;
+		/**************** begin *****************/
+		Student s1 = new Student();
+		s1.name = scan.nextLine();
+		s1.age = scan.nextInt();
+		s1.speak();
+		/*
+		 * 创建Student类的第一个对象，其引用变量为s1，
+		 * 使用s1分别为name和age赋值，值为运行时接收从键盘输入
+		 * 然后调用speak()方法。
+		 */
+
+		/**************** end *****************/
+
+
+		/**************** begin *****************/
+				Student s2 = new Student();
+		temp = scan.nextLine();
+		s2.name = scan.nextLine();
+		s2.age = scan.nextInt();
+		s2.speak();
+		/*
+		 * 创建Student类的第二个对象，其引用变量为s2，
+		 * 使用s2分别为name和age赋值，值为运行时接收从键盘输入，
+		 * 然后调用speak()方法。
+		 */
+
+		/**************** end *****************/
+
+
+		/**************** begin *****************/
+		Student s3 = new Student();
+		s3.name = s2.name;
+		s3.age = s2.age;
+		s3.speak();
+		/*
+		 * 创建Student类的第三个对象，其引用变量为s3，
+		 * 将s2的值赋给s3，
+		 * 然后使用s3调用speak()方法。
+		 */
+
+		/**************** end *****************/
+	}
+}

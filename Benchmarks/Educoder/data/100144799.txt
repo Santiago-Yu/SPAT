@@ -1,0 +1,26 @@
+package step3;
+import java.util.Stack;
+public class Task {
+	public void rotate(int[][] matrix){
+		int[] b = new int[matrix[1].length];
+        int[][] c = new int[matrix[1].length][matrix[1].length];
+        Stack<Integer> stack = new Stack<>();
+
+        for(int i = 0; i<matrix[0].length; i++){
+            for(int j = 0; j < matrix[1].length; j++){
+                stack.push(matrix[i][j]);
+            }
+            for(int j = 0; j < matrix[1].length; j++){
+                c[j][i] = stack.pop();
+            }
+        }
+        for(int i = 0; i<matrix[0].length; i++) {
+            for (int j = 0; j < matrix[1].length; j++) {
+                matrix[matrix[1].length-i-1][matrix[1].length-j-1] = c[i][j];
+            }
+        }
+	}
+}
+
+
+

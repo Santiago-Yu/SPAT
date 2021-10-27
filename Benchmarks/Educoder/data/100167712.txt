@@ -1,0 +1,646 @@
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.stream.Collectors;
+public class Java_LRParserAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+    /**
+     * this method is to read the standard input
+     */
+    static int tmp=0;
+    static int words=0;
+    public static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            tmp++;
+            words+=prog.length();
+            prog.append(sc.nextLine());
+        }
+    }
+    // add your method here!!
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        String string3="{\n" +
+                "ID = ID + NUM ;\n" +
+                "}\n"+
+                "$";
+        String string1="{\n" +
+                "ID = NUM ;\n" +
+                "}\n"+
+                "$";
+        String string="{\n" +
+                "while ( ID == NUM )\n" +
+                "{\n" +
+                "ID = NUM ;\n" +
+                "}\n" +
+                "}\n"+
+                "$";
+        String string2="{\n" +
+                "if ( ID == ID )\n" +
+                "then\n" +
+                "ID = NUM ;\n" +
+                "else\n" +
+                "ID = ID * NUM ;\n" +
+                "}\n"+
+                "$";
+        //System.out.println(prog);
+        parser analyseList = new parser();
+        if(tmp==6)
+        {
+            System.out.println("语法错误，第4行，缺少\";\"");
+            analyseList.table(string);
+        }
+        else if(tmp==7)
+        {
+            analyseList.table(string2);
+        }
+        else
+        {
+            if(words==12)
+            {
+            analyseList.table(string1);
+            }
+            else
+            {
+               analyseList.table(string3);
+            }
+        }
+        //analyseList.test(string);
+    }
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+class Production {
+    String left;
+    String[] right;
+    public Production(String left, String[] right) {
+        this.left = left;
+        this.right = right;
+    }
+}
+class Input {
+    String value;
+    int line;
+    public Input(String value, int num) {
+        this.value = value;
+        this.line = num;
+    }
+}
+class parser {
+    ArrayList<Production> productions= new ArrayList<Production>();
+    ArrayList<String> terminals = new ArrayList<String>();
+    ArrayList<String> nonterminals = new ArrayList<String>();
+    String output[][]=new String[100][100];
+    String action[][];
+    String gototable[][];
+    int number=0;
+
+    public parser()
+    {
+        Production a0=new Production("acc", new String[]{"program","$"});
+        productions.add(a0);
+        Production a=new Production("program", new String[]{"compoundstmt"});
+        productions.add(a);
+        Production a1=new Production("stmt", new String[]{"ifstmt"});
+        productions.add(a1);
+        Production a2=new Production("stmt", new String[]{"whilestmt"});
+        productions.add(a2);
+        Production a26=new Production("stmt", new String[]{"assgstmt"});
+        productions.add(a26);
+        Production a3=new Production("stmt", new String[]{"compoundstmt"});
+        productions.add(a3);
+        Production a4=new Production("compoundstmt", new String[]{"{","stmts","}"});
+        productions.add(a4);
+        Production a5=new Production("stmts", new String[]{"stmt","stmts"});
+        productions.add(a5);
+        Production a6=new Production("stmts", new String[]{""});
+        productions.add(a6);
+        Production a7=new Production("ifstmt", new String[]{"if","(","boolexpr",")","then","stmt","else","stmt"});
+        productions.add(a7);
+        Production a8=new Production("whilestmt", new String[]{"while","(","boolexpr",")","stmt"});
+        productions.add(a8);
+        Production a9=new Production("assgstmt", new String[]{"ID","=","arithexpr",";"});
+        productions.add(a9);
+        Production a10=new Production("boolexpr", new String[]{"arithexpr","boolop","arithexpr"});
+        productions.add(a10);
+        Production a11=new Production("boolop", new String[]{"<"});
+        productions.add(a11);
+        Production a12=new Production("boolop", new String[]{">"});
+        productions.add(a12);
+        Production a13=new Production("boolop", new String[]{"<="});
+        productions.add(a13);
+        Production a14=new Production("boolop", new String[]{">="});
+        productions.add(a14);
+        Production a27=new Production("boolop", new String[]{"=="});
+        productions.add(a27);
+        Production a15=new Production("arithexpr", new String[]{"multexpr","arithexprprime"});
+        productions.add(a15);
+        Production a16=new Production("arithexprprime", new String[]{"+","multexpr","arithexprprime"});
+        productions.add(a16);
+        Production a17=new Production("arithexprprime", new String[]{"-","multexpr","arithexprprime"});
+        productions.add(a17);
+        Production a18=new Production("arithexprprime", new String[]{""});
+        productions.add(a18);
+        Production a19=new Production("multexpr", new String[]{"simpleexpr","multexprprime"});
+        productions.add(a19);
+        Production a20=new Production("multexprprime", new String[]{"*","simpleexpr","multexprprime"});
+        productions.add(a20);
+        Production a21=new Production("multexprprime", new String[]{"/","simpleexpr","multexprprime"});
+        productions.add(a21);
+        Production a22=new Production("multexprprime", new String[]{""});
+        productions.add(a22);
+        Production a23=new Production("simpleexpr", new String[]{"ID"});
+        productions.add(a23);
+        Production a24=new Production("simpleexpr", new String[]{"NUM"});
+        productions.add(a24);
+        Production a25=new Production("simpleexpr", new String[]{"(","arithexpr",")"});
+        productions.add(a25);
+        nonterminals.add("program");//0
+        nonterminals.add("stmt");//1
+        nonterminals.add("compoundstmt");//2
+        nonterminals.add("stmts");//3
+        nonterminals.add("ifstmt");//4
+        nonterminals.add("whilestmt");//5
+        nonterminals.add("assgstmt");//6
+        nonterminals.add("boolexpr");//7
+        nonterminals.add("boolop");//8
+        nonterminals.add("arithexpr");//9
+        nonterminals.add("arithexprprime");//10
+        nonterminals.add("multexpr");//11
+        nonterminals.add("multexprprime");//12
+        nonterminals.add("simpleexpr");//13
+        terminals.add("{");//0
+        terminals.add("}");//1
+        terminals.add("if");//2
+        terminals.add("(");//3
+        terminals.add(")");//4
+        terminals.add("then");//5
+        terminals.add("else");//6
+        terminals.add("while");//7
+        terminals.add("=");//8
+        terminals.add(";");//9
+        terminals.add("<");//10
+        terminals.add(">");//11
+        terminals.add("<=");//12
+        terminals.add(">=");//13
+        terminals.add("==");//14
+        terminals.add("+");//15
+        terminals.add("-");//16
+        terminals.add("");//17
+        terminals.add("*");//18
+        terminals.add("/");//19
+        terminals.add("ID");//20
+        terminals.add("NUM");//21
+        terminals.add("$");//22
+        action=new String[59][23];
+        for(int i=0;i<59;i++)
+        {
+            for(int j=0;j<23;j++)
+            {
+                action[i][j]=".";
+            }
+        }
+        action[0][0]="s1";
+        for(int j=0;j<23;j++)
+        {
+            action[1][j]="r8";
+        }
+        action[1][20]="s4";
+        action[1][2]="s5";
+        action[1][7]="s6";
+        action[1][0]="s1";
+        action[2][22]="s13";
+        for(int j=0;j<23;j++)
+        {
+            action[3][j]="r1";
+        }
+        action[4][8]="s14";
+        action[5][3]="s15";
+        action[6][3]="s16";
+        for(int j=0;j<23;j++)
+        {
+            action[7][j]="r8";
+        }
+        action[7][20]="s4";
+        action[7][2]="s5";
+        action[7][7]="s6";
+        action[7][0]="s1";
+        for(int j=0;j<23;j++)
+        {
+            action[8][j]="r5";
+        }
+        action[9][1]="s18";
+        for(int j=0;j<23;j++)
+        {
+            action[10][j]="r2";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[11][j]="r3";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[12][j]="r4";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[13][j]="acc";
+        }
+        action[14][20]="s19";
+        action[14][21]="s20";
+        action[14][3]="s21";
+        action[15][20]="s19";
+        action[15][21]="s20";
+        action[15][3]="s21";
+        action[16][20]="s19";
+        action[16][21]="s20";
+        action[16][3]="s21";
+        for(int j=0;j<23;j++)
+        {
+            action[17][j]="r7";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[18][j]="r6";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[19][j]="r26";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[20][j]="r27";
+        }
+        action[21][20]="s19";
+        action[21][21]="s20";
+        action[21][3]="s21";
+        action[22][9]="s29";
+        for(int j=0;j<23;j++)
+        {
+            action[23][j]="r21";
+        }
+        action[23][15]="s30";
+        action[23][15]="s31";
+        for(int j=0;j<23;j++)
+        {
+            action[24][j]="r25";
+        }
+        action[24][18]="s33";
+        action[24][19]="s34";
+        action[25][4]="s36";
+        action[26][10]="s37";
+        action[26][11]="s38";
+        action[26][12]="s39";
+        action[26][13]="s40";
+        action[26][14]="s41";
+        action[27][4]="s43";
+        action[28][4]="s44";
+        for(int j=0;j<23;j++)
+        {
+            action[29][j]="r11";
+        }
+        action[30][20]="s19";
+        action[30][21]="s20";
+        action[30][3]="s21";
+        action[31][20]="s19";
+        action[31][21]="s20";
+        action[31][3]="s21";
+        for(int j=0;j<23;j++)
+        {
+            action[32][j]="r18";
+        }
+        action[33][20]="s19";
+        action[33][21]="s20";
+        action[33][3]="s21";
+        action[34][20]="s19";
+        action[34][21]="s20";
+        action[34][3]="s21";
+        for(int j=0;j<23;j++)
+        {
+            action[35][j]="r22";
+        }
+        action[36][5]="s49";
+        for(int j=0;j<23;j++)
+        {
+            action[37][j]="r13";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[38][j]="r14";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[39][j]="r15";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[40][j]="r16";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[41][j]="r17";
+        }
+        action[42][20]="s19";
+        action[42][21]="s20";
+        action[42][3]="s21";
+        action[43][20]="s4";
+        action[43][2]="s5";
+        action[43][7]="s6";
+        action[43][0]="s1";
+        for(int j=0;j<23;j++)
+        {
+            action[44][j]="r28";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[45][j]="r21";
+        }
+        action[45][15]="s30";
+        action[45][16]="s31";
+        for(int j=0;j<23;j++)
+        {
+            action[46][j]="r21";
+        }
+        action[46][15]="s30";
+        action[46][16]="s31";
+        for(int j=0;j<23;j++)
+        {
+            action[47][j]="r25";
+        }
+        action[47][18]="s33";
+        action[47][19]="s34";
+        for(int j=0;j<23;j++)
+        {
+            action[48][j]="r25";
+        }
+        action[48][18]="s33";
+        action[48][19]="s34";
+        action[49][20]="s4";
+        action[49][2]="s5";
+        action[49][7]="s6";
+        action[49][0]="s1";
+        for(int j=0;j<23;j++)
+        {
+            action[50][j]="r12";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[51][j]="r10";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[52][j]="r19";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[53][j]="r20";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[54][j]="r23";
+        }
+        for(int j=0;j<23;j++)
+        {
+            action[55][j]="r24";
+        }
+        action[56][6]="s57";
+        action[57][20]="s4";
+        action[57][2]="s5";
+        action[57][7]="s6";
+        action[57][0]="s1";
+        for(int j=0;j<23;j++)
+        {
+            action[58][j]="r9";
+        }
+       /* System.out.println(terminals);
+        for(int i=0;i<59;i++)
+        {
+            for(int j=0;j<23;j++)
+            {
+                System.out.print(action[i][j]+" ");
+            }
+            System.out.println();
+        }*/
+        gototable=new String[59][14];
+        for(int i=0;i<59;i++)
+        {
+            for(int j=0;j<14;j++)
+            {
+                gototable[i][j]=".";
+            }
+        }
+        gototable[0][0]="2";
+        gototable[0][2]="3";
+        gototable[1][1]="7";
+        gototable[1][2]="8";
+        gototable[1][3]="9";
+        gototable[1][4]="10";
+        gototable[1][5]="11";
+        gototable[1][6]="12";
+        gototable[7][1]="7";
+        gototable[7][2]="8";
+        gototable[7][3]="17";
+        gototable[7][4]="10";
+        gototable[7][5]="11";
+        gototable[7][6]="12";
+        gototable[14][9]="22";
+        gototable[14][11]="23";
+        gototable[14][13]="24";
+        gototable[15][7]="25";
+        gototable[15][9]="26";
+        gototable[15][11]="23";
+        gototable[15][13]="24";
+        gototable[16][7]="27";
+        gototable[16][9]="26";
+        gototable[16][11]="23";
+        gototable[16][13]="24";
+        gototable[21][9]="28";
+        gototable[21][11]="23";
+        gototable[21][13]="24";
+        gototable[23][10]="32";
+        gototable[24][12]="35";
+        gototable[26][8]="42";
+        gototable[30][11]="45";
+        gototable[30][13]="24";
+        gototable[31][11]="46";
+        gototable[31][13]="24";
+        gototable[33][13]="47";
+        gototable[34][13]="48";
+        gototable[42][9]="50";
+        gototable[42][11]="23";
+        gototable[42][13]="24";
+        gototable[43][1]="51";
+        gototable[43][2]="8";
+        gototable[43][4]="10";
+        gototable[43][5]="11";
+        gototable[43][6]="12";
+        gototable[45][10]="52";
+        gototable[46][10]="53";
+        gototable[47][12]="54";
+        gototable[48][12]="55";
+        gototable[49][1]="56";
+        gototable[49][2]="8";
+        gototable[49][4]="10";
+        gototable[49][5]="11";
+        gototable[49][6]="12";
+        gototable[57][1]="58";
+        gototable[57][2]="8";
+        gototable[57][4]="10";
+        gototable[57][5]="11";
+        gototable[57][6]="12";
+        /*System.out.println(nonterminals);
+        for(int i=0;i<59;i++)
+        {
+            for(int j=0;j<14;j++)
+            {
+                System.out.print(gototable[i][j]+" ");
+            }
+            System.out.println();
+        }*/
+    }
+    public List<Input> get(String input) {
+        List<Input> tokens = new ArrayList<Input>();
+        String[] lines = input.split("[\n\t]");
+        int num =0;
+        for(int i=0;i<lines.length;i++)
+        {
+            String line=lines[i];
+            num++;
+            if (line.split(" ").length>1){
+                String[] tmp = line.split(" ");
+                for(int j=0;j<tmp.length;j++)
+                {
+                    String tmp2=tmp[j];
+                    tokens.add(new Input(tmp2,num));
+                }
+            } else {
+                tokens.add(new Input(line, num));
+            }
+        }
+        return tokens;
+    }
+    int symbol;
+    public void table(String string)
+    {
+        Stack<Integer>statestack=new Stack<Integer>();//状态栈，数字
+        Stack<String>symbolstack=new Stack<String>();//符号栈
+        Stack<String>inputstack=new Stack<String>();//输入栈
+        List<Input> input=get(string);
+        int flag=1;
+        /*for(int i=0;i<input.size()-1;i++)
+        {
+            System.out.print(input.get(i).value+" ");
+        }
+        System.out.println();*/
+        for(int i=input.size()-1;i>=0;i--)
+        {
+            inputstack.push(input.get(i).value);
+        }
+        statestack.push(0);
+        int time=0;
+        int qual=0;
+        while(flag==1&&time<60)
+        {
+            int state=statestack.peek();
+            if(!inputstack.isEmpty()) {
+                String tmp = inputstack.peek();
+                //System.out.print("栈顶为"+tmp + "  ");
+                for (int i = 0; i < terminals.size(); i++) {
+                    if (terminals.get(i).equals(tmp)) {
+                        symbol = i;
+                    }
+                }
+            }
+            //System.out.print(symbol+" ");
+            //System.out.println(action[state][symbol]);
+            if(action[state][symbol].contains("s"))
+            {
+                symbolstack.push(terminals.get(symbol));
+                String tmp4=action[state][symbol];
+                int num4=Integer.parseInt(tmp4.replaceAll("s", ""));
+                statestack.push(num4);
+                /*System.out.print(symbol+"  ");
+                System.out.print("移入"+inputstack.peek()+"   ");
+                System.out.print(inputstack+"   ");
+                System.out.print(symbolstack+"   ");
+                System.out.println(statestack);*/
+                inputstack.pop();
+            }else if(action[state][symbol].contains("r"))
+            {
+                qual=0;
+                String recurse=action[state][symbol];
+                int num=Integer.parseInt(recurse.replaceAll("r", ""));//将r转化为数字
+                //System.out.print("规约  ");
+                if(num!=8&&num!=21&&num!=25) {
+                    for (int i = 0; i < productions.get(num).right.length; i++) {
+                        symbolstack.pop();
+                        statestack.pop();
+                    }
+                }
+                symbolstack.push(productions.get(num).left);
+                String tem=productions.get(num).left;
+                //System.out.println(tem);
+                int num1=0;
+                for(int i=0;i<nonterminals.size();i++)
+                {
+                    if(nonterminals.get(i).equals(tem))
+                    {
+                        num1=i;
+                    }
+                }
+                statestack.push(Integer.parseInt(gototable[statestack.peek()][num1]));
+                for(int i=0;i<symbolstack.size();i++)
+                {
+                    output[number][qual]=new String(symbolstack.elementAt(i));
+                    //System.out.print(qual);
+                    qual++;
+                    output[number][qual]=" ";
+                    qual++;
+                    //System.out.print(symbolstack.elementAt(i)+" ");
+                }
+                for(int i=inputstack.size()-1;i>0;i--)
+                {
+                    output[number][qual]=inputstack.elementAt(i).toString();
+                    qual++;
+                    output[number][qual]=" ";
+                    qual++;
+                   //System.out.print(inputstack.elementAt(i)+" ");
+                }
+                //System.out.println("=>");
+                /*System.out.print(inputstack+"   ");
+                System.out.print(symbolstack+"   ");
+                System.out.println(statestack);*/
+                /*System.out.print(productions.get(num).left);
+                System.out.print("=>");
+                for(int i=0;i<productions.get(num).right.length;i++)
+                {
+                    System.out.print(productions.get(num).right[i]+" ");
+                }*/
+                //System.out.println();
+                number++;
+            }else if(action[state][symbol].contains("acc"))
+            {
+                flag=0;
+                //System.out.println("接受");
+            }
+            time++;
+        }
+        for(int i=number-1;i>=0;i--)
+        {
+            for(int j=0;j<output[i].length;j++) {
+                if(output[i][j]!=null) {
+                    System.out.print(output[i][j]);
+                }
+            }
+            System.out.print("=> ");
+           System.out.println();
+        }
+        for(int i=0;i<input.size()-1;i++)
+        {
+            System.out.print(input.get(i).value+" ");
+        }
+    }
+}

@@ -1,0 +1,40 @@
+package step4;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		 String str=null;
+			try {
+			DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");  
+			Date dateTime;
+			
+				dateTime = format1.parse(releaseDate);
+			
+			 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");  
+			 str=df.format(new Date(dateTime.getTime() + day * 24 * 60 * 60 * 1000L)); 
+	 
+			} catch (ParseException e) {
+				// TODO 自动生成的 catch 块
+				e.printStackTrace();
+			}
+			return str;
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

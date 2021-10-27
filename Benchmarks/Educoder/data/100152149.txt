@@ -1,0 +1,85 @@
+package step2;
+
+
+
+import java.util.List;
+
+
+
+public class Task {
+
+	public static int mod = (int)(1e9+7);
+	public static int[] weight;
+	public static List<Integer> data;
+	public static int length;
+
+
+
+	public int solve(List<Integer> data_, List<Operation> operations) {
+
+		data = data_;
+		length=data.size();
+
+		weight = new int[length];
+
+
+		//initCostMap();
+
+		long result = 0;
+
+		for(Operation opt : operations){
+
+			switch(opt.op){    
+                case "C":
+                    result += ((((long)data.get(opt.x))*weight[opt.x]) % mod);
+            		data.set(opt.x, opt.y);
+                    weight[opt.x] = 0;
+                    break;
+            	case "L":
+                    getLCost(opt.x, opt.y);
+                    break;
+                case "R":
+                   	getRCost(opt.x, opt.y);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return (int)(getResult(result)% mod);
+    }
+    public long getResult(long result){
+
+		for(int i=0;i<length;i++){
+
+			result = result + ((long)data.get(i)*weight[i] % mod);
+		}
+		return result;
+
+	}
+    public void getLCost(int l, int r){
+		for(int i=l;i<=r;i++){
+
+			weight[i]+=i-l+1;
+
+		}
+	}
+
+	public void getRCost(int l, int r){
+
+		for(int i=l;i<=r;i++){
+
+			weight[i]+=r-i+1;
+
+		}
+	}
+}
+
+class Operation {
+
+	String op;
+
+	int x;
+
+	int y;
+
+}

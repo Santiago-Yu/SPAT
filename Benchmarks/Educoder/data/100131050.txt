@@ -1,0 +1,25 @@
+package step1;
+
+public class Task {
+ 
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int i=0,j=0,res=0;
+		i=num2-num1+1; 
+        for (j = 0; j < i; j++) {
+			String num3 = String.valueOf(num1);
+			if(num1/10==0)
+			{
+				res=Integer.parseInt(num3.substring(0, 1))+res;
+			}else if (num1/100==0) {
+				res=Integer.parseInt(num3.substring(0, 1))+Integer.parseInt(num3.substring(1, 2))+res;
+			}else if (num1/1000==0) {
+				res=Integer.parseInt(num3.substring(0, 1))+Integer.parseInt(num3.substring(1, 2))+Integer.parseInt(num3.substring(2, 3))+res;
+			}
+			num1++;
+		}
+		return res;
+		/********** END **********/
+	}
+}

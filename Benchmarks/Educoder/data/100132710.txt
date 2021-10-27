@@ -1,0 +1,71 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 int width, length, count;
+        count = 0;
+        length = ferry.length;
+        if(length == 0){
+            return count;
+        }
+        width = ferry[0].length;
+
+        
+        int[][] ship = new int[length][width];
+        int i, j;
+        for (i = 0; i < length; i++) {
+            for (j = 0; j < width; j++) {
+                if(i ==0 && j ==0){
+                    if(ferry[i][j] == '+'){
+                        count += 1;
+                        ship[i][j] = count;
+                    }else {
+                        ship[i][j] = 0;
+                    }
+                }else if(j == 0){
+                    if(ferry[i][j] == '+'){
+                        if(ferry[i - 1][j] == '+'){
+                            ship[i][j] = ship[i - 1][j];
+                        }else{
+                            count += 1;
+                            ship[i][j] = count;
+                        }
+                    }else {
+                        ship[i][j] = 0;
+                    }
+                }else if(i == 0){
+                    if (ferry[i][j] == '+'){
+                        if (ferry[i][j - 1] == '+'){
+                            ship[i][j] = ship[i][j -1 ];
+                        }else{
+                            count += 1;
+                            ship[i][j] = count;
+                        }
+                    }else {
+                        ship[i][j] = 0;
+                    }
+                }else{
+                    if(ferry[i][j] == '+'){
+                        if (ferry[i][j - 1] == '+'){
+                            ship[i][j] = ship[i][j - 1];
+                        }else if(ferry[i - 1][j] == '+'){
+                            ship[i][j] = ship[i - 1][j];
+                        }else {
+                            count += 1;
+                            ship[i][j] = count;
+                        }
+                    }else{
+                        ship[i][j] = 0;
+                    }
+                }
+            }
+        }
+
+        return count;
+	 
+         
+      /***********END ***************/
+	 }
+}

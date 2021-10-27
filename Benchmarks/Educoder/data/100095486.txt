@@ -1,0 +1,21 @@
+package step4;
+import java.util.*;
+public class DayCount {
+	public static void dayCount(int year, int month, int day) {
+		int c;int sum=0;
+		int[][]a= {{31,28,31,30,31,30,31,31,30,31,30,31},
+					   {31,29,31,30,31,30,31,31,30,31,30,31}};
+    if(year%4==0&&year%100!=0||year%400==0)
+    	 c=1;
+    else 
+    	 c=0;
+	for(int i=0;i<month-1;i++)
+        sum+=a[c][i];
+     System.out.print(sum+day);
+	}
+	public static void main(String[] args){
+	Scanner sin=new Scanner(System.in);
+        dayCount(sin.nextInt(),sin.nextInt(),sin.nextInt());
+}
+}
+

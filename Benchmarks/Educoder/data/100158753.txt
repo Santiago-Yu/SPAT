@@ -1,0 +1,57 @@
+package Q102;
+
+import java.util.*;
+
+public class Main{
+
+	public static void main(String[] args) {
+		
+		Scanner in=new Scanner(System.in);
+		int a=0,b=0,c=0;//a记录5元人民币数量，类推
+		int flag=1;
+		int s;
+		
+		while(in.hasNext()){
+			
+			s=in.nextInt();
+			switch(s) {
+			case 5:
+				a++;
+				break;
+			case 10:
+				if(a<1)
+					flag=0;
+				else
+					a--;b++;
+					break;
+			case 20:
+				if(b>=1&&a>=1)
+				{
+					a--;
+					b--;
+					c++;
+				}
+				else if(a>=3)
+				{
+					a-=3;
+					c++;
+				}
+				else
+					flag=0;
+				break;
+			default:
+				break;
+		}
+			if(flag==0)
+			{
+				System.out.printf("false");
+				return;
+			}
+	}
+		if(flag==1)
+
+			System.out.printf("true");
+		// write your code here
+	}
+
+}

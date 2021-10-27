@@ -1,0 +1,41 @@
+package step3;
+
+public class Task {
+    static int[][] dxy = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
+	static void test(int r, int c, int prer, int prec, char[][] map) {
+		for (int i = 0; i < 4; i++) {
+			int newr = r + dxy[i][0];
+			int newc = c + dxy[i][1];
+			if (newr < 0 || newc < 0 || newr >= map.length 
+					|| newc >= map[0].length || 
+					(newr == prer && newc == prec)) {
+				continue;
+			}
+			if (map[r][c] == '+' && map[newr][newc] == '+') {
+				test(newr, newc, r, c, map);
+			}
+			map[newr][newc] = 'o';
+		}
+	}	
+	 public int countOfShips(char[][] map) {
+	  /**************BEGIN************/
+		int flag = 0;
+		int cnt = 0;
+        test(0, 0, 0, 0, map);
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				if (map[i][j] == '+') {
+					test(i, j, i, j, map);
+				}
+			}
+		}
+        for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				if (map[i][j] == '+')
+					cnt++;
+			}
+		}
+		return cnt;
+      /***********END ***************/
+	 }
+}

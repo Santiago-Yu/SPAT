@@ -1,0 +1,1066 @@
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.*;
+import java.io.InputStreamReader;
+
+@SuppressWarnings("unchecked")
+public class Java_TranslationSchemaAnalysis {
+    static String read() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder s = new StringBuilder(8192);
+        String tmp = bufferedReader.readLine();
+        while (tmp!=null && !tmp.equals("-1")) {
+            s.append(tmp).append(System.lineSeparator());
+            tmp = bufferedReader.readLine();
+        }
+        String ss = s.append(' ').toString();
+        return ss;
+    }
+
+
+    static class MyMap {
+        static final Map<String, Object> valueMap = new LinkedHashMap<>();
+
+        public static Object get(String name) {
+            return valueMap.get(name);
+        }
+
+        public static void set(String name, Object value) {
+            valueMap.computeIfPresent(name, (k, v) -> value);
+        }
+
+        public static void put(String name, Object value) {
+            valueMap.put(name, value);
+        }
+
+    }
+
+    static class Entor {
+        Tokenizer.LineMap lineMap;
+        List<String> errorList = new ArrayList<>();
+
+        public Entor(Tokenizer.LineMap lineMap) {
+            this.lineMap = lineMap;
+        }
+
+
+         void enterDef(Tree.Def def) {
+            Tree.Type type = ((Tree.Type) def.type);
+            Tree.Literal init = ((Tree.Literal) def.init);
+            if (type.typeTag != init.typeTag)
+                reportTypeError(type.typeTag, init.typeTag, init.position);
+             MyMap.put(def.name, init.value);
+        }
+
+         void enterStatement(Tree.Statement stat) {
+            switch (stat.getTag()) {
+                case IF: enterIf(((Tree.If) stat)); break;
+                case STOP: enterStop(((Tree.Stop) stat)); break;
+                case ASSIGN: enterAssign(((Tree.Assign) stat));
+            }
+        }
+
+        public void enterProgram(Tree.Program program) {
+            List<Tree.Def> defList = program.getDefs();
+            Tree.Stop stop = program.getStop();
+            for (Tree.Def def : defList) {
+                enterDef(def);
+            }
+            enterStop(stop);
+        }
+
+         void enterStop(Tree.Stop stop) {
+            for (Tree.Statement stat : stop.stats) {
+                enterStatement(stat);
+            }
+        }
+
+
+         void enterAssign(Tree.Assign assign) {
+            Tree.Sign left = (Tree.Sign) assign.left;
+            Object value = enterExpression(assign.right);
+            if (value != null)
+                MyMap.set(left.name, value);
+        }
+
+        Object enterBinary(Tree.Binary binary) {
+            Tree.Expression left = binary.left;
+            Tree.Expression right = binary.right;
+            Object leftValue = enterExpression(left);
+            Object rightValue = enterExpression(right);
+            if (leftValue instanceof Integer && rightValue instanceof Integer) {
+                int a = ((Integer) leftValue).intValue();
+                int b = ((Integer) rightValue).intValue();
+                if (b == 0) {
+                    RTError(right.position);
+                    return null;
+                }
+                switch (binary.operation) {
+                    case PLUS: return a + b;
+                    case MINUS: return a - b;
+                    case MUL: return a * b;
+                    case DIV: return a / b;
+                    case LE: return a <= b;
+                    case GE: return a >= b;
+                    case EQ: return a == b;
+                    case GT: return a > b;
+                    case LT: return a < b;
+                    default:
+                        return null;
+                }
+            } else {
+                double a = ((Number) leftValue).doubleValue();
+                if (((Number) rightValue).intValue() == 0) {
+                    RTError(right.position);
+                    return null;
+                }
+                double b = ((Number) rightValue).doubleValue();
+                switch (binary.operation) {
+                    case PLUS: return a + b;
+                    case MINUS: return a - b;
+                    case MUL: return a * b;
+                    case DIV: return a / b;
+                    case LE: return a <= b;
+                    case GE: return a >= b;
+                    case EQ: return a == b;
+                    case GT: return a > b;
+                    case LT: return a < b;
+                    default: {
+                        return null;
+                    }
+                }
+            }
+        }
+
+         Object enterExpression(Tree.Expression expression) {
+            switch (expression.getTag()) {
+            case SIGN: return MyMap.get(((Tree.Sign) expression).name);
+            case LITERAL: return ((Tree.Literal) expression).value;
+            case PARENS: return enterParens(((Tree.Parens) expression));
+            case BINARY: return enterBinary(((Tree.Binary) expression));
+            default:
+                throw new AssertionError();
+            }
+        }
+
+        void enterIf(Tree.If stmt) {
+            Boolean cond = (Boolean) enterExpression(stmt.cond);
+            if (cond)
+                enterStatement(stmt.thenS);
+            else
+                enterStatement(stmt.elseS);
+        }
+
+
+        private Object enterParens(Tree.Parens parens) {
+            return enterExpression(parens.expr);
+        }
+
+        void reportTypeError(Tree.TypeTag expected, Tree.TypeTag actual, int pos) {
+            errorList.add(String.format("error message:line %d,%s can not be translated into %s type", lineMap.getLineNumber(pos),
+                    actual, expected.name().toLowerCase()));
+        }
+
+        void RTError(int pos) {
+            errorList.add(String.format("error message:line %d,division by zero", lineMap.getLineNumber(pos)));
+        }
+    }
+
+    static class Parser {
+        Tool tool;
+
+        Tokens.Token token;
+
+        Parser(String s) {
+            this.tool = new Tool(s);
+            nextToken();
+        }
+
+        void nextToken() {
+            tool.nextToken();
+            token = tool.token();
+        }
+
+        Tree.Program parse() {
+            List<Tree.Def> defList = getDefList();
+            Tree.Stop stop = compoundStmt();
+            return new Tree.Program(defList, stop).setPosition(token.position);
+        }
+
+        public Tree.Program program() {
+            List<Tree.Def> defList = getDefList();
+            Tree.Stop stop = compoundStmt();
+            return new Tree.Program(defList, stop).setPosition(token.position);
+        }
+
+        List<Tree.Def> getDefList() {
+            List<Tree.Def> defList = new ArrayList<>();
+            switch (token.tokenType) {
+            case INT:
+            case REAL:
+                defList.add(getDef());
+                defList.addAll(getDefList());
+                break;
+            case LBRACE:
+                return defList;
+            default:
+                throw new AssertionError();
+            }
+            return defList;
+        }
+
+        Tree.Stop compoundStmt() {
+            List<Tree.Statement> stats;
+            accept(Tokens.TokenType.LBRACE);
+            stats = stmts();
+            accept(Tokens.TokenType.RBRACE);
+            return new Tree.Stop(stats).setPosition(token.position);
+        }
+
+         Tree.Def getDef() {
+            String name;
+            Tree.Sign sign;
+            Tree.Type type;
+            Tree.Literal literal;
+            type = type();
+            sign = sign();
+            name = sign.name;
+            accept(Tokens.TokenType.EQ);
+            switch (token.tokenType) {
+            case REALLITERAL:
+                literal = real();
+                break;
+            case INTLITERAL:
+                literal = intt();
+                break;
+            default:
+                throw new AssertionError();
+            }
+            accept(Tokens.TokenType.SEMI);
+            return new Tree.Def(name, sign, type, literal).setPosition(token.position);
+        }
+
+        private List<Tree.Statement> stmts() {
+            List<Tree.Statement> stats = new ArrayList<>();
+            switch (token.tokenType) {
+            case LBRACE: case IF: case SIGN:
+                stats.add(stmt());
+                stats.addAll(stmts());
+                break;
+            case RBRACE:
+                return stats;
+            default:
+                throw new AssertionError();
+            }
+            return stats;
+        }
+
+        private Tree.Statement stmt() {
+            switch (token.tokenType) {
+            case LBRACE:
+                return compoundStmt();
+            case IF:
+                return ifstmt();
+            case SIGN:
+                return assgstmt();
+            default:
+                throw new AssertionError();
+            }
+        }
+
+        private Tree.Assign assgstmt() {
+            Tree.Sign sign = sign();
+            accept(Tokens.TokenType.EQ);
+            Tree.Expression arithexpr = arithexpr();
+            accept(Tokens.TokenType.SEMI);
+            return new Tree.Assign(sign, arithexpr).setPosition(token.position);
+        }
+
+        private Tree.If ifstmt() {
+            Tree.Expression cond;
+            Tree.Statement thenS;
+            Tree.Statement elseS;
+            accept(Tokens.TokenType.IF);
+            accept(Tokens.TokenType.LPAREN);
+            cond = boolexpr();
+            accept(Tokens.TokenType.RPAREN);
+            accept(Tokens.TokenType.THEN);
+            thenS = stmt();
+            accept(Tokens.TokenType.ELSE);
+            elseS = stmt();
+            return new Tree.If(cond, thenS, elseS).setPosition(token.position);
+        }
+
+        private Tree.Expression boolexpr() {
+            Tree.Expression left = arithexpr();
+            Tree.Tag tag = operation();
+            Tree.Expression right = arithexpr();
+            return new Tree.Binary(tag, left, right).setPosition(token.position);
+        }
+
+        private Tree.Expression arithexpr() {
+            Tree.Expression left;
+
+            switch (token.tokenType) {
+            case LPAREN: case SIGN: case INTLITERAL: case REALLITERAL:
+                left = multexpr();
+                return arithexprprime(left);
+            default:
+                throw new AssertionError();
+            }
+        }
+
+        private Tree.Expression arithexprprime(Tree.Expression left) {
+            Tree.Tag operation;
+            Tree.Expression right;
+            switch (token.tokenType) {
+            case PLUS: case SUB:
+                operation = operation();
+                right = multexpr();
+                right = arithexprprime(right);
+                return new Tree.Binary(operation, left, right).setPosition(token.position);
+            case RPAREN: case SEMI: case LT: case GT: case LTEQ: case GTEQ: case EQEQ:
+            default:
+                return left;
+            }
+        }
+
+        private Tree.Expression multexpr() {
+            Tree.Expression left;
+            switch (token.tokenType) {
+            case LPAREN: case SIGN: case INTLITERAL: case REALLITERAL:
+                left = simpleexpr();
+                return multexprprime(left);
+            default:
+                throw new AssertionError();
+            }
+        }
+
+        private Tree.Expression multexprprime(Tree.Expression left) {
+            Tree.Tag operation;
+            Tree.Expression right;
+            switch (token.tokenType) {
+            case STAR: case SLASH:
+                operation = operation();
+                right = simpleexpr();
+                right = multexprprime(right);
+                return new Tree.Binary(operation, left, right).setPosition(token.position);
+            case RPAREN: case SEMI: case LT: case GT: case LTEQ: case GTEQ: case EQEQ: case PLUS: case SUB:
+            default:
+                return left;
+            }
+        }
+
+        private Tree.Expression simpleexpr() {
+            switch (token.tokenType) {
+            case SIGN: return sign();
+            case INTLITERAL: return intt();
+            case REALLITERAL: return real();
+            case LPAREN:
+                accept(Tokens.TokenType.LPAREN);
+                Tree.Expression parens = new Tree.Parens(arithexpr()).setPosition(token.position);
+                accept(Tokens.TokenType.RPAREN);
+                return parens;
+            default:
+                throw new AssertionError();
+            }
+        }
+
+        private Tree.Tag operation() {
+            try {
+                switch (token.tokenType) {
+                    case PLUS: return Tree.Tag.PLUS;
+                    case SUB: return Tree.Tag.MINUS;
+                    case LT: return Tree.Tag.LT;
+                    case LTEQ: return Tree.Tag.LE;
+                    case GT: return Tree.Tag.GT;
+                    case GTEQ: return Tree.Tag.GE;
+                    case EQEQ: return Tree.Tag.EQ;
+                    case STAR: return Tree.Tag.MUL;
+                    case SLASH: return Tree.Tag.DIV;
+                default: throw new AssertionError();
+                }
+            } finally {
+                nextToken();
+            }
+        }
+
+        private Tree.Literal intt() {
+            if (token.tokenType!= Tokens.TokenType.INTLITERAL)
+                throw new AssertionError();
+            try {
+                return new Tree.Literal(Tree.TypeTag.INT, Integer.valueOf(((Tokens.NumericToken) token).val)).setPosition(token.position);
+            } finally {
+                nextToken();
+            }
+        }
+
+        private Tree.Literal real() {
+            if (token.tokenType!= Tokens.TokenType.REALLITERAL)
+                throw new AssertionError();
+            try {
+                return new Tree.Literal(Tree.TypeTag.REAL, Double.valueOf(((Tokens.NumericToken) token).val)).setPosition(token.position);
+            } finally {
+                nextToken();
+            }
+        }
+
+
+        private Tree.Sign sign() {
+            if (token.tokenType != Tokens.TokenType.SIGN)
+                throw new AssertionError();
+            try {
+                return new Tree.Sign(((Tokens.MyToken) token).name).setPosition(token.position);
+            } finally {
+                nextToken();
+            }
+        }
+
+        public Tree.Type type() {
+            try {
+                switch (token.tokenType) {
+                case INT:
+                    return new Tree.Type(Tree.TypeTag.INT).setPosition(token.position);
+                case REAL:
+                    return new Tree.Type(Tree.TypeTag.REAL).setPosition(token.position);
+                default:
+                    throw new AssertionError();
+                }
+            } finally {
+                nextToken();
+            }
+        }
+
+        public void accept(Tokens.TokenType tk) {
+            if (token.tokenType == tk) {
+                nextToken();
+            } else {
+                throw new AssertionError();
+            }
+        }
+    }
+
+    static abstract class Tree {
+        public enum Tag {
+            DEF,   // int a = 3;
+            TYPEINDET,// int
+            LITERAL,  // 1 2 3.0
+            ASSIGN,   // a = b
+            SIGN,    // a
+            STOP,    // { stmt.... }
+            IF,       //If
+            BINARY,   //二元运算符表达式
+            PARENS,   //括号表达式
+
+
+            PLUS, // +
+            MINUS,// -
+            MUL,  // *
+            DIV,  // /
+            LT,   // <
+            GT,   // >
+            LE,   // <=
+            GE,   // >=
+            EQ    // ==
+        }
+
+        public enum TypeTag {
+            INT,
+            REAL;
+
+            @Override
+            public String toString() {
+                switch (this) {
+                case INT: return "intt";
+                case REAL: return "realnum";
+                default:
+                    return null;
+                }
+            }
+        }
+
+        public abstract Tag getTag();
+
+        public static abstract class Statement extends Tree {
+        }
+
+        public static abstract class Expression extends Tree {
+        }
+
+        public static class Program extends Tree {
+            List<Def> defList;
+            Stop stop;
+
+            public Program(List<Def> defList, Stop stop) {
+                this.defList = defList;
+                this.stop = stop;
+            }
+
+            public List<Def> getDefs() {
+                return defList;
+            }
+
+            public Stop getStop() {
+                return stop;
+            }
+
+            @Override
+            public Tag getTag() {
+                return null;
+            }
+        }
+
+        public static class Def extends Tree {
+            String name;
+            Expression nameexpr;
+            Expression type;
+            Expression init;
+
+            public Def(String name, Expression nameexpr, Expression type, Expression init) {
+                this.name = name;
+                this.nameexpr = nameexpr;
+                this.type = type;
+                this.init = init;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.DEF;
+            }
+
+
+        }
+
+        public static class Sign extends Expression {
+            public String name;
+
+            public Sign(String name) {
+                this.name = name;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.SIGN;
+            }
+        }
+
+        public static class Literal extends Expression {
+            public TypeTag typeTag;
+            public Object value;
+
+            public Literal(TypeTag typeTag, Object value) {
+                this.typeTag = typeTag;
+                this.value = value;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.LITERAL;
+            }
+        }
+
+        public static class Type extends Expression {
+            public TypeTag typeTag;
+
+            public Type(TypeTag typeTag) {
+                this.typeTag = typeTag;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.TYPEINDET;
+            }
+
+            public TypeTag getTypeTag() {
+                return typeTag;
+            }
+        }
+
+        public static class Stop extends Statement {
+            public List<Statement> stats;
+
+            public Stop(List<Statement> stats) {
+                this.stats = stats;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.STOP;
+            }
+        }
+
+        public static class If extends Statement {
+            Expression cond;
+            Statement thenS;
+            Statement elseS;
+
+            public If(Expression cond, Statement thenS, Statement elseS) {
+                this.cond = cond;
+                this.thenS = thenS;
+                this.elseS = elseS;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.IF;
+            }
+        }
+
+        public static class Assign extends Statement {
+            Expression left;
+            Expression right;
+
+            public Assign(Expression left, Expression right) {
+                this.left = left;
+                this.right = right;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.ASSIGN;
+            }
+        }
+
+        public static class Binary extends Expression {
+            public Expression left;
+            public Expression right;
+            Tag operation;
+
+            public Binary(Tag operation, Expression left, Expression right) {
+                this.left = left;
+                this.right = right;
+                this.operation = operation;
+            }
+
+            @Override
+            public Tag getTag() {
+                return Tag.BINARY;
+            }
+        }
+
+        public static class Parens extends Expression {
+            public Expression expr;
+
+            public Parens(Expression expr) {
+                this.expr = expr;
+            }
+
+
+            @Override
+            public Tag getTag() {
+                return Tag.PARENS;
+            }
+        }
+
+        int position;
+
+        public <T extends Tree> T setPosition(int position) {
+            this.position = position;
+            return ((T) this);
+        }
+    }
+
+
+    static class Tool {
+        private Tokens tokens;
+        private Tokens.Token token;
+        private Tokens.Token prevToken;
+        private Tokenizer tokenizer;
+
+        public Tool(String buf) {
+            this.tokenizer = new Tokenizer(buf);
+            this.tokens = Tokens.instance();
+        }
+
+
+        public void nextToken() {
+            prevToken = token;
+            token = tokenizer.readToken();
+        }
+
+        public Tokens.Token token() {
+            return token;
+        }
+
+        public Tokenizer.LineMap getLineMap() {
+            return tokenizer.getLineMap();
+        }
+    }
+
+    public static class Tokenizer {
+        private Reader reader;
+
+        private Tokens.TokenType tk;
+
+        private final Tokens tokens;
+
+        private final LineMap lineMap;
+
+        public Tokenizer(String buf) {
+            this.reader = new Reader(buf);
+            this.tokens = Tokens.instance();
+            this.lineMap = new LineMap(buf);
+        }
+
+        public Tokens.Token readToken() {
+            reader.tp = 0;
+            int position = 0;
+            int endPosition = 0;
+            loop:
+            while (true) {
+                position = reader.bp;
+                switch (reader.ch) {
+                case ' ':
+                case '\t':
+                    do {
+                        reader.scanChar();
+                    } while (reader.ch == ' ' || reader.ch == '\t');
+                    break;
+                case '\n':
+                    reader.scanChar();
+                    break;
+                case '\r':
+                    reader.scanChar();
+                    if (reader.ch == '\n')
+                        reader.scanChar();
+                    break;
+                case 'A': case 'B': case 'C': case 'D': case 'E':
+                case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'K': case 'L': case 'M': case 'N': case 'O':
+                case 'P': case 'Q': case 'R': case 'S': case 'T':
+                case 'U': case 'V': case 'W': case 'X': case 'Y':
+                case 'Z':
+                case 'a': case 'b': case 'c': case 'd': case 'e':
+                case 'f': case 'g': case 'h': case 'i': case 'j':
+                case 'k': case 'l': case 'm': case 'n': case 'o':
+                case 'p': case 'q': case 'r': case 's': case 't':
+                case 'u': case 'v': case 'w': case 'x': case 'y':
+                case 'z':
+                case '_':
+                    scanSignify();
+                    break loop;
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                    scanNumber();
+                    break loop;
+                case ';':
+                    reader.scanChar(); tk = Tokens.TokenType.SEMI; break loop;
+                case '(':
+                    reader.scanChar(); tk = Tokens.TokenType.LPAREN; break loop;
+                case ')':
+                    reader.scanChar(); tk = Tokens.TokenType.RPAREN; break loop;
+                case '{':
+                    reader.scanChar(); tk = Tokens.TokenType.LBRACE; break loop;
+                case '}':
+                    reader.scanChar(); tk = Tokens.TokenType.RBRACE; break loop;
+                default:
+                    if (isSpecial(reader.ch))
+                        scanOperator();
+                    else if (reader.bp == reader.len)
+                        tk = Tokens.TokenType.EOF;
+                    break loop;
+                }
+            }
+            endPosition = reader.bp;
+            switch (tk) {
+            case INTLITERAL:
+            case REALLITERAL:
+                return new Tokens.NumericToken(tk, reader.chars(), position, endPosition);
+            case SIGN:
+                return new Tokens.MyToken(tk, reader.chars(), position, endPosition);
+            default:
+                return new Tokens.Token(tk, position, endPosition);
+            }
+        }
+
+        private void scanNumber() {
+            scanDigits();
+            tk = Tokens.TokenType.INTLITERAL;
+            if (reader.ch == '.') {
+                reader.putChar(true);
+                scanFraction();
+            }
+        }
+
+        private void scanFraction() {
+            if (reader.isDigit()) {
+                scanDigits();
+                tk = Tokens.TokenType.REALLITERAL;
+            }
+        }
+
+        private void scanDigits() {
+            do {
+                reader.putChar(true);
+            } while (reader.isDigit());
+        }
+
+        private void scanOperator() {
+            while (true) {
+                reader.putChar(false);
+                String val = reader.chars();
+                Tokens.TokenType tk1 = tokens.lookUpTokenType(val);
+                if (tk1 == Tokens.TokenType.SIGN) {
+                    reader.tp--;
+                    break;
+                }
+                tk = tk1;
+                reader.scanChar();
+                if (!isSpecial(reader.ch))
+                    break;
+            }
+        }
+
+        private boolean isSpecial(char ch) {
+            if(ch=='+' || ch=='-' || ch=='*' || ch=='/' || ch=='<' || ch=='>' || ch=='=')return true;
+            return false;
+        }
+
+        private void scanSignify() {
+            reader.putChar(true);
+            do {
+                switch (reader.ch) {
+                case 'A': case 'B': case 'C': case 'D': case 'E':
+                case 'F': case 'G': case 'H': case 'I': case 'J':
+                case 'K': case 'L': case 'M': case 'N': case 'O':
+                case 'P': case 'Q': case 'R': case 'S': case 'T':
+                case 'U': case 'V': case 'W': case 'X': case 'Y':
+                case 'Z':
+                case 'a': case 'b': case 'c': case 'd': case 'e':
+                case 'f': case 'g': case 'h': case 'i': case 'j':
+                case 'k': case 'l': case 'm': case 'n': case 'o':
+                case 'p': case 'q': case 'r': case 's': case 't':
+                case 'u': case 'v': case 'w': case 'x': case 'y':
+                case 'z':
+                case '$': case '_':
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                    break;
+                default:
+                    tk = tokens.lookUpTokenType(reader.chars());
+                    return;
+                }
+                reader.putChar(true);
+            } while (true);
+        }
+
+        public LineMap getLineMap() {
+            return lineMap;
+        }
+
+        public static class LineMap {
+            private int[] begin;
+
+            public LineMap(String src) {
+                List<Integer> beginList = new LinkedList<>();
+                int position = -1;
+                while ((position = src.indexOf(System.lineSeparator(), position + 1)) != -1)
+                    beginList.add(position);
+                this.begin = new int[beginList.size() + 1];
+                ListIterator<Integer> iterator = beginList.listIterator();
+                while (iterator.hasNext())
+                    this.begin[iterator.nextIndex()] = iterator.next();
+            }
+
+            public int getLineNumber(int position) {
+                int lineNumber = Arrays.binarySearch(begin, position);
+                return lineNumber >= 0 ? lineNumber + 1 : -lineNumber;
+            }
+
+        }
+    }
+
+    static class Reader {
+        private char[] buf;
+
+        public int bp;
+
+        public final int len;
+
+        public char ch;
+
+
+        private char[] tbuf = new char[128];
+
+        public int tp;
+
+        public Reader(String input) {
+            buf = input.toCharArray();
+            int i = input.length() - 1;
+            while (i >= 0 && Character.isWhitespace(input.charAt(i)))
+                --i;
+            len = i + 1;
+            buf[len] = 0x1A;
+            bp = -1;
+            scanChar();
+        }
+
+        public void scanChar() {
+            if (bp < len) {
+                ch = buf[++bp];
+            }
+        }
+
+        public void putChar(boolean next) {
+            putChar(ch, next);
+        }
+
+        public void putChar(char ch, boolean next) {
+            tbuf[tp++] = ch;
+            if (next)
+                scanChar();
+        }
+
+        public String chars() {
+            return new String(tbuf, 0, tp);
+        }
+
+        public boolean isDigit() {
+            char c = ch;
+            if (c >= '0' && c <= '9')
+                return true;
+            return Character.isDigit(c);
+        }
+    }
+
+    static class Tokens {
+        private Map<String, TokenType> tokenTypeMap = new HashMap<>(128);
+
+        public static Tokens instance() {
+            return new Tokens();
+        }
+
+        private Tokens() {
+            for (TokenType t : TokenType.values())
+                if (t.name != null)
+                    tokenTypeMap.putIfAbsent(t.name, t);
+        }
+
+        public TokenType lookUpTokenType(String val) {
+            return tokenTypeMap.getOrDefault(val, TokenType.SIGN);
+        }
+
+        public enum TokenType {
+            EOF(),
+            INT("int"),
+            REAL("real"),
+            ELSE("else"),
+            IF("if"),
+            THEN("then"),
+            LPAREN("("),
+            RPAREN(")"),
+            SEMI(";"),
+            LBRACE("{"),
+            RBRACE("}"),
+            PLUS("+"),
+            SUB("-"),
+            STAR("*"),
+            SLASH("/"),
+            LT("<"),
+            LTEQ("<="),
+            EQ("="),
+            EQEQ("=="),
+            GT(">"),
+            GTEQ(">="),
+            INTLITERAL,
+            REALLITERAL,
+            SIGN;
+
+            public String name;
+
+            TokenType(String name) {
+                this.name = name;
+            }
+
+            TokenType() {
+
+            }
+        }
+
+        public static class Token {
+            public final TokenType tokenType;
+
+            public final int position;
+
+            public final int endPosition;
+
+            public Token(TokenType tokenType, int position, int endPosition) {
+                this.tokenType = tokenType;
+                this.position = position;
+                this.endPosition = endPosition;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                Token token = (Token) o;
+                return tokenType == token.tokenType;
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(tokenType);
+            }
+
+            @Override
+            public String toString() {
+                return tokenType.name() + ":" + tokenType.name;
+            }
+        }
+
+
+        public static class MyToken extends Token {
+            public final String name;
+
+            public MyToken(TokenType tokenType, String name, int position, int endPosition) {
+                super(tokenType, position, endPosition);
+                this.name = name;
+            }
+
+            @Override
+            public String toString() {
+                return tokenType.name() + ":" + name;
+            }
+        }
+
+        public static class NumericToken extends Token {
+            public final String val;
+
+            public NumericToken(TokenType tokenType, String val, int position, int endPosition) {
+                super(tokenType, position, endPosition);
+                this.val = val;
+            }
+
+            @Override
+            public String toString() {
+                return tokenType.name() + ":" + val;
+            }
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        String input = read();
+        Parser parser = new Parser(input);
+        Tree.Program program = parser.parse();
+        Entor entor = new Entor(parser.tool.getLineMap());
+        entor.enterProgram(program);
+        if (entor.errorList.size() != 0) {
+            for(int i=0;i<entor.errorList.size()-1;i++){
+                String s = entor.errorList.get(i);
+                System.out.println(s);
+            }
+            System.out.print(entor.errorList.get(entor.errorList.size()-1));
+        } else {
+            Set<String> keySet = MyMap.valueMap.keySet();
+            for(Iterator iterator = keySet.iterator();
+                iterator.hasNext(); ) {
+                String key = (String)iterator.next();
+                System.out.print(key + ": " + MyMap.valueMap.get(key));
+                if(iterator.hasNext()) System.out.println();
+            }
+        }
+    }
+
+}

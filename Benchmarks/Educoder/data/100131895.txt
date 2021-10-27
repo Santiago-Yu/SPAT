@@ -1,0 +1,40 @@
+package step3;
+
+import java.io.File;
+import java.util.regex.Pattern;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		
+		System.out.println( "+--"+file.getName());
+
+		getFile( file,1);
+
+
+
+
+
+	}
+	
+	public  void getFile(File file,int deep) {
+		File[] files=file.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			String pString=".+(\\.png$|\\.bmp$|\\.jpg$)";
+			if (files[i].isFile()&&Pattern.matches( pString,files[i].getName())) {	//图片文件
+				for (int j = 0; j < deep; j++) {	//输出空格
+					System.out.print("  ");
+				}
+				System.out.println("--"+files[i].getName());	//输出文件名
+			}else if (files[i].isDirectory()) {	//文件
+				for (int j = 0; j < deep; j++) {	//输出空格
+					System.out.print("  ");
+				}
+				System.out.println("+--"+files[i].getName());	//输出文件名
+				getFile( files[i], deep+1);
+			}
+		}
+	}
+	/********** END **********/
+}

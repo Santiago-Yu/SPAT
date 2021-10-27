@@ -1,0 +1,31 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+		public static void main(String[] args) {
+			Scanner scan1=new Scanner(System.in);
+			/******Begin******/
+			int num = scan1.nextInt();
+			scan1.close();
+      		if(num % 2 == 0) {
+    	 		 System.out.print("偶数");
+      		}else if(num > 1) {
+    	  	//num > 3 的奇数
+				for(int i=3; i<=Math.sqrt(num); i+=2) {
+					if(num % i == 0) {
+						System.out.print("奇数");
+						break;
+					}else {
+						System.out.print("素数");
+						break;
+					}
+				}
+    	  		//num == 3
+				if(num == 3){
+					System.out.print("素数");
+				}
+    	  		
+			}
+			/******End******/
+		}
+}

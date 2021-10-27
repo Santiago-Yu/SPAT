@@ -1,0 +1,52 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+        int i,j;
+        int min,temp;
+        int a[]=new int[10000];
+        for(i=0;i<10000;i++){
+            a[i]=i+1;
+        }
+        for(i=0;i<10000;i++){
+            for(j=0;j<nums.length;j++){
+                if(nums[j]==a[i]){
+                    a[i]=0;}
+            }
+        }
+        int b[]=new int[3];
+        j=0;
+        for(i=0;i<10000;i++){
+           
+            if(a[i]!=0){
+                b[j]=a[i];
+                j++;}
+            
+        }
+        	        for(i=0;i<b.length-1;i++) {
+				min=i;
+				for(j=i+1;j<b.length;j++) {
+					if(b[min]>b[j])
+						min=j;
+				}
+				if(min!=i) {
+					temp=b[min];
+					b[min]=b[i];
+					b[i]=temp;
+				}
+			}
+        String s[]=new String[3];
+        for(i=0;i<3;i++){
+            s[i]=String.valueOf(b[i]);
+        }
+        String str1;
+        str1=s[0].concat(s[1]) .concat(s[2]);
+        long f=Long.parseLong(str1)%11;
+        int h=(int)f;
+        return h;
+	}
+
+	/********* End *********/
+}

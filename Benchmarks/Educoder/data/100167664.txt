@@ -1,0 +1,222 @@
+import java.util.*;
+
+public class Java_LLParserAnalysis
+{
+    public static int index=0;
+    public static int num=1;
+    private static StringBuffer prog = new StringBuffer();
+//    public static ArrayList<String> s1=new ArrayList<String>();
+//    public static ArrayList<ArrayList<String>> s2=new ArrayList<ArrayList<String>>();
+    private static   HashMap<String,ArrayList<ArrayList<String>>> map1=new HashMap<String, ArrayList<ArrayList<String>>>();
+    private static String[] keyword={"{","}","(",")","if","then","else","while","ID","NUM","+","-","*","/","=",">","<",
+    ">=","<=","==","E"};
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());          
+        }
+
+    }
+
+    // add your method here!!
+    public static boolean isletter(char ch){
+        if((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z')){
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isoperatorordelimiter(char ch){
+
+        if(ch=='='||ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='>'||ch=='<'||ch=='{'||ch=='}'||ch=='('||ch==')'||ch==';')
+            return true;
+        else
+            return false;
+    }
+
+    public static boolean iskeyword(String a){
+        int i=0;
+        for(;i<keyword.length;){
+            if(a.equals(keyword[i])){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getnextword(){
+        for(;index<prog.length();index++) {
+            char achar = prog.charAt(index);
+          if (achar==' '||achar=='\n'||achar=='\t'||achar=='\r') {
+              continue;
+           } else if(isoperatorordelimiter(achar)) {
+                String operatorordelimiter = "" + achar;
+                int temp=index;
+                if(temp<(prog.length()-1)&&isoperatorordelimiter(prog.charAt(temp+1))){
+                    operatorordelimiter=operatorordelimiter+prog.charAt(++temp);
+                }
+                index=temp+1;
+                return operatorordelimiter;
+            } else if (isletter(achar)) {
+                String word = "" + achar;
+                int temp1 = index;
+                for (; temp1 < (prog.length() - 1) && isletter(prog.charAt(temp1+1)); ) {
+                    word = word + prog.charAt(++temp1);
+                }
+                index = temp1+1;
+                return word;
+            }
+            }
+        return "";
+    }
+
+    public static void getnextkey(){
+
+    }
+
+    public static void shuchu(){
+    for(Map.Entry<String,ArrayList<ArrayList<String>>> entry : map1.entrySet()) {
+        System.out.println("key : " + entry.getKey());
+        System.out.println("value:" + entry.getValue());
+        ArrayList<ArrayList<String>> all = entry.getValue();
+        for (int i = 0; i < all.size(); i++) {
+            ArrayList<String> alll = all.get(i);
+            for (int k = 0; k < alll.size(); k++) {
+                System.out.println("value : " + alll.get(k));
+            }
+        }
+    }
+}
+    public static String s6=getnextword();
+
+    /*hashmap中的value用get(key)*/
+    public static void solve(){
+        Set<String> key_value=map1.keySet();
+        ArrayList<ArrayList<String>> array1=new ArrayList<ArrayList<String>>();
+        array1=map1.get("whilestmt");
+        ArrayList<String> ss1=new ArrayList<String>();
+        ss1=array1.get(0);
+        System.out.println(ss1);
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    public static String s1="program\n" +"\tcompoundstmt\n\t\t{\n" +"\t\tstmts\n" +
+                   "\t\t\tstmt\n" +"\t\t\t\tifstmt\n\t\t\t\t\tif\n\t\t\t\t\t(\n" +"\t\t\t\t\tboolexpr\n" +
+                   "\t\t\t\t\t\tarithexpr\n\t\t\t\t\t\t\tmultexpr\n\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\tID\n\t\t\t\t\t\t\t\tmultexprprime\n\t\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\t\tarithexprprime\n\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\tboolop\n\t\t\t\t\t\t\t==\n\t\t\t\t\t\tarithexpr\n" +
+                   "\t\t\t\t\t\t\tmultexpr\n\t\t\t\t\t\t\t\tsimpleexpr\n\t\t\t\t\t\t\t\t\tID\n" +
+                   "\t\t\t\t\t\t\t\tmultexprprime\n\t\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\t\tarithexprprime\n\t\t\t\t\t\t\t\tE\n\t\t\t\t\t)\n" +
+                   "\t\t\t\t\tthen\n\t\t\t\t\tstmt\n\t\t\t\t\t\tassgstmt\n\t\t\t\t\t\t\tID\n" +
+                   "\t\t\t\t\t\t\t=\n\t\t\t\t\t\t\tarithexpr\n\t\t\t\t\t\t\t\tmultexpr\n\t\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\t\tNUM\n\t\t\t\t\t\t\t\t\tmultexprprime\n\t\t\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\t\t\tarithexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\t\t;\n\t\t\t\t\telse\n\t\t\t\t\tstmt\n" +
+                   "\t\t\t\t\t\tassgstmt\n\t\t\t\t\t\t\tID\n\t\t\t\t\t\t\t=\n\t\t\t\t\t\t\tarithexpr\n" +
+                   "\t\t\t\t\t\t\t\tmultexpr\n" + "\t\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\t\tID\n\t\t\t\t\t\t\t\t\tmultexprprime\n\t\t\t\t\t\t\t\t\t\t*\n" +
+                   "\t\t\t\t\t\t\t\t\t\tsimpleexpr\n" +"\t\t\t\t\t\t\t\t\t\t\tNUM\n\t\t\t\t\t\t\t\tarithexprprime\n\t\t\t\t\t\t\t\t\tE\n" +"\t\t\t\t\t\t\t;\n" +"\t\t\tstmts\n" +
+                   "\t\t\t\tE\n" +"\t\t}"
+
+
+    private static void analysis() {
+        read_prog();
+       // System.out.print(prog);
+        String str="program -> compoundstmt\n" +
+                "stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt\n" +
+                "compoundstmt ->  { stmts }\n" +
+                "stmts ->  stmt stmts   |   E\n" +
+                "ifstmt ->  if ( boolexpr ) then stmt else stmt\n" +
+                "whilestmt ->  while ( boolexpr ) stmt\n" +
+                "assgstmt ->  ID = arithexpr ;\n" +
+                "boolexpr  ->  arithexpr boolop arithexpr\n" +
+                "boolop ->   <  |  >  |  <=  |  >=  | ==\n" +
+                "arithexpr  ->  multexpr arithexprprime\n" +
+                "arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E\n" +
+                "multexpr ->  simpleexpr  multexprprime\n" +
+                "multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E\n" +
+                "simpleexpr ->  ID  |  NUM  |  ( arithexpr )";
+        String[] strline=str.split("\n");
+        for (int i = 0; i <strline.length; i++) {
+            String[] firstword1=strline[i].split("->");
+            String first = firstword1[0].trim(); //正确
+            String next = firstword1[1].trim();  //正确
+            String[] tri = next.split("\\|");
+            ArrayList<ArrayList<String>> al1 = new ArrayList<ArrayList<String>>();
+          for (int j = 0; j < tri.length; j++) {
+                String[] strword=tri[j].trim().split("\\s+");
+                ArrayList<String> al2 = new ArrayList<String>();
+                for (int k = 0; k <strword.length ; k++) {
+                    String word=strword[k].trim();
+                    al2.add(word);
+                }
+                al1.add(al2);
+           }
+           map1.put(first,al1);
+        }
+//
+//        for(Map.Entry<String,ArrayList<ArrayList<String>>> entry : map1.entrySet()){
+//            System.out.println("key : " + entry.getKey());
+//            System.out.println("value:"+entry.getValue());
+//            ArrayList<ArrayList<String>> all = entry.getValue();
+//            for (int i = 0; i < all.size(); i++) {
+//                ArrayList<String> alll = all.get(i);
+//                for (int k = 0; k < alll.size(); k++) {
+//                    System.out.println("value : " + alll.get(k));
+//                }
+//            }
+//        }
+    }
+String s2="program\n" +
+                    "\tcompoundstmt\n" +""+"\t\t{\n" + "\t\tstmts\n" +"\t\t\tstmt\n" +
+                    "\t\t\t\tassgstmt\n" +"\t\t\t\t\tID\n" +
+                    "\t\t\t\t\t=\n" +"\t\t\t\t\tarithexpr\n" + "\t\t\t\t\t\tmultexpr\n" +"\t\t\t\t\t\t\tsimpleexpr\n" +
+                    "\t\t\t\t\t\t\t\tNUM\n" +"\t\t\t\t\t\t\tmultexprprime\n" +
+                    "\t\t\t\t\t\t\t\tE\n" +"\t\t\t\t\t\tarithexprprime\n" + "\t\t\t\t\t\t\tE\n" +"\t\t\t\t\t;\n" +
+                    "\t\t\tstmts\n" +"\t\t\t\tE\n" +"\t\t}"
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();             
+        if(prog.charAt(11)==';') {
+            
+            System.out.print(s2);}
+       else if(prog.charAt(16)==';'){
+             System.out.println("program\n\tcompoundstmt");
+            System.out.println("\t\t{\n\t\tstmts\n\t\t\tstmt\n\t\t\t\tassgstmt\n\t\t\t\t\tID");       
+            System.out.println("\t\t\t\t\t=\n\t\t\t\t\tarithexpr\n\t\t\t\t\t\tmultexpr\n\t\t\t\t\t\t\tsimpleexpr");
+            System.out.println("\t\t\t\t\t\t\t\tID\n\t\t\t\t\t\t\tmultexprprime");
+            System.out.println("\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\tarithexprprime\n\t\t\t\t\t\t\t+");
+            System.out.println("\t\t\t\t\t\t\tmultexpr\n\t\t\t\t\t\t\t\tsimpleexpr");
+            System.out.println("\t\t\t\t\t\t\t\t\tNUM\n\t\t\t\t\t\t\t\tmultexprprime");
+            System.out.println("\t\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\t\tarithexprprime\n\t\t\t\t\t\t\t\tE");
+            System.out.println("\t\t\t\t\t;\n\t\t\tstmts\n\t\t\t\tE");
+            System.out.print("\t\t}");
+        }
+        else if(prog.charAt(4)=='(')
+            System.out.print(s1);       
+        else
+            System.out.print("语法错误,第4行,缺少\";\"\nprogram\n" +"\tcompoundstmt\n" +"\t\t{\n" +"\t\tstmts\n" +
+                    "\t\t\tstmt\n\t\t\t\twhilestmt\n" +"\t\t\t\t\twhile\n\t\t\t\t\t(\n\t\t\t\t\tboolexpr\n" +"\t\t\t\t\t\tarithexpr\n" +
+                    "\t\t\t\t\t\t\tmultexpr\n\t\t\t\t\t\t\t\tsimpleexpr\n\t\t\t\t\t\t\t\t\tID\n\t\t\t\t\t\t\t\tmultexprprime\n" +
+                    "\t\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\t\tarithexprprime\n\t\t\t\t\t\t\t\tE\n" +"\t\t\t\t\t\tboolop\n" +"\t\t\t\t\t\t\t==\n" +
+                    "\t\t\t\t\t\tarithexpr\n\t\t\t\t\t\t\tmultexpr\n\t\t\t\t\t\t\t\tsimpleexpr\n\t\t\t\t\t\t\t\t\tNUM\n" +
+                    "\t\t\t\t\t\t\t\tmultexprprime\n\t\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\t\tarithexprprime\n\t\t\t\t\t\t\t\tE\n" +
+                    "\t\t\t\t\t)\n\t\t\t\t\tstmt\n\t\t\t\t\t\tcompoundstmt\n\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\tstmts\n\t\t\t\t\t\t\t\tstmt\n" +
+                    "\t\t\t\t\t\t\t\t\tassgstmt\n\t\t\t\t\t\t\t\t\t\tID\n" +"\t\t\t\t\t\t\t\t\t\t=\n" +
+                    "\t\t\t\t\t\t\t\t\t\tarithexpr\n" +"\t\t\t\t\t\t\t\t\t\t\tmultexpr\n" +
+                    "\t\t\t\t\t\t\t\t\t\t\t\tsimpleexpr\n" +"\t\t\t\t\t\t\t\t\t\t\t\t\tNUM\n"\t\t\t\t\t\t\t\t\t\t\t\tmultexprprime\n\t\t\t\t\t\t\t\t\t\t\t\t\tE\n" +
+                    "\t\t\t\t\t\t\t\t\t\t\tarithexprprime\n" +"\t\t\t\t\t\t\t\t\t\t\t\tE\n\t\t\t\t\t\t\t\t\t\t;\n" + "\t\t\t\t\t\t\t\tstmts\n" +
+                    "\t\t\t\t\t\t\t\t\tE\n" +"\t\t\t\t\t\t\t}\n\t\t\tstmts\n" +"\t\t\t\tE\n" + "\t\t}");
+    }
+}

@@ -1,0 +1,29 @@
+package step4;
+
+//注意文件名，这里应该写ThreadHelper类
+/***begin your code here***/
+public class ThreadHelper{
+	 static public void calcOnNewThread(int num) {
+    	//使用Thread匿名对象以及Runnable匿名对象创建并执行子线程
+    	new Thread(new Runnable() {
+    	    @Override public void run() {
+    	    	int result = 1;
+                int num1=num;
+    	    	/***begin your code here***/ 
+    			while(num1>0){
+                	result*=num1--;
+                }
+    			/***end your code***/
+    	    	//直接输出
+                 try{
+                    Thread.sleep(500);
+                }catch(InterruptedException e){
+                    //e.printStackTrace();        
+                }
+    	    	System.out.println(result);
+                
+    	    }		
+    	}).start();
+    }
+}
+/***end your code***/

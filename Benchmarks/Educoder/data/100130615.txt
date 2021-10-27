@@ -1,0 +1,35 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Task {
+
+	public void matrixSum(int[][] arr){
+		/********** BEGIN **********/		
+		int sum = 0;
+        for(int i=0; i<arr.length; i++){
+            for(int j=0; j<arr.length; j++){
+                if(i==j){
+                    sum += arr[i][j];
+                }
+            }
+        }
+        System.out.println(sum);
+		/********** END **********/
+	}
+    public static void main(String[] args) {
+		/********** BEGIN **********/
+		Scanner sc = new Scanner(System.in);
+		int[][] arr = new int[3][3];
+		for(int i=0; i<3; i++){
+			for(int j=0; j<3; j++){
+				arr[i][j] = sc.nextInt();
+			}			
+		}
+		Task test = new Task();
+		test.matrixSum(arr);		
+	}
+	
+	
+}

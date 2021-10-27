@@ -1,0 +1,33 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+private static Scanner sc;
+
+	public static void main(String[] args) {
+        int a=1;
+    int b=1;
+    int c=0;  
+    int s[] = new int[1000];
+    for (int i = 3; i <= 1000; i++) {
+			c = a + b;	
+            s[i-1]=c;
+			a = b;
+            b = c;}
+    
+
+		sc = new Scanner(System.in);
+		int num = sc.nextInt();
+        
+        s[0]=1;
+        s[1]=1;
+		System.out.println("子线程计算结果为："+s[num-1]);
+		
+		 
+	}
+   
+}
+
+
+

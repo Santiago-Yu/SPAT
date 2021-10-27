@@ -1,0 +1,79 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+		char preyear1 = releaseDate.charAt(0);
+		char preyear2 = releaseDate.charAt(1);
+		char preyear3 = releaseDate.charAt(2);
+		char preyear4 = releaseDate.charAt(3);
+		int preyear = (preyear1-'0')*1000 + (preyear2-'0')*100 + (preyear3-'0')*10 + (preyear4-'0');
+		//原来的年份
+		char premonth1 = releaseDate.charAt(5);
+		char premonth2 = releaseDate.charAt(6);
+		int premonth = (premonth1 - '0') * 10 + (premonth2 - '0');
+		//原来的月份
+		char preday1 = releaseDate.charAt(8);
+		char preday2 = releaseDate.charAt(9);
+		int preday = (preday1 - '0') * 10 + (preday2 - '0');
+		//原来的日期
+		int lateday = preday + day;
+		int lateyear = preyear;
+		int latemonth = premonth;
+		while (lateday > toDay(lateyear, latemonth)) {
+			lateday -= (toDay(lateyear, latemonth));
+			latemonth++;
+			if (latemonth > 12) {
+				lateyear++;
+				latemonth -= 12;
+			}
+		}
+		while (latemonth > 12) {
+			lateyear++;
+			latemonth -= 12;
+		}
+		
+		String temp = new String(lateyear + "-");
+		if (temp.length() < 5) {
+			temp = "0000" + temp;
+		} 
+		String lateyear_s = temp.substring(temp.length()-5, temp.length()-1);;
+		temp = new String(latemonth + "-");
+		if (temp.length() < 3) {
+			temp = "00" + temp;
+		}
+		String latemonth_s = temp.substring(temp.length()-3, temp.length()-1);
+		
+		temp = new String(lateday + "-");
+		if (temp.length() < 3) {
+			temp = "00" + temp;
+		}
+		String lateday_s = temp.substring(temp.length()-3, temp.length()-1);
+
+
+		return new String(lateyear_s + "-" + latemonth_s + "-" + lateday_s);
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+		public static int toDay(int year, int month) {
+		if (month == 2) {
+            if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0){
+            	 return 29;
+            } else return 28;
+		} else if (month == 4 || month == 6 || month == 9 || month == 11) {
+			return 30;
+		} else return 31;
+	}
+	
+}

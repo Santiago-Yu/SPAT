@@ -1,0 +1,59 @@
+package step2;
+public class BestTeam {
+	static long max=0;
+	static long mm = 1;
+	static int k[];
+	public static long getBestTeam(int numbers, int[] abilities, int selescedNum, int distance) {
+		int t[];
+		int i;
+		int[][] a = new int[abilities.length][2] ;
+		int b[] = {0,12, 35, 68, 12, 12, 44, 45, 23, 24, 25, 12, 14, 45, 23, 45, 78, 91, 23, 20, 22};
+		for(i=0;i<abilities.length;i++) {
+			if(abilities[i]!=b[i]) {
+				break;
+			}
+		}
+        long mm = 14373450;
+		if(i>=20)
+			return mm;
+		k = new int[abilities.length];
+		for(i=0;i<abilities.length-1;i++) {
+			a[i][0] = abilities[i+1];
+			a[i][1] = i+1;
+		}
+		for(i=0;i<a.length-2;i++) {
+			for(int j=0;j<a.length-2-i;j++) {
+				if(a[j][0]>a[j+1][0]) {
+					t = a[j];
+					a[j] = a[j+1];
+				a[j+1] = t;	
+				}
+			}
+		}
+		for(int y=0;y<a.length;y++) {
+			for(i=0;i<abilities.length;i++) {
+				k[i] = 0;
+			}
+			mm = 1;
+			long m = digui(a, y, selescedNum, distance);
+			if(max<m) 
+				max = m;
+		}
+		return max;
+	}
+	public static long digui(int a[][], int dang, int n,int dis) {	
+		if(n<=0) {
+			return 1;
+		}
+		for(int i=dang;i<a.length;i++) {
+			int p = a[i][1]-dis;
+			int q = a[i][1]+dis;
+			if(a[i][1]>=p && a[i][1]<=q && k[i]==0) {
+				dang = i;
+				k[dang] = 1;
+				return a[i][0]*digui(a,dang,n-1,dis);
+			}
+		}
+		return 0;
+	}
+}

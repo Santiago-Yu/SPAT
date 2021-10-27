@@ -1,0 +1,41 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+		public static void main(String[] args) {
+			Scanner scan1=new Scanner(System.in);
+			/******Begin******/
+int number=scan1.nextInt();
+        int flag=0;
+        if(number%2==0)
+        {
+            System.out.printf("偶数");
+        }
+        else
+        {
+            if (number>1)
+            {
+                for (int i=2;i<number;i++)
+                {
+                    if(number%i==0)
+                    {
+                        flag=1;
+                        break;
+                    }
+                }
+                if (flag==1)
+                {
+                    System.out.printf("奇数");
+                }
+                else 
+                {
+                    System.out.printf("素数");
+                }
+            }
+        }
+
+
+	         
+			/******End******/
+		}
+}

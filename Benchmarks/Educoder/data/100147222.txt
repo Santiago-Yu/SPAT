@@ -1,0 +1,44 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		int[] max = new int[numbers+1];
+        Long[][] f = new Long[numbers+1][numbers+1];
+        Long[][] g = new Long[numbers+1][numbers+1];
+        for(int i = 0; i <= numbers; i++) {
+            for(int j = 0; j <= numbers; j++) {
+                f[i][j]=0L;
+                g[i][j]=0L;}
+        }
+        for(int key = 1; key <= numbers; key++) {
+            f[key][1] = (long)abilities[key];
+            g[key][1] = (long)abilities[key];
+        }
+        for(int k = 2;k <= selectedNum; k++) {
+            for (int key = k; key <= numbers; key++) {
+                Long max1 = (long)Integer.MIN_VALUE;
+                Long min1 = (long)Integer.MAX_VALUE;
+                for(int left = Math.max(k-1, key-selectedNum); left <= key-1; left++) {
+                    if(max1 < Math.max(f[left][k-1]*abilities[key], g[left][k-1]*abilities[key]))
+                        max1 = Math.max(f[left][k-1]*abilities[key], g[left][k-1]*abilities[key]);
+                    if(min1>Math.min(f[left][k-1]*abilities[key], g[left][k-1]*abilities[key]))
+                    	min1 = Math.min(f[left][k-1]*abilities[key], g[left][k-1]*abilities[key]);
+
+                }
+                f[key][k] = max1;
+                g[key][k] = min1;
+            }
+        }
+        Long result = f[1][selectedNum];
+        for(int i = 1; i <= numbers; i++) {
+            if(result < f[i][selectedNum])
+                result = f[i][selectedNum];
+        }
+        return result;
+    }
+
+	/********* End *********/
+}

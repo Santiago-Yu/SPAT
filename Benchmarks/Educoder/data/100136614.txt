@@ -1,0 +1,138 @@
+package case3;
+
+import java.util.Scanner;
+
+public class Task3 {
+	public static void main(String[] args) {
+	
+    public abstract void eat();
+	/********* end *********/
+}
+
+// 定义运动员Player（抽象类）继承自Person类
+// 无参构造函数
+// 有参构造函数初始化name和age
+// 运动员学习内容不一样，抽取为抽象 定义抽象方法study()
+abstract class Player extends Person {
+	/********* begin *********/
+	public Player(){
+        
+    }
+     public Player(String name,int age){
+    	super(name,age);
+    }
+    public abstract void study();
+	/********* end *********/
+}
+
+// 定义教练Coach（抽象类）继承自Person类
+// 无参构造函数
+// 有参构造函数初始化name和age
+// 教练教的不一样 定义抽象方法teach()
+abstract class Coach extends Person {
+	/********* begin *********/
+	public Coach(){
+        
+    }
+    public Coach(String name,int age){
+    	super(name,age);
+    }
+    public abstract void teach();
+	/********* end *********/
+}
+
+// 定义乒乓球运动员具体类PingPangPlayer 继承自Player类并实现SpeakEnglish类（兵乓球运动员需要说英语）
+// 无参构造函数
+// 有参构造函数初始化name和age
+// 实现自己的eat()方法 输出'乒乓球运动员吃大白菜，喝小米粥'
+// 实现自己的study()方法 输出'乒乓球运动员学习如何发球和接球'
+// 实现自己的speak()方法 输出'乒乓球运动员说英语'
+class PingPangPlayer extends Player implements SpeakEnglish {
+	/********* begin *********/
+	public PingPangPlayer(){
+        
+    }
+    public PingPangPlayer(String name,int age){
+    	super(name, age);
+    }
+    public void eat(){
+    	System.out.println("乒乓球运动员吃大白菜，喝小米粥");
+    }
+    public void study(){
+    	System.out.println("乒乓球运动员学习如何发球和接球");
+    }
+    public void speak(){
+    	System.out.println("乒乓球运动员说英语");
+    }
+	/********* end *********/
+}
+
+// 定义篮球运动员具体类BasketballPlayer 继承自Player类 不需要继承接口，因为他不需要说英语
+// 无参构造函数
+// 有参构造函数初始化name和age
+// 实现自己的eat()方法 输出'篮球运动员吃牛肉，喝牛奶'
+// 实现自己的study()方法 输出'篮球运动员学习如何运球和投篮'
+class BasketballPlayer extends Player {
+	/********* begin *********/
+	public BasketballPlayer(){
+        
+    }
+    public BasketballPlayer(String name,int age){
+    	super(name, age);
+    }
+    public void eat(){
+    	System.out.println("篮球运动员吃牛肉，喝牛奶");
+    }
+    public void study(){
+    	System.out.println("篮球运动员学习如何运球和投篮");
+    }   
+	/********* end *********/
+}
+
+// 定义乒乓球教练具体类 PingPangCoach 继承自Coach类并实现SpeakEnglish类（兵乓球教练需要说英语）
+// 无参构造函数
+// 有参构造函数初始化name和age
+// 实现自己的eat()方法 输出'乒乓球教练吃小白菜，喝大米粥'
+// 实现自己的teach()方法 输出'乒乓球教练教如何发球和接球'
+// 实现自己的speak()方法 输出'乒乓球教练说英语'
+class PingPangCoach extends Coach implements SpeakEnglish {
+	/********* begin *********/
+	public PingPangCoach(){
+    }
+    public PingPangCoach(String name,int age){
+		 super(name, age);
+    }
+    public void eat(){
+    	System.out.println("乒乓球教练吃小白菜，喝大米粥");
+    }
+    public void teach(){
+    	System.out.println("乒乓球教练教如何发球和接球");
+    }
+    public void speak(){
+    	System.out.println("乒乓球教练说英语");
+    }
+    
+	/********* end *********/
+}
+
+// 定义篮球教练具体类BasketballCoach 继承自Coach类 不需要继承接口，因为他不需要说英语
+// 无参构造函数
+// 有参构造函数初始化name和age
+// 实现自己的eat()方法 输出'篮球教练吃羊肉，喝羊奶'
+// 实现自己的teach()方法 输出'篮球教练教如何运球和投篮'
+class BasketballCoach extends Coach {
+	/********* begin *********/
+	public BasketballCoach(){
+        
+    }
+    public BasketballCoach(String name,int age){
+    	 super(name, age);
+            
+    }
+    public void eat(){
+    	System.out.println("篮球教练吃羊肉，喝羊奶");
+    }
+    public void teach(){
+    	System.out.println("篮球教练教如何运球和投篮");
+    } 
+	/********* end *********/

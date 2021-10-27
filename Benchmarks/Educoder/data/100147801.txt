@@ -1,0 +1,22 @@
+package step4;
+
+public class MyRunnable implements Runnable {
+         private int b;
+         public MyRunnable(int b) {
+        	 if(b!=0)
+        		 this.b=b;
+         }
+         public void run() {
+        	 int result=1;
+        	 try {
+				Thread.currentThread().sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	 for (int i = 1; i <=b ; i++) {
+				result=result*i;
+			}
+        	 System.out.println(result);
+         }
+}

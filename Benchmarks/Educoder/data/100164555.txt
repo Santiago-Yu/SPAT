@@ -1,0 +1,76 @@
+package step2;
+import java.util.Scanner;
+public class Equation {
+    public double a, b, c; //一元二次方程的三个系数
+    public double X1,X2;
+    public Equation(){
+    }
+    
+    public Equation(double a,double b,double c){
+        this.a=a;
+        this.b=b;
+        this.c=c;
+        double d;
+        d = b*b-4*a*c;
+        if(a!=0 ){
+            if(b*b-4*a*c > 0)
+            {
+                X1 = (-1 * b + Math.sqrt(d)) / (2 * a);
+                X2 = (-1 * b - Math.sqrt(d)) / (2 * a);
+                /*System.out.printf("X1=%4.2f",x1);
+                 System.out.println("");
+                 System.out.printf("X2=%4.2f",x2);*/
+            }
+            else if(d == 0)
+            {
+                X1 = X2 = (-1 * b) / (2 * a);
+                
+            }
+            
+        }else if(a==0){
+            X1 = -1 * c/b;
+        }
+        
+    }
+    
+    public double getX1(){
+        return X1;
+    }
+    
+    public double getX2(){
+        return X2;
+    }
+    
+    public double deta(){
+        return b * b - 4 * a * c;
+    }
+    
+    public  void main(){
+        
+        Scanner inn= new Scanner(System.in);
+        Equation e=new Equation(inn.nextDouble(),inn.nextDouble(),inn.nextDouble());
+        
+        
+        
+        if(b*b-4*a*c<0){
+            System.out.println("无实根");
+        }
+        else if(a!=0){
+            System.out.printf("X1=%4.2f",e.getX1());
+            System.out.println("");
+            System.out.printf("X2=%4.2f",e.getX2());
+        }
+        else {
+            System.out.printf("唯一根 X=%4.2f\n",-c/b);
+        }
+        
+    }
+}
+
+
+
+
+
+
+
+

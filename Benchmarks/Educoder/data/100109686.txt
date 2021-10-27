@@ -1,0 +1,93 @@
+package step1;
+
+/**
+ * Created by zengpeng on 2018/3/3.
+ */
+public class BSTree {
+
+    private TreeNode root;//根结点
+
+    public BSTree() {
+        root = null;
+    }
+
+    /**
+     * 向树root中插入key
+     *
+     * @param key 要插入的值
+     */
+    public void insert(int key) {
+        /********** Begin *********/
+       TreeNode p,pre;
+        p=root;pre=root;
+        while(p!=null){
+           pre=p;
+            if(key<p.item)p=p.leftChild;
+            else p=p.rightChild;
+        }
+        if(pre==null){
+            root=new TreeNode(key);
+        }else{
+            p=new TreeNode(key);
+            if(key<pre.item)pre.leftChild=p;
+            else pre.rightChild=p;
+            
+        }
+        
+        
+        /********** End *********/
+    }
+
+    public void preOrder() {
+        preOrder(root);
+    }
+
+    public void inOrder() {
+        inOrder(root);
+    }
+
+    public void postOrder(){
+        postOrder(root);
+    }
+
+    private void preOrder(TreeNode node) {
+        if (node != null) {
+            System.out.print(node.item + " ");
+            preOrder(node.leftChild);
+            preOrder(node.rightChild);
+        }
+    }
+
+    private void inOrder(TreeNode node) {
+        if (node != null) {
+            inOrder(node.leftChild);
+            System.out.print(node.item + " ");
+            inOrder(node.rightChild);
+        }
+    }
+
+    private void postOrder(TreeNode node) {
+        if (node != null) {
+            postOrder(node.leftChild);
+            postOrder(node.rightChild);
+            System.out.print(node.item + " ");
+        }
+    }
+
+
+    public static class TreeNode {
+        private TreeNode leftChild;
+        private TreeNode rightChild;
+        private int item;
+
+        public TreeNode(int item) {
+            this(null, null, item);
+        }
+
+        public TreeNode(TreeNode leftChild, TreeNode rightChild, int item) {
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
+            this.item = item;
+        }
+    }
+}

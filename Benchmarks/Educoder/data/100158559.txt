@@ -1,0 +1,34 @@
+package Pid_203;
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int max = 0;
+		if(n == 2)
+			System.out.println(1);
+		if(n>2){
+			for(int i =2;i<n;i++){
+				int left = n%i;
+				int[] count = new int[i];
+				for(int j = 0;j<i;j++)
+					count[j] = n/i;
+				for(int k = 0;k<left;k++)
+					count[k]++;
+				int sum = 1;
+				int c = i;
+				while(--c>=0)
+					sum*= count[c];
+				if(sum>max)
+					max = sum;
+			}
+		}
+		System.out.printf("%d",max);
+	
+	}
+
+}

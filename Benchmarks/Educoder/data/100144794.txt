@@ -1,0 +1,36 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		int len = matrix.length;
+        if(matrix == null || len <= 1){return;}
+        for(int i = 0; i < (len>>1); i++)	//层数
+        {
+            for(int j = i; j < len-i-1; j++)	//针对每一层的元素进行循环交换操作
+            {
+                int t = matrix[i][j];
+                int currentRow = i, currentCol = j;
+                int nextRow = len-j-1, nextCol = i;
+                while(!(nextRow == i && nextCol == j))
+                {
+                    matrix[currentRow][currentCol] = matrix[nextRow][nextCol];
+                    currentRow = nextRow;
+                    currentCol = nextCol;
+                    nextRow = len - currentCol - 1;
+                    nextCol = currentRow;
+                }
+                matrix[currentRow][currentCol] = t;
+            }
+        }
+		
+
+		
+		
+		
+		/********* End *********/
+	}
+}
+
+
+

@@ -1,0 +1,40 @@
+package step4;
+import java.util.Scanner;
+
+//根据输入的秒数，输出对应的分钟数和小时数，用方法完成。
+public class TestJava25_4 {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入秒数：");
+		int seconds = sc.nextInt();
+		//此处调用方法，输出对应的分钟数和小时数
+		int h=zhong(seconds);
+		int m=zhong1(seconds,h);
+         if(seconds%3600==0){
+        	 System.out.println(seconds+"秒对应的小时数是"+h+"，分钟数是：0");
+         }
+         else{
+        	 System.out.println(seconds+"秒对应的小时数是"+h+"，分钟数是："+m);
+         }
+		
+	}
+	private static int zhong1(int seconds, int h) {
+		// TODO 自动生成的方法存根
+		int m=(seconds-3600*h)/60;
+		return m;
+	}
+	
+
+	private static int zhong(int seconds) {
+		// TODO 自动生成的方法存根
+		int h=seconds/3600;
+		return h;
+	}
+	
+	
+	
+	
+	/*******End*********/
+}
+

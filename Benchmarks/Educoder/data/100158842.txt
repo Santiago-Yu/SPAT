@@ -1,0 +1,31 @@
+package Q205;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+			int n;
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		int[] s = new int[10001];
+		int id = 0;
+		while(sc.hasNext()) {
+			id++;
+			s[id] = sc.nextInt();
+		}
+		//for(int i = 1; i <= id; i++)
+			//System.out.print(s[i]+" ");
+		int [] dp = new int[10001];
+		dp[0] = 1;
+		int ans = 0;
+		for(int i = 1; i <= id; i++) {
+			for(int j = n; j >= 0; j--) {
+				if(dp[j]!=0&&(j+s[i]<=n)) {
+					dp[j+s[i]] = 1;
+					ans = Math.max(j+s[i],ans);
+				}
+			}
+		}
+		System.out.print(ans);
+	}
+
+}

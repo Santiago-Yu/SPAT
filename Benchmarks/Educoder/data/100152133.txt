@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double Pi = Math.acos(-1.0); 
+		 double d = Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+		 if(r1>r2){
+			 double temp=r1;
+			 r1=r2;
+			 r2=temp;
+		}
+		 if(r1+r2<=d) {
+			 return Pi*r1*r1+Pi*r2*r2;
+		 }
+		 else if(r2-r1>=d) {
+			 return Pi*r2*r2;
+		 }else {
+			 double a1=Math.acos((r1*r1+d*d-r2*r2)/(2.0*r1*d));
+			 double a2=Math.acos((r2*r2+d*d-r1*r1)/(2.0*r2*d));
+			 return Pi*r1*r1+Pi*r2*r2-(a1*r1*r1+a2*r2*r2-r1*d*Math.sin(a1));
+		 }
+		  
+		  
+		  /********* End *********/
+	  }
+}

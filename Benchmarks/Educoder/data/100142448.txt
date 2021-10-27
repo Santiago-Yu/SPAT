@@ -1,0 +1,35 @@
+package step2;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		//读取src/step2/input/目录下的task.txt文件信息并输出到控制台，临时字节数组需要定义长度为8位，否则会有空格。
+        //使用Java代码将字符串learning practice写入到src/step2/output/目录下的output.txt，若文件目录不存在，则创建该目录。
+		File file = new File("src/step2/input/task.txt");
+        FileInputStream input = new FileInputStream(file);
+		byte[] b = new byte[8];
+        input.read(b);
+        String str = new String(b,"UTF-8");
+        System.out.println(str);
+        File dir1 = new File("src/step2/output");
+        dir1.mkdir();
+        FileOutputStream output = new FileOutputStream("src/step2/output/output.txt");
+        String str1 = "learning practice";
+        byte[] d = str1.getBytes();
+        for(int i=0;i<d.length;i++)
+            output.write(d[i]);
+        input.close();
+        output.close();
+		/********* End *********/
+	}
+	
+}

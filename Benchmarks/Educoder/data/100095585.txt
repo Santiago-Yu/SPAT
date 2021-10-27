@@ -1,0 +1,45 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int sum=0;
+		switch(month){
+            case 1:sum+=day;break;
+            case 2:sum+=(31+day);break;
+            case 3:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(60+day);
+            	   }else sum+=(59+day);break;
+            case 4:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(91+day);
+            	   }else sum+=(90+day);break;
+            case 5:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(121+day);
+            	   }else sum+=(120+day);break;
+            case 6:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(152+day);
+            	   }else sum+=(151+day);break;
+            case 7:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(182+day);
+            	   }else sum+=(181+day);break;
+            case 8:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(213+day);
+            	   }else sum+=(212+day);break;
+            case 9:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(244+day);
+            	   }else sum+=(243+day);break;
+            case 10:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(274+day);
+            	   }else sum+=(273+day);break;
+            case 11:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(305+day);
+            	   }else sum+=(304+day);break;
+            case 12:if(year%4==0&&year%100!=0||year%400==0){
+                		sum+=(335+day);
+            	   }else sum+=(334+day);break;
+            default:break;
+        }
+		System.out.print(sum);
+		/********** End *********/
+	}
+}

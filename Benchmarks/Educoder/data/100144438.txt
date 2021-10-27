@@ -1,0 +1,22 @@
+package step1;
+import java.util.*;
+public class Task {
+	public String inversion(String str){
+		/********* Begin *********/
+       if(str == null){
+            return null;
+        }
+        char[] chs = str.toCharArray();
+        int l = 0;
+        int r = chs.length - 1;
+        while (l < r){
+            char temp = chs[l];
+            chs[l] = chs[r];
+            chs[r] = temp;
+            l++;
+            r--;
+        }
+        return new String(chs);
+		/********* End *********/
+	}
+}

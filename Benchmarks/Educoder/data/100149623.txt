@@ -1,0 +1,52 @@
+package step1;
+
+import java.sql.*;
+
+public class QueryPass {
+	
+	// 查询数据代码不用上实验报告
+	public static void queryDB() {
+        Connection conn=null;
+		/**********  Begin  **********/
+		String url="jdbc:mysql://localhost:3306/tsgc";
+		try {
+			
+           Class.forName("com.mysql.jdbc.Driver" );
+ conn = DriverManager.getConnection(url, "root", "123123");
+            
+		}catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		/**********   End   **********/
+        
+        PreparedStatement ps = null;
+        /**********  Begin  **********/
+        ResultSet rs = null;
+       // Em news = null;
+       // List<News> newsList = new ArrayList<News>();
+        /**********  Begin  **********/
+        String sql = "select * from employee";
+        try{
+           ps=conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next()) { 
+          System.out.println("no:"+rs.getInt(1)+"\t"+"name:"+rs.getString(2)+"\t"+"password:"+rs.getInt(3)+"\t"+"sex:"+rs.getString(4)+"\t"+"salary"+rs.getDouble(5)); 
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }finally{
+            //close(null, ps, conn);
+            try {
+    		if(rs!=null)rs.close();
+    		if(ps!=null)ps.close();
+    		if(conn!=null)conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    
+        }    
+        /**********  End  **********/
+	}
+}

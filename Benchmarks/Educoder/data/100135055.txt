@@ -1,0 +1,42 @@
+package case3;
+
+public class superTest {
+	public static void main(String[] args) {
+		// 实例化一个Student类的对象s，为Student对象s中的school赋值，打印输出信息
+		/********* begin *********/
+        Student s=new Student();
+        s.setschool("哈佛大学");
+        System.out.println("姓名："+s.getname()+"，年龄："+s.getage()+"，学校："+s.getschool());
+		/********* end *********/
+	}
+}
+
+class Person {
+	/********* begin *********/
+    private String name;
+    private int age;
+    public void set(String name,int age){
+        this.name=name;
+        this.age=age;
+    }
+    public String getname(){
+        return this.name;
+    }
+    public int getage(){
+        return this.age;
+    }
+	/********* end *********/
+}
+
+class Student extends Person {
+	/********* begin *********/
+    public String school;
+    public void setschool(String s){
+        this.school=s;
+        super.set("张三",18);
+    }
+    public String getschool(){
+        return this.school;
+    }
+	/********* end *********/
+}

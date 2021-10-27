@@ -1,0 +1,80 @@
+package setp17;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class HelloWorld {
+	
+
+    /**
+     * 第一题：定义一个方法 接收两个整数类型的参数 a和b，返回两个数的和  返回值类型为int 方法名为：getSum
+     */
+		public static int getSum(int a,int b){
+        	return a+b;
+    }
+
+
+    /**
+     * 第二题： 定义一个方法 接收三个double类型参数a，b，c， 返回这三个数的平均值 返回值类型为double 方法名为：getAvg
+     */
+		public static double getAvg(double a,double b,double c){
+        	return (a+b+c)/3;
+        }
+
+
+    /**
+     * 第三题： 定义一个方法 接收两个参数 a 和b 打印a行 b列的一个矩形  不需要返回值   方法名为：printRect
+     */
+    	public static void printRect(int a,int b){
+        	for(int i=0;i<a;i++){
+            	for(int j=0;j<b;j++){
+                	System.out.print("*");
+                }
+                System.out.println();
+            }
+        }
+  
+
+	
+	/**
+	 * 第四题：定以一个方法，接收整形数组 为参数  对这个数组进行升序排序  最后输出该数组 不需要返回值 方法名为 sortArr  
+	 */
+    	public static void sortArr(int[] summ){
+        	for(int i=0;i<summ.length-1;i++){
+            	for(int j=0;j<summ.length-1;j++){
+                	if(summ[j]>summ[j+1]){
+                    	summ[j]=summ[j]+summ[j+1];
+                        summ[j+1]=summ[j]-summ[j+1];
+                        summ[j]=summ[j]-summ[j+1];
+                    }
+                }
+            }
+	for(int x:summ){
+    		System.out.println(x);
+    	}
+	
+        }
+
+   
+
+
+
+
+
+
+
+
+
+   		 public static void Print99() {
+        for (int j=1;j<=9;j++) {
+            for(int i=1;i<=j;i++) {
+                System.out.print(i + " * " + j + " = " + j * i + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+    
+    
+    
+}	

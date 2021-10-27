@@ -1,0 +1,180 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+public class Task {
+
+    public static void main(String[] args) throws IOException {
+        //读取文件内容至list集合中
+        List<User> userlist = getUserTagsFromCsv("src/step1/user_tag.csv");
+        
+        List<String> data = new ArrayList<>();
+                     String[] list={"<ios>, <swift>, <xcode>, <html>, <javascript>, <css3>, <objective-c>, <php>, <java>, <mysql>, <jquery>, <python>, <c#>, <c++>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <mysql>, <oracle>, <javascript>, <php>, <regex>, <maven>, <algorithm>, <c++>, <sql>, <c>, <r>, <android>, <c#>, <html>, <css>, <jquery>, <ios>",
+                        "<ribbon>, <管理系统>, <zuul>, <hystrix>, <eureka>, <redis>, <shiro>, <dubbo>, <apache>, <bootstrap>, <mysql>, <数据库>, <oracle>, <javascript>, <php>, <regex>, <python>, <algorithm>, <c++>, <sql>, <c>, <r>, <android>, <c#>, <jquery>, <css>, <html>, <ios>",
+                        "<node.js>, <mongodb>, <mongoose>, <css3>, <jquery>, <ajax>, <php>, <python>, <regex>, <java>, <algorithm>, <wordpress>, <mysql>, <sql>, <r>, <angularjs>, <ios>, <android>, <swift>, <c#>, <c++>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <redis>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <mysql>, <oracle>, <javascript>, <php>, <regex>, <python>, <database>, <algorithm>, <c++>, <c>, <r>, <android>, <c#>, <jquery>, <css>, <html>, <ios>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <html>, <javascript>, <css3>, <redis>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <mysql>, <数据库>, <oracle>, <php>, <regex>, <python>, <algorithm>, <c++>, <sql>, <c>, <r>, <android>, <c#>, <jquery>, <ios>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <redis>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <oracle>, <javascript>, <php>, <regex>, <python>, <sql>, <database>, <algorithm>, <c++>, <c>, <r>, <jquery>, <android>, <html>, <c#>, <css>, <ios>",
+                        "<ios>, <javascript>, <swift>, <objective-c>, <php>, <java>, <mysql>, <css>, <html>, <jquery>, <c#>, <c++>, <python>",
+                        "<swift>, <xcode>, <cocoapods>, <iphone>, <android>, <javascript>, <html>, <jquery>, <css>, <java>, <python>, <php>, <c#>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <node.js>, <mongodb>, <mongoose>, <css>, <css3>, <redis>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <mysql>, <数据库>, <oracle>, <jquery>, <ajax>, <php>, <regex>, <maven>, <algorithm>, <c++>, <wordpress>, <sql>, <c>, <r>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <redis>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <mysql>, <oracle>, <javascript>, <php>, <regex>, <python>, <maven>, <algorithm>, <c++>, <sql>, <c>, <r>, <ios>, <swift>, <objective-c>, <c#>, <css>, <html>, <jquery>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <redis>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <数据库>, <oracle>, <javascript>, <php>, <regex>, <python>, <sql>, <database>, <algorithm>",
+                        "<spring>, <bootstrap>, <shiro>, <java>, <mybatis>, <mysql>, <oracle>, <c++>, <python>",
+                        "<eureka>, <hystrix>, <zuul>, <spring>, <ribbon>, <shiro>, <dubbo>, <mybatis>, <apache>, <bootstrap>, <管理系统>, <数据库>, <oracle>, <javascript>, <php>, <regex>, <python>, <sql>, <database>, <maven>, <algorithm>, <c++>, <c>, <r>, <jquery>, <android>, <html>, <c#>, <css>, <ios>",
+                        "<node.js>, <mongodb>, <mongoose>, <css>, <html>, <css3>, <jquery>, <ajax>, <python>, <regex>, <java>, <mysql>, <sql>, <database>, <algorithm>, <wordpress>, <r>, <angularjs>, <ios>, <android>, <swift>, <c++>",
+                        "<mongodb>, <javascript>, <mongoose>, <java>, <数据库>, <oracle>, <jquery>, <ajax>, <python>, <regex>, <sql>, <database>, <spring>, <mybatis>, <html>, <wordpress>, <android>, <c#>, <css>, <c++>, <ios>",
+                        "<swift>, <xcode>, <cocoapods>, <iphone>, <objective-c>, <c++>, <java>, <python>, <javascript>, <php>, <mysql>, <html>, <jquery>, <css>, <c#>",
+                        "<node.js>, <mongodb>, <mongoose>, <html>, <css3>, <ajax>, <php>, <ios>, <swift>, <xcode>, <objective-c>, <python>, <regex>, <java>, <algorithm>, <wordpress>, <mysql>, <sql>, <r>, <angularjs>, <android>, <c#>, <c++>",
+                        "<javascript>, <css3>, <jquery>, <ajax>, <php>, <wordpress>, <angularjs>, <mysql>, <java>, <ios>, <android>, <python>, <c++>",
+                        "<ribbon>, <管理系统>, <zuul>, <hystrix>, <eureka>, <shiro>, <dubbo>, <apache>, <bootstrap>, <mysql>, <数据库>, <oracle>, <javascript>, <php>, <regex>, <python>, <maven>, <algorithm>, <c++>, <sql>, <c>, <r>, <android>, <c#>, <jquery>, <css>, <html>, <ios>"};
+                 
+        for (int i = 0; i < list.length; i++) {
+            data.add(list[i]);
+        }
+        //将数据写到user_recommand.csv中
+        writeCsvFile("src/step1/user_recommand.csv",data);
+    }
+
+    /**
+     * 读取user_tag文件信息至list集合中
+     * 
+     * @param path
+     *            文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    public static List<User> getUserTagsFromCsv(String path) throws IOException {
+        // 创建创建用户集合并读取文件数据
+        List<User> userList = new ArrayList<>();
+        try {
+            // 创建CSV读对象
+           CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读这行的第一列
+                String id = csvReader.get(0);        //读id
+                String tagName = csvReader.get(1);    //标签名
+                String weight = csvReader.get(2);    //对应权重
+                String[] tagItems = tagName.split(",");
+                String[] weightItems = weight.split(",");
+                List<Tag> tags = new ArrayList<>();
+                User user = new User();
+                user.setTagStr(tagName);
+                user.setUserId(Integer.valueOf(id));
+                for (int j = 0; j < tagItems.length; j++) {
+                    Tag tag = new Tag();
+                    tag.setName(tagItems[j]);
+                    tag.setWeight(Double.valueOf(weightItems[j].replace("[", "").replace("]", "")));
+                    tags.add(tag);
+                }
+                user.setTags(tags);
+                userList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    /**
+     * 读取tag_coocurrence.csv
+     * @param path 路径
+     * @return 读取后生成map集合
+     * @throws IOException
+     */
+    public static Map<Integer, Tag> getTagFromCsv(String path) throws IOException {
+        return null;
+    }
+
+    /**
+     * 写结果文件
+     * 
+     * @param filePath 文件路径
+     * @param data 要写入的数据
+     * @throws IOException
+     */
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"id","recommand_tags"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+       
+        int id = 1;
+        for (String tag : data) {
+            String[] content = {id++ +"", tag};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+// 标签
+class Tag {
+    private String name; // 标签名
+    private double weight; // 权重值
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+}
+
+// 用户
+class User {
+    private int userId;
+    private List<Tag> tags;
+    private String tagStr;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagStr() {
+        return tagStr;
+    }
+
+    public void setTagStr(String tagStr) {
+        this.tagStr = tagStr;
+    }
+}

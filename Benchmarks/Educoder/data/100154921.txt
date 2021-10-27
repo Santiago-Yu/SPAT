@@ -1,0 +1,42 @@
+package step1;
+
+//p55  队列
+public class Queue<T> {
+
+	// 队列的默认大小
+	final int MaxSize = 100;
+	private T queueArray[];
+	private int front, rear;
+
+	// 队列的初始化
+	public Queue() {
+		front = rear = 0;
+
+		// 初始化的队列
+		queueArray = (T[]) new Object[MaxSize];
+
+	}
+
+	// 入队
+	public void EnQueue(T obj) {
+		/********** Begin *********/
+		
+		queueArray[front++]=obj;
+
+		/********** End *********/
+	}
+
+	// 出队
+	public T DeQueue() {
+
+		/********** Begin *********/
+
+		
+		   return (queueArray[rear++]);
+		
+	
+		/********** End *********/
+
+	}
+
+}

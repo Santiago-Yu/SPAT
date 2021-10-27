@@ -1,0 +1,50 @@
+package task3;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+    public Box(){
+			this.width=0;
+			this.height=0;
+			this.depth=0;
+			}
+		public void width(double width)
+		{
+			this.width=width;
+			}
+		public void height(double height)
+		{
+			this.height=height;
+			}
+		public void depth(double depth)
+		{
+			this.depth=depth;
+			}
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume(int boxType) {
+        //TODO write your code here
+		double ss=0.0;
+		if(boxType==1)
+		{
+			ss=this.width*this.height*this.depth;
+		}
+		else if(boxType==2)
+		{
+			ss=(this.width)*(this.width)*3.14*this.height;
+			
+		}
+		return ss;
+    }
+
+}

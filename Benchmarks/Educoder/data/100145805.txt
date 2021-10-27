@@ -1,0 +1,63 @@
+package step4;
+import java.util.Calendar;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String[] dateDivide = releaseDate.split("-");
+        String nowDate;
+		int year = Integer.parseInt(dateDivide[0].trim()); 
+		int month = Integer.parseInt(dateDivide[1].trim());
+		int day1 = Integer.parseInt(dateDivide[2].trim());
+		int day2 = day1+day;
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(year,month-1,day1);
+		int day0 = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		if(day2>day0) {		
+			while(day2>day0)
+			{
+				day2 -= day0;
+				month+=1;
+				if(month>12) {
+					while(month>12)
+					{
+						month -=12;
+						year+=1;						
+					}
+				}
+				calendar.set(year,month-1,day1);
+				day0 = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			}
+			
+		}
+       if(month<10) {
+			nowDate = String.valueOf(year+"-0"+month+"-"+day2);
+			if(month<10&&day2<10) {
+				nowDate = String.valueOf(year+"-0"+month+"-0"+day2);
+				return nowDate;
+			}
+			return nowDate;
+		}
+        else if(day2<10) {
+			nowDate = String.valueOf(year+"-"+month+"-0"+day2);
+			return nowDate;
+		}
+		else {
+			nowDate = String.valueOf(year+"-"+month+"-"+day2);
+			return nowDate;
+		}
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

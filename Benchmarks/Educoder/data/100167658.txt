@@ -1,0 +1,223 @@
+
+
+import java.util.*;
+
+public class Java_LLParserAnalysis {
+//    private static StringBuffer prog = new StringBuffer();
+    private static LinkedList<String> inputbuffer = new LinkedList<>();
+    private static Stack<String> stackbuffer = new Stack<>();
+    private static StringBuffer errorbuffer = new StringBuffer();
+    private static StringBuffer acceptbuffer = new StringBuffer();
+    private static Hashtable<String,Integer> NT_Index = new Hashtable<>();
+    private static Hashtable<String,Integer> T_Index = new Hashtable<>();
+    private static String[][] LLtable = new String[14][22];
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            String temp = sc.nextLine().trim();
+            Collections.addAll(inputbuffer,temp.split(" "));
+            inputbuffer.add("\n");
+        }
+        inputbuffer.add("$");
+//        for(int i=0;i<inputbuffer.size();i++){
+//            System.out.print(inputbuffer.get(i));
+//        }
+    }
+
+
+    // add your method here!!
+
+
+    private static void init(){
+        NT_Index.put("program",0);
+        NT_Index.put("stmt",1);
+        NT_Index.put("compoundstmt",2);
+        NT_Index.put("stmts",3);
+        NT_Index.put("ifstmt",4);
+        NT_Index.put("whilestmt",5);
+        NT_Index.put("assgstmt",6);
+        NT_Index.put("boolexpr",7);
+        NT_Index.put("boolop",8);
+        NT_Index.put("arithexpr",9);
+        NT_Index.put("arithexprprime",10);
+        NT_Index.put("multexpr",11);
+        NT_Index.put("multexprprime",12);
+        NT_Index.put("simpleexpr",13);
+        T_Index.put("{",0);
+        T_Index.put("}",1);
+        T_Index.put("if",2);
+        T_Index.put("(",3);
+        T_Index.put(")",4);
+        T_Index.put("then",5);
+        T_Index.put("else",6);
+        T_Index.put("while",7);
+        T_Index.put("ID",8);
+        T_Index.put("=",9);
+        T_Index.put(";",10);
+        T_Index.put("<",11);
+        T_Index.put(">",12);
+        T_Index.put("<=",13);
+        T_Index.put(">=",14);
+        T_Index.put("==",15);
+        T_Index.put("+",16);
+        T_Index.put("-",17);
+        T_Index.put("*",18);
+        T_Index.put("/",19);
+        T_Index.put("NUM",20);
+        T_Index.put("$",21);
+
+        for(int i=0;i<14;i++)
+            for(int t=0;t<22;t++)
+                LLtable[i][t]="error";
+
+        LLtable[0][0] = "compoundstmt";
+        LLtable[1][0] = "compoundstmt";
+        LLtable[1][2] = "ifstmt";
+        LLtable[1][7] = "whilestmt";
+        LLtable[1][8] = "assgstmt";
+        LLtable[2][0] = "{ stmts }";
+        LLtable[3][0] = "stmt stmts";
+        LLtable[3][1] = "E";
+        LLtable[3][2] = "stmt stmts";
+        LLtable[3][7] = "stmt stmts";
+        LLtable[3][8] = "stmt stmts";
+        LLtable[4][2] = "if ( boolexpr ) then stmt else stmt";
+        LLtable[5][7] = "while ( boolexpr ) stmt";
+        LLtable[6][8] = "ID = arithexpr ;";
+        LLtable[7][4] = "arithexpr boolop arithexpr";
+        LLtable[7][8] = "arithexpr boolop arithexpr";
+        LLtable[7][20] = "arithexpr boolop arithexpr";
+        LLtable[8][11] = "<";
+        LLtable[8][12] = ">";
+        LLtable[8][13] = "<=";
+        LLtable[8][14] = ">=";
+        LLtable[8][15] = "==";
+        LLtable[9][3] = "multexpr arithexprprime";
+        LLtable[9][8] = "multexpr arithexprprime";
+        LLtable[9][20] = "multexpr arithexprprime";
+        LLtable[10][4] = "E";
+        LLtable[10][10] = "E";
+        LLtable[10][11] = "E";
+        LLtable[10][12] = "E";
+        LLtable[10][13] = "E";
+        LLtable[10][14] = "E";
+        LLtable[10][15] = "E";
+        LLtable[10][16] = "+ multexpr arithexprprime";
+        LLtable[10][17] = "- multexpr arithexprprime";
+        LLtable[11][3] = "simpleexpr multexprprime";
+        LLtable[11][8] = "simpleexpr multexprprime";
+        LLtable[11][20] = "simpleexpr multexprprime";
+        LLtable[12][4] = "E";
+        LLtable[12][10] = "E";
+        LLtable[12][11] = "E";
+        LLtable[12][12] = "E";
+        LLtable[12][13] = "E";
+        LLtable[12][14] = "E";
+        LLtable[12][15] = "E";
+        LLtable[12][16] = "E";
+        LLtable[12][17] = "E";
+        LLtable[12][18] = "* simpleexpr multexprprime";
+        LLtable[12][19] = "/ simpleexpr multexprprime";
+        LLtable[13][3] = "( arithexpr )";
+        LLtable[13][8] = "ID";
+        LLtable[13][20] = "NUM";
+    }
+    private static ArrayList<String> getexpr(String NT,String T){
+        ArrayList<String> result = new ArrayList<>();
+        int NTindex = NT_Index.get(NT);
+        int Tindex = T_Index.get(T);
+        String temp = LLtable[NTindex][Tindex];
+        Collections.addAll(result,temp.split(" "));
+        return result;
+    }
+    private static Stack<String> expr2stack(String NT,String T){
+//        System.out.println(NT+" "+T);
+        ArrayList<String> temp = getexpr(NT,T);
+        Stack<String> result = new Stack<>();
+        for(int i=temp.size()-1;i >= 0;i--){
+            result.push(temp.get(i));
+        }
+        return result;
+    }
+    private static void putout(String str,int tabcount){
+        for(int i=0;i<tabcount;i++){
+            acceptbuffer.append("\t");
+        }
+        acceptbuffer.append(str+"\n");
+    }
+    private static boolean isT(String s){
+        String T_list[] = {"{","}","if","(",")","then","else","while","ID","=",";","<",">","<=",">=","==","+","-","*","/","NUM","E","$"};
+        for(int i=0;i<T_list.length;i++){
+            if(T_list[i].equals(s)){
+                return true;
+            }
+        }
+        return false;
+    }
+    private static void match(Stack<String> stack,int tabcount,int linecount){
+        while (!stack.empty()){
+            String current = stack.pop();
+            String head = inputbuffer.get(0);
+            while (!isT(head)){
+                if(head.equals("\n")){
+                    linecount++;
+                }
+                inputbuffer.remove(0);
+                head = inputbuffer.get(0);
+            }
+            if(current.equals("$"))
+                return;
+            if(!isT(current)){
+                putout(current,tabcount);
+                Stack<String> exprStack = expr2stack(current,head);
+                if(exprStack.peek().equals("error")){
+                    exprStack.pop();
+                    exprStack.push("E");
+                }
+                match(exprStack,tabcount+1,linecount);
+            }else {
+                if(current.equals("E")){
+                    putout(current,tabcount);
+                }else {
+                    if(current.equals(head)){
+                        putout(current,tabcount);
+                        inputbuffer.remove(0);
+                    }else{
+                        putout(current,tabcount);
+                        errorbuffer.append("语法错误,第" + linecount + "行,缺少\"" + current + "\"\n");
+                    }
+                }
+            }
+        }
+    }
+    private static void solve(){
+        stackbuffer.push("$");
+        stackbuffer.push("program");
+        match(stackbuffer,0,1);
+        acceptbuffer.deleteCharAt(acceptbuffer.length()-1);
+        System.out.print(errorbuffer.toString() + acceptbuffer.toString());
+    }
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        init();
+        solve();
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

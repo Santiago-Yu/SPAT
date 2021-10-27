@@ -1,0 +1,36 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double dis=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+		  double maxr,minr;
+		  if(r1>r2)
+		  {
+			  maxr=r1;
+			  minr=r2;
+		  }
+		  else {
+			  maxr=r2;
+			  minr=r1;
+		  }
+		if(dis>r1+r2)
+		{
+			return r1*r1*Math.PI+r2*r2*Math.PI;
+		}
+		else if(maxr>=dis+minr) {
+			return maxr*maxr*Math.PI;
+		}
+		else {
+				double arear1=(Math.acos((maxr*maxr+dis*dis-minr*minr)/(2*dis*maxr)))*maxr*maxr;
+				double arear2=(Math.acos((minr*minr+dis*dis-maxr*maxr)/(2*dis*minr)))*minr*minr;
+				double areal=dis*Math.sin(Math.acos((maxr*maxr+dis*dis-minr*minr)/(2*dis*maxr)))*maxr;
+			return maxr*maxr*Math.PI+minr*minr*Math.PI-(arear1+arear2-areal);
+		}
+		  
+		  
+		  /********* End *********/
+	  }
+}

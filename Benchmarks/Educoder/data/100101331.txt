@@ -1,0 +1,40 @@
+package step2;
+
+import java.util.Scanner;
+
+public class SystemUpdate {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String name = scanner.next();
+        String birth = scanner.next();
+        String position = scanner.next();
+        double salary = scanner.nextDouble();
+        Salary employee = new Salary(name, birth, position, salary);
+        employee.introduction();
+    }
+}
+
+/********** Begin *********/
+class Employee {
+    protected String name;
+    protected String birth;
+    protected String position;
+    protected double salary;
+    Employee(String name,String birth,String position,double salary){
+    	this.name = name;
+        this.birth = birth;
+        this.position = position;
+        this.salary = salary;
+    }
+}
+
+class Salary extends Employee {
+    Salary(String name, String birth, String position, double salary) {
+		super(name, birth, position, salary);
+		// TODO Auto-generated constructor stub
+	}
+   void introduction(){
+        System.out.print("员工姓名："+super.name+" 出生年月："+super.birth+" 职位："+super.position+" 薪水："+super.salary);
+    }
+}
+/********** End *********/

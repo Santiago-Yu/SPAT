@@ -1,0 +1,23 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		
+		int sum = 0;
+		int t1=0,t3=0;
+		/* 获取两个数的最低位 */
+		for (int i = num1;i<=num2;i++){
+			t3 = i;
+			while (t3!=0){
+				t1 = t3%10;
+				t3 = t3/10;
+				sum = sum+t1;
+			}
+		}
+		return sum;
+		/********** END **********/
+	}
+}

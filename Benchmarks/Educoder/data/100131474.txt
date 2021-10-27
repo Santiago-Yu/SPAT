@@ -1,0 +1,28 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	static int flor = 0;
+	public static void showDirStructure(File file){
+		for( int i=0; i<flor*2; i++) {
+			System.out.print(" ");
+		}
+		//获得该文件的绝对路径
+		String DirPath = file.getAbsolutePath();
+		//判断该文件是否为文件夹
+		if(file.isDirectory()) {
+			System.out.println("+--"+file.getName());
+			String[] list = file.list();
+			for( int i=0; i<list.length; i++) {
+				flor++;
+				File sonFile = new File(DirPath+"/"+list[i]); 
+				showDirStructure(sonFile);
+				flor--;
+			}
+		}else System.out.println("--"+file.getName());
+	}
+	/********** END **********/
+}

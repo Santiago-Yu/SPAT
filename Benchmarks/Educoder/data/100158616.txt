@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include<string.h>
+
+int main()
+{
+	int i,j;
+	char s1[1000],s2[1000];
+	int len1,len2;
+	
+	scanf("%s",&s1);
+	scanf("%s",&s2);
+	len1 = strlen(s1);
+	len2 = strlen(s2);
+	int max=0;
+	for (i=0;i<=len1-1;i++)
+	 for (j=0;j<=len2-1;j++)
+	 {
+	 	if ((i+max>len1-1)|| (j+max>len2-1) ) break;
+	 	if (s1[i]==s2[j]) {
+	 		int num=1;
+	 		int i1=i+1,j1=j+1;
+	 		while ((s1[i1]==s2[j1]) && (i1<=len1-1) &&(j1<=len2-1) ) 
+			{
+				i1++;
+				j1++;	 			
+	 			num++;
+	 		}
+	 		if (num>max) max=num;
+	 		
+	 	}
+	 }
+	printf("%d",max);
+}

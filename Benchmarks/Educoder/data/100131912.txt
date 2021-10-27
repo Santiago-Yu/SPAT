@@ -1,0 +1,40 @@
+package step3;
+
+import java.io.File;
+import java.util.Locale;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    static int count=0;
+	public void showDirStructure(File file)	{      
+		if (file.isDirectory()) {
+			
+			for (int j = 0; j < count; j++) {
+				System.out.print(" ");
+			}
+            int i = count++;
+			System.out.println("+--" + file.getName());
+			File[] f = file.listFiles();
+			count++;
+			for (File ff : f) {
+				showDirStructure(ff);
+			}
+			count = i;
+		} else {
+			String[] str = file.getName().split("\\.");
+			if (str[str.length - 1].equals("jpg") || str[str.length - 1].equals("png")
+					|| str[str.length - 1].equals("bmp")) {
+				for (int i = 0; i < count; i++) {
+					System.out.print(" ");
+				}
+				System.out.println("--" + file.getName());
+			}else {
+				
+			}
+		}
+	}
+	
+
+	/********** END **********/
+}

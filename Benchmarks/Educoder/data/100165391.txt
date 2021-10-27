@@ -1,0 +1,26 @@
+package step1;
+  class Student {
+      private int no;            
+      private String name;         
+      private Date birthday;      
+      public Student(int no,String name,  int y, int m, int d){
+          this.no=no;  
+          this.name=name;
+          this.birthday=new Date(y,m,d );     }
+      public Student(){
+          no=0;
+          name="";
+          birthday=new Date();  }
+      public Student(int no,String name,Date birthday ) {
+          this.no=no; 
+          this.name=name;
+          this.birthday=birthday;  }
+       public void Set_Info(int no,String name, int y,int m,int d) {
+           this.no=no;
+           this.name=name;
+           this.birthday=new Date(y,m,d );      }
+       public int  getNo( ) { return no; }
+       public String  getName( ) { return name; }
+       public Date  getBirthday() { return birthday; }
+       public String toString() { return "no:"+no+"name:" +name+"birthday:"+birthday.toString(); }
+ }

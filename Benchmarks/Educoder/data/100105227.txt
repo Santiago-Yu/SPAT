@@ -1,0 +1,27 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+
+        StringBuffer temp;
+        int pre = 0, curr = -1;
+        while(true){
+            curr = data.indexOf(" ", curr + 1);
+            if(curr == -1){
+                break;
+            }
+            temp = new StringBuffer(data.substring(pre, curr));
+            ans.append(temp.reverse());
+            ans.append(" ");
+            pre = curr + 1;
+        }
+        temp = new StringBuffer(data.substring(pre, data.length()));
+        ans.append(temp.reverse());
+		ans.append(" ");
+
+        /********** End *********/
+        return ans;
+    }
+}

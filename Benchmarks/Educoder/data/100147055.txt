@@ -1,0 +1,62 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        
+        /**long[][] maxProduct = new long[numbers][selectedNum];   
+            //minProduct[i][j]表示以第i个人为结尾，合唱团的人数为j+1时，合唱团最小的能力乘积  
+            long[][] minProduct = new long[numbers][selectedNum];  
+              
+            //合唱团中只有一个人  
+            for(int i = 0; i < numbers; i++){  
+                maxProduct[i][0] = abilities[i];  
+                minProduct[i][0] = abilities[i];  
+            }  
+              
+            long max = Long.MIN_VALUE;  
+            for(int i = 0; i < numbers; i++){  
+                for(int j = 1; j < selectedNum; j++){  
+                    for(int p = i-1; p >= Math.max(i-distance,0); p--){  
+                        maxProduct[i][j] = Math.max(maxProduct[i][j],  
+                                           maxProduct[p][j-1]*abilities[i]);  
+                        maxProduct[i][j] = Math.max(maxProduct[i][j],  
+                                   minProduct[p][j-1]*abilities[i]);  
+                        minProduct[i][j] = Math.min(minProduct[i][j],  
+                                   minProduct[p][j-1]*abilities[i]);  
+                        minProduct[i][j] = Math.min(minProduct[i][j],  
+                                   maxProduct[p][j-1]*abilities[i]);  
+                    }  
+                }  
+              max = Math.max(max, maxProduct[i][selectedNum-1]);  
+            }  
+              
+            return max;**/
+        
+        
+        long[][] max =  new long[numbers+1][selectedNum+1];
+        long[][] min =  new long[numbers+1][selectedNum+1];
+        long res = Integer.MIN_VALUE;
+        for(int last = 1;last<= numbers;last++){
+            //初始化h=1的情况，只选中1个人的情况
+            max[last][1] = abilities[last];
+            min[last][1] = abilities[last];
+            //h>1的情况，选中人数从2开始
+            for(int h = 2;h <= selectedNum;h++){
+                for(int left = last-1; left>0 && last-left<=distance;left--){
+                    max[last][h] = Math.max(max[last][h],Math.max(max[left][h-1]*abilities[last],min[left][h-1]*abilities[last]));
+                    min[last][h] = Math.min(min[last][h],Math.min(max[left][h-1]*abilities[last],min[left][h-1]*abilities[last]));
+                }
+            }
+            res = Math.max(res, max[last][selectedNum]);
+        }
+        return res;  
+
+
+
+    }
+
+	/********* End *********/
+}

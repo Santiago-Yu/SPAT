@@ -1,0 +1,47 @@
+package step3;
+
+public class MyThread implements Runnable {
+    private String name;
+    private Object fir;
+    private Object sec;
+    private MyThread(String name,Object fir, Object sec) {
+        this.name = name;
+        this.fir = fir;
+        this.sec = sec;
+    }
+    public void run() {
+        int count = 5;
+        while (count > 0) {
+        	synchronized (fir) {
+        		//System.out.println(Thread.currentThread().getName()+"获得了锁——"+name);
+        		synchronized (sec) {
+                        System.out.print(name);
+                        count--;
+                        sec.notify();
+                        
+                    }
+                    try {
+                        fir.wait();
+                        //System.out.println(Thread.currentThread().getName()+"释放了锁——"+name);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+        		}
+            }
+        System.exit(0);//退出jvm
+    }
+    public static void main(String[] args) throws Exception {
+        Object e = new Object();
+        Object d = new Object();
+        Object u = new Object();
+        MyThread te = new MyThread("E", e,d);
+        MyThread td = new MyThread("D", d,u);
+        MyThread tu = new MyThread("U", u,e);
+        new Thread(te,"thread E").start();
+        Thread.sleep(100);  //确保按顺序A、B执行
+        new Thread(td,"thread D").start();
+        Thread.sleep(100);
+        new Thread(tu,"thread U").start();
+        Thread.sleep(100);
+        }
+}

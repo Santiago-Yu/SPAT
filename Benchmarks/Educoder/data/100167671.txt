@@ -1,0 +1,278 @@
+import java.util.*;
+
+public class Java_LLParserAnalysis
+{
+    //常量
+    private static final int terminalSymbolsSize = 14;
+    private static final String terminalSymbols[] = {"program","stmt","compoundstmt","stmts","ifstmt","whilestmt",
+            "assgstmt","boolexpr","boolop","arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"};
+
+    private static final int nonterminalSymbolsSize = 23;
+    private static final String nonterminalSymbols[] = {"{","}","if","(",")","then","else","while",
+            "ID","=",";","<",">","<=",">=","==","+","-","*","/","NUM","$","E"};
+
+    private static final int productionNumber = 28;
+    private static final String befor[] = {"program","stmt","stmt","stmt","stmt","compoundstmt","stmts","stmts",
+            "ifstmt","whilestmt","assgstmt","boolexpr","boolop","boolop","boolop","boolop","boolop","arithexpr",
+            "arithexprprime","arithexprprime","arithexprprime","multexpr","multexprprime","multexprprime",
+            "multexprprime","simpleexpr","simpleexpr","simpleexpr"};
+    private static final String afer[][] = {{"compoundstmt"},{"ifstmt"},{"whilestmt"},{"assgstmt"},{"compoundstmt"},
+            {"{","stmts","}"},{"stmt", "stmts"},{"E"},{"if","(","boolexpr",")","then","stmt","else","stmt"},
+            {"while","(","boolexpr",")","stmt"},{"ID","=","arithexpr",";"},{"arithexpr","boolop","arithexpr"},
+            {"<"},{">"},{"<="},{">="},{"=="},{"multexpr","arithexprprime"},{"+","multexpr","arithexprprime"},
+            {"-","multexpr","arithexprprime"},{"E"},{"simpleexpr" ,"multexprprime"},{"*","simpleexpr","multexprprime"},
+            {"/","simpleexpr","multexprprime"},{"E"},{"ID"},{"NUM"},{"(","arithexpr",")"}};
+
+
+    private static final int table[][] = {
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {5,0,2,0,0,0,0,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {7,8,7,0,0,0,0,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,12,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,12,0},
+            {0,0,0,0,0,0,0,0,0,0,0,13,14,15,16,17,0,0,0,0,0,0},
+            {0,0,0,18,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,18,0},
+            {0,0,0,0,21,0,0,0,0,0,21,21,21,21,21,21,19,20,0,0,0,0},
+            {0,0,0,22,0,0,0,0,22,0,0,0,0,0,0,0,0,0,0,0,22,0},
+            {0,0,0,0,25,0,0,0,0,0,25,25,25,25,25,25,25,25,23,24,0,0},
+            {0,0,0,28,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,27,0}};
+
+    //变量
+    private static StringBuffer prog = new StringBuffer();
+    private static String target;
+    private static String w;
+    private static int i;
+    private static int line;
+    private static Vector<Integer> ans = new Vector<Integer>();
+    private static Map<String, String> map = new HashMap<String, String >();
+    private static Stack<String> stack = new Stack<String>();
+
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            //这里要加一行，否则无法在打印错误时输出错误所在的行号
+            prog.append("\n");
+        }
+    }
+
+
+    // add your method here!!
+
+    //判断字母或下划线
+    private static boolean isLetter(char x){
+        return (x >= 'A' && x <= 'Z') || (x >= 'a' && x <= 'z') || x == '_';
+    }
+
+    //判断无歧义的字符
+    private static boolean isUnambiguousSymbol(char x){
+        return x == '(' || x ==')' || x == ';' || x == '{' || x == '}' || x == '+' || x == '-' || x == '*' || x == '/';
+    }
+
+    //判断有歧义的字符
+    private static boolean isAmbiguousSymbol(char x){
+        return  x == '<' || x == '=' || x == '>';
+    }
+
+
+
+    //初始化map
+    private static void init(){
+        for(int i = 0; i < terminalSymbolsSize;i++){
+            char X = (char) ('A' + i);
+            map.put(terminalSymbols[i],""+X);
+        }
+        for(int i = 0; i < nonterminalSymbolsSize; i++){
+            char X = (char) ('a'+i);
+            map.put(nonterminalSymbols[i],"" + X);
+        }
+    }
+
+    //用于词法分析
+    private static String scan(){
+        target = "";
+        while(i < prog.length() && (prog.charAt(i) == ' ' || prog.charAt(i) == '\t'))
+            i++;
+        if(i >= prog.length())
+            return "$";
+        if(isLetter(prog.charAt(i))){
+            while(isLetter(prog.charAt(i))){
+                target += prog.charAt(i);
+                i++;
+            }
+            return map.get(target);
+        }else if(isUnambiguousSymbol(prog.charAt(i))){
+            target += prog.charAt(i);
+            i++;
+            return map.get(target);
+        }else if(isAmbiguousSymbol(prog.charAt(i))){
+            if(prog.charAt(i) == '<'){
+                if(prog.charAt(i+1) == '='){
+                    target = "<=";
+                    i += 2;
+                }else{
+                    target = "<";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '='){
+                if(prog.charAt(i+1) == '='){
+                    target = "==";
+                    i += 2;
+                }else{
+                    target = "=";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '>'){
+                if(prog.charAt(i+1) == '='){
+                    target = ">=";
+                    i += 2;
+                }else{
+                    target = ">";
+                    i++;
+                }
+            }
+            return map.get(target);
+        }else if(prog.charAt(i) == '\n'){
+            i++;
+            return "\n";
+        }
+        else{
+            i++;
+            return "$";
+        }
+    }
+
+    private static void LL1(){
+        stack.push("$");
+        stack.push("A");
+        i = 0;
+        line = 1;
+        while(!stack.peek().equals("$")){
+            if(w.charAt(i) == '\n'){
+                line++;
+                i++;
+                continue;
+            }
+
+//            Stack<String> temp = new Stack<String>();
+//            while(!stack.empty()){
+//                System.out.print(stack.peek());
+//                temp.push(stack.pop());
+//            }
+//            while (!temp.empty()){
+//                stack.push(temp.pop());
+//            }
+//            System.out.print("  ");
+//            for(int k = i; k < w.length(); k++){
+//                if(w.charAt(k) != '\n'){
+//                    System.out.print(w.charAt(k));
+//                }
+//            }
+
+            char X = stack.peek().charAt(0);
+            char a = w.charAt(i);
+            if(X == a){
+                i++;
+                stack.pop();
+            }else if(X >= 'a' && X <= 'z'){
+                int x = X - 'a';
+                System.out.println("语法错误,第" + (line-1) + "行,缺少\"" + nonterminalSymbols[x] + "\"");
+                stack.pop();
+            }else{
+                int produnction = table[X-'A'][a-'a'] - 1;
+                if(produnction == -1){
+                    switch (X-'A'){
+                        case 3: produnction = 8-1;break;
+                        case 10: produnction = 21-1;break;
+                        case 12: produnction = 25-1;break;
+                    }
+                }
+//                System.out.print("  "+ befor[produnction] + "->");
+//                for(int k = 0; k < afer[produnction].length; k++){
+//                    System.out.print(" " + afer[produnction][k]);
+//                }
+
+                ans.add(produnction);
+                stack.pop();
+                for(int j = afer[produnction].length - 1; j >= 0; j--){
+                    if(!afer[produnction][j].equals("E")){
+                        stack.push(map.get(afer[produnction][j]));
+                    }
+                }
+            }
+//            System.out.println();
+        }
+    }
+
+    //递归思想 输出结果
+    private static int output(int k, int layer){
+        int production = ans.get(k);
+        for(int j = 0; j < layer; j++)
+            System.out.print("\t");
+        System.out.println(befor[production]);
+        for(int i = 0; i < afer[production].length; i++){
+            char code = map.get(afer[production][i]).charAt(0);
+            if(code >= 'A' && code <= 'Z'){
+                k = output(k+1,layer+1);
+            }else{
+                for(int j = 0; j < layer+1; j++)
+                    System.out.print("\t");
+                System.out.print(afer[production][i]);
+            }
+            if(i != afer[production].length-1){
+                System.out.println();
+            }
+        }
+        return k;
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        init();
+        //先词法分析
+        int len = prog.length();
+        i = 0;
+        w = "";
+        while(i <= len){
+            String code = scan();
+            w += code;
+            if(code.equals("$")){
+                break;
+            }
+        }
+        //再用LL（1）法进行语法分析
+        LL1();
+
+//        for(int j =  0; j < ans.size(); j++){
+//            System.out.print((ans.get(j)+1) +  " : " + befor[ans.get(j)] + "->");
+//            for(int k = 0; k < afer[ans.get(j)].length; k++){
+//                System.out.print(" " + afer[ans.get(j)][k]);
+//            }
+//            System.out.println();
+//        }
+
+        output(0,0);
+
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

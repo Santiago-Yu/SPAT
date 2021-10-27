@@ -1,0 +1,30 @@
+package step4;
+
+//注意文件名，这里应该写MyThread类
+public class MyThread extends Thread {
+	private int num;
+	public MyThread() {
+		this(0);
+	}
+	public MyThread(int num) {
+		this.num = num;
+	}
+	
+    public void run() {    	
+        
+    	int result = 1;
+		int i;
+        for(i=1;i<=num;i++){
+            result *= i;
+        }
+      // for(int t=0;t<2000;t++);
+         try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+            }
+
+    	System.out.println(result);
+    }
+    
+}
+

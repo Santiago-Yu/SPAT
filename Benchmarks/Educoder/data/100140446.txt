@@ -1,0 +1,36 @@
+package step3;
+import java.util.regex.Matcher;  
+import java.util.regex.Pattern; 
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+        //判断文件
+        Pattern pattern1 = Pattern.compile(".*(.java)$");
+        Matcher matcher1 = pattern1.matcher(fileName);
+        if(matcher1.matches())
+        {
+            if(fileName.equals(".java"))
+            {
+                System.out.println("Java文件名无效");
+            }
+            else{
+            System.out.println("Java文件名正确");
+            }
+        }
+        else{
+            System.out.println("Java文件名无效");
+        }
+        //判断邮箱
+	 String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";  
+     Pattern regex = Pattern.compile(check);  
+     Matcher matcher = regex.matcher(email);  
+        if(matcher.matches()){
+            System.out.println("邮箱名正确");
+        }else{
+            System.out.println("邮箱名无效");
+        }
+	}
+	
+	
+}

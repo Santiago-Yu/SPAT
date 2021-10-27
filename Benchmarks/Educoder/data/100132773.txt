@@ -1,0 +1,65 @@
+package step3;
+
+public class Task {
+public static int countOfShips(char[][] ferry) {
+		  /**************BEGIN************/
+		 int n = ferry.length; //宽
+    if(n == 0){
+        return 0;
+    }
+		 int m = ferry[0].length; //长
+		 int cnt = 0;
+		 int[][] flag = new int[n][m];
+		 for(int i = 0; i < n; i++) {
+			 for(int j = 0; j < m; j++) {
+				 flag[i][j] = 0;
+			 }
+		 }
+		 for(int i = 0; i < n ; i++) {
+			 for(int j = 0; j < m; j++) {
+				 if(flag[i][j] == 0 && ferry[i][j] == '+') {
+					 flag[i][j] = 1;
+					 if((i + 1) != n && ferry[i+1][j] == '+' && flag[i+1][j]==0) {  
+							 for(int k = i + 1; k < n - 1; k ++) {
+								 if(ferry[k][j] == '+' && flag[k][j] == 0) {
+									 flag[k][j] = 1;
+									 if(k == n -1) cnt++;
+									 continue;
+								 }
+								 else {
+									 cnt++;
+									 break;
+								 }
+							 }
+						 
+						 
+					 }
+					 else if((j + 1) != m &&ferry[i][j + 1] == '+' && flag[i][j+1] == 0) {  
+							 for(int x = j + 1; x < m ; x++) {
+								 if(ferry[i][x] == '+' && flag[i][x] == 0) {
+									 flag[i][x] = 1;
+									 if(x == m -1) {
+										 cnt++;
+									 }
+									 continue;
+								 }
+								 else {
+									 cnt++;
+									 break;
+								 }
+							 }
+						 
+					 }
+					 else {
+						 cnt++;
+					 }
+				 }
+			 }
+		 }
+		 
+	         
+		 return cnt;
+	      /***********END ***************/
+	 }
+}
+

@@ -1,0 +1,63 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File("backups/hotels.ctrip.com_domestic-city-hotel.txt");
+        Document doc = Jsoup.parse(input,"UTF-8","hotel.ctrip.com");
+		return doc;
+
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+        Elements pinyin_filter_elements = doc.getElementsByClass("pinyin_filter_detail layoutfix");//访问网址检查发现所有数据存在该标签中
+		Element pinyin_filter = pinyin_filter_elements.first();
+//所有dd的Elements
+		Elements hotelsLinks = pinyin_filter.getElementsByTag("dd");
+        List<HotelCity> cities = new ArrayList<HotelCity>();
+       for (int i = 0; i < hotelsLinks.size(); i++) {
+        //当前dd
+        Element head_hotelsLink = hotelsLinks.get(i);
+        //当前dd下的所有孩子也就是a标签
+        Elements links = head_hotelsLink.children();
+            
+    for (Element link : links) {
+        HotelCity city = new HotelCity();
+        String s = link.attr("href");
+        String py = "";
+        String sz = "";
+        for(int j=7;j < s.length();j++) {
+            if(s.charAt(j)>='a' && s.charAt(j) <= 'z'){
+            	py += s.charAt(j);
+            }else{
+                sz +=  s.charAt(j);
+            }
+        }
+        city.setCityId(sz);
+        String ttt = ""+(char)(py.charAt(0)-32);
+        city.setHeadPinyin("A");
+        city.setPinyin(py);
+        city.setCityName(link.html());
+        cities.add(city);
+    }
+    }
+       return cities;
+		/**********   End   **********/
+	}
+}

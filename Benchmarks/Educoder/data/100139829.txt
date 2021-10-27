@@ -1,0 +1,25 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String data=scanner.nextLine();
+        int x=1,s=0;
+        int len = data.length();
+        while(x!=-1){
+        x=data.indexOf("李四");
+        if(x!=-1){
+            s=s+x;
+            System.out.println(s);
+            s=s+3;
+            if(len>s+3){
+            data=data.substring(x+3);
+            }
+            else
+            break;
+        }
+        }
+    }
+}

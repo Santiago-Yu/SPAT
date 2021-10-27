@@ -1,0 +1,59 @@
+package step4;
+import java.util.Scanner;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int sum;
+        if(year % 4 != 0 && year % 100 != 0){//非闰年
+        	switch(month){
+            case 1 : System.out.print(day);break;
+            case 2 : System.out.print(day+31);break;
+            case 3 : System.out.print(day+31*2+28);break;
+            case 4 : System.out.print(day+31*2+28);break;
+            case 5 : System.out.print(day+31*2+28+30);break;
+            case 6 : System.out.print(day+31*3+28+30);break;
+            case 7 : System.out.print(day+31*3+28+30*2);break;
+            case 8 : System.out.print(day+31*4+28+30*2);break;
+            case 9 : System.out.print(day+31*4+28+30*3);break;
+            case 10 : System.out.print(day+31*5+28+30*3);break;
+            case 11 : System.out.print(day+31*5+28+30*4);break;
+            case 12 : System.out.print(day+31*6+28+30*4);break; 
+               }
+        }
+		else 
+        {
+        	switch(month){
+            case 1 : System.out.print(day);break;
+            case 2 : System.out.print(day+31);break;
+            case 3 : System.out.print(day+31*2+29);break;
+            case 4 : System.out.print(day+31*2+29);break;
+            case 5 : System.out.print(day+31*2+29+30);break;
+            case 6 : System.out.print(day+31*3+29+30);break;
+            case 7 : System.out.print(day+31*3+29+30*2);break;
+            case 8 : System.out.print(day+31*4+29+30*2);break;
+            case 9 : System.out.print(day+31*4+29+30*3);break;
+            case 10 : System.out.print(day+31*5+29+30*3);break;
+            case 11 : System.out.print(day+31*5+29+30*4);break;
+            case 12 : System.out.print(day+31*6+29+30*4);break;
+        	}
+		
+
+		/********** End *********/
+		}
+    }
+    public static void main(String args[]){
+    	Scanner scanner = new Scanner(System.in);
+        int year = scanner.nextInt();
+        int month = scanner.nextInt();
+        int day = scanner.nextInt();
+        //int scan = scanner.nextInt();
+       // DayCount year = new DayCount();
+        //DayCount month = new DayCount();
+        //DayCount day = new DayCount();
+        DayCount date = new DayCount();
+        date.dayCount(year,month,day);
+    }
+    
+    
+}

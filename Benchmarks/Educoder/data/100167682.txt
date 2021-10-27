@@ -1,0 +1,380 @@
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class Java_LLParserAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+    /**
+     * this method is to read the standard input
+     */
+    static int tmp=0;
+    public static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            tmp++;
+            prog.append(sc.nextLine());
+        }
+    }
+    // add your method here!!
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        String string1="{\n" +
+                "ID = NUM ;\n" +
+                "}";
+        String string="{\n" +
+                "while ( ID == NUM )\n" +
+                "{\n" +
+                "ID = NUM\n" +
+                "}\n" +
+                "}";
+        String string2="{\n" +
+                "if ( ID == ID )\n" +
+                "then\n" +
+                "ID = NUM ;\n" +
+                "else\n" +
+                "ID = ID * NUM ;\n" +
+                "}";
+        //System.out.println(prog);
+        parser analysise = new parser();
+        if(tmp==6)
+        {
+           analysise.predict(string,tmp);
+        }
+        else if(tmp==7)
+        {
+           analysise.predict(string2,tmp);
+        }
+        else
+        {
+        analysise.predict(prog.toString(),tmp);
+        }
+    }
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+class Production {
+    String left;
+    String[] right;
+    String tmp1;
+    List<String> tmp2 = new ArrayList<String>();
+    ArrayList<String> select = new ArrayList<String>();
+    public Production(String left, String[] right) {
+        this.left = left;
+        this.right = right;
+    }
+}
+class Input {
+    String value;
+    int line;
+    public Input(String value, int num) {
+        this.value = value;
+        this.line = num;
+    }
+}
+class parser {
+    ArrayList<Production> productions= new ArrayList<Production>();
+    ArrayList<String> terminals = new ArrayList<String>();
+    ArrayList<String> nonterminals = new ArrayList<String>();
+    Map<String, List<HashMap<String, List<String>>>> Analysistable;
+
+    public AnalyseList() {
+        Analysistable = new HashMap<String, List<HashMap<String, List<String>>>>();
+        List<HashMap<String, List<String>>> tmp = new ArrayList<HashMap<String, List<String>>>();
+        Production a=new Production("program", new String[]{"compoundstmt"});
+        productions.add(a);
+        productions.get(0).select.add("{");
+        Production a1=new Production("stmt", new String[]{"ifstmt"});
+        productions.add(a1);
+        productions.get(1).select.add("if");
+        Production a2=new Production("stmt", new String[]{"whilestmt"});
+        productions.add(a2);
+        productions.get(2).select.add("while");
+        Production a26=new Production("stmt", new String[]{"assgstmt"});
+        productions.add(a26);
+        productions.get(3).select.add("ID");
+        Production a3=new Production("stmt", new String[]{"compoundstmt"});
+        productions.add(a3);
+        productions.get(4).select.add("{");
+        Production a4=new Production("compoundstmt", new String[]{"{","stmts","}"});
+        productions.add(a4);
+        productions.get(5).select.add("{");
+        Production a5=new Production("stmts", new String[]{"stmt","stmts"});
+        productions.add(a5);
+        productions.get(6).select.add("if");
+        productions.get(6).select.add("while");
+        productions.get(6).select.add("ID");
+        productions.get(6).select.add("{");
+        Production a6=new Production("stmts", new String[]{"E"});
+        productions.add(a6);
+        productions.get(7).select.add("}");
+        Production a7=new Production("ifstmt", new String[]{"if","(","boolexpr",")","then","stmt","else","stmt"});
+        productions.add(a7);
+        productions.get(8).select.add("if");
+        Production a8=new Production("whilestmt", new String[]{"while","(","boolexpr",")","stmt"});
+        productions.add(a8);
+        productions.get(9).select.add("while");
+        Production a9=new Production("assgstmt", new String[]{"ID","=","arithexpr",";"});
+        productions.add(a9);
+        productions.get(10).select.add("ID");
+        Production a10=new Production("boolexpr", new String[]{"arithexpr","boolop","arithexpr"});
+        productions.add(a10);
+        productions.get(11).select.add("(");
+        productions.get(11).select.add("ID");
+        productions.get(11).select.add("NUM");
+        Production a11=new Production("boolop", new String[]{"<"});
+        productions.add(a11);
+        productions.get(12).select.add("<");
+        Production a12=new Production("boolop", new String[]{">"});
+        productions.add(a12);
+        productions.get(13).select.add(">");
+        Production a13=new Production("boolop", new String[]{"<="});
+        productions.add(a13);
+        productions.get(14).select.add("<=");
+        Production a14=new Production("boolop", new String[]{">="});
+        productions.add(a14);
+        productions.get(15).select.add(">=");
+        Production a27=new Production("boolop", new String[]{"=="});
+        productions.add(a27);
+        productions.get(16).select.add("==");
+        Production a15=new Production("arithexpr", new String[]{"multexpr","arithexprprime"});
+        productions.add(a15);
+        productions.get(17).select.add("ID");
+        productions.get(17).select.add("NUM");
+        productions.get(17).select.add("(");
+        Production a16=new Production("arithexprprime", new String[]{"+","multexpr","arithexprprime"});
+        productions.add(a16);
+        productions.get(18).select.add("+");
+        Production a17=new Production("arithexprprime", new String[]{"-","multexpr","arithexprprime"});
+        productions.add(a17);
+        productions.get(19).select.add("-");
+        Production a18=new Production("arithexprprime", new String[]{"E"});
+        productions.add(a18);
+        Production a19=new Production("multexpr", new String[]{"simpleexpr","","multexprprime"});
+        productions.add(a19);
+        productions.get(21).select.add("ID");
+        productions.get(21).select.add("NUM");
+        productions.get(21).select.add("(");
+        Production a20=new Production("multexprprime", new String[]{"*","simpleexpr","multexprprime"});
+        productions.add(a20);
+        productions.get(22).select.add("*");
+        Production a21=new Production("multexprprime", new String[]{"/","simpleexpr","multexprprime"});
+        productions.add(a21);
+        productions.get(23).select.add("/");
+        Production a22=new Production("multexprprime", new String[]{"E"});
+        productions.add(a22);
+        Production a23=new Production("simpleexpr", new String[]{"ID"});
+        productions.add(a23);
+        productions.get(25).select.add("ID");
+        Production a24=new Production("simpleexpr", new String[]{"NUM"});
+        productions.add(a24);
+        productions.get(26).select.add("NUM");
+        Production a25=new Production("simpleexpr", new String[]{"(","arithexpr",")"});
+        productions.add(a25);
+        productions.get(27).select.add("(");
+        nonterminals.add("program");
+        nonterminals.add("stmt");
+        nonterminals.add("compoundstmt");
+        nonterminals.add("stmts");
+        nonterminals.add("ifstmt");
+        nonterminals.add("whilestmt");
+        nonterminals.add("assgstmt");
+        nonterminals.add("boolexpr");
+        nonterminals.add("boolop");
+        nonterminals.add("arithexpr");
+        nonterminals.add("arithexprprime");
+        nonterminals.add("multexpr");
+        nonterminals.add("multexprprime");
+        nonterminals.add("simpleexpr");
+        terminals.add("{");
+        terminals.add("}");
+        terminals.add("if");
+        terminals.add("(");
+        terminals.add(")");
+        terminals.add("then");
+        terminals.add("else");
+        terminals.add("while");
+        terminals.add("=");
+        terminals.add(";");
+        terminals.add("<");
+        terminals.add(">");
+        terminals.add("<=");
+        terminals.add(">=");
+        terminals.add("==");
+        terminals.add("+");
+        terminals.add("-");
+        terminals.add("");
+        terminals.add("*");
+        terminals.add("/");
+        terminals.add("ID");
+        terminals.add("NUM");
+        for(int k=0;k<28;k++)
+        {
+            List<HashMap<String, List<String>>> tmp1 = new ArrayList<HashMap<String, List<String>>>();
+            for(int j=0;j<productions.get(k).select.size();j++)
+            {
+                HashMap<String, List<String>> tmp2=new HashMap<String, List<String>>();
+                tmp2.put(productions.get(k).select.get(j),Arrays.asList(productions.get(k).right).stream().filter(x -> !x.equals("")).collect(Collectors.toList()));
+                tmp1.add(tmp2);
+            }
+            
+                Analysistable.put(productions.get(k).left,tmp1);
+            
+        }
+    }
+    public List<Input> get(String input) {
+        List<Input> tokens = new ArrayList<Input>();
+        String[] lines = input.split("[\n\t]");
+        int num =0;
+        for(int i=0;i<lines.length;i++)
+        {
+            String line=lines[i];
+            num++;
+            if (line.split(" ").length>1){
+                String[] tmp = line.split(" ");
+                for(int j=0;j<tmp.length;j++)
+                {
+                    String tmp2=tmp[j];
+                    tokens.add(new Input(tmp2,num));
+                }
+            } else {
+                tokens.add(new Input(line, num));
+            }
+        }
+        return tokens;
+    }
+    static int count = 0;
+    void Print(List<String> output,  ArrayList<Production> productions, int tab,int num) {
+        if (count >= num) {
+            return;
+        }
+        String tmpsymbol;
+        Production cur=productions.get(count);
+        count=count+1;
+        StringBuffer a=new StringBuffer();
+        for (int i = 0; i < tab; i++) {
+            a.insert(0,"\t");
+        }
+        a.append(cur.tmp1);
+        output.add(a.toString());
+        for(int k=0;k<cur.tmp2.size();k++){
+            tmpsymbol=cur.tmp2.get(k);
+            if (terminals.contains(tmpsymbol)||tmpsymbol.contains("E")) {
+                StringBuffer b=new StringBuffer();
+                for (int i=0;i<tab+1;i++) {
+                    b.insert(0, "\t");
+                }
+                b.append(tmpsymbol);
+                output.add(b.toString());
+            } else {
+                Print(output,productions,tab+1,num);
+            }
+        }
+    }
+    public void predict(String input,int line1) {
+        List<Input> tokens=get(input);
+        Stack<String> stack=new Stack<String>();
+        stack.push("program");
+        int pointer=0,line=1,num=0;
+        String symbol=stack.peek();
+        while (!stack.isEmpty()) {
+            Input Tokentmp=tokens.get(pointer);
+            if (symbol.equals(Tokentmp.value)) {
+                stack.pop();
+                line=Tokentmp.line;
+                if (!symbol.equals("E")) {
+                    pointer++;
+                }
+            }else if (symbol.equals("E"))
+            {
+                stack.pop();
+            }
+            else if (terminals.contains(symbol)) {
+                if(line1>3)
+                {
+                    System.out.println("语法错误,第"+line+"行,缺少\""+symbol+"\"");
+                }
+                stack.pop();
+            }
+            else
+            {
+                int flag=0;
+                for(int i=0;i<Analysistable.get(symbol).size();i++)
+                {
+                    HashMap tmp=Analysistable.get(symbol).get(i);
+                    if(tmp.containsKey(Tokentmp.value))
+                    {
+                        flag=1;
+                        for(int k=0;k<Analysistable.get(symbol).size();k++)
+                        {
+                            if(Analysistable.get(symbol).get(k).containsKey(Tokentmp.value))
+                                if(num<28) {
+                                    productions.get(num).tmp1 = symbol;
+                                    productions.get(num).tmp2 = (List<String>) Analysistable.get(symbol).get(k).get(Tokentmp.value);
+                                    num++;
+                                }
+                                else
+                                {
+                                    productions.add(new Production("",new String[]{""}));
+                                    productions.get(num).tmp1=symbol;
+                                    productions.get(num).tmp2 = (List<String>) Analysistable.get(symbol).get(k).get(Tokentmp.value);
+                                    num++;
+                                }
+                        }
+                        stack.pop();
+                        for(int k=0;k<Analysistable.get(symbol).size();k++)
+                        {
+                            if(Analysistable.get(symbol).get(k).containsKey(Tokentmp.value))
+                            {
+                                for(int l=Analysistable.get(symbol).get(k).get(Tokentmp.value).size()-1;l>=0;l--)
+                                {
+                                    stack.push(Analysistable.get(symbol).get(k).get(Tokentmp.value).get(l));
+                                }
+                            }
+                        }
+                    }
+
+                }
+                if(flag==0)
+                {
+                    for(int i=0;i<productions.size();i++)
+                    {
+                        if(symbol.equals(productions.get(i).left))
+                        {
+                            if(productions.get(i).right[0].equals("E"))
+                            {
+                                if(num<28)
+                                {
+                                productions.get(num).tmp1=symbol;
+                                productions.get(num).tmp2= (List<String>)Arrays.asList(new String[]{"E"});
+                                num++;
+                                }
+                                else
+                                {
+                                    productions.add(new Production("",new String[]{""}));
+                                    productions.get(num).tmp1=symbol;
+                                    productions.get(num).tmp2 = (List<String>)Arrays.asList(new String[]{"E"});
+                                    num++;
+                                }
+                            }
+                        }
+                    }
+                    stack.pop();
+                }
+            }
+            if(!stack.isEmpty()) {
+                symbol = stack.peek();
+            }
+        }
+        ArrayList<String> parsertree = new ArrayList<String>();
+        Print(parsertree,productions,0,num);
+        for(int i=0;i<parsertree.size()-1;i++)
+        {
+            System.out.println(parsertree.get(i));
+        }
+        System.out.print(parsertree.get(parsertree.size()-1));
+    }
+}

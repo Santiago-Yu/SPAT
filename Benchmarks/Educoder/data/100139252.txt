@@ -1,0 +1,55 @@
+package step3;
+
+public class MyThread implements Runnable {   
+    private String name;
+   public int count=5;
+    public MyThread(String name){
+        this.name =name;
+    }
+    public void run(){
+        if(count >0){
+        System.out.print(name);
+            count--;
+        }
+    }
+    
+    
+    
+    
+    
+    public static void main(String[] args) throws Exception {   
+        MyThread s1 = new MyThread("E");
+        MyThread s2 = new MyThread("D");
+        MyThread s3 = new MyThread("U");
+        new Thread(s1).start();
+        Thread.sleep(100);
+           new Thread(s2).start();
+        Thread.sleep(100);
+           new Thread(s3).start();
+        Thread.sleep(100);
+           new Thread(s1).start();
+        Thread.sleep(100);
+           new Thread(s2).start();
+        Thread.sleep(100);
+           new Thread(s3).start();
+        Thread.sleep(100);   new Thread(s1).start();
+        Thread.sleep(100);
+           new Thread(s2).start();
+        Thread.sleep(100);
+           new Thread(s3).start();
+        Thread.sleep(100);   new Thread(s1).start();
+        Thread.sleep(100);
+           new Thread(s2).start();
+        Thread.sleep(100);
+           new Thread(s3).start();
+        Thread.sleep(100);   new Thread(s1).start();
+        Thread.sleep(100);
+           new Thread(s2).start();
+        Thread.sleep(100);
+           new Thread(s3).start();
+        Thread.sleep(100);
+        
+    }   
+    
+    
+}

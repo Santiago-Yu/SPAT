@@ -1,0 +1,297 @@
+import java.util.*;
+
+import static java.util.Arrays.asList;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    static HashMap<String, Integer> map = new LinkedHashMap<>();
+    static HashMap<Integer, String> map2 = new LinkedHashMap<>();
+    static ArrayList<ArrayList<String>>  production = new ArrayList<>();
+    static ArrayList<String> nonTerminalList;
+    static ArrayList<String> terminalList;
+    static StringBuffer result = new StringBuffer();
+
+    static Map<String, Double> vars = new LinkedHashMap<>();
+    //0代表为int型， 1代表为real型
+    static Map<String, Integer> type = new LinkedHashMap<>();
+    static String[] words;
+
+    static int line = 1;
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append(" \n ");
+        }
+    }
+
+
+    // add your method here!!
+
+    private static void prepare() {
+
+        String[] nonTerminal = {"program","stmt","compoundstmt","stmts","ifstmt","whilestmt","assgstmt","boolexpr","boolop","arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"};
+        String[] terminal = {"{","}","if","(",")","then","else","while","ID","=",";","<",">","<=",">=","==","+","-","*","/","NUM", "$", "int", "real"};
+        nonTerminalList = new ArrayList<>(asList(nonTerminal));
+        terminalList = new ArrayList<>(asList(terminal));
+        int n=0;
+        for( ; n<nonTerminal.length; n++) {
+            map.put(nonTerminal[n], n);
+            map2.put(n, nonTerminal[n]);
+        }
+        for( int i=0; i<terminal.length; n++, i++) {
+            map.put(terminal[i], n);
+            map2.put(n, terminal[i]);
+        }
+        String Grammar =
+                //"program’ -> program\n" +
+                "program -> compoundstmt\n" +
+                        "stmt -> ifstmt | whilestmt | assgstmt | compoundstmt\n" +
+                        "compoundstmt -> { stmts }\n" +
+                        "stmts -> stmt stmts  |  E\n" +
+                        "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+                        "whilestmt -> while ( boolexpr ) stmt\n" +
+                        "assgstmt -> ID = arithexpr ;\n" +
+                        "boolexpr -> arithexpr boolop arithexpr\n" +
+                        "boolop ->  < | > | <= | >= | ==\n" +
+                        "arithexpr -> multexpr arithexprprime\n" +
+                        "arithexprprime -> + multexpr arithexprprime | - multexpr arithexprprime |  E\n" +
+                        "multexpr -> simpleexpr multexprprime\n" +
+                        "multexprprime -> * simpleexpr multexprprime | / simpleexpr multexprprime |  E\n" +
+                        "simpleexpr -> ID | NUM | ( arithexpr )\n";
+        String[] line = Grammar.split("\n");
+        for(int i=0; i<line.length; i++) {
+            String left = line[i].split("->")[0].trim();
+            String right = line[i].split("->")[1].trim();
+            ArrayList<String> list;
+            if(right.contains("|")) {
+                String[] rightOfProduction = right.split("\\|");
+                for(int j=0; j<rightOfProduction.length; j++) {
+                    list = new ArrayList<>( asList(rightOfProduction[j].trim().split(" ")) );
+                    list.add(left);
+                    production.add(list);
+                }
+            } else {
+                list = new ArrayList<>( asList(right.trim().split(" ")) );
+                list.add(left);
+                production.add(list);
+            }
+        }
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        prepare();
+        read_prog();
+
+        String s = new String(prog).trim();
+        words = s.split(" +");
+
+        for (int num=0; num<words.length; num++) {
+            String word = words[num];
+
+            if (word.equals("\n")) {
+                line++;
+                continue;
+            } else if (terminalList.contains(word)) {
+                switch (word) {
+                    case "int":
+                        num++;
+                        String var = words[num];
+                        num = num + 2;
+                        String value = words[num];
+                        try {
+                            int v = Integer.parseInt(value);
+                            vars.put(var, (double) v);
+                        } catch (NumberFormatException e) {
+                            double v = Double.parseDouble(value);
+                            vars.put(var, v);
+                            result.append("error message:line " + line + ",realnum can not be translated into int type\n");
+                        }
+                        type.put(var, 0);
+                        break;
+                    case "real":
+                        num++;
+                        String var1 = words[num];
+                        num = num + 2;
+                        String value1 = words[num];
+                        double v = Double.parseDouble(value1);
+                        vars.put(var1, v);
+                        type.put(var1, 1);
+                        break;
+                    case "if":
+                        num = num + 2;
+                        String var2 = words[num];
+                        double value2 = vars.get(var2);
+                        num++;
+                        String operation = words[num];
+                        num++;
+                        String var3 = words[num];
+                        double value3 = vars.get(var3);
+                        boolean r;
+                        switch (operation) {
+                            case "==":
+                                r = (value2 == value3);
+                                break;
+                            case "<":
+                                r = (value2 < value3);
+                                break;
+                            case ">":
+                                r = (value2 > value3);
+                                break;
+                            case "<=":
+                                r = (value2 <= value3);
+                                break;
+                            case ">=":
+                                r = (value2 >= value3);
+                                break;
+                            default:
+                                r = true;
+                        }
+                        if (!r) {
+                            while (!words[num].equals(";")) {
+                                if (words[num].equals("/")) {
+                                    num++;
+                                    String next = words[num];
+                                    Double nextValue;
+                                    if (vars.containsKey(next)) {
+                                        nextValue = vars.get(next);
+                                    } else {
+                                        nextValue = Double.parseDouble(next);
+                                    }
+                                    if (nextValue == 0) {
+                                        result.append("error message:line " + line + ",division by zero\n");
+                                    }
+                                }
+                                num++;
+                            }
+                            num--;
+                        }
+                        num = num + 3;
+                        num = calculate(num);
+                    case "else":
+                        while (!words[num].equals(";")) {
+                            if (words[num].equals("/")) {
+                                num++;
+                                String next = words[num];
+                                Double nextValue;
+                                if (vars.containsKey(next)) {
+                                    nextValue = vars.get(next);
+                                } else {
+                                    nextValue = Double.parseDouble(next);
+                                }
+                                if (nextValue == 0) {
+                                    result.append("error message:line " + line + ",division by zero\n");
+                                }
+                            }
+                            num++;
+                        }
+                    default:
+                        break;
+                }
+            } else {
+                num = calculate(num);
+            }
+        }
+
+        if (result.length() == 0) {
+            for (Iterator iterator = vars.keySet().iterator(); iterator.hasNext(); ) {
+                String var = (String) iterator.next();
+                double value = vars.get(var);
+                if (type.get(var) == 0) {
+                    result.append(var + ": " + (int) value + "\n");
+                } else {
+                    result.append(var + ": " + value + "\n");
+                }
+            }
+        }
+        result.deleteCharAt(result.length()-1);
+        System.out.print(result);
+    }
+
+    private static int calculate(int position) {
+
+        double value;
+        String var = words[position];
+        position = position + 2;
+        String next = words[position];
+        if (vars.containsKey(next)) {
+            value = vars.get(next);
+        } else {
+            value = Double.parseDouble(next);
+        }
+        position++;
+        for ( ; !words[position].equals(";"); position++) {
+            next = words[position];
+            double nextValue;
+            switch (next) {
+                case "+":
+                    position++;
+                    next = words[position];
+                    if (vars.containsKey(next)) {
+                        nextValue = vars.get(next);
+                    } else {
+                        nextValue = Double.parseDouble(next);
+                    }
+                    value = value + nextValue;
+                    break;
+                case "-":
+                    position++;
+                    next = words[position];
+                    if (vars.containsKey(next)) {
+                        nextValue = vars.get(next);
+                    } else {
+                        nextValue = Double.parseDouble(next);
+                    }
+                    value = value - nextValue;
+                    break;
+                case "*":
+                    position++;
+                    next = words[position];
+                    if (vars.containsKey(next)) {
+                        nextValue = vars.get(next);
+                    } else {
+                        nextValue = Double.parseDouble(next);
+                    }
+                    value = value * nextValue;
+                    break;
+                case "/":
+                    position++;
+                    next = words[position];
+                    if (vars.containsKey(next)) {
+                        nextValue = vars.get(next);
+                    } else {
+                        nextValue = Double.parseDouble(next);
+                    }
+                    if (nextValue == 0) {
+                        result.append("error message:line " + line + ",division by zero\n");
+                        break;
+                    }
+                    value = value / nextValue;
+                    break;
+
+            }
+        }
+        vars.put(var, value);
+        return position;
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

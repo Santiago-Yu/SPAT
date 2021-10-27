@@ -1,0 +1,20 @@
+	public void snapShot() {
+
+		try {
+			// 鎷疯礉灞忓箷鍒颁竴涓狟ufferedImage瀵硅薄screenshot
+			BufferedImage screenshot = (new Robot())
+					.createScreenCapture(new Rectangle(0, 0,
+							(int) d.getWidth(), (int) d.getHeight()));
+			serialNum++;
+			// 鏍规嵁鏂囦欢鍓嶇紑鍙橀噺鍜屾枃浠舵牸寮忓彉閲忥紝鑷姩鐢熸垚鏂囦欢鍚�
+			String name = fileName + String.valueOf(serialNum) + "."
+					+ imageFormat;
+			File f = new File(name);
+			System.out.print("Save File " + name);
+			// 灏唖creenshot瀵硅薄鍐欏叆鍥惧儚鏂囦欢
+			ImageIO.write(screenshot, imageFormat, f);
+			System.out.print("..Finished!\n");
+		} catch (Exception ex) {
+			System.out.println(ex);
+		}
+	}

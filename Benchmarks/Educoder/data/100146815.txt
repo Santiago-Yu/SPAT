@@ -1,0 +1,69 @@
+package step1;
+import java.util.*;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    int [] i =new int[10000];
+    	int [] ass = new int[3]; 
+    	
+    	for (int k = 0; k < 10000; k++) {
+    		i[k]=k+1;
+		}
+    	ArrayList<Integer> objArray = new ArrayList<Integer>();
+    	ArrayList<Integer> objArray2 = new ArrayList<Integer>();
+        for (int j = 0; j < i.length; j++) {
+        	objArray.add(j,i[j]);
+		}
+        for (int j = 0; j < nums.length; j++) {
+        	objArray2.add(j,nums[j]);
+		}
+        objArray.removeAll(objArray2);	//取差值
+		
+        for (int j2 = 0;j2 < objArray.size(); j2++){ 
+        	ass[j2] = objArray.get(j2); 
+        	}
+        for (int j3 = 0; j3 < ass.length - 1; j3++) {	//排序
+             for (int j4 = 0; j4 < ass.length - j3 -1; j4++) {
+                int a1 = ass[j4];
+                int a2 = ass[j4 + 1];
+                if(a1>a2){
+                   int a3 = a1;
+                      ass[j4] = a2;
+                     ass[j4+1] = a3;
+                }
+             }
+         }
+        int[] arr = new int[3];
+        int asa=0;
+        for(int j5=0;j5<ass.length;j5++){
+            if(ass[j5] != 0){
+                arr[asa] = ass[j5];
+                asa++;
+            }
+        }
+        
+		int a=0,b=0,c=0, d=1,e=1,    z=0;
+		a=arr[0]*10000+arr[1]*100+arr[2];
+		a=a%11;
+        
+        String aqwe = "";
+        //Arrays.sort(arr);
+		aqwe+=arr[0];
+		aqwe+=arr[1];
+		aqwe+=arr[2];
+       // System.out.println(arr[0]);
+       // System.out.println(arr[1]);
+       // System.out.println(arr[2]);
+		double asdf =Double.parseDouble(aqwe);
+		z=(int)(asdf%11);
+        
+		
+		return z;
+	
+	}
+
+	/********* End *********/
+}

@@ -1,0 +1,81 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int m=0;
+		
+			switch(month){
+                    
+                	case 1:      
+                    	m=day;
+                    break;
+                	case 2:      
+                    	m=31+day;
+                    	break;
+                	case 3:
+                    	if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31+29+day;
+            			}
+                    	else m=31+28+day;
+                    break;
+                    case 4:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*2+29+day;
+            			}
+                    	else m=31*2+28+day;
+                    break;
+                    case 5:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*2+30+29+day;
+            			}
+                    	else m=31*2+30+28+day;
+                    break;
+                    case 6:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*3+30+29+day;
+            			}
+                    	else m=31*3+30+28+day;
+                    break;
+                    case 7:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*3+30*2+29+day;
+            			}
+                    	else m=31*3+30*2+28+day;
+                    break;
+                    case 8:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*4+30*2+29+day;
+            			}
+                    	else m=31*4+30*2+28+day;
+                    break;
+                    case 9:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*5+30*2+29+day;
+            			}
+                    	else m=31*5+30*2+28+day;
+                    break;
+                    case 10:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*5+30*3+29+day;
+            			}
+                    	else m=31*5+30*3+28+day;
+                    break;
+                    case 11:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*6+30*3+29+day;
+            			}
+                    	else m=31*6+30*3+28+day;
+                    break;
+                    case 12:      
+                   		 if((year%4==0&&year%100!=0)||year%400==0){//闰年
+                    		m=31*6+30*4+29+day;
+            			}
+                    	else m=31*6+30*4+28+day;
+                    break;
+        	}
+        System.out.print(m);
+
+		/********** End *********/
+	}
+}

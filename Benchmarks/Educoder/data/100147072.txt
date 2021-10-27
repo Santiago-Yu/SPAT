@@ -1,0 +1,57 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+    public static int[] mm(int[][] di,int i,int selectedNum,int numbers,int k,int distance){
+		int[] a = new int[2];
+		int min = 99999999, max = 0;
+		for(int j = 0; j < k; j++){
+			if(di[i][j] > max) max = di[i][j];
+			if(di[i][j] < min) min = di[i][j];
+		}
+		a[0] = min-distance;
+		a[1] = max+distance;
+		if(a[0] <= 0) a[0] = 1;
+		if(a[1] >= numbers) a[1] = numbers;
+		return a;
+	}
+	public static void knapsack(int numbers,int[] abilities,long[] m,int distance,int j,int selectedNum,int[][] di){
+		if(j == selectedNum) return ;
+		for(int i = 1; i <= numbers; i++){
+			long s = m[i], maxm = 0;
+			int[] a = mm(di,i,selectedNum,numbers,j,distance);;
+			for(int t = a[0]; t <= a[1]; t++){
+				int flag = 1;
+				for(int x = 0; x < j; x++){
+					if(t == di[i][x]) flag = 0;
+				}
+				if(flag == 0) continue;
+				if(abilities[t] > maxm) maxm = abilities[t];
+			}
+			int k = a[0];
+			for(; k <= a[1]; k++){
+				if(abilities[k] == maxm) break;
+			}
+			di[i][j] = k;
+			m[i] = s * maxm;			
+		}
+		knapsack(numbers,abilities,m,distance,j+1,selectedNum,di);
+	}
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		int[][] di = new int[numbers+1][selectedNum];
+		long[] m = new long[numbers+1];
+		for(int i = 1; i <= numbers; i++){
+			m[i] = abilities[i];
+			di[i][0] = i;
+		}	
+		knapsack(numbers,abilities,m,distance,1,selectedNum,di);
+		long maxmm = 0;
+		for(int i = 1; i <= numbers; i++){
+			if(m[i] > maxmm) maxmm = m[i];
+		}
+		return maxmm;
+    }
+
+	/********* End *********/
+}

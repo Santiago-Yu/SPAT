@@ -1,0 +1,29 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+       	while(data.indexOf(' ')!=-1)
+        {
+            int n=data.indexOf(' ');
+            String s=data.substring(0,n);
+            StringBuffer st = new StringBuffer(s);
+            st=st.reverse();
+            
+            
+            ans.append(st);
+            ans.append(' ');
+            data=data.substring(n+1);
+        }
+        StringBuffer st = new StringBuffer(data);
+        st=st.reverse();
+        ans.append(st);
+        ans.append(' ');
+        
+		//ans=ans.append(data);
+		//ans=ans.reverse();
+        /********** End *********/
+        return ans;
+    }
+}

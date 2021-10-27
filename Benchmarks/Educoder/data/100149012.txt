@@ -1,0 +1,70 @@
+package step3;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Task {
+	
+	public int concaveValley(Integer[] X){
+		/********* Begin *********/
+	// -1刚开始 0下坡阶段,1上坡阶段,2平
+		// -1刚开始 0下坡阶段,1上坡阶段,2平
+		int left = 0, right = 1;
+		List<Integer> statList = new ArrayList<>();
+
+		if (X.length <= 1)
+			return 0;
+
+		while (right < X.length) {
+			int leftNum = X[left++], rightNum = X[right++];
+			int stat = leftNum > rightNum ? 0 : (leftNum == rightNum ? 2 : 1);
+			statList.add(stat);
+		}
+		// 开始统计
+		int count = 0, max = 0;
+		boolean startCount = false, overed = false;
+
+		for (Integer stat : statList) {
+            
+            //刚开始计数
+			if (stat == 0 && !startCount) {
+				startCount = true;
+				count = 0;
+			}
+			
+            //下坡计数
+			if (stat == 0 && startCount && !overed) {
+				count++;
+			}
+		
+            //上坡计数
+			if (startCount && stat == 1) {
+				overed = true;
+				count++;
+			}
+		
+            //计数完以后又下坡
+			if (stat == 0 && startCount && overed) {
+				overed = false;
+				if (count + 1 > max)
+					max = count + 1;
+				count = 1;
+			}
+            
+            //遇到平行的数据停止计数
+            if (stat == 2 && overed && startCount) {
+				overed = false;
+				if (count + 1 > max)
+					max = count + 1;
+				count = 1;
+			}
+		}
+        
+        //防止最后一直上坡的，没有计入到总数中
+		if (startCount && count + 1 > max  && overed)
+			max = count + 1;
+
+		return max;
+		/********* End *********/	
+	}
+}

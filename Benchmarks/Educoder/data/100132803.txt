@@ -1,0 +1,46 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+         int numberOfChip = 0;
+         Chip []chip = new Chip[20];
+         for(int i = 0;i<ferry.length;i++){
+             for(int k = 0;k<ferry[0].length;k++){
+                 if(ferry[i][k]=='+'){
+                     chip[numberOfChip] = new Chip();
+                     chip[numberOfChip].x=i;
+                     chip[numberOfChip].y=k;
+                     numberOfChip++;
+                 }
+             }
+         }
+         int length = numberOfChip;
+         for(int i = 0;i<length;i++){
+             for(int k =i+1;k<length;k++){
+                 if((chip[i].x==chip[k].x&&Math.abs(chip[i].y-chip[k].y)==1)||
+                   (chip[i].y==chip[k].y&&Math.abs(chip[i].x-chip[k].x)==1)){
+                     numberOfChip--;
+                 }
+             }	
+         }
+         return numberOfChip;
+                 
+                 
+                     
+                     
+                     
+         
+	 
+	 
+         
+      /***********END ***************/
+	 }
+    
+    class Chip{
+        public int x;
+        public int y;
+        
+    }
+}

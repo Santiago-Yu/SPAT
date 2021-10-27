@@ -1,0 +1,53 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    
+    private static void getFile(File file, int deep) {
+		File[] array=file.listFiles();
+		for(int i=0; i<array.length;i++) {
+			if(array[i].isFile())//判断如果是文件的话
+			{
+				
+				int end =array[i].toString().indexOf(".");//在 . .bmp, .png, .jpg前都有 
+				
+				String suffix=array[i].toString().substring(end+1);
+				if(suffix.equals("bmp")||suffix.equals("png")||suffix.equals("jpg"))
+				{
+					for(int j =0;j<deep;j++) {//deep应该是指文件的深度:空格的个数
+						System.out.print(" ");
+					}
+					System.out.println("--"+array[i].getName());
+				}
+				
+			
+			}
+			else if(array[i].isDirectory())//判断如果是文件夹的话
+			{
+				for(int j=0;j<deep;j++) {  //循环打印的是空格
+					System.out.print(" ");
+				}
+				System.out.println("+--"+array[i].getName());
+				getFile(array[i],deep+2);//递归深度遍历
+			}
+		}
+	}
+    
+	public void showDirStructure(File file)	{
+		int deep=2;
+		System.out.println("+--"+file.getName());//输出 +--root
+		getFile(file,deep);
+
+
+
+
+
+
+	}
+	
+
+	/********** END **********/
+}

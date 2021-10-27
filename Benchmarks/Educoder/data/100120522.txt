@@ -1,0 +1,40 @@
+package step4;
+
+import java.util.Scanner;
+
+public class ForPractice4 {
+	public static void main(String[] args) {
+		/*****start*****/
+        int j = 1000;    //定义一个变量保存我的金额
+        int z = 0;            //定义一个变量保存我当下要取得金额
+        int f = 0;    //定义一个变量保存我是否继续取款的决定（'1'：结束，'2'：继续）
+		Scanner input=new Scanner(System.in);
+        System.out.println("欢迎使用中国人民银行ATM取款机");
+        do{
+            System.out.println("输入取款金额：");
+            z=input.nextInt();
+            if(j>=z){
+                j=j-z;
+            }else{
+                System.out.println("目前余额：" + j + "无法满足您的取款需求！");
+                    continue; //结束本次循环体动作，进入下次循环体动作
+            }
+            System.out.println("剩余金额："+j+"，是否继续（'1'：结束，'2'：继续）：");
+            f=input.nextInt();
+            if(f==1){
+                break;
+            }
+            }while(j>0);
+                System.out.println("取款结束！");
+            
+                
+            
+                
+        
+		
+		
+    
+		
+		/*****end*****/
+	}
+}

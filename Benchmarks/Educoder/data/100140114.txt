@@ -1,0 +1,23 @@
+
+
+package step4;
+
+     class Reverse {
+        public static StringBuffer start(String data) {
+            StringBuffer ans = new StringBuffer();
+          //将字符以空格分割
+            String[] da=data.split(" "); 
+            StringBuffer data1[]=new StringBuffer[da.length];
+            //
+            for(int i=0;i<da.length;i++) {
+            	//转换为StringBuffer
+            	 data1[i]=new StringBuffer(da[i]);
+            	 //变换字符顺序
+            	 data1[i].reverse();
+                //拼接 data1加上空格
+            	 ans=ans.append(data1[i].append(" ")); 
+            }
+            return ans;
+        }
+    }
+

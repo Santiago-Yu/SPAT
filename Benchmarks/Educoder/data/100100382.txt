@@ -1,0 +1,41 @@
+
+package step2;
+import java.io.*;
+import java.util.Scanner;
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        /********** Begin *********/
+        int Char = 0;//英文字母 
+        int Space = 0;//空格   
+        int number = 0;//数字
+        int Others = 0;//其它 
+         Scanner scanner = new Scanner(System.in);
+        //补全try/catch块，异常类型为IOException
+        char c;
+        try {
+            str=scanner.nextLine();
+            for (int i=0;i<str.length();i++)
+            {
+                c=str.charAt(i); 
+                if (c >= '0' && (int) c <= '9') {  
+                    number++;         
+	
+                }
+	
+                else if ((c >= 'a' && c <= 'z')||(c >= 'A' && c <= 'Z'))
+                {                Char++;            } 
+		
+                else if (c == ' ')
+                {               Space++;            } 
+                else{                Others++;            }       
+            }
+            System.out.print("letter="+Char+",space="+Space+",number="+number+",other="+Others);
+        }
+        catch(NumberFormatException e) {
+            System.out.println(e.getMessage());
+        }
+        /********** End *********/
+    }
+}

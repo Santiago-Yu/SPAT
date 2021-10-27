@@ -1,0 +1,32 @@
+package Pid_101;
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        String s1;
+        String s2;
+        int l;
+        int max = 0;
+        Scanner in = new Scanner(System.in);
+        s1 = in.nextLine();
+        s2 = in.nextLine();
+//        System.out.print("**"+s1+"***");
+//        System.out.print("**"+s2+"***");
+        for(int i= 0;i<s1.length();i++){
+        	for(int j = 0;j<s2.length();j++){
+        		if(s1.charAt(i)==s2.charAt(j)){
+        			l=1;
+        			for(int z = 1;z+j<s2.length()&&z+i<s1.length();z++){
+        				if(s1.charAt(z+i)==s2.charAt(j+z))l++;
+        				else break;
+        			}
+        			if(l>max) max = l;
+        		}
+        	}
+        }
+       System.out.print(max);
+	}
+
+}

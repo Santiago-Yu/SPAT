@@ -1,0 +1,762 @@
+import java.util.*;
+
+/**
+ *  a simple lexical analyzer
+ */
+class LexicalAnalyzer {
+    /**
+     * take apart the input string into tokens
+     * @param inputString input string
+     * @return tokens
+     */
+    static Collection<? extends String> tokenize(String inputString) {
+        return Arrays.asList(inputString.split("\\s+"));
+    }
+}
+
+/**
+ * node of the parser
+ */
+class Node {
+    /**
+     * ID of a node
+     */
+    protected int nodeId;
+
+    /**
+     * ID of parent of a node
+     */
+    protected int parentId;
+
+    /**
+     * data of a node
+     */
+    protected String data;
+
+    public int getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(int nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public Node() {
+    }
+
+    public Node(int nodeId, int parentId, String data) {
+        this.nodeId = nodeId;
+        this.parentId = parentId;
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return data;
+    }
+}
+
+/**
+ * node of the parse tree
+ */
+class TreeNode extends Node {
+
+    /**
+     * list of children of a tree node
+     */
+    private ArrayList<TreeNode> children  = new ArrayList<>();
+
+    /**
+     * add a child to a tree node
+     * @param child child tree node
+     */
+    public void addChild(TreeNode child) {
+        this.children.add(child);
+    }
+
+    public TreeNode() {
+        super();
+    }
+
+    public TreeNode(Node node) {
+        super(node.nodeId, node.parentId, node.data);
+    }
+
+    public TreeNode(int nodeId, int parentId, String data) {
+        super(nodeId, parentId, data);
+    }
+
+    public ArrayList<TreeNode> getChildren() {
+        return children;
+    }
+
+    public void setChildren(ArrayList<TreeNode> children) {
+        this.children = children;
+    }
+
+    @Override
+    public String toString() {
+        return data;
+    }
+}
+
+/**
+ * parse tree for LL(1) parser
+ */
+class ParseTree {
+
+    /**
+     * root of a parse tree
+     */
+    private TreeNode root = new TreeNode(-1, -1, "root" );
+
+    /**
+     * size of a parse tree
+     */
+    private int count = 0;
+
+    /**
+     * print count of a parse tree
+     */
+    private int printCount;
+
+    /**
+     * help to found next terminal
+     */
+    private boolean isNodeOfPaserFound;
+
+    /**
+     * find a node in a parse tree
+     * @param nodeId id of a tree node to find
+     * @return TreeNode if found, else null
+     */
+    public TreeNode getNode(int nodeId) {
+        if (nodeId < this.count) {
+            return getNode(this.root, nodeId);
+        }
+        return null;
+    }
+
+    /**
+     * find a node recursively
+     * @param node tree node to find
+     * @param nodeId id of a tree node to find
+     * @return TreeNode or null
+     */
+    private TreeNode getNode(TreeNode node, int nodeId) {
+        if (node != null) {
+            /*
+              node found
+             */
+            if (nodeId == node.getNodeId()) {
+                return node;
+            }
+            else {
+                /*
+                  find node in its children
+                 */
+                for (TreeNode aNode : node.getChildren()) {
+                    TreeNode result = getNode(aNode, nodeId);
+                    /*
+                      if found, then return
+                     */
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }
+        }
+        /*
+          not found
+         */
+        return null;
+    }
+
+    /**
+     * get the size of a parse tree
+     * @return tree node count
+     */
+    public int size() {
+        return this.count;
+    }
+
+    /**
+     * add a new node to a parse tree
+     * @param node new node to be add into a parse tree
+     */
+    public void add(Node node) {
+        /*
+          get the parent
+         */
+        TreeNode treeNode = getNode(node.parentId);
+        if (treeNode != null) {
+            treeNode.getChildren().add(new TreeNode(node));
+            count++;
+        }
+    }
+
+    /**
+     * print a parse tree with indents
+     */
+    public void print() {
+        this.printCount = 0;
+        for (TreeNode aNode : root.getChildren()) {
+            print(aNode, 0);
+        }
+    }
+
+    /**
+     * print nodes recursively in pre-order
+     * @param node node to be print
+     * @param indentCount count of indents
+     */
+    private void print(TreeNode node, int indentCount) {
+        if (node != null) {
+            for (int i = 0; i < indentCount; i++) {
+                System.out.print("\t");
+            }
+            System.out.print(node);
+            if (this.printCount < count - 1) {
+                System.out.println();
+            }
+            this.printCount++;
+            indentCount++;
+            for (TreeNode aNode : node.getChildren()) {
+                print(aNode, indentCount);
+            }
+        }
+    }
+
+    /**
+     * get next terminal
+     * @param nodeId current node ID of parser
+     * @param cfg CFG
+     * @return next terminal
+     */
+    public String getNextTerminal(int nodeId, CFG cfg) {
+        this.isNodeOfPaserFound = false;
+        return getNextTerminal(root, nodeId, cfg);
+    }
+
+    /**
+     * get next terminal recursively
+     * @param node current node
+     * @param nodeId node ID of parser
+     * @param cfg CFG
+     * @return next terminal
+     */
+    private String getNextTerminal(TreeNode node, int nodeId, CFG cfg) {
+        if (node != null) {
+            if (this.isNodeOfPaserFound) {
+                if (cfg.isTerminals(node.getData())) {
+                    return node.getData();
+                }
+            }
+            else {
+                if (node.getNodeId() == nodeId) {
+                    this.isNodeOfPaserFound = true;
+                }
+            }
+            for (TreeNode aNode : node.getChildren()) {
+                String result = getNextTerminal(aNode, nodeId, cfg);
+                if (!"".equals(result)) {
+                    return result;
+                }
+            }
+            return "";
+        }
+        return "";
+    }
+}
+
+/**
+ * a production of a CFG G =(N，T，P，S) is defined as A -> alpha, where
+ * A is in the set of nonterminals, i.e. A belongs to N
+ * alpha belongs (N union T)*
+ */
+class Production {
+    /**
+     * left hand side of the production
+     */
+    private String lhs;
+
+    /**
+     * right hand side of the production
+     */
+    private ArrayList<String> rhs = new ArrayList<>();
+
+    public Production() {
+    }
+
+    Production(String lhs, String rhs) {
+        this.lhs = lhs;
+        this.rhs.addAll(LexicalAnalyzer.tokenize(rhs));
+    }
+
+    public String getLhs() {
+        return lhs;
+    }
+
+    public void setLhs(String lhs) {
+        this.lhs = lhs;
+    }
+
+    public ArrayList<String> getRhs() {
+        return rhs;
+    }
+
+    public void setRhs(ArrayList<String> rhs) {
+        this.rhs = rhs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Production that = (Production) o;
+        return Objects.equals(getLhs(), that.getLhs()) &&
+                Objects.equals(getRhs(), that.getRhs());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getLhs(), getRhs());
+    }
+
+    @Override
+    public String toString() {
+        return "Production{" +
+                "lhs='" + lhs + '\'' +
+                ", rhs=" + rhs +
+                '}';
+    }
+}
+
+/**
+ * a CFG defined as G =(N，T，P，S), where
+ * N: nonterminals
+ * T: terminals
+ * P: productions
+ * S: start symbol, which is an nonterminals
+ */
+class CFG {
+    /**
+     * nonterminals of CFG
+     */
+    private ArrayList<String> nonterminals;
+
+    /**
+     * terminals of CFG
+     */
+    private ArrayList<String> terminals;
+
+    /**
+     * productions of CFG
+     */
+    private ArrayList<Production> productions;
+
+    /**
+     * start symbol of CFG
+     */
+    private String startSymbol;
+
+    public CFG() {
+    }
+
+    public CFG(ArrayList<String> nonterminals, ArrayList<String> terminals, ArrayList<Production> productions, String startSymbol) {
+        this.nonterminals = nonterminals;
+        this.terminals = terminals;
+        this.productions = productions;
+        this.startSymbol = startSymbol;
+    }
+
+    public ArrayList<String> getNonterminals() {
+        return nonterminals;
+    }
+
+    public void setNonterminals(ArrayList<String> nonterminals) {
+        this.nonterminals = nonterminals;
+    }
+
+    public ArrayList<String> getTerminals() {
+        return terminals;
+    }
+
+    public void setTerminals(ArrayList<String> terminals) {
+        this.terminals = terminals;
+    }
+
+    public ArrayList<Production> getProductions() {
+        return productions;
+    }
+
+    public void setProductions(ArrayList<Production> productions) {
+        this.productions = productions;
+    }
+
+    public String getStartSymbol() {
+        return startSymbol;
+    }
+
+    public void setStartSymbol(String startSymbol) {
+        this.startSymbol = startSymbol;
+    }
+
+    public boolean isNonterminals(String str) {
+        return nonterminals.contains(str);
+    }
+
+    public boolean isTerminals(String str) {
+        return terminals.contains(str);
+    }
+
+    public boolean isProduction(Production production) {
+        return productions.contains(production);
+    }
+    public boolean isStartSymbol(String str) {
+        return startSymbol.equals(str);
+    }
+}
+
+/**
+ * Java_LLParserAnalysis
+ *
+ * @author Felix
+ * @date 5/27/2019
+ */
+public class Java_LLParserAnalysis {
+    /**
+     * string buffer stores input program
+     */
+    private static StringBuffer inputBuffer = new StringBuffer();
+
+    /**
+     * CFG of the LL(1) parser
+     */
+    private static CFG cfg;
+
+    /**
+     * tokens of the input
+     */
+    private static ArrayList<String> tokens = new ArrayList<>();
+
+    /**
+     * parsing table of the LL(1) parser
+     */
+    private static HashMap<String, HashMap<String, Production>> parsingTable = new HashMap<>();
+
+    /**
+     * parsing stack of the LL(1) parser
+     * Pair<String, Integer> :
+     * string for token
+     * Integer for nodeId of its parent in the parse tree
+     */
+    private static Stack<Node> parsingStack = new Stack<>();
+
+    /**
+     * parse tree of the LL(1) parser
+     */
+    private static ParseTree parseTree = new ParseTree();
+
+    /**
+     *  initialize CFG with:
+     *                 1.  program -> compoundstmt
+     *           2 3 4 5.  stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt
+     *                 6.  compoundstmt ->  { stmts }
+     *               7 8.  stmts ->  stmt stmts   |   E
+     *                 9.  ifstmt ->  if ( boolexpr ) then stmt else stmt
+     *                10.  whilestmt ->  while ( boolexpr ) stmt
+     *                11.  assgstmt ->  ID = arithexpr ;
+     *                12.  boolexpr  ->  arithexpr boolop arithexpr
+     *    13 14 15 16 17.  boolop ->   <  |  >  |  <=  |  >=  | ==
+     *                18.  arithexpr  ->  multexpr arithexprprime
+     *          19 20 21.  arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E
+     *                22.  multexpr ->  simpleexpr  multexprprime
+     *          23 24 25.  multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E
+     *          26 27 28.  simpleexpr ->  ID  |  NUM  |  ( arithexpr )
+     */
+    private static void initCFG() {
+        ArrayList<String> nonterminals = new ArrayList<>(Arrays.asList("program", "stmt", "compoundstmt", "stmts", "ifstmt", "whilestmt",
+                "assgstmt", "boolexpr", "boolop", "arithexpr", "arithexprprime", "multexpr", "multexprprime", "simpleexpr"
+        ));
+        ArrayList<String> terminals = new ArrayList<>(Arrays.asList("{", "}", "if", "(", ")", "then", "else", "while", "ID", ";",
+                "=", ">", "<", ">=", "<=", "==", "+", "-", "*", "/", "NUM", "E", "$"));
+        ArrayList<Production> productions = new ArrayList<>(Arrays.asList(
+                new Production("program", "compoundstmt"),
+                new Production("stmt", "ifstmt"),
+                new Production("stmt", "whilestmt"),
+                new Production("stmt", "assgstmt"),
+                new Production("stmt", "compoundstmt"),
+                new Production("compoundstmt", "{ stmts }"),
+                new Production("stmts", "stmt stmts"),
+                new Production("stmts", "E"),
+                new Production("ifstmt", "if ( boolexpr ) then stmt else stmt"),
+                new Production("whilestmt", "while ( boolexpr ) stmt"),
+                new Production("assgstmt", "ID = arithexpr ;"),
+                new Production("boolexpr", "arithexpr boolop arithexpr"),
+                new Production("boolop", "<"),
+                new Production("boolop", ">"),
+                new Production("boolop", "<="),
+                new Production("boolop", ">="),
+                new Production("boolop", "=="),
+                new Production("arithexpr", "multexpr arithexprprime"),
+                new Production("arithexprprime", "+ multexpr arithexprprime"),
+                new Production("arithexprprime", "- multexpr arithexprprime"),
+                new Production("arithexprprime", "E"),
+                new Production("multexpr", "simpleexpr  multexprprime"),
+                new Production("multexprprime", "* simpleexpr multexprprime"),
+                new Production("multexprprime", "/ simpleexpr multexprprime"),
+                new Production("multexprprime", "E"),
+                new Production("simpleexpr", "ID"),
+                new Production("simpleexpr", "NUM"),
+                new Production("simpleexpr", "( arithexpr )")
+        ));
+        cfg = new CFG(nonterminals, terminals, productions, "program");
+    }
+
+    /**
+     * initialize the parsing table with:
+     *  ./parsing_table.png
+     */
+    private static void initParsingTable() {
+        /*
+          construct an empty parsing table
+         */
+        for (String nonterminal : cfg.getNonterminals()) {
+                parsingTable.put(nonterminal, new HashMap<>());
+        }
+        /*
+          fill the parsing table
+         */
+        parsingTable.get("program").put("{", cfg.getProductions().get(0));
+        parsingTable.get("stmt").put("if", cfg.getProductions().get(1));
+        parsingTable.get("stmt").put("while", cfg.getProductions().get(2));
+        parsingTable.get("stmt").put("ID", cfg.getProductions().get(3));
+        parsingTable.get("stmt").put("{", cfg.getProductions().get(4));
+        parsingTable.get("compoundstmt").put("{", cfg.getProductions().get(5));
+        parsingTable.get("stmts").put("{", cfg.getProductions().get(6));
+        parsingTable.get("stmts").put("if", cfg.getProductions().get(6));
+        parsingTable.get("stmts").put("while", cfg.getProductions().get(6));
+        parsingTable.get("stmts").put("ID", cfg.getProductions().get(6));
+        parsingTable.get("stmts").put("}", cfg.getProductions().get(7));
+        parsingTable.get("ifstmt").put("if", cfg.getProductions().get(8));
+        parsingTable.get("whilestmt").put("while", cfg.getProductions().get(9));
+        parsingTable.get("assgstmt").put("ID", cfg.getProductions().get(10));
+        parsingTable.get("boolexpr").put("(", cfg.getProductions().get(11));
+        parsingTable.get("boolexpr").put("ID", cfg.getProductions().get(11));
+        parsingTable.get("boolexpr").put("NUM", cfg.getProductions().get(11));
+        parsingTable.get("boolop").put("<", cfg.getProductions().get(12));
+        parsingTable.get("boolop").put(">", cfg.getProductions().get(13));
+        parsingTable.get("boolop").put("<=", cfg.getProductions().get(14));
+        parsingTable.get("boolop").put(">=", cfg.getProductions().get(15));
+        parsingTable.get("boolop").put("==", cfg.getProductions().get(16));
+        parsingTable.get("arithexpr").put("(", cfg.getProductions().get(17));
+        parsingTable.get("arithexpr").put("ID", cfg.getProductions().get(17));
+        parsingTable.get("arithexpr").put("NUM", cfg.getProductions().get(17));
+        parsingTable.get("arithexprprime").put("+", cfg.getProductions().get(18));
+        parsingTable.get("arithexprprime").put("-", cfg.getProductions().get(19));
+        parsingTable.get("arithexprprime").put(")", cfg.getProductions().get(20));
+        parsingTable.get("arithexprprime").put(";", cfg.getProductions().get(20));
+        parsingTable.get("arithexprprime").put("<", cfg.getProductions().get(20));
+        parsingTable.get("arithexprprime").put(">", cfg.getProductions().get(20));
+        parsingTable.get("arithexprprime").put("<=", cfg.getProductions().get(20));
+        parsingTable.get("arithexprprime").put(">=", cfg.getProductions().get(20));
+        parsingTable.get("arithexprprime").put("==", cfg.getProductions().get(20));
+        parsingTable.get("multexpr").put("(", cfg.getProductions().get(21));
+        parsingTable.get("multexpr").put("ID", cfg.getProductions().get(21));
+        parsingTable.get("multexpr").put("NUM", cfg.getProductions().get(21));
+        parsingTable.get("multexprprime").put("*", cfg.getProductions().get(22));
+        parsingTable.get("multexprprime").put("/", cfg.getProductions().get(23));
+        parsingTable.get("multexprprime").put(")", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put(";", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put("<", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put(">", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put("<=", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put(">=", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put("==", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put("+", cfg.getProductions().get(24));
+        parsingTable.get("multexprprime").put("-", cfg.getProductions().get(24));
+        parsingTable.get("simpleexpr").put("ID", cfg.getProductions().get(25));
+        parsingTable.get("simpleexpr").put("NUM", cfg.getProductions().get(26));
+        parsingTable.get("simpleexpr").put("(", cfg.getProductions().get(27));
+    }
+
+    /**
+     * initialize the stack
+     */
+    private static void initStack() {
+        parsingStack.push(new Node(-1, -1, "$"));
+        parsingStack.push(new Node( 0, -1, cfg.getStartSymbol()));
+    }
+
+    /**
+     * initialize the LL(1) parser
+     */
+    private static void init() {
+        initCFG();
+        initParsingTable();
+        initStack();
+        /*
+          get tokens
+         */
+        tokens.addAll(LexicalAnalyzer.tokenize(inputBuffer.toString()));
+    }
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read() {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            /*
+              read the program into stringBuffer
+             */
+            inputBuffer.append(sc.nextLine()).append("\n");
+        }
+        /*
+          add $ to the end
+         */
+        inputBuffer.append("$");
+        sc.close();
+    }
+
+    /**
+     * parse the tokens
+     * @return parse success or not
+     */
+    private static void parse() {
+        int index = 0;
+        int nodeCount = 0;
+        Node x = parsingStack.peek();
+        parseTree.add(x);
+        nodeCount++;
+        while(!"$".equals(x.getData())) {
+            String current = tokens.get(index);
+            if ("E".equals(x.getData())) {
+                parsingStack.pop();
+            }
+            else if (x.getData().equals(current)) {
+                parsingStack.pop();
+                index++;
+            }
+            else if (cfg.isTerminals(x.getData())) {
+               /*
+                  print error
+                 */
+                String missingToken = x.getData();
+                error(index, missingToken);
+                /*
+                  fix error
+                 */
+                tokens.add(index, missingToken);
+            }
+            else if (parsingTable.containsKey(x.getData()) && parsingTable.get(x.getData()).containsKey(current)) {
+                Production production = parsingTable.get(x.getData()).get(current);
+                parsingStack.pop();
+                /*
+                  push rhs into stack reversely
+                 */
+                Stack<Node> tempStack = new Stack<>();
+                for (String token : production.getRhs()) {
+                    Node node = new Node(nodeCount, x.getNodeId(), token);
+                    tempStack.push(node);
+                    parseTree.add(node);
+                    nodeCount++;
+                }
+                while(!tempStack.empty()) {
+                    parsingStack.push(tempStack.peek());
+                    tempStack.pop();
+                }
+            }
+            else {
+                /*
+                  print error
+                 */
+                String missingToken = parseTree.getNextTerminal(x.nodeId, cfg);
+                error(index, missingToken);
+                /*
+                  fix error
+                 */
+                tokens.add(index, missingToken);
+            }
+            x = parsingStack.peek();
+        }
+    }
+
+    /**
+     * print error
+     */
+    private static void error() {
+        System.out.println("语法错误");
+    }
+
+    /**
+     * print error with its position (line) and its missing
+     * @param index position
+     * @param token missing token
+     */
+    private static void error(int index, String token) {
+        /*
+          get line count by token index
+         */
+        int line = 1;
+        int count = 0;
+        for (int i = 0; i < inputBuffer.toString().length() && count < index; i++) {
+            if (inputBuffer.charAt(i) == tokens.get(count).charAt(0)) {
+                int j = 1;
+                while ( j < tokens.get(count).length() &&  inputBuffer.charAt(i) == tokens.get(count).charAt(j)) {
+                    i++;
+                    j++;
+                }
+                count++;
+            }
+            else if (inputBuffer.charAt(i) == '\n') {
+                line++;
+            }
+        }
+        /*
+          print error
+         */
+        System.out.println("语法错误,第" + line + "行,缺少\"" + token + "\"");
+    }
+
+    /**
+     * lexical analysis
+     */
+    private static void analysis() {
+        read();
+        init();
+        parse();
+        parseTree.print();
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

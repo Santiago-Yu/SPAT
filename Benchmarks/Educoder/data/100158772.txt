@@ -1,0 +1,67 @@
+package Q102;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc=new Scanner(System.in);
+		String[] nums = null;
+		nums = sc.nextLine().split(" "); 
+
+		int num[]=new int[nums.length];
+
+		for(int i=0;i<num.length;i++){
+			num[i]=Integer.valueOf(nums[i]);
+		}
+
+		int five=0,ten=0,twenty=0;
+		int flag=0;
+		//System.out.println(num.length);
+        if(num[0]==10||num[0]==20)
+            System.out.print("false");
+        else{
+		for(int i=0;i<num.length;i++) {
+			if(num[i]==10) {
+				if(five<1) {
+					flag++;
+					break;
+				}else {
+					five--;
+					ten++;
+				}
+
+			}else
+				if(num[i]==20) {
+					if(five<3) {
+						if(ten<1) {
+						flag++;
+						break;
+						}else
+							if(ten>=1&&five>=1) {
+								ten--;
+								five--;
+								twenty++;
+							}
+					}else {
+						if(ten>=1&&five>=1) {
+							ten--;
+							five--;
+							twenty++;
+						}else
+							if(five>=3) {
+								five-=3;
+								twenty++;
+							}
+					}
+				}else
+					if(num[i]==5)
+						five++;
+		}
+		if(flag==0) {
+			System.out.print("true");
+		}else
+			System.out.print("false");
+        }
+	}
+
+}

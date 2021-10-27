@@ -1,0 +1,53 @@
+package step2;
+
+import java.util.List;
+
+public class Task {
+
+	public int solve(List<Integer> data, List<Operation> operations) {
+		/********* begin *********/
+		long result = 0;
+		//使用数组存放数字，试图提高速度
+		long[] a = new long[data.size()];
+		int i = 0;
+		int x;
+		int y;
+		for (int d : data) {
+			a[i] = d;
+			i++;
+		}
+		
+		for (Operation ope : operations) {
+			x =ope.x;
+			y = ope.y;
+			if(ope.op.equals("C")) {
+				a[x] =y;
+			}else {
+				if(ope.op.equals("L")) {
+					for (int j = x; j <=y; j++) {
+						result+=a[j]*(j-x+1);
+					}
+				}else {
+					if(ope.op.equals("R")) {
+						for (int j = x; j <y+1; j++) {
+							result+=a[j]*(y-j+1);
+						}
+					}
+				}
+			}
+		}
+		int re = (int) (1e9+7);
+		long result1 =result % re;
+		int result2=(int) result1;
+		return result2;
+       
+
+		/********* end *********/
+	}
+}
+
+class Operation {
+	String op;
+	int x;
+	int y;
+}

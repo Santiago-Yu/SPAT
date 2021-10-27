@@ -1,0 +1,162 @@
+package step3;
+
+import sun.tools.jar.resources.jar;
+
+/**
+ * Created by zengpeng on 2017/12/25.
+ */
+public class MyLinkedList {
+
+	private Node first;// 头结点，不存数据
+	private Node last;// 指向链表的最后一个节点
+	private int size;
+
+	public MyLinkedList() {
+		size = 0;
+		first = new Node(0, null);
+		last = null;
+	}
+
+	/**
+	 * 添加到链表尾部
+	 * 
+	 * @param item
+	 */
+	public void add(int item) {
+		/********** Begin *********/
+		Node a = first;
+		if(a.item==0)
+			first=new Node(item, null);
+		else {
+			while (a.next != null)
+			a = a.next;
+		a .next= new Node(item, null);
+		}
+		size++;
+		/********** End *********/
+	}
+
+	/**
+	 * 添加数据item到指定位置index index从0开始
+	 * 
+	 * @param index
+	 * @param item
+	 */
+	public void add(int index, int item) {
+		checkPosIndex(index);
+
+		/********** Begin *********/
+		if(index==0)
+		{
+			if(first.item==0)
+			{	first=new Node(item, null);
+			size++;
+			}
+			else {
+
+				int cc = 0;
+			Node a = first;
+			Node bNode = null;
+			Node ttNode = new Node(item, null);
+			if (index == 0) {
+				ttNode.next = first;
+				first = ttNode;
+				size++;
+			} else {
+				while (cc < index) {
+					bNode = a;
+					a = a.next;
+					cc++;
+				}
+				if (cc == index) {
+					bNode.next = ttNode;
+					ttNode.next = a;
+					size++;
+				}
+			}
+			
+			
+			}
+		}
+		else {
+			int cc = 0;
+		Node a = first;
+		Node bNode = null;
+		Node ttNode = new Node(item, null);
+		if (index == 0) {
+			ttNode.next = first;
+			first = ttNode;
+			size++;
+		} else {
+			while (cc < index) {
+				bNode = a;
+				a = a.next;
+				cc++;
+			}
+			if (cc == index) {
+				bNode.next = ttNode;
+				ttNode.next = a;
+				size++;
+			}
+		}
+		
+		}
+
+		/********** End *********/
+	}
+
+	/**
+	 * 删除指定位置index处的元素并返回, index从0开始
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public int remove(int index) {
+		checkPosIndex(index);
+
+		/********** Begin *********/
+		Node ttNode = first;
+		Node a = null;
+		int cc = 0;
+		if (index == 0) {
+			cc = ttNode.item;
+			first = ttNode.next;
+			size--;
+		} else {
+			while (cc < index) {
+				a = ttNode;
+				ttNode = ttNode.next;
+				cc++;
+			}
+			if (cc == index) {
+				cc = ttNode.item;
+				a.next = ttNode.next;
+				size--;
+			}
+		}
+		return cc;
+		/********** End *********/
+	}
+
+	public int size() {
+		return size;
+	}
+
+	private void checkPosIndex(int index) {
+		if (index < 0 || index > size) {
+			throw new IndexOutOfBoundsException("Index: " + index + ", Size: "
+					+ size);
+		}
+	}
+
+	// 结点内部类
+	private static class Node {
+		int item;
+		Node next;
+
+		Node(int item, Node next) {
+			this.item = item;
+			this.next = next;
+		}
+	}
+}

@@ -1,0 +1,62 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+        int cnt = 0;
+        int fincnt = 0;
+        int m = 0;
+        int tmp2 = 0;
+        for(int i=0; i<arr.length-1; i++) {
+        	if(i==arr.length-2) {
+        		return 0;
+        	}
+        	if(arr[i+1]>=arr[i]){
+                continue;
+            }else {
+            	break;
+            }
+        }
+        for(int i=0; i<arr.length-1; i++){
+            if(arr[i+1]>=arr[i]&&i<tmp2){
+                continue;
+            }
+            cnt = 0;
+            //System.out.println(tmp);
+            //System.out.println("111:"+arr[i]);
+            L1:for(int j=i; j<arr.length-1; j++){
+            	cnt++;  
+            	//System.out.println("1:"+cnt);
+                if(arr[j+1]>=arr[j]){
+                	//System.out.println(j);
+                    for(m=j; m<arr.length-1; m++){
+                    	cnt++;
+                    	//System.out.println("2:"+cnt);
+                        if(arr[m+1]<=arr[m]){
+                        	//System.out.println(m);
+                        	//tmp = m+1;
+                            break L1;
+                        }
+                        if(m+1==arr.length-1) {
+                        	//System.out.println("****");
+                        	cnt++;
+                        	break L1;
+                        }
+                  //      cnt++;
+                    }
+                }
+                //System.out.print(arr[m]+" ");
+            }
+            if(cnt>fincnt){
+                fincnt = cnt;
+            }
+            tmp2 = m+1;
+
+        }   
+        //System.out.println();
+        return fincnt-1;
+		
+		/********* End *********/	
+	}
+}

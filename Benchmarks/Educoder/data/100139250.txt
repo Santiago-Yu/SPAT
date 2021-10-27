@@ -1,0 +1,53 @@
+package step3;
+
+public class MyThread implements Runnable { 
+    
+    
+    public static void main(String[] args) throws Exception {   
+        
+        Object E=new Object(),D=new Object(),U=new Object();
+        MyThread ta=new MyThread(E,D);
+        MyThread tb=new MyThread(D,U);
+        MyThread tc=new MyThread(U,E);
+        
+        new Thread(ta,"E").start();
+        Thread.sleep(100);
+        new Thread(tb,"D").start();
+        Thread.sleep(100);
+        new Thread(tc,"U").start();
+        
+    }   
+    
+    public MyThread(Object a,Object b){
+     	this.lock1=a;
+        this.lock2=b;
+    }
+    
+    Object lock1,lock2;
+    
+    public void run(){
+    	int ct=5;
+        while(ct>0){
+         	synchronized(lock1){
+                synchronized(lock2){
+                System.out.print(Thread.currentThread().getName());
+                lock2.notify();
+     
+                
+                
+                ct--;
+            
+                }
+                
+                try{
+                    lock1.wait();
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        System.exit(0);
+    }
+    
+   
+}

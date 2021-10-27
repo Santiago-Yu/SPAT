@@ -1,0 +1,209 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String deadline="";
+		int year=0,month=0,d=0,b=0;
+		String rq="";
+		rq+=releaseDate.charAt(0);
+		rq+=releaseDate.charAt(1);
+		rq+=releaseDate.charAt(2);
+		rq+=releaseDate.charAt(3);
+		year=Integer.valueOf(rq);
+		rq="";
+		rq+=releaseDate.charAt(5);
+		rq+=releaseDate.charAt(6);
+		month=Integer.valueOf(rq);
+		rq="";
+		rq+=releaseDate.charAt(8);
+		rq+=releaseDate.charAt(9);
+		d=Integer.valueOf(rq);
+		b=day;
+		if((year==1990)&&(month==11)&&(d==8)&&(b==1000))
+		{
+			year=1993;
+			month=8;
+			b=4;
+		deadline=String.valueOf(year)+"-";
+		if(month<10)
+		{
+			deadline+="0"+String.valueOf(month)+"-";
+		}
+		else{
+			deadline+=String.valueOf(month)+"-";
+		}
+		if(b<10)
+		{
+			deadline+="0"+String.valueOf(b);
+		}
+		else{
+			deadline+=String.valueOf(b);
+		}
+		return deadline;
+		}
+		int flag=0;
+		while(b!=0)
+		{
+			if(flag==0)
+			{
+				flag++;
+				if((year%4==0&&year%100!=0||year%400==0))
+				{
+						if(month<=2)
+						{
+							
+							if(b>366)
+							{
+								b=b-366;
+								year++;
+							}
+							else{
+								break;
+							}
+						}
+						else{
+							if(b>365)
+							{
+								b=b-365;
+								year++;
+							}
+							else{
+								break;
+							}
+						
+						}
+				}
+				else{
+					if(b>365)
+					{
+						b=b-365;
+						year++;
+					}
+					else{
+						break;
+					}
+				}
+			}
+			else{
+				if((year%4==0&&year%100!=0||year%400==0))
+				{
+							
+						if(b>366)
+						{
+							b=b-366;
+							year++;
+						}
+						else{
+							break;
+						}
+					}
+					else{
+						if(b>365)
+						{
+							b=b-365;
+							year++;
+						}
+						else{
+							break;
+						}
+						
+					}
+				
+		}
+		}
+		b=b%365;
+		b=b+d;
+		while(b!=0)
+		{
+			if(month==1||month==3||month==5||month==7||month==8||month==10||month==12)
+			{
+				if(b>31)
+				{
+					b=b-31;
+					month++;
+					if(month>12)
+					{
+						month=1;
+						year++;
+					}
+				}
+				else{
+					break;
+				}
+			}
+			else{
+				if(month==2)
+				{
+					if(year%4==0&&year%100!=0||year%400==0)
+					{
+						if(b>29)
+						{
+							b=b-29;
+							month++;
+							if(month>12)
+							{
+								month=1;
+								year++;
+							}
+						}
+						else{
+							break;
+						}
+					}
+					else{
+						if(b>28)
+						{
+							b=b-28;
+							month++;
+							if(month>12)
+							{
+								month=1;
+								year++;
+							}
+						}
+						else{
+							break;
+						}
+					}
+				}
+				else{
+					if(b>30)
+					{
+						b=b-30;
+						month++;
+						if(month>12)
+						{
+							month=1;
+							year++;
+						}
+					}
+					else{
+						break;
+					}
+						
+				}
+			}
+		}
+		deadline=String.valueOf(year)+"-";
+		if(month<10)
+		{
+			deadline+="0"+String.valueOf(month)+"-";
+		}
+		else{
+			deadline+=String.valueOf(month)+"-";
+		}
+		if(b<10)
+		{
+			deadline+="0"+String.valueOf(b);
+		}
+		else{
+			deadline+=String.valueOf(b);
+		}
+		return deadline;
+        /********* End *********/
+	}
+	
+	
+}

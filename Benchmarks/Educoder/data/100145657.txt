@@ -1,0 +1,82 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		int year,month,days;
+    	String[] s = releaseDate.split("\\-");
+    	year = Integer.parseInt(s[0]);
+    	//System.out.println(year);
+    	month = Integer.parseInt(s[1]);
+    	//System.out.println(month);
+    	days = Integer.parseInt(s[2]);
+    	//daytime = day;
+    	int leapyear=0;
+    	   int daytime=0;
+    	   int sum;
+    	   int[] month_date={31,28,31,30,31,30,31,31,30,31,30,31};
+    	   //printf("请输入日期:");
+    	//scanf("%d-%d-%d",&year,&month,&day);
+    	   //printf("请输入天数:");
+    	//scanf("%d",&daytime);
+    	   daytime = day;
+    	   sum=daytime+days;
+    	   //System.out.println(sum);
+    	   do
+    	   {
+    		   	if(month==2)
+    		   	{
+    		   		if(year%400==0||(year%100!=0&&year%4==0))
+		   			{
+		   				//System.out.println("闰年");
+    		   			month_date[1] = 29;
+		   			}
+		   			else
+		   			{
+		   				month_date[1] = 28;
+		   			}
+    		   		month_date[month-1]+=leapyear;
+    		   		//System.out.println(month_date[month-1]);
+    		   	}
+    		   	if(sum>month_date[month-1])
+    		   	{
+    		   		sum-=month_date[month-1];
+    		   		month++;
+    		   		if(month==13)
+    		   		{
+    		   			year++;
+    		   			
+    		   			month=1;
+    		   		}
+    		   	}
+    	   } while(sum>month_date[month-1]);
+    	   days=sum;
+    	   String smonth,sday;
+    	   //System.out.println(String.valueOf(month));
+    	   if(String.valueOf(month).length()==1) {
+    		   smonth="0"+String.valueOf(month);
+    	   }else {
+    		   smonth= String.valueOf(month);
+    	   }
+    	   if(String.valueOf(days).length()==1) {
+    		   sday="0"+String.valueOf(days);
+    	   }else {
+    		   sday= String.valueOf(days);
+    	   }
+    	   return String.valueOf(year)+"-"+smonth+"-"+sday;
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

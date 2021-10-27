@@ -1,0 +1,51 @@
+package step3;
+
+public class MyThread extends Thread {   
+	    String name;
+   Object a ;
+   Object b ;
+   Object c ;
+    MyThread(String name,Object a,Object b){
+    	this.name = name;
+    	this.a= a;
+    	this.b= b;
+       this.c=c;
+    }
+    public void run(){
+    	int count = 5;
+    		while(count >0) {
+    			synchronized(a) {
+    				synchronized(b) {
+    					
+    						System.out.print(name);
+    						count--;
+    					b.notify();
+    					
+    			}
+    				try {
+						a.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    		}
+    		}
+    		System.exit(0);
+       
+       
+                   
+    }
+    public static void main(String[] args) throws Exception {   
+    	 Object a = new Object();
+         Object b = new Object();
+         Object c = new Object();
+        MyThread ta = new MyThread("E",b,a);
+        MyThread tb = new MyThread("D", c,b);
+        MyThread tc = new MyThread("U", a,c);
+      
+       ta.start();
+       tb.start();
+       tc.start();
+        
+    }   
+}

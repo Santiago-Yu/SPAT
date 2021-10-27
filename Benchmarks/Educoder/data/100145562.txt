@@ -1,0 +1,32 @@
+package step4;
+import java.util.Calendar;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		Calendar cal=Calendar.getInstance();
+		String str=null;
+		try {
+			Date dat=new SimpleDateFormat("yyyy-MM-dd").parse(releaseDate);
+			cal.setTime(dat);
+			cal.add(Calendar.DATE, day);
+			dat=cal.getTime();
+			str=new SimpleDateFormat("yyyy-MM-dd").format(dat);
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return str;
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

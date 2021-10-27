@@ -1,0 +1,53 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        int cnt = arr.length/2;
+		boolean flag = false;
+        L1:while(cnt>0){
+            for(int i=0; i<arr.length-1; i++){
+                if(arr[i]>arr[i+1]){
+                	flag = true;
+                    int tmp = arr[i];
+                    arr[i] = arr[i+1];
+                    arr[i+1] = tmp;
+                    for(int m=0; m<arr.length; m++) {
+                    	System.out.print(arr[m]+" ");
+                    }
+                    System.out.println();
+                }
+                //System.out.println("i鐨勫€间负:"+i);
+                if(i==arr.length-2&&flag==false) {
+                	//System.out.println("1111");
+                	for(int q=0; q<arr.length; q++) {
+                		System.out.print(arr[q]+" ");
+                	}
+                    System.out.println();
+                	break L1;
+                }
+                
+                //System.out.println("***:"+i);
+            }
+            //System.out.print(arr[arr.length-1]+" ");
+            //System.out.println();
+            for(int j=arr.length-1; j>0; j--){
+                if(arr[j]<arr[j-1]){
+                    int tmp2 = arr[j];
+                    arr[j] = arr[j-1];
+                    arr[j-1] = tmp2;
+                    for(int m=0; m<arr.length; m++) {
+                    	System.out.print(arr[m]+" ");
+                    }
+                    System.out.println();
+                }
+                //System.out.println("###:"+j);
+            }
+            //System.out.println();
+            cnt--;
+        }
+		
+		/********* End *********/
+	}
+}

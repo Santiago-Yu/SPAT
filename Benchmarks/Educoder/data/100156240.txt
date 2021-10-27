@@ -1,0 +1,31 @@
+package step2;
+import java.util.Date;
+import java.util.Scanner;
+
+//输入三个整数，求三个整数中的最大数，用方法实现
+public class TestJava23_8 {
+
+	public static void main(String[] args) {
+		int x, y, z,b;
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入第1个整数：");
+		x = sc.nextInt();
+		System.out.println("请输入第2个整数：");
+		y = sc.nextInt();
+		System.out.println("请输入第3个整数：");
+		z = sc.nextInt();
+		b=TestJava23_8.Max(x,y,z);
+		System.out.println(+x+","+y+","+z+"三个数中的最大数是："+b);
+		
+	}
+	public static int Max(int x,int y,int z){
+	    int b=0;
+	if(x>y){
+		b=x;
+	}else if(y>z){
+		b=y;
+	}else{
+		b=z;}
+	return b;
+}
+}

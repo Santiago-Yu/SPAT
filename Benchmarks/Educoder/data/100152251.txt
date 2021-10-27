@@ -1,0 +1,65 @@
+package step1;
+import org.junit.Test;
+import org.junit.*;
+/**
+ * Created by liqiankun on 2018/11/10 0010
+ * Description：
+ */
+public class ElevatorTest {
+    /**
+     *请在下面的Begin/End内写一个测试函数来验证Elevator中的各方法的编写是否正确编写是否正确
+     */
+    /***********************Begin**************************/
+    @Test
+    public void moveUPTest(){
+        Elevator Test_Elv = new Elevator(2,1);
+        Assert.assertTrue(Test_Elv.moveUP());//1-2
+        Assert.assertFalse(Test_Elv.moveUP());//2-3 越界
+    }
+
+    @Test
+    public void pickupQueryTest() throws Throwable{
+        //创建一个5层的电梯
+        Elevator Test_Elv = new Elevator(5,1);
+        Query Q1 = new Query("0,FR,1,UP,0");
+        Query Q2 = new Query("0,FR,3,UP,0");
+        Query Q3 = new Query("0,FR,4,UP,0");
+        //添加Q1请求为主请求
+        Test_Elv.pickupQuery(Q1);
+        //尝试添加Q2，因方向不同而拒绝
+        Test_Elv.pickupQuery(Q2);
+		//电梯应当在1层
+        Assert.assertEquals(1,Test_Elv.getCurFloor());
+        
+        //使电梯进入UP状态
+        Test_Elv.moveUP();//1-2
+        //添加捎带Q2
+        Test_Elv.pickupQuery(Q2);
+        //添加捎带Q2
+        Test_Elv.pickupQuery(Q3);
+        //电梯2-3
+        Test_Elv.moveUP();
+        //电梯应当在3层
+        Assert.assertEquals(3,Test_Elv.getCurFloor());
+        //清除捎带请求Q3，函数应返回True
+        Assert.assertTrue(Test_Elv.checkFinishedQuery());
+
+    }
+
+    @Test
+    public void moveforQueryTest() throws Throwable{
+        Elevator Test_Elv = new Elevator(5,1);
+
+        Test_Elv.pickupQuery(new Query("0,FR,1,UP,0"));
+        Test_Elv.moveForQuery();//一层开门
+        Assert.assertEquals(1,Test_Elv.getCurFloor());
+
+
+        Test_Elv.pickupQuery(new Query("0,FR,3,UP,2"));
+        Test_Elv.moveForQuery();//2-3
+        Test_Elv.moveForQuery();//三层开门
+        Assert.assertEquals(3,Test_Elv.getCurFloor());
+    }
+
+    /************************End***************************/
+}

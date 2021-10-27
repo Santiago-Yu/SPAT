@@ -1,0 +1,36 @@
+package Q201;
+import java.util.Scanner;
+public class Main {
+	static int str[] = new int[1000000];
+	static int t=0,sum;
+	private static Scanner scanner;
+     public static void judge(int k)
+       {
+    	   sum=0;
+    	    str[k]=1;
+    		while(k!=0)
+    		{
+    			sum+=(k%10)*(k%10);
+    			k=k/10;
+             }
+    		if(str[sum]==1) t=1;
+    		else
+    		judge(sum);
+       }
+
+	public static void main(String[] args) {
+		// write your code here
+		scanner = new Scanner(System.in);
+		int m=scanner.nextInt();
+		judge(m);
+		if(str[1]==1)
+		{
+			System.out.print("YES");
+		}
+		else
+		{
+			System.out.print("NO");
+		}
+	}
+
+}

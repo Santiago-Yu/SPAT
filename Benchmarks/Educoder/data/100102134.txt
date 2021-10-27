@@ -1,0 +1,29 @@
+package step2;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FileUtil {
+	public static void start() {
+		/********** Begin *********/
+		File file = new File("src/step2");
+        List<String> folders = new ArrayList<>();
+        List<String> files = new ArrayList<>();
+        File[] allFile = file.listFiles();
+        for(int i = 0;i < allFile.length;i++){
+            if(allFile[i].isFile())
+                files.add(allFile[i].getName());
+            else
+                folders.add(allFile[i].getName());
+        }
+
+		for(String folder: folders)
+            System.out.println(folder);
+            
+        for(String f: files)
+            System.out.println(f);
+		/********** End *********/
+	}
+}

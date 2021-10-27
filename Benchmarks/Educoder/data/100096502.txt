@@ -1,0 +1,35 @@
+package step3;
+
+import java.util.*;
+
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+		for(int i=0;i<record.length;i++) record[i]=scanner.nextInt();
+        HashSet<Integer> set = new HashSet<Integer>();
+        for (int idx: record) {
+            set.add(idx);
+        }
+        Iterator iterable = set.iterator();
+        int idx = 0;
+        while(iterable.hasNext()) {
+            Object obj = iterable.next();
+            recordRecovery[idx++] = (int) obj;
+        }
+        Arrays.sort(recordRecovery);
+        int num=recordRecovery.length;
+        /********** End *********/
+        for (int i = 0; i < num; i++) {
+        	if(recordRecovery[i]!=0){
+            System.out.print(recordRecovery[i]);
+            if (i != num - 1) {
+                System.out.print(' ');
+            }
+        	}
+        }
+    }
+}

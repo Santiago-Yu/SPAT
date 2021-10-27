@@ -1,0 +1,80 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+        String str = "";
+		//获取年月日
+		int year = Integer.parseInt(releaseDate.substring(0,4));
+		int month = Integer.parseInt(releaseDate.substring(5,7));
+		int dayy = Integer.parseInt(releaseDate.substring(8,10));
+		//传入 日期得到保质期限
+		int num = dayy + day;
+		while(num > getDay(year,month)) {
+			num -= getDay(year,month);
+			month++;
+			if(month == 13) {
+				month = 1;
+				year++;
+			}
+		}
+		
+//		System.out.println(year+" "+month+"  "+num);
+		
+		//把得到的日期转化为字符串
+        String month1  = "";
+		String num1 = "";
+		if(month<10)
+             month1= "0"+month;
+        else
+            month1 = ""+month;
+        if(num<10)
+            num1 = "0"+num;
+        else
+            num1 = ""+num;
+		str =year+"-"+month1+"-"+num1;
+		return str;
+		
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+    public static int getDay(int year,int month){ 
+        int day = 0; 
+        switch (month) { 
+        case 1: 
+        case 3: 
+        case 5: 
+        case 7: 
+        case 8: 
+        case 10: 
+        case 12: 
+            day = 31; 
+            break; 
+        case 4: 
+        case 6: 
+        case 9: 
+        case 11:  
+            day = 30; 
+            break; 
+        default: 
+            if((year%4==0 & year%100!=0)||year%400==0) 
+                day = 29; 
+            else 
+                day = 28; 
+            break; 
+        } 
+        return day; 
+    } 
+	
+	
+}

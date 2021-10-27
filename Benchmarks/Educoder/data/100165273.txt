@@ -1,0 +1,38 @@
+package task6;
+
+public class ScaleBox extends Box{         
+    int Type;//1 长方体 2 圆柱体
+    public ScaleBox(){}
+    public ScaleBox(int boxType) {
+       // if(boxType == 1){
+			super();
+			Type = boxType;
+		//}
+    }
+
+	public void setType(int type){
+		this.Type = type;
+	}
+
+    public ScaleBox(double width,double height,double depth,int boxType) {
+       // public Box(double width,double height,double depth);
+	   super(width,height,depth);
+	   boxType = boxType;
+    }
+
+
+ /**********************Begin*******************/
+    //TODO write your code here
+	public double printVolumn(){
+		if(Type == 1){
+			return volume();
+		}else{
+			return 3.14*getWidth()*getWidth()*getHeight();
+		}
+		
+	}
+
+
+ /**********************End*******************/
+
+}

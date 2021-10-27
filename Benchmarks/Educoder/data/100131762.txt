@@ -1,0 +1,36 @@
+package step3;
+import java.util.Arrays;
+import java.io.File;
+
+public class Task {
+	int level=0;
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		
+		String block="";
+		for(int i=0;i<level;i++) block+="  ";
+		System.out.println(block+"+--"+file.getName());
+		
+		File[] farr=file.listFiles();
+		Arrays.asList(farr);
+		level++;
+		for(File f : farr) {
+			if(f.isDirectory()) {
+				showDirStructure(f);
+			}
+			else {
+				if(f.getName().matches(".+\\.(jpg|png|bmp)"))
+					System.out.println(block+"  --"+f.getName());
+			}
+		}
+		level--;
+
+
+
+
+
+	}
+	
+
+	/********** END **********/
+}

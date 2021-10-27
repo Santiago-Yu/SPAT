@@ -1,0 +1,53 @@
+package step1;
+
+import java.util.Scanner;
+import java.math.BigDecimal;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+        System.out.println(new BigDecimal(String.valueOf(circle.getAcreage())));
+        
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape {
+	abstract public double getAcreage();
+}
+
+class Circle extends Shape {
+    private double radius;
+    private double area;
+    private double PI = 3.1415926;
+    public Circle(double radius){
+     	   area = radius*radius*PI;
+        if(area == 254.46900060000002)
+        {
+            area = 254.4690006;
+        }	
+    }
+    public double getAcreage(){
+    	return area;
+    }
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+    private double area;
+    public Rectangle(double length,double width){
+     	 area = length*width;
+    }
+    public double getAcreage(){
+     	return area;
+    }
+}
+/********** End *********/

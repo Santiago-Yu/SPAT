@@ -1,0 +1,47 @@
+package Q201;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner sc=new Scanner(System.in);
+		int sum=0,num=0,bin=0,cal=0;
+		int str[];
+		num=sc.nextInt();
+		while(sum!=1)
+		{
+			bin=0;sum=0;
+			int temp=num;
+			while(num!=0)
+			{
+				num=num/10;
+				bin++;
+			}
+			str=new int[bin];
+			for(int i=0;i<bin;i++)
+			{
+				str[i]=temp%10;
+				temp=temp/10;
+			}
+			for(int i=0;i<bin;i++)
+			{
+				sum+=str[i]*str[i];
+			}
+			num=sum;
+			cal++;
+			if(cal==1000)
+			{
+				break;
+			}
+		}
+		if(cal==1000)
+		{
+			System.out.print("NO");
+		}
+		else
+		{
+			System.out.print("YES");
+		}
+	}
+
+}

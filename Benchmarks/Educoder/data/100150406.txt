@@ -1,0 +1,24 @@
+package step3;
+public class SumOfDigit {
+	public static void main(String[] args) {
+		/******Begin******/
+		try {
+            System.out.println("请输入一个五位数字：");
+            int record = 0;
+            int sum = 0;
+            int tmp = 0;
+            for (int i = 0; i < 5; ++i) {
+            	tmp = (System.in.read() - '0');
+                record *= 10;
+                record += tmp;
+                sum += tmp;
+            }
+            System.in.read();
+            
+            System.out.println(record + "的各位数字之和是：" + sum);
+        } catch(Exception e) {
+        	e.printStackTrace();   
+        }
+		/******End******/
+	}
+}

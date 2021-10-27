@@ -1,0 +1,30 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+	int boxType;
+    
+    Box(int boxType)
+    {
+        this.boxType = boxType;
+    }
+    public static final int RECTANGLE = 1;
+
+    public static final int CYLINDER = 2;
+
+    public double volume() {
+       
+        double a = 0;
+        switch(boxType){
+            case 1: a = width*depth*height;
+                break;
+            case 2: a = width*depth*height*3.14;
+                break;
+        }
+        return a;
+    }
+    
+}

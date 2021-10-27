@@ -1,0 +1,35 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File dir)	{
+        File[] files = dir.listFiles();
+		System.out.println("+--"+dir.getName());
+		if (files != null) {
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory()&&!files[i].getName().matches(".*(.jpg|.png|.bmp)$")) { // 判断是文件还是文件夹
+					int dep=files[i].getPath().split("/").length;
+					for (int j = 0; j < dep-3; j++) {
+						System.out.print("  ");
+					}
+					showDirStructure(files[i]);
+				}else {
+					String fileName=files[i].getName();
+					if (fileName.matches(".*(.jpg|.png|.bmp)$")) {
+						int dep=files[i].getPath().split("/").length;
+						for (int j = 0; j < dep-3; j++) {
+							System.out.print("  ");
+						}
+						System.out.println("--"+files[i].getName());
+					}
+				}
+			}
+		}
+	}
+	
+
+	/********** END **********/
+}

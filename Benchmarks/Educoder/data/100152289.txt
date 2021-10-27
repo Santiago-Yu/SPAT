@@ -1,0 +1,54 @@
+package step1;
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		/******Begin******/
+        Scanner sc = new Scanner(System.in);      
+        int a,b;
+		double c,d;
+        System.out.println("请输入西瓜重量：");
+        a = sc.nextInt();
+        System.out.println("请输入顾客所付钱数：");
+        b = sc.nextInt();
+        if(a>20){
+            c=a*0.85;
+            d=b-c;            
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",c));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",d));
+        }if(a<=20&&a>15){
+            c=a*0.9;
+            d=b-c;            
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",c));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",d));
+        }if(a<=15&&a>10){
+            c=a*0.95;
+            d=b-c;            
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",c));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",d));
+        }if(a<=10&&a>5){
+            c=a;
+            d=b-c;           
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",c));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",d));
+        }if(a<=5){
+            c=a*1.05;
+            d=b-c;            
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",c));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",d));
+        }
+        
+		/******End******/	
+	}
+
+}

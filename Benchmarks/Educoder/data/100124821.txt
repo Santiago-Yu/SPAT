@@ -1,0 +1,36 @@
+package step1;
+
+//编程实现矩形类Rectangle，Rectangle拥有私有属性长（length）和宽（width）
+//，为Rectangle类提供至少两种构造方法，同时提供计算矩形周长（perimeter()）和面积（area()）
+//的方法。使用两种构造方法，
+//至少各创建一个矩形对象实例，并分别计算两个矩形的周长和面积。
+import java.lang.Math;
+import java.util.Scanner;
+class Rectangle2{
+	private double length;
+	private double width;
+	public Rectangle2(double length,double width){
+		this.length=length;
+		this.width=width;
+	}
+	public Rectangle2(){
+		
+	}
+	public double figurePerimenter(){
+		return (length+width)*2;
+	}
+	public double figureArea(){
+		return length*width;
+	}
+}
+public class Rectangle {
+	public static void main(String[] args){
+		
+		Rectangle2 r1=new Rectangle2(6,5);
+		System.out.println("r1的周长："+r1.figurePerimenter()+"\nr1的面积："+r1.figureArea());
+		
+		Rectangle2 r2=new Rectangle2(20,10);
+		System.out.println("r2的周长："+r2.figurePerimenter()+"\nr2的面积："+r2.figureArea());
+		
+	}
+}

@@ -1,0 +1,23 @@
+package step5;
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class TestJava18_5 {
+	static final Scanner sc=new Scanner(System.in);
+    DecimalFormat df=new DecimalFormat("#.00");
+	public void jisuan(){
+		/*********Start********/
+		int i,x;
+        float sum=1f;
+		for(i=1;true;i++) {
+			System.out.println("请输入第"+i+"门课程成绩：");
+			x=sc.nextInt(); 
+            sum+=x;
+			if(x==-1){
+				break;
+			}
+		}
+		System.out.println("您一共输入了"+(i-1)+"门课程成绩，总分为："+df.format(sum)+"，平均分为："+df.format(sum/(i-1)));
+		/*********End********/
+	}
+
+}

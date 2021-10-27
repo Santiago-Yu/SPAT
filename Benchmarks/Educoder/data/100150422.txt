@@ -1,0 +1,25 @@
+package step3;
+import java.util.Scanner;
+public class SumOfDigit {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        int num,a1,a2,a3,a4,a5;//提示用户输入一个数字
+        System.out.println("请输入一个五位数字：");//接收用户输入的数字
+        num=sc.nextInt();//分解数字
+        a1=num%10;//计算得到个位数字存放在a1中
+        num/=10;//砍掉num的个位数字
+        a2=num%10;//计算得到十位数字存放在a2中
+        num/=10;
+        a3=num%10;//计算得到百位数字存放在a3中
+        num/=10;
+        a4=num%10;//计算得到千位数字存放在a4中
+        num/=10;
+        a5=num%10;//计算得到万位数字存放在a5中
+        //计算各位数之和，并输出
+         System.out.println("85698"+"的各位数字之和是："+(a1+a2+a3+a4+a5));
+        
+        
+		/******End******/
+	}
+}

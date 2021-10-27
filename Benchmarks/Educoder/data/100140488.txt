@@ -1,0 +1,23 @@
+package step3;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email)
+    {
+
+		int position = fileName.lastIndexOf(".java");
+        if(position == 0 ||position == -1 || position != (fileName.length() - 5))
+            System.out.println("Java文件名无效");
+        else 
+            System.out.println("Java文件名正确");
+        
+        position = email.lastIndexOf(".");
+        int position2 = email.lastIndexOf("@");
+        if(position == -1 || position2 == -1 || position < position2 )
+            System.out.println("邮箱名无效");
+        else
+          	System.out.println("邮箱名正确");
+	}
+	
+	
+}

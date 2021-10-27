@@ -1,0 +1,51 @@
+
+package step4;
+
+import step1.Date;
+import step1.Person;
+import step2.Student;
+import step3.Course;
+
+public class Report {
+    private Student s;//学生基本信息
+    private String major; //所学专业  
+    private Course[] selCourse;//所选课程
+   /************Begin****************/
+    public Report(){this.selCourse = new Course[0];}
+    public Report(Student s, String major, Course selCourse[]){
+        this.s = s;
+        this.major = major;
+        this.selCourse = new Course[selCourse.length];
+        for(int i = 0; i < selCourse.length; i++)
+        {
+            this.selCourse[i] = new Course(); 
+        }
+        for(int i = 0; i < selCourse.length; i++)
+        {
+            this.selCourse[i] = selCourse[i];
+        }
+    }
+    public Student getStudent(){return s;}
+    public String getmajor(){return major;}
+    public Course[] getCourse(){return selCourse;}
+    public int getlength(){return selCourse.length;}
+    public String toString(){
+        String str = new String();
+        for(int i = 0; i < selCourse.length;i++){
+            str = str + selCourse[i]+"\n"; 
+        }
+        String name = s.getname();
+        String number = s.getnumber();
+        Date birthday = s.getbirthday();
+        int reg_num = s.getreg_num();
+        Date reg_day = s.getreg_day();
+        return "name="+name + " number="+number+" birthday:"+birthday+"reg_num:"+reg_num+"reg_day:"+reg_day+" major:"+major+"\n"+str;
+                
+    }
+
+
+
+    /************End****************/
+
+  
+}

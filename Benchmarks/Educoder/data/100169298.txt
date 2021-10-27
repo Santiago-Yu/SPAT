@@ -1,0 +1,120 @@
+package step1;
+import java.util.List;
+import java.util.ArrayList;
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+	        /**********   Begin  **********/
+		 	StringBuilder tmp=new StringBuilder(s);
+		 	int mid=p;
+		 	int first=0;
+		 	int last=s.length();
+		 	int templen=0;
+		 	StringBuilder tmp1 = new StringBuilder(tmp.substring(0, mid));
+            StringBuilder tmp2 = new StringBuilder(tmp.substring(mid, last));
+            StringBuilder tmp_xx=new StringBuilder();
+	        for(Operation op : ops){
+	            
+	            switch (op.t){
+	                case "I": 
+	                    // sb.insert(p,op.s);
+	                    // p += op.s.length();
+	                    // s = sb.toString();
+	                    mid+=op.s.length();
+	                    tmp1.append(op.s);
+	                    tmp.setLength(0);
+	                    tmp.append(tmp1).append(tmp2);
+	                    last=tmp.length();
+//	                    System.out.println(first+":"+mid+":"+last);
+//	                    System.out.println(tmp+":"+mid);
+	                    break;
+
+	                case "B"://前面
+	                    if (mid>op.l)	
+	                    {	tmp_xx.setLength(0);
+	                    	tmp_xx.append(tmp1.substring(first, mid-op.l));
+	                    	tmp1.setLength(0);
+	                    	tmp1.append(tmp_xx);
+	                    	
+	                    	mid-=op.l;
+	                    	tmp.setLength(0);
+	                    	tmp.append(tmp1).append(tmp2);
+	                    	last=tmp.length();
+	                    	
+	                    }else{
+	                    	mid=0;
+	                    	tmp.setLength(0);
+	                    	tmp.append(tmp2);
+	                    	tmp1.setLength(0);
+//	                    	tmp=tmp2;
+	                    	last=tmp.length();
+	                    }
+//	                    System.out.println(tmp+":"+mid);
+//	                    System.out.println(first+":"+mid+":"+last);
+	                    break;
+
+	                case "D":
+	                if(mid+op.l<=tmp.length())
+	                    {
+	                		tmp_xx.setLength(0);
+	                    	
+	                    	templen=tmp2.length();
+	                    	tmp_xx.append(tmp2.substring(op.l, templen));
+	                    	
+	                    	tmp2.setLength(0);
+	                    	tmp2.append(tmp_xx);
+	                    	tmp.setLength(0);
+	                    	tmp.append(tmp1).append(tmp2);
+	                    	last=tmp.length();
+	                    }
+	                    else{
+	                        tmp2.setLength(0);
+	                        tmp.setLength(0);
+	                        tmp.append(tmp1);
+	                        last=tmp.length();
+	                        mid=last;
+	                    }
+//	                	System.out.println(first+":"+mid+":"+last);
+	                    break;
+
+
+	                case "L":
+//	                	System.out.println(mid);
+	                    mid-=op.l;
+	                    if(mid<0)
+	                    	mid=0;
+	                    tmp2.setLength(0);
+	                    tmp1.setLength(0);
+//	                    System.out.println(mid);
+	                    tmp1.append(tmp.substring(first, mid));
+	                    tmp2.append(tmp.substring(mid, last));
+	                    last=tmp.length();
+//	                    System.out.println(first+":"+mid+":"+last);
+	                    break;
+	                case "R":
+	                    mid+=op.l;
+	                    if(mid>last)
+	                    	mid=last;
+	                    tmp2.setLength(0);
+	                    tmp1.setLength(0);
+	                    tmp1.append(tmp.substring(first, mid));
+	                    tmp2.append(tmp.substring(mid, last));
+	                    last=tmp.length();
+//	                    System.out.println(first+":"+mid+":"+last);
+	                    break;
+	            }
+
+	        }
+
+
+	        return tmp.toString();	
+	        /**********   End  **********/
+    }
+    static class Operation {
+	        String t;
+	        String s;
+	        int l;
+	        
+	    }
+}
+

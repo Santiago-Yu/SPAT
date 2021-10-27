@@ -1,0 +1,68 @@
+package case5;
+
+public class abstractTest {
+	public static void main(String[] args) {
+		/********* begin *********/
+		// 分别实例化Student类与Worker类的对象，并调用各自构造方法初始化类属性。
+		Student stu = new Student() ;
+        stu.setname("张三") ;
+        stu.setage ( 20 ) ;
+        stu.settype ( "学生" ) ;
+        stu.talk () ;
+		// 分别调用各自类中被复写的talk()方法 打印信息。
+		Worker wok = new Worker() ;
+        wok.setname("李四") ;
+        wok.setage ( 30 ) ;
+        wok.settype ( "工人" ) ;
+        wok.talk () ;
+		/********* end *********/
+		
+	}
+}
+
+// 声明一个名为Person的抽象类，在Person中声明了三个属性name age occupation和一个抽象方法——talk()。
+abstract class Person {
+	/********* begin *********/
+	String name ;
+    String type ;
+    int age ;
+    abstract void talk() ;
+	/********* end *********/
+}
+
+// Student类继承自Person类，添加带三个参数的构造方法，复写talk()方法 返回姓名、年龄和职业信息
+class Student extends Person {
+	/********* begin *********/
+	void setname ( String name ) {
+    	this.name = name ;
+    }
+    void settype ( String type ) {
+    	this.type = type ;
+    }
+    void setage  ( int age ) {
+    	this.age = age ;
+    }
+    void talk () {
+        System.out.println("学生——>姓名："+this.name+"，年龄："+this.age+"，职业："+this.type+"！");
+    }
+	/********* end *********/
+}
+
+// Worker类继承自Person类，添加带三个参数的构造方法，复写talk()方法 返回姓名、年龄和职业信息
+class Worker extends Person {
+	/********* begin *********/
+	void setname ( String name ) {
+    	this.name = name ;
+    }
+    void settype ( String type ) {
+    	this.type = type ;
+    }
+    void setage  ( int age ) {
+    	this.age = age ;
+    }
+    void talk () {
+        System.out.println("工人——>姓名："+this.name+"，年龄："+this.age+"，职业："+this.type+"！");
+    }
+	/********* end *********/
+
+}

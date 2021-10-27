@@ -1,0 +1,34 @@
+package step2;
+import java.util.Scanner;
+public class SwitchToGrade {
+    public static void main(String[] args) {
+
+        // 从命令行读入一个0~100之间的整数
+        // 这个整数取自测试集的输入
+        Scanner input = new Scanner(System.in);
+        int score = input.nextInt();
+
+        SwitchToGrade grade = new SwitchToGrade();
+        System.out.println(grade.SwitchToGrade(score));
+    }
+
+    // 请用switch来将学生成绩转换成对应等级
+    public String SwitchToGrade(int score) { 
+        // 请在此提供实现代码
+		String a;
+        if(score>100)
+            return a="输入成绩非法";
+        else if(score>89)
+            return a="等级：A";
+        else if(score>69)
+            return a="等级：B";
+        else if(score>59)
+            return a="等级：C";
+        else if(score>-1)
+            return a="等级：D";
+        
+        else
+            return a="输入成绩非法";
+	}
+}
+

@@ -1,0 +1,16 @@
+package step4;
+
+//注意文件名，这里应该写ThreadHelper类
+/***begin your code here***/
+public class ThreadHelper extends Thread{
+    public static void calcOnNewThread(int c){
+        try{Thread.sleep(200);new Thread(new Runnable(){
+            @Override public void run() {
+    	    	int result = 1;
+    			for(int i=1;i<=c;i++)
+                    result*=i;
+    	    	System.out.println(result);
+    	    }		}).start();}catch(InterruptedException e){e.printStackTrace();}
+    }
+}
+/***end your code***/

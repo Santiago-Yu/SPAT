@@ -1,0 +1,261 @@
+class n9782243 {
+	private void updateUser(AddEditUserForm addform, HttpServletRequest request) throws Exception {
+		Session hbsession = HibernateUtil.currentSession();
+		try {
+			Transaction tx = hbsession.beginTransaction();
+			NvUsers user = (NvUsers) hbsession.load(NvUsers.class, addform.getLogin());
+			if (!addform.getPassword().equalsIgnoreCase("")) {
+				MessageDigest md = (MessageDigest) MessageDigest.getInstance("MD5").clone();
+				md.update(addform.getPassword().getBytes("UTF-8"));
+				byte[] pd = md.digest();
+				StringBuffer app = new StringBuffer();
+				for (int i = 0; i < pd.length; i++) {
+					String s2 = Integer.toHexString(pd[i] & 0xFF);
+					if ((s2.length() == 1))
+						app.append("0" + s2);
+					else
+						app.append(s2);
+				}
+				user.setPassword(app.toString());
+			}
+			ActionErrors errors = new ActionErrors();
+			HashMap cAttrs = addform.getCustomAttrs();
+			Query q1 = hbsession.createQuery("from org.nodevision.portal.hibernate.om.NvCustomAttrs as a");
+			Iterator attrs = q1.iterate();
+			HashMap attrInfos = new HashMap();
+			while (attrs.hasNext()) {
+				NvCustomAttrs element = (NvCustomAttrs) attrs.next();
+				attrInfos.put(element.getAttrName(), element.getAttrType());
+				NvCustomValuesId id = new NvCustomValuesId();
+				id.setNvUsers(user);
+				NvCustomValues value = new NvCustomValues();
+				id.setNvCustomAttrs(element);
+				value.setId(id);
+				if (element.getAttrType().equalsIgnoreCase("String")) {
+					ByteArrayOutputStream bout = new ByteArrayOutputStream();
+					ObjectOutputStream serializer = new ObjectOutputStream(bout);
+					serializer.writeObject(cAttrs.get(element.getAttrName()).toString());
+					value.setAttrValue(Hibernate.createBlob(bout.toByteArray()));
+				} else if (element.getAttrType().equalsIgnoreCase("Boolean")) {
+					Boolean valueBoolean = Boolean.FALSE;
+					if (cAttrs.get(element.getAttrName()) != null) {
+						valueBoolean = Boolean.TRUE;
+					}
+					ByteArrayOutputStream bout = new ByteArrayOutputStream();
+					ObjectOutputStream serializer = new ObjectOutputStream(bout);
+					serializer.writeObject(valueBoolean);
+					value.setAttrValue(Hibernate.createBlob(bout.toByteArray()));
+				} else if (element.getAttrType().equalsIgnoreCase("Date")) {
+					Date date = new Date(0);
+					if (!cAttrs.get(element.getAttrName()).toString().equalsIgnoreCase("")) {
+						String bdate = cAttrs.get(element.getAttrName()).toString();
+						SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+						date = df.parse(bdate);
+					}
+					ByteArrayOutputStream bout = new ByteArrayOutputStream();
+					ObjectOutputStream serializer = new ObjectOutputStream(bout);
+					serializer.writeObject(date);
+					value.setAttrValue(Hibernate.createBlob(bout.toByteArray()));
+				}
+				hbsession.saveOrUpdate(value);
+				hbsession.flush();
+			}
+			String bdate = addform.getUser_bdate();
+			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+			Date parsedDate = df.parse(bdate);
+			user.setTimezone(addform.getTimezone());
+			user.setLocale(addform.getLocale());
+			user.setBdate(new BigDecimal(parsedDate.getTime()));
+			user.setGender(addform.getUser_gender());
+			user.setEmployer(addform.getEmployer());
+			user.setDepartment(addform.getDepartment());
+			user.setJobtitle(addform.getJobtitle());
+			user.setNamePrefix(addform.getName_prefix());
+			user.setNameGiven(addform.getName_given());
+			user.setNameFamily(addform.getName_famliy());
+			user.setNameMiddle(addform.getName_middle());
+			user.setNameSuffix(addform.getName_suffix());
+			user.setHomeName(addform.getHome_name());
+			user.setHomeStreet(addform.getHome_street());
+			user.setHomeStateprov(addform.getHome_stateprov());
+			if (addform.getHome_postalcode().equalsIgnoreCase(""))
+				user.setHomePostalcode(new Integer(0));
+			else
+				user.setHomePostalcode(new Integer(addform.getHome_postalcode()));
+			user.setHomeOrganization(addform.getHome_organization_name());
+			user.setHomeCountry(addform.getHome_country());
+			user.setHomeCity(addform.getHome_city());
+			if ((addform.getHome_phone_intcode().equalsIgnoreCase("")))
+				user.setHomePhoneIntcode(new Integer(0));
+			else
+				user.setHomePhoneIntcode(Integer.valueOf(addform.getHome_phone_intcode()));
+			if ((addform.getHome_phone_loccode().equalsIgnoreCase("")))
+				user.setHomePhoneLoccode(new Integer(0));
+			else
+				user.setHomePhoneLoccode(Integer.valueOf(addform.getHome_phone_loccode()));
+			if ((addform.getHome_phone_number().equalsIgnoreCase("")))
+				user.setHomePhoneNumber(new Integer(0));
+			else
+				user.setHomePhoneNumber(Integer.valueOf(addform.getHome_phone_number()));
+			if ((addform.getHome_phone_ext().equalsIgnoreCase("")))
+				user.setHomePhoneExt(new Integer(0));
+			else
+				user.setHomePhoneExt(Integer.valueOf(addform.getHome_phone_ext()));
+			user.setHomePhoneComment(addform.getHome_phone_commment());
+			if ((addform.getHome_fax_intcode().equalsIgnoreCase("")))
+				user.setHomeFaxIntcode(new Integer(0));
+			else
+				user.setHomeFaxIntcode(Integer.valueOf(addform.getHome_fax_intcode()));
+			if ((addform.getHome_fax_loccode().equalsIgnoreCase("")))
+				user.setHomeFaxLoccode(new Integer(0));
+			else
+				user.setHomeFaxLoccode(Integer.valueOf(addform.getHome_fax_loccode()));
+			if ((addform.getHome_fax_number().equalsIgnoreCase("")))
+				user.setHomeFaxNumber(new Integer(0));
+			else
+				user.setHomeFaxNumber(Integer.valueOf(addform.getHome_fax_number()));
+			if ((addform.getHome_fax_ext().equalsIgnoreCase("")))
+				user.setHomeFaxExt(new Integer(0));
+			else
+				user.setHomeFaxExt(Integer.valueOf(addform.getHome_fax_ext()));
+			user.setHomeFaxComment(addform.getHome_fax_commment());
+			if ((addform.getHome_mobile_intcode().equalsIgnoreCase("")))
+				user.setHomeMobileIntcode(new Integer(0));
+			else
+				user.setHomeMobileIntcode(Integer.valueOf(addform.getHome_mobile_intcode()));
+			if ((addform.getHome_mobile_loccode().equalsIgnoreCase("")))
+				user.setHomeMobileLoccode(new Integer(0));
+			else
+				user.setHomeMobileLoccode(Integer.valueOf(addform.getHome_mobile_loccode()));
+			if ((addform.getHome_mobile_number().equalsIgnoreCase("")))
+				user.setHomeMobileNumber(new Integer(0));
+			else
+				user.setHomeMobileNumber(Integer.valueOf(addform.getHome_mobile_number()));
+			if ((addform.getHome_mobile_ext().equalsIgnoreCase("")))
+				user.setHomeMobileExt(new Integer(0));
+			else
+				user.setHomeMobileExt(Integer.valueOf(addform.getHome_mobile_ext()));
+			user.setHomeMobileComment(addform.getHome_mobile_commment());
+			if ((addform.getHome_pager_intcode().equalsIgnoreCase("")))
+				user.setHomePagerIntcode(new Integer(0));
+			else
+				user.setHomePagerIntcode(Integer.valueOf(addform.getHome_pager_intcode()));
+			if ((addform.getHome_pager_loccode().equalsIgnoreCase("")))
+				user.setHomePagerLoccode(new Integer(0));
+			else
+				user.setHomePagerLoccode(Integer.valueOf(addform.getHome_pager_loccode()));
+			if ((addform.getHome_pager_number().equalsIgnoreCase("")))
+				user.setHomePagerNumber(new Integer(0));
+			else
+				user.setHomePagerNumber(Integer.valueOf(addform.getHome_pager_number()));
+			if ((addform.getHome_pager_ext().equalsIgnoreCase("")))
+				user.setHomePagerExt(new Integer(0));
+			else
+				user.setHomePagerExt(Integer.valueOf(addform.getHome_pager_ext()));
+			user.setHomePagerComment(addform.getHome_pager_commment());
+			user.setHomeUri(addform.getHome_uri());
+			user.setHomeEmail(addform.getHome_email());
+			user.setBusinessName(addform.getBusiness_name());
+			user.setBusinessStreet(addform.getBusiness_street());
+			user.setBusinessStateprov(addform.getBusiness_stateprov());
+			if ((addform.getBusiness_postalcode().equalsIgnoreCase("")))
+				user.setBusinessPostalcode(new Integer(0));
+			else
+				user.setBusinessPostalcode(Integer.valueOf(addform.getBusiness_postalcode()));
+			user.setBusinessOrganization(addform.getBusiness_organization_name());
+			user.setBusinessCountry(addform.getBusiness_country());
+			user.setBusinessCity(addform.getBusiness_city());
+			if ((addform.getBusiness_phone_intcode().equalsIgnoreCase("")))
+				user.setBusinessPhoneIntcode(new Integer(0));
+			else
+				user.setBusinessPhoneIntcode(Integer.valueOf(addform.getBusiness_phone_intcode()));
+			if ((addform.getBusiness_phone_loccode().equalsIgnoreCase("")))
+				user.setBusinessPhoneLoccode(new Integer(0));
+			else
+				user.setBusinessPhoneLoccode(Integer.valueOf(addform.getBusiness_phone_loccode()));
+			if ((addform.getBusiness_phone_number().equalsIgnoreCase("")))
+				user.setBusinessPhoneNumber(new Integer(0));
+			else
+				user.setBusinessPhoneNumber(Integer.valueOf(addform.getBusiness_phone_number()));
+			if ((addform.getBusiness_phone_ext().equalsIgnoreCase("")))
+				user.setBusinessPhoneExt(new Integer(0));
+			else
+				user.setBusinessPhoneExt(Integer.valueOf(addform.getBusiness_phone_ext()));
+			user.setBusinessPhoneComment(addform.getBusiness_phone_commment());
+			if ((addform.getBusiness_fax_intcode().equalsIgnoreCase("")))
+				user.setBusinessFaxIntcode(new Integer(0));
+			else
+				user.setBusinessFaxIntcode(Integer.valueOf(addform.getBusiness_fax_intcode()));
+			if ((addform.getBusiness_fax_loccode().equalsIgnoreCase("")))
+				user.setBusinessFaxLoccode(new Integer(0));
+			else
+				user.setBusinessFaxLoccode(Integer.valueOf(addform.getBusiness_fax_loccode()));
+			if ((addform.getBusiness_fax_number().equalsIgnoreCase("")))
+				user.setBusinessFaxNumber(new Integer(0));
+			else
+				user.setBusinessFaxNumber(Integer.valueOf(addform.getBusiness_fax_number()));
+			if ((addform.getBusiness_fax_ext().equalsIgnoreCase("")))
+				user.setBusinessFaxExt(new Integer(0));
+			else
+				user.setBusinessFaxExt(Integer.valueOf(addform.getBusiness_fax_ext()));
+			user.setBusinessFaxComment(addform.getBusiness_fax_commment());
+			if ((addform.getBusiness_mobile_intcode().equalsIgnoreCase("")))
+				user.setBusinessMobileIntcode(new Integer(0));
+			else
+				user.setBusinessMobileIntcode(Integer.valueOf(addform.getBusiness_mobile_intcode()));
+			if ((addform.getBusiness_mobile_loccode().equalsIgnoreCase("")))
+				user.setBusinessMobileLoccode(new Integer(0));
+			else
+				user.setBusinessMobileLoccode(Integer.valueOf(addform.getBusiness_mobile_loccode()));
+			if ((addform.getBusiness_mobile_number().equalsIgnoreCase("")))
+				user.setBusinessMobileNumber(new Integer(0));
+			else
+				user.setBusinessMobileNumber(Integer.valueOf(addform.getBusiness_mobile_number()));
+			if ((addform.getBusiness_mobile_ext().equalsIgnoreCase("")))
+				user.setBusinessMobileExt(new Integer(0));
+			else
+				user.setBusinessMobileExt(Integer.valueOf(addform.getBusiness_mobile_ext()));
+			user.setBusinessMobileComment(addform.getBusiness_mobile_commment());
+			if ((addform.getBusiness_pager_intcode().equalsIgnoreCase("")))
+				user.setBusinessPagerIntcode(new Integer(0));
+			else
+				user.setBusinessPagerIntcode(Integer.valueOf(addform.getBusiness_pager_intcode()));
+			if ((addform.getBusiness_pager_loccode().equalsIgnoreCase("")))
+				user.setBusinessPagerLoccode(new Integer(0));
+			else
+				user.setBusinessPagerLoccode(Integer.valueOf(addform.getBusiness_pager_loccode()));
+			if ((addform.getBusiness_pager_number().equalsIgnoreCase("")))
+				user.setBusinessPagerNumber(new Integer(0));
+			else
+				user.setBusinessPagerNumber(Integer.valueOf(addform.getBusiness_pager_number()));
+			if ((addform.getBusiness_pager_ext().equalsIgnoreCase("")))
+				user.setBusinessPagerExt(new Integer(0));
+			else
+				user.setBusinessPagerExt(Integer.valueOf(addform.getBusiness_pager_ext()));
+			user.setBusinessPagerComment(addform.getBusiness_pager_commment());
+			user.setBusinessUri(addform.getBusiness_uri());
+			user.setBusinessEmail(addform.getBusiness_email());
+			String hqlDelete = "delete org.nodevision.portal.hibernate.om.NvUserRoles where login = :login";
+			int deletedEntities = hbsession.createQuery(hqlDelete).setString("login", user.getLogin()).executeUpdate();
+			String[] selectedGroups = addform.getSelectedGroups();
+			Set newGroups = new HashSet();
+			for (int i = 0; i < selectedGroups.length; i++) {
+				NvUserRolesId userroles = new NvUserRolesId();
+				userroles.setNvUsers(user);
+				userroles.setNvRoles((NvRoles) hbsession.load(NvRoles.class, selectedGroups[i]));
+				NvUserRoles newRole = new NvUserRoles();
+				newRole.setId(userroles);
+				newGroups.add(newRole);
+			}
+			user.setSetOfNvUserRoles(newGroups);
+			hbsession.update(user);
+			hbsession.flush();
+			if (!hbsession.connection().getAutoCommit()) {
+				tx.commit();
+			}
+		} finally {
+			HibernateUtil.closeSession();
+		}
+	}
+
+}

@@ -1,0 +1,17 @@
+package step1;
+public class ThreadClassTwo implements Runnable  {
+    private Thread m;
+    int b[]=new int[]{0,1,2,3,4,5,6,7,8,9,10};    
+public void run(){
+   for(int s=0;s<b.length;s++)
+       if(b[s]%2==0)
+           System.out.print(b[s]+" ");      
+}
+    public void start(){
+      if(m==null)
+      {
+       m=new Thread(this);
+          m.start();
+    }
+    }
+}

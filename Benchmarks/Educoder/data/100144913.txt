@@ -1,0 +1,35 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		transMatrix(matrix);
+
+		
+		/********* End *********/
+	}
+    
+    public  void transMatrix(int[][] a) {
+		int N = a.length;
+		for (int i = 0; i < N / 2; i++)
+			for (int j = i; j < N - 1 - i; j++)
+				circleTrans(a, i, j);
+
+	}
+    
+    public  void circleTrans(int[][] a, int i, int j) {
+		int N = a.length;
+		int temp = a[i][j];
+		for (int m = 0; m < 3; m++) {
+			int x = N - 1 - j;
+			int y = i;
+			a[i][j] = a[x][y];
+			i = x;
+			j = y;
+		}
+		a[i][j] = temp;
+	}
+}
+
+
+

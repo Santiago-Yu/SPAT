@@ -1,0 +1,38 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		dfs(file,0);
+
+	}
+	private void dfs(File file,int n){
+		if(file.isDirectory()) {
+			for(int i=0;i<n;i++) {
+				System.out.print("  ");
+			}
+			System.out.println("+--"+file.getName());
+			File[] myFile=file.listFiles();
+			for(File f:myFile) {
+				dfs(f,n+1);
+			}
+		}else {
+			String fileName=file.getName();
+			String suffix=fileName.substring(fileName.lastIndexOf(".")+1);
+			if(suffix.equals("jpg")||suffix.equals("png")||suffix.equals("bmp")) {
+				for(int i=0;i<n;i++) {
+					System.out.print("  ");
+				}
+				System.out.println("--"+file.getName());
+			}
+			
+		}
+	}
+	
+
+
+	/********** END **********/
+}

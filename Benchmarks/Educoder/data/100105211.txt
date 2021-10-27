@@ -1,0 +1,27 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+		 StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        int i,j;
+        data=data.trim();
+        for(i=0,j=0;j<data.length();j++){
+           if(data.charAt(j)==' '){
+              StringBuffer anss = new StringBuffer(data.substring(i,j));
+              anss.reverse();
+              ans=ans.append(anss);
+              ans=ans.append(' ');
+              i=j+1;
+           }
+           if(j==data.length()-1){
+        	   StringBuffer anss = new StringBuffer(data.substring(i));
+               anss.reverse();
+               ans=ans.append(anss);
+               ans=ans.append(' ');
+           }
+        }
+        /********** End *********/
+        return ans;
+    }
+}

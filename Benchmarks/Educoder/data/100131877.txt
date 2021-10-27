@@ -1,0 +1,60 @@
+package step3;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+public class Task {
+	static	int level = 0;
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		if(file.isDirectory()){
+	    	for(int j = 0;j < level;j++){
+				System.out.print("  ");
+			}
+	    	System.out.println("+--"+file.getName() );
+    	}
+    	
+		String[] list = file.list();
+		List<String> array = new ArrayList(Arrays.asList(list));
+		for(int k = 0;k < array.size();k++){
+			String s = array.get(k);
+			File f = new File(file,array.get(k));
+        	if(!f.isDirectory()){
+				if(!(s.endsWith(".jpg")||s.endsWith(".png")||s.endsWith(".bmp"))){
+						array.remove(k);
+						k--;
+	        	}
+        	}
+		}
+		Collections.sort(array);
+		
+		
+		if(array.size() != 0){
+        	for(int i = 0;i < array.size();i++){
+        		File f = new File(file,array.get(i));
+            	if(f.isDirectory()){
+//            		for(int j = 0;j < level;j++){
+//            			System.out.print("  ");
+//            		}
+//                    System.out.println("+--"+list[i]);
+                    level++;
+                	showDirStructure(f);
+                	level--;
+                }else{
+                	for(int j = 0;j < level;j++){
+            			System.out.print("  ");
+            		}
+                	System.out.println("  --"+array.get(i));
+                }
+            	
+            }
+        }
+
+
+	}
+	
+
+	/********** END **********/
+}

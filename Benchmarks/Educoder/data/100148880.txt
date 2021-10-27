@@ -1,0 +1,67 @@
+package step1;
+import java.util.Arrays;
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+	Integer[] tenger = new Integer[arr.length];
+		Integer[] b = new Integer[arr.length];
+		for(int i=0;i<arr.length;i++)
+			b[i] = arr[i];
+		for(int i=0;i<b.length-1;i++){
+			for(int j=0;j<b.length-1;j++){
+				if(b[j] > b[j+1]){
+					int temp;
+					temp = b[j];
+					b[j] = b[j+1];
+					b[j+1] = temp;
+				}
+			}
+		}
+		for(int l=0;l<arr.length;l++)
+			tenger[l] = arr[l];
+        if(Arrays.equals(arr, b)){
+            for(int i=0;i<arr.length;i++)
+                System.out.print(arr[i] + " ");
+            System.out.println();
+        }
+            
+		while(!Arrays.equals(arr, b)){
+			for(int i=0;i<arr.length-1;i++){
+				if(arr[i] > arr[i+1]){
+					int temp;
+					temp = arr[i];
+					arr[i] = arr[i+1];
+					arr[i+1] = temp;
+				}
+				if(!Arrays.equals(arr, tenger)){
+					for(int k=0;k<arr.length;k++){
+						System.out.print(arr[k] + " ");
+					}
+					for(int l=0;l<arr.length;l++)
+						tenger[l] = arr[l];
+					System.out.println();
+				}
+				
+			}
+			
+			for(int i=arr.length-1;i >0;i--){
+				if(arr[i] < arr[i-1]){
+					int temp;
+					temp = arr[i];
+					arr[i] = arr[i-1];
+					arr[i-1] = temp;
+				}
+				if(!Arrays.equals(arr, tenger)){
+					for(int k=0;k<arr.length;k++){
+						System.out.print(arr[k]+ " ");
+					}
+					for(int l=0;l<arr.length;l++)
+						tenger[l] = arr[l];
+					System.out.println();
+				}
+			}}
+		
+		/********* End *********/
+	}
+}

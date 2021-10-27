@@ -1,0 +1,210 @@
+import java.util.*;
+
+import static java.util.Arrays.asList;
+
+public class Java_LLParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    private static final int[][] table = {
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {5,0,2,0,0,0,0,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {7,8,7,0,0,0,0,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,12,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,12,0},
+            {0,0,0,0,0,0,0,0,0,0,0,13,14,15,16,17,0,0,0,0,0,0},
+            {0,0,0,18,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,18,0},
+            {0,0,0,0,21,0,0,0,0,0,21,21,21,21,21,21,19,20,0,0,0,0},
+            {0,0,0,22,0,0,0,0,22,0,0,0,0,0,0,0,0,0,0,0,22,0},
+            {0,0,0,0,25,0,0,0,0,0,25,25,25,25,25,25,25,25,23,24,0,0},
+            {0,0,0,28,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,0,27,0},
+    };
+
+    static HashMap<String, Integer> map = new LinkedHashMap<>();
+    static HashMap<Integer, String> map2 = new LinkedHashMap<>();
+    static ArrayList< ArrayList<String> >  production = new ArrayList<>();
+    static ArrayList<String> nonTerminalList;
+    static ArrayList<String> terminalList;
+    static Stack<String> stack;
+    static ArrayList<Integer> number;
+    static StringBuffer result = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append(" \n ");
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        prepare();
+        read_prog();
+
+
+        String s = new String(prog).trim();
+        String[] words = s.split(" +");
+
+        stack = new Stack<>();
+        stack.push("$");
+        stack.push("program");
+
+        String top = stack.peek();
+        int line = 1;      //行数
+        int level = 0;     //树的层级，根结点为0
+        int num = 0;       //下一个输入符号下标
+        number = new ArrayList<>();     //每一层的当前符号还需要输入完下一层的几个符号
+        number.add(0);
+
+        while (!"$".equals(top)) {
+            String word = words[num];
+            if(word.equals("\n")) {
+                line++;
+                num++;
+                continue;
+            } else if(top.equals(word)) {
+                pop();
+                num++;
+            } else if (top.equals("E")) {
+                pop();
+            } else if(terminalList.contains(top)) {
+                System.out.println("语法错误,第" + (line-1) + "行,缺少\"" + top + "\"");
+                pop();
+            } else if (nonTerminalList.contains(top)) {
+                int row = map.get(top);
+                int column = map.get(word) - nonTerminalList.size();
+                int LL1 = table[row][column];
+                if(LL1!=0) {
+                    ArrayList<String> rights = production.get(LL1-1);
+                    for(int i=1; i<number.size(); i++) {
+                        result.append("\t");
+                    }
+                    result.append(stack.peek());
+                    result.append("\n");
+                    stack.pop();
+                    for(int len = rights.size()-2; len >= 0; len--) {
+                        stack.push(rights.get(len));
+                    }
+                    number.add(rights.size()-1);
+                } else {
+                    int flag = 0;
+                    for(int i=0; i<production.size(); i++) {
+                        List<String> p = production.get(i);
+                        if(p.get(p.size()-1).equals(top)) {
+                            if (p.contains("E")) {
+                                for(int j=1; j<number.size(); j++) {
+                                    result.append("\t");
+                                }
+                                result.append(top);
+                                result.append("\n");
+                                stack.pop();
+                                stack.push("E");
+                                number.add(1);
+                                flag = 1;
+                            }
+                        }
+                    }
+                    if(flag == 0) {
+                        System.out.println("语法错误,第" + line + "行,缺少\"" + top + "\"");
+                        pop();
+                    }
+
+                }
+            }
+            top = stack.peek();
+        }
+        result.deleteCharAt(result.length()-1);
+        System.out.print(result);
+
+    }
+
+    private static void pop() {
+        for(int i=1; i<number.size(); i++) {
+            result.append("\t");
+        }
+        result.append(stack.peek());
+        result.append("\n");
+        stack.pop();
+
+        number.set(number.size()-1, number.get(number.size()-1)-1);
+        while (number.size()>1 && number.get(number.size()-1) == 0) {
+            number.remove(number.size()-1);
+            number.set(number.size()-1, number.get(number.size()-1)-1);
+        }
+
+    }
+
+    private static void prepare() {
+
+        String[] nonTerminal = {"program","stmt","compoundstmt","stmts","ifstmt","whilestmt","assgstmt","boolexpr","boolop","arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"};
+        String[] terminal = {"{","}","if","(",")","then","else","while","ID","=",";","<",">","<=",">=","==","+","-","*","/","NUM", "$"};
+        nonTerminalList = new ArrayList<>(asList(nonTerminal));
+        terminalList = new ArrayList<>(asList(terminal));
+        int n=0;
+        for( ; n<nonTerminal.length; n++) {
+            map.put(nonTerminal[n], n);
+            map2.put(n, nonTerminal[n]);
+        }
+        for( int i=0; i<terminal.length; n++, i++) {
+            map.put(terminal[i], n);
+            map2.put(n, terminal[i]);
+        }
+        String Grammar = "program -> compoundstmt\n" +
+                "stmt -> ifstmt | whilestmt | assgstmt | compoundstmt\n" +
+                "compoundstmt -> { stmts }\n" +
+                "stmts -> stmt stmts  |  E\n" +
+                "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+                "whilestmt -> while ( boolexpr ) stmt\n" +
+                "assgstmt -> ID = arithexpr ;\n" +
+                "boolexpr -> arithexpr boolop arithexpr\n" +
+                "boolop ->  < | > | <= | >= | ==\n" +
+                "arithexpr -> multexpr arithexprprime\n" +
+                "arithexprprime -> + multexpr arithexprprime | - multexpr arithexprprime |  E\n" +
+                "multexpr -> simpleexpr multexprprime\n" +
+                "multexprprime -> * simpleexpr multexprprime | / simpleexpr multexprprime |  E\n" +
+                "simpleexpr -> ID | NUM | ( arithexpr )\n";
+        String[] line = Grammar.split("\n");
+        for(int i=0; i<line.length; i++) {
+            String left = line[i].split("->")[0].trim();
+            String right = line[i].split("->")[1].trim();
+            ArrayList<String> list;
+            if(right.contains("|")) {
+                String[] rightOfProduction = right.split("\\|");
+                for(int j=0; j<rightOfProduction.length; j++) {
+                    list = new ArrayList<>( asList(rightOfProduction[j].trim().split(" ")) );
+                    list.add(left);
+                    production.add(list);
+                }
+            } else {
+                list = new ArrayList<>( asList(right.trim().split(" ")) );
+                list.add(left);
+                production.add(list);
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

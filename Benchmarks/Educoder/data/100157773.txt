@@ -1,0 +1,46 @@
+import java.util.Scanner;
+
+public class Main {
+	public int numOf5 = 0;
+	public int numOf10 = 0;
+	public static void main(String[] args) {
+		// write your code here
+		Scanner sc = new Scanner(System.in);
+        Main p1 = new Main();
+        boolean D = true;
+        int tmp = 0;
+		while(true){
+            try{
+                tmp = sc.nextInt();
+            }
+            catch(Exception e){
+				break;
+            }
+        	if(tmp == 5){
+        		p1.numOf5+=1;
+        		continue;
+        	}
+        	if(tmp == 20&&p1.numOf10!=0&&p1.numOf5!=0){
+        			p1.numOf10 -=1;
+        			p1.numOf5 -=1;
+        			continue;
+        	}
+        	if(tmp == 20&&p1.numOf10 == 0&&p1.numOf5>=3){
+        		p1.numOf5-=3;
+        		continue;
+        	}
+        	if(tmp == 10&&p1.numOf5!=0){
+        		p1.numOf10+=1;
+        		p1.numOf5-=1;
+        		continue;
+        	}
+        	D = false;
+        	break;
+        }
+		if(D)
+			System.out.printf("true");
+		else
+			System.out.printf("false");
+	}
+
+}

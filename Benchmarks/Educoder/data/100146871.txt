@@ -1,0 +1,36 @@
+package step1;
+import java.util.Arrays;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    Arrays.sort(nums);
+    int j=1;
+    int exm=0;
+    for(int i=0;i<9997;i++) {
+    	if(nums[i]!=j)
+    	{	i--;
+    	if(j>=1000)
+    		exm=exm*10000+j;
+    	else if(j>=100)
+    		exm=exm*1000+j;
+    	else if(j>=10)
+    	    exm=exm*100+j;
+    	else 
+    		exm=exm*10+j;
+    	}
+    	j++;
+    		
+    }
+    exm=exm%11; 
+    if(exm==-6)
+    	exm=9;
+    if(exm<0)
+    	exm=exm*(-1);
+    return exm;
+	
+	}
+
+	/********* End *********/
+}

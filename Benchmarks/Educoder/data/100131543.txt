@@ -1,0 +1,49 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public  void showDirStructure(File file) {
+		if (file.isDirectory()) {
+			System.out.println("+--" + file.getName());
+		}
+		showMainDir(file, 2);
+	}
+	
+	public void showMainDir(File fileName,int tab) {
+		
+        if (fileName.isDirectory()) {  
+        	
+            File[] files = fileName.listFiles();  
+            
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {  //判断是否为文件夹
+                	
+                	for(int j = 0 ;j< tab ;j++)
+            		{
+            			System.out.print(" ");
+            		}
+                	
+                	System.out.println("+--" + files[i].getName());
+                	
+                	showMainDir(files[i],tab+2);
+                	
+                	}else {
+                		for(int j = 0 ;j< tab ;j++)
+                		{
+                			System.out.print(" ");
+                		}
+                	System.out.println("--" + files[i].getName());
+                	
+                }
+            	
+            }  
+        }
+    }  
+	
+
+
+	/********** END **********/
+}

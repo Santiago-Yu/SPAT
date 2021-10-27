@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+char stra[10000];
+char strb[10000];
+int func(char *str1, char *str2)
+{
+    int sizea = 0,sizeb = 0;
+    for(int i = 0;str1[i]!='\0';i++)sizea++;
+    for(int j = 0;str2[j]!='\0';j++)sizeb++;
+
+    if (sizea == 0 || sizeb == 0){
+        return 0;
+    }
+    int start1 = -1,start2 = -1,maxx = 0;
+    int num = 0;
+    for (int i = 0; i < sizea; i++)
+    {
+        for (int j = 0; j < sizeb; j++)
+        {   int length = 0;
+            int m = i;
+            int n = j;
+            while(m < sizea && n < sizeb)
+            {
+                ++num;
+                if (str1[m] != str2[n]) break;
+                ++length;
+                ++m;
+                ++n;
+            }
+            if (maxx < length)
+            {
+                maxx = length;
+                start1 = i;
+                start2 = j;
+            }
+        }
+    }
+    return maxx;
+}
+int main(){
+    fgets(stra,10000,stdin);
+    fgets(strb,10000,stdin);
+    printf("%d",func(stra,strb));
+    return 0;
+}

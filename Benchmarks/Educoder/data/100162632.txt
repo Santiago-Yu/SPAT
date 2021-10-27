@@ -1,0 +1,32 @@
+package task06;
+
+import java.util.Scanner;
+class Student{
+ String name;
+ static String school="北京大学";
+
+ void speak() {
+		System.out.println("我的名字是" + name + ",来自" + school);
+	}
+}
+
+public class Task06 {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+Student stu1=new Student();
+		String n;
+		n=scan.next();
+		stu1.name=n;
+		stu1.speak();
+		Student stu2=new Student();
+		String m;
+		m=scan.next();
+		stu2.name=m;
+		stu2.speak();
+		String k;
+		k=scan.next();
+		Student.school=k;
+		stu1.speak();
+		stu2.speak();
+	}
+}

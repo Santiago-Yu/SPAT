@@ -1,0 +1,26 @@
+package step2;
+import java.util.Scanner;
+//判断输入的字符大写字母还是小写字母，用方法完成。
+public class TestJava25_2 {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("请输入一个字符：");
+		char ch=sc.next().charAt(0);
+		//此处调用调用Judge方法，判断字符ch是否大写字母
+		System.out.println("您输入的是"+TestJava25_2.Judge(ch)+"写字母！");
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为Judge，判断字符ch是否大写字母，是大写字母，则返回true，是小写字母，则返回false
+	public static char Judge(char ch) {
+		char i = 0;
+		if(ch=='q'||ch=='w'||ch=='e'||ch=='r'||ch=='t'||ch=='y'||ch=='u'||ch=='i'||ch=='o'||ch=='p'||ch=='a'||ch=='s'||ch=='d'||ch=='f'||ch=='g'||ch=='h'||ch=='j'||ch=='k'||ch=='l'||ch=='z'||ch=='x'||ch=='c'||ch=='v'||ch=='b'||ch=='n'||ch=='m') {
+			i='小';
+		}else if(ch=='Q'||ch=='W'||ch=='E'||ch=='R'||ch=='T'||ch=='Y'||ch=='U'||ch=='I'||ch=='O'||ch=='P'||ch=='A'||ch=='S'||ch=='D'||ch=='F'||ch=='G'||ch=='H'||ch=='J'||ch=='K'||ch=='L'||ch=='Z'||ch=='X'||ch=='C'||ch=='V'||ch=='B'||ch=='N'||ch=='M') {
+			i='大';
+		}
+		return i;
+		}
+	/*******End*********/
+
+}

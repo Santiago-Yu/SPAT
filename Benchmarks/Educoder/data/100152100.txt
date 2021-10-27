@@ -1,0 +1,28 @@
+package step1;
+import static java.lang.StrictMath.acos;
+import static java.lang.StrictMath.sin;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  //俩圆心之间距离
+        double d=Math.sqrt((y2-y1)*(y2-y1)+(x2-x1)*(x2-x1));
+         if(d>=r1+r2)
+         {
+         	return (Math.PI*r1*r1+Math.PI*r2*r2);
+         }
+         else
+         {
+        double ang1=acos((r1*r1+d*d-r2*r2)/(2*r1*d));
+        double ang2=acos((r2*r2+d*d-r1*r1)/(2*r2*d));
+        //俩圆交叉部分面积
+        
+        return((Math.PI*r1*r1+Math.PI*r2*r2)-(ang1*r1*r1 + ang2*r2*r2 - r1*d*sin(ang1)));
+         }
+		  
+		  
+		  /********* End *********/
+	  }
+}

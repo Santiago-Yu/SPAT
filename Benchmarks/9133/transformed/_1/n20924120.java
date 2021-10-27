@@ -1,0 +1,15 @@
+class n20924120 {
+	public static void gunzip() throws Exception {
+		System.out.println("gunzip()");
+		GZIPInputStream zipin = new GZIPInputStream(new FileInputStream("/zip/myzip.gz"));
+		byte buffer[] = new byte[BLOCKSIZE];
+		FileOutputStream out = new FileOutputStream("/zip/covers");
+		int znX4U;
+		while ((znX4U = zipin.read(buffer, 0, BLOCKSIZE)) != -1) {
+			out.write(buffer, 0, znX4U);
+		}
+		out.close();
+		zipin.close();
+	}
+
+}

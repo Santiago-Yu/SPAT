@@ -1,0 +1,45 @@
+package task6;
+
+public class ScaleBox extends Box{         
+    int Type;//1 长方体 2 圆柱体   
+    
+    public ScaleBox(){}
+    public ScaleBox(int boxType) {
+        //TODO write your code here
+        Type=boxType;
+    }
+    public ScaleBox(double width,double height,double depth,int boxType) {
+        //TODO write your code here
+        this.setWidth(width);
+        setHeight(height);
+        setDepth(depth);
+        this.Type=boxType;
+    }
+    public int get(){
+        return Type;
+    }
+    public void set(int Type){
+        this.Type=Type;
+    }
+   
+    public double printVolumn(){
+      //  double v=0;
+        if(Type==1)
+        return this.volume();
+        else if(Type==2)
+        return 3.14*this.getWidth()*this.getWidth()*this.getHeight();
+        else return 0;
+      //  return v;
+    }
+    
+   
+
+
+ /**********************Begin*******************/
+    //TODO write your code here
+	
+
+
+ /**********************End*******************/
+
+}

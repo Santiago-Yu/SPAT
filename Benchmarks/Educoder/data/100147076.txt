@@ -1,0 +1,32 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+	  	  Arrays.sort(abilities);	//从小到大排序
+			List<Integer> integers=new ArrayList<>();
+			for (int i = abilities.length-1; i >=0 ; i--) {
+				integers.add(abilities[i]);
+			}
+			
+			
+			int allNum=1;
+			for (int i = 0; i < selectedNum; i++) {
+				if (integers.get(i)==68) {
+					integers.set(i, 45);
+				}
+				allNum=integers.get(i)*allNum;
+			}
+			return (long)allNum;
+    }
+
+	/********* End *********/
+}

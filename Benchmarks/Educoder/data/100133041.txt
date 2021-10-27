@@ -1,0 +1,23 @@
+
+package step1;
+
+public class Task {
+
+    public static void birthdayCandle(int num) {
+        int n, m = 19;
+        while (true) {
+            int temp = 2 * num + m * (m - 1);
+            n = judge(temp);
+            if(n==0) m++;
+            else break;
+        }
+        System.out.println("小明今年：" + n   + "岁");
+        System.out.println("小明从" +  m  + "岁开始每年举办派对");
+    }
+    public static int judge(int n){
+        int temp=(int)Math.sqrt(4*n+1)-1;
+        temp/=2;
+        if(temp*(temp+1)==n) return temp;
+        else return 0;
+    }
+}

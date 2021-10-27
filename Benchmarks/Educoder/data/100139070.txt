@@ -1,0 +1,46 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) throws InterruptedException {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		Mythread t=new Mythread(num);
+        t.start();
+        t.join();
+		System.out.println("子线程计算结果为："+t.m);
+			
+	}
+	
+
+}
+class Mythread extends Thread
+{
+    int num,i;
+	public int m;
+	public Mythread (int num)
+	{
+		this.num=num;
+	}
+	public void run()
+	{
+        int [] a=new int[3];
+        a[0]=a[1]=1;
+        if(num==0||num==1)
+        	this.m=1;
+        else 
+        {
+        	 for(i=2;i<num;i++)
+         {
+          a[2]=a[0]+a[1];
+          a[0]=a[1];
+          a[1]=a[2];
+         }
+         this.m=a[2];
+        
+        }
+       
+	}
+}

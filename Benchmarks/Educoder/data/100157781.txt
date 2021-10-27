@@ -1,0 +1,33 @@
+
+import java.util.Scanner;
+public class Main {
+
+	//cout计数
+	public static int cout = 0;
+	//n 剩余数
+	public static void fuction(int n) {
+		if(n==0) {
+			cout++;
+			return ;
+		}
+		
+		else {
+			for(int i=1;i<=2;i++) {
+					if(n>=i)//剩余数足够大
+						fuction(n-i);
+					else
+						return ;
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		int n = in.nextInt();
+	
+		fuction(n);
+		System.out.print(cout);
+	}
+
+
+}

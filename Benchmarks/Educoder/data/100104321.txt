@@ -1,0 +1,48 @@
+package step3;
+import java.util.Scanner;
+ class demo {
+private int m;
+private int n;
+demo(int m,int n){
+	setm(m);
+	setn(n);
+	}
+public void setm(int m){
+	this.m=m;
+}
+public void setn(int n){
+	this.n=n;
+}
+public int max(){int i;
+	for(i=n;i>0;i--){
+		if(m%i==0&&n%i==0)break;
+		
+	}return i;
+	}
+public int min(){int j;
+	for(j=m;j<=m*n;j++){
+		if(j%m==0&&j%n==0)break;
+		
+	}return j;
+ }
+}
+public class GcdAndGcm{
+public static void main(String args[]){
+	Scanner sin=new Scanner(System.in);
+	int a=sin.nextInt();
+	int b=sin.nextInt();
+	int t;
+	if  (a<b){
+	t=a;
+	a=b;
+	b=t;
+}
+	demo demo=new demo(a,b);
+    System.out.println("最大公约数："+demo.max());
+	System.out.println("最小公倍数："+demo.min());
+	
+	
+   }
+
+}
+

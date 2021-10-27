@@ -1,0 +1,28 @@
+package step4;
+
+public class DayCount {
+	public boolean leapYear(int year) {
+		if(year%4==0&&year%100!=0||year%400==0) {
+			return true;
+		}
+		return false;
+	}
+	public void dayCount(int year,int month,int day) {
+		int[] leap = {31,29,31,30,31,30,31,31,30,31,30,31};
+		int[] average = {31,28,31,30,31,30,31,31,30,31,30,31};
+		int ans=0;
+		if(leapYear(year)){
+			for(int i=1;i<month;i++){
+				ans+=leap[i-1];
+			}
+			ans+=day;
+		}
+		else{
+			for(int i=1;i<month;i++){
+				ans+=average[i-1];
+			}
+			ans+=day;
+		}
+		System.out.print(ans);
+	}
+}

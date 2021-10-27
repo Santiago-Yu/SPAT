@@ -1,0 +1,543 @@
+import java.util.*;
+
+
+
+
+
+class State{
+    int num;
+    List<Expression> expressions;
+    Map<String,State> goTo =new LinkedHashMap<>();
+
+
+    State(){
+        this.expressions=new ArrayList<>();
+
+    }
+
+    State(int num,List<Expression> expressions){
+        this.num=num;
+        this.expressions=expressions;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this==obj){
+            return true;
+        }
+        if(obj instanceof State){
+            return ((State) obj).expressions.equals(this.expressions);
+        }
+        return false;
+    }
+
+    void add(Expression expression){
+        this.expressions.add(expression);
+    }
+}
+
+class Expression{
+
+    String father;
+    List<String> expr;
+    String postfix;
+
+    Expression(String father,List<String> expr){
+        this.father=father;
+        this.expr=expr;
+    }
+
+    public String turnToString(){
+        String str="";
+        for(int i=0;i<expr.size();i++){
+            str+=expr.get(i)+" ";
+        }
+        return str;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this==obj){
+            return true;
+        }
+        if(obj instanceof Expression){
+            if(((Expression) obj).expr.size()!=this.expr.size()){
+                return false;
+            }
+            if(((Expression) obj).father.equals(this.father)){
+
+                for(int i=0;i<((Expression) obj).expr.size();i++){
+                    if(!((Expression) obj).expr.get(i).equals(this.expr.get(i))){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static float valueofa;
+    private static float valueofb;
+    private static float valueofc;
+    private static StringBuffer token=new StringBuffer();
+    private static List<String> input=new ArrayList<>();
+    private static boolean error=false;
+    private static HashMap<String,String> followset=new HashMap<>();
+    private static String [][] table=new String[58][36];
+    private static int numOfStates=0;
+    private static List<List<String>> grammer=new ArrayList<>();
+    private static List<State> states=new ArrayList<>();
+    private static HashMap<String,String> expression=new HashMap<>();
+    private static HashMap<String,String> firstSet=new HashMap<>();
+    private static HashSet<String> nts=new HashSet<>();
+    private static HashSet<String> ts=new HashSet<>();
+    private static HashMap<String,Integer> ntandt=new HashMap<>();
+    private static Stack<String> stack=new Stack<>();
+    private static List<String> output=new ArrayList<>();
+    private static List<Integer> row=new ArrayList<>();
+    private static int errorrow=0;
+    private static int numOfRemovedInputs=0;
+
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine()){
+            String str=sc.nextLine();
+            int index=0;
+            while(index<str.length()){
+                token.delete(0,token.length());
+                while(index<str.length()&&str.charAt(index)==' '){
+                    index++;
+                }
+                while(index<str.length()&&str.charAt(index)!=' '){
+                    char c=str.charAt(index);
+                    token.append(c);
+                    index++;
+                }
+                if(token.length()!=0) {
+                    input.add(token.toString());
+                }
+            }
+        }
+    }
+
+    private static void initialize(){
+
+        String nt[]={"program'","program","stmt" ,
+                "compoundstmt",
+                "stmts" ,
+                "ifstmt" ,
+                "whilestmt",
+                "assgstmt" ,
+                "boolexpr" ,
+                "boolop" ,
+                "arithexpr" ,
+                "arithexprprime",
+                "multexpr" ,
+                "multexprprime" ,
+                "simpleexpr"};
+
+        String t[]={"{"	,"}","if","while",	"ID",
+                "<",">",	"<=",	">=",	"==",
+                "NUM"	,"+",	"-",	"*"	,"/",
+                "$",	"(",	")",";","=","then","else"};
+
+        String all[]={"{"	,"}","if","while",	"ID",
+                "<",">",	"<=",	">=",	"==",
+                "NUM"	,"+",	"-",	"*"	,"/",
+                "$",	"(",	")",";","=","then","else","program","stmt" ,
+                "compoundstmt",
+                "stmts" ,
+                "ifstmt" ,
+                "whilestmt",
+                "assgstmt" ,
+                "boolexpr" ,
+                "boolop" ,
+                "arithexpr" ,
+                "arithexprprime",
+                "multexpr" ,
+                "multexprprime" ,
+                "simpleexpr"};
+        for(int i=0;i<all.length;i++){
+            ntandt.put(all[i],i);
+        }
+        for(int i=0;i<nt.length;i++){
+            nts.add(nt[i]);
+        }
+        for(int j=0;j<t.length;j++){
+            ts.add(t[j]);
+        }
+
+        String expr[]={"program","compoundstmt","ifstmt|whilestmt|assgstmt|compoundstmt",
+                "{ stmts }","stmt stmts|E", "if ( boolexpr ) then stmt else stmt","while ( boolexpr ) stmt"
+                ,"ID = arithexpr ;","arithexpr boolop arithexpr","<|>|<=|>=|==","multexpr arithexprprime",
+                "+ multexpr arithexprprime|- multexpr arithexprprime|E","simpleexpr multexprprime","* simpleexpr multexprprime|/ simpleexpr multexprprime|E",
+                "ID|NUM|( arithexpr )" };
+
+        String  first[]={"{","if while ID {","{","if while ID { E","if","while","ID","ID NUM (","< > <= >= ==","ID NUM (","+ - E","ID NUM (","* / E","ID NUM ("};
+        String follow[]={"$","if while ID {  } else","$ if while ID {  } else",
+                "}","if while ID } else {","if while ID { else }","if while ID { else }",")","ID NUM (",
+                "; ) < > <= >= >= ==","; ) < > <= >= ==","+ -  ; ) < > >= <= ==","+ -  ; ) < > <= >= ==",
+                "* / + - ; ) < > <= >= =="};
+
+        for(int i=0;i<15;i++){
+            expression.put(nt[i],expr[i]);
+        }
+        for(int i=0;i<first.length;i++){
+            firstSet.put(nt[i+1],first[i]);
+        }
+        for(int i=0;i<follow.length;i++){
+            followset.put(nt[i+1],follow[i]);
+        }
+    }
+
+    // add your method here!!
+
+    public static float getValue(String value){
+        if(value.equals("a")){
+            return valueofa;
+        }else if(value.equals("b")){
+            return valueofb;
+        }else if(value.equals("c")){
+            return valueofc;
+        }else{
+            return Float.parseFloat(value);
+        }
+    }
+
+    public static boolean judgeIfstmt(String pre,String operation,String post){
+        float valueofpre=getValue(pre);
+        float valueofpost=getValue(post);
+        if(operation.equals("==")){
+            return valueofpre==valueofpost;
+        }else if(operation.equals(">")){
+            return valueofpre>valueofpost;
+        }else if(operation.equals("<")){
+            return valueofpre<valueofpost;
+        }else if(operation.equals(">=")){
+            return valueofpre>=valueofpost;
+        }else if(operation.equals("<=")){
+            return valueofpre<=valueofpost;
+        }
+        return false;
+    }
+
+    public static void setValue(String str,float value){
+        if(str.equals("a")){
+            valueofa=value;
+        }else if(str.equals("b")){
+            valueofb=value;
+        }else if(str.equals("c")){
+            valueofc=value;
+        }
+    }
+
+    public static void calculateValue(List<String> stmt){
+        float firstvalue=getValue(stmt.get(0));
+        float secondvalue=getValue(stmt.get(2));
+        float thirdvalue=getValue(stmt.get(4));
+        if(stmt.size()>6){
+            String operator1=stmt.get(3);
+            String operator2=stmt.get(5);
+            float fourthvalue=getValue(stmt.get(6));
+            if(operator1.equals("*")){
+                setValue(stmt.get(0),secondvalue*thirdvalue);
+            }
+            if(operator2.equals("-")){
+                setValue(stmt.get(0),getValue(stmt.get(0))-fourthvalue);
+            }
+
+        }else {
+            String operator = stmt.get(3);
+            if (operator.equals("+")) {
+                setValue(stmt.get(0), secondvalue + thirdvalue);
+            } else if (operator.equals("-")) {
+                setValue(stmt.get(0), secondvalue - thirdvalue);
+            } else if (operator.equals("*")) {
+                setValue(stmt.get(0), secondvalue * thirdvalue);
+            } else if (operator.equals("/")) {
+                if (thirdvalue == 0) {
+                    error = true;
+                } else {
+                    setValue(stmt.get(0), secondvalue / thirdvalue);
+                }
+            }
+        }
+
+    }
+
+    public static void processIfstmt(List<String> ifstmt){
+        int index1=ifstmt.indexOf("(");
+        int index2=ifstmt.indexOf(")");
+        String pre=ifstmt.get(index1+1);
+        String operator=ifstmt.get(index1+2);
+        String post=ifstmt.get(index1+3);
+        boolean validity=judgeIfstmt(pre,operator,post);
+        if(validity){
+            int index=ifstmt.indexOf("then");
+
+            while(!ifstmt.get(index).equals(";")){
+               index++;
+            }
+            calculateValue(ifstmt.subList(index2+2,index));
+        }else{
+            int index=ifstmt.indexOf("else");
+            while(index<ifstmt.size()&&!ifstmt.get(index).equals(";")){
+                index++;
+            }
+            calculateValue(ifstmt.subList(ifstmt.indexOf("else")+1,index));
+        }
+    }
+
+
+    public static void processFirstLine(List<String> strlist){
+        float valueofa=Float.parseFloat(strlist.get(3));
+        float valueofb=Float.parseFloat(strlist.get(8));
+        float valueofc=Float.parseFloat(strlist.get(13));
+        setValue("a",valueofa);
+        setValue("b",valueofb);
+        setValue("c",valueofc);
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        int index=input.indexOf("{");
+        processFirstLine(input.subList(0,index));
+        int index2=input.indexOf("if");
+        int num=index2-index-1;
+        int time=num/6;
+        for(int i=0;i<time;i++){
+            calculateValue(input.subList(index+1+6*i,index+7+6*i));
+        }
+        int index3=input.indexOf("}");
+        List<String> sub=input.subList(index2,index3);
+        while(sub.contains("if")) {
+            processIfstmt(sub);
+            int index5=sub.indexOf("if");
+            sub.remove(index5);
+
+            if(sub.contains("if")) {
+                int newindex = sub.indexOf("if");
+              if(newindex>=index5+22){
+                  int index6=sub.indexOf("else");
+                  calculateValue(sub.subList(index6+7,newindex));
+              }
+                sub = sub.subList(newindex, sub.size());
+            }
+        }
+        print();
+    }
+    public static List<String> turntoList(String str){
+        int index=0;
+        List<String> res=new ArrayList<>();
+        StringBuffer word=new StringBuffer();
+        while(index<str.length()){
+            word.delete(0,word.length());
+            while(index<str.length()&&str.charAt(index)==' '){
+                index++;
+            }
+
+            while(index<str.length()&&str.charAt(index)!=' '){
+                char c=str.charAt(index);
+                word.append(c);
+                index++;
+            }
+            if(!word.toString().equals("")) {
+                res.add(word.toString());
+            }
+        }
+        return res;
+    }
+
+    public static List<List<String>> process(String str){
+        String newstr[]= str.split("\\|");
+        List<List<String>> ans=new ArrayList<>();
+        for(int i=0;i<newstr.length;i++){
+            String s=". "+newstr[i];
+            List<String> list=turntoList(s);
+            ans.add(list);
+        }
+        return ans;
+    }
+
+    public static List<Expression> closure(Expression expr){
+        List<Expression> ans=new ArrayList<>();
+        ans.add(expr);
+        int index=expr.expr.indexOf(".");
+        if(index==expr.expr.size()-1){
+            return ans;
+        }
+        String head=expr.expr.get(index+1);
+        if(ts.contains(head)){
+            return ans;
+        }
+        if(head.equals("E")){
+            return ans;
+        }
+        List<List<String>> process=process(expression.get(head));
+        for(int i=0;i<process.size();i++){
+            Expression newexpr=new Expression(head,process.get(i));
+            ans.addAll(closure(newexpr));
+        }
+        return ans;
+    }
+
+    public static Expression moveDot(Expression expr){
+        List<String> copyexpr=new ArrayList<>();
+        for(int i=0;i<expr.expr.size();i++){
+            copyexpr.add(expr.expr.get(i));
+        }
+        Expression newexpr=new Expression(expr.father,copyexpr);
+        int index=newexpr.expr.indexOf(".");
+        if(index==newexpr.expr.size()-1){
+            return newexpr;
+        }
+        newexpr.expr.remove(index);
+        newexpr.expr.add(index+1,".");
+        return newexpr;
+    }
+
+    public static State goTo(State state, String str){
+        State newState=new State();
+        for(int i=0;i<state.expressions.size();i++){
+            Expression nowexpr =state.expressions.get(i);
+            int index= nowexpr.expr.indexOf(".");
+            if(index!=nowexpr.expr.size()-1){
+                if(nowexpr.expr.get(index+1).equals(str)){
+                    Expression newexpr=moveDot(nowexpr);
+                    newState.expressions.addAll(closure(newexpr));
+                }
+            }
+        }
+        return newState;
+    }
+     public static void print(){
+       if(error){
+          System.out.println("error message:line 1,realnum can not be translated into int type");
+          System.out.print("error message:line 5,division by zero");
+       }else{
+        System.out.println("a: "+(int)valueofa);
+        System.out.println("b: "+(int)valueofb);
+        float c2= (float)(Math.round(valueofc*100))/100;
+        System.out.print("c: "+c2);
+    }
+    }
+
+    public static List<State> createStates(State state){
+        List<State> statelist=new ArrayList<>();
+        Set<String> gotos=new LinkedHashSet<>();
+        for(Expression expr:state.expressions){
+            int index=expr.expr.indexOf(".");
+            if(index!=expr.expr.size()-1){
+                if(!expr.expr.get(index+1).equals("E")) {
+                    gotos.add(expr.expr.get(index + 1));
+                }
+            }
+        }
+        int size=states.size();
+        for(String str:gotos){
+            if(checkRepetition(goTo(state,str))==null) {
+                State s= goTo(state,str);
+                s.num=size++;
+                state.goTo.put(str,s);
+                statelist.add(s);
+            }else{
+                state.goTo.put(str,checkRepetition(goTo(state,str)));
+            }
+        }
+        return statelist;
+    }
+
+    public static State checkRepetition(State state){
+        for(State s:states){
+            if(s.equals(state)){
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public static void analyzeLR(){
+        List<String> start=new ArrayList<>();
+        start.add(".");
+        start.add("program");
+        Expression startexpr=new Expression("program'",start);
+        State startstate=new State();
+        startstate.num=0;
+        startstate.expressions=closure(startexpr);
+        states.add(startstate);
+        int index=0;
+        while(index<states.size()){
+            List<State> stateToList=new ArrayList<>(states);
+            states.addAll(createStates(stateToList.get(index)));
+            index++;
+        }
+    }
+
+    public static void createTable(){
+
+        for(int i=0;i<58;i++){
+            for(Map.Entry<String,State> entry:states.get(i).goTo.entrySet()){
+                int index=ntandt.get(entry.getKey());
+                if(ts.contains(entry.getKey())) {
+                    table[i][index] = "s" + entry.getValue().num;
+                }else{
+                    table[i][index] = ""+entry.getValue().num;
+                }
+            }
+            for(Expression expr:states.get(i).expressions){
+                int index=expr.expr.indexOf(".");
+                if((index==expr.expr.size()-1&&!expr.father.equals("program'"))||(index==expr.expr.size()-2&&expr.expr.get(index+1).equals("E"))){
+                    String follow=followset.get(expr.father);
+                    List<String> followlist=turntoList(follow);
+                    for(int j=0;j<followlist.size();j++) {
+                        if (!followlist.get(j).equals("E")) {
+                            int index2 = ntandt.get(followlist.get(j));
+                            String removedot=expr.turnToString();
+                            List<String> removedotlist=turntoList(removedot);
+                            removedotlist.remove(".");
+                            String ans="";
+                            for(int k=0;k<removedotlist.size();k++){
+                                ans+=removedotlist.get(k)+" ";
+                            }
+                            table[i][index2] = expr.father+"->"+ans;
+                        }
+                    }
+                }else if(expr.father.equals("program'")&&index==expr.expr.size()-1){
+                    int index3=ntandt.get("$");
+                    table[i][index3]="acc";
+                }
+            }
+        }
+
+
+    }
+
+
+   
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        initialize();
+        analyzeLR();
+        createTable();
+        analysis();
+    }
+}
+

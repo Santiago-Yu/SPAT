@@ -1,0 +1,34 @@
+package step4;
+import java.util.*;
+public class DayCount {
+	public static void dayCount(int Year, int Month, int Day) {
+		/********** Begin *********/
+        int [] array= {31,28,31,30,31,30,31,31,30,31,30,31};
+        int sum=0;
+        boolean isleap=true;
+        isleap=((Year%4==0&&Year%100!=0)||(Year%400==0));
+        if(isleap){
+            array[1]=29;
+            for(int i=0;i<Month-1;i++){
+                sum+=array[i];
+            }
+        }
+        else{
+            for(int i=0;i<Month-1;i++){
+                sum+=array[i];
+            }
+        }
+        sum+=Day;
+        System.out.print(sum);
+
+		/********** End *********/
+	}
+    public static void main(String [] args){
+        Scanner scan=new Scanner(System.in);    
+        int year=scan.nextInt();
+        int month=scan.nextInt();
+        int day=scan.nextInt();
+        dayCount(year,month,day);
+    }
+
+}

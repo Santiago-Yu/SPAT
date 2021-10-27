@@ -1,0 +1,23 @@
+package step1;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class TimeTable {
+    public static void main(String[] args) throws IOException {
+        /********** Begin *********/
+		File file=new File("src/step1/Time_Table.txt");
+        FileReader fileReader =new FileReader(file);
+        int read =fileReader.read();
+        while(read!=-1)
+        {
+            System.out.print((char)read);
+            read=fileReader.read();
+        }
+        fileReader.close();
+
+
+        /********** End *********/
+    }
+}

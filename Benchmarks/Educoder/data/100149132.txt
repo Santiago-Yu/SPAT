@@ -1,0 +1,37 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int res=0;
+        for(int i=0;i<n;i++)
+        {
+        	for(int j=0;j<m;j++)
+            {
+            	if(area[i][j]=='o')
+                {
+                	res++;
+                    flect(area,i,j,n,m);
+                }
+            }
+        }
+		return res;
+    }
+        
+    public void flect(char[][] area,int i,int j,int n,int m)
+    {
+    	area[i][j]='x';
+        while(i-1>=0&&area[i-1][j]=='o')
+            flect(area,i-1,j,n,m);
+        while(i+1<n&&area[i+1][j]=='o')
+            flect(area,i+1,j,n,m);
+        while(j-1>=0&&area[i][j-1]=='o')
+            flect(area,i,j-1,n,m);
+        while(j+1<m&&area[i][j+1]=='o')
+            flect(area,i,j+1,n,m);
+    }
+        
+		/********* End *********/	
+	
+}

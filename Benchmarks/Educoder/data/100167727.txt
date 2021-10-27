@@ -1,0 +1,548 @@
+import java.util.Scanner;
+import java.util.*;
+public class Java_TranslationSchemaAnalysis
+{
+    //预备数据
+    private static String[] cfgs = new String[] {
+    		"program -> decls compoundstmt",
+    		"decls -> decl ; decls",
+    		"decls -> E",
+    		"decl -> int ID = INTNUM",
+    		"decl -> real ID = REALNUM",
+    		"stmt -> ifstmt",
+    		"stmt -> assgstmt",
+    		"stmt -> compoundstmt",
+    		"compoundstmt -> { stmts }",
+    		"stmts -> stmt stmts",
+    		"stmts -> E",
+    		"ifstmt -> if ( boolexpr ) then stmt else stmt",
+    		"assgstmt -> ID = arithexpr ;",
+    		"boolexpr -> arithexpr boolop arithexpr",
+    		"boolop -> <",
+    		"boolop -> >",
+    		"boolop -> <=",
+    		"boolop -> >=",
+    		"boolop -> ==",
+    		"arithexpr -> multexpr arithexprprime",
+    		"arithexprprime -> + multexpr arithexprprime",
+    		"arithexprprime -> - multexpr arithexprprime",
+    		"arithexprprime -> E",
+    		"multexpr -> simpleexpr multexprprime",
+    		"multexprprime -> * simpleexpr multexprprime",
+    		"multexprprime -> / simpleexpr multexprprime",
+    		"multexprprime -> E",
+    		"simpleexpr -> ID",
+    		"simpleexpr -> INTNUM",
+    		"simpleexpr -> REALNUM",
+    		"simpleexpr -> ( arithexpr )"
+    };
+    
+    //终结符和非终结符，用来对输入预先处理
+    private static ArrayList<String> deter = new ArrayList<String>();
+    private static ArrayList<String> nondeter = new ArrayList<String>();
+    
+    //预测分析表
+	private static int[][] table = new int[][] {
+		{1	,1	,1	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{2	,2	,3	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{4	,5	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,8	,0	,7	,0	,0	,6	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,9	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,10	,11	,10	,0	,0	,10	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,0	,0	,0	,0	,0	,12	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,0	,0	,13	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,0	,0	,14	,14	,14	,0	,0	,0	,0	,0	,14	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,0	,15	,16	,17	,18	,19	,0	,0},
+		{0	,0	,0	,0	,20	,20	,20	,0	,0	,0	,0	,0	,20	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,0	,0	,0	,0	,0	,0	,21	,22	,0	,0	,0	,23	,23	,23	,23	,23	,23	,23},
+		{0	,0	,0	,0	,24	,24	,24	,0	,0	,0	,0	,0	,24	,0	,0	,0	,0	,0	,0	,0},
+		{0	,0	,0	,0	,0	,0	,0	,0	,27	,27	,25	,26	,0	,27	,27	,27	,27	,27	,27	,27},
+		{0	,0	,0	,0	,28	,29	,30	,0	,0	,0	,0	,0	,31	,0	,0	,0	,0	,0	,0	,0}
+
+
+    };
+
+    //处理
+    private static List<Node> input = new ArrayList<Node>();
+    private static Stack<Node> process = new Stack<Node>();
+    
+    //错误处理，并且假设最多20行代码
+    private static int[] line_symbol = new int[20];
+    static boolean error = false;
+    private static ArrayList<String> error_information = new ArrayList<String>();
+    //输出结果
+    private static List<Node> result = new ArrayList<Node>();
+    
+ 
+    
+    //初始化终结符和非终结符数组
+    private static void initial() {
+    	String[] d = new String[] {
+    		"int","real","{","}","ID","INTNUM","REALNUM","if","+","-",
+    		"*","/","(","<",">","<=",">=","==",";",")","(","then","else","=","E"
+    	};
+    	for(int i=0;i<d.length;i++)
+    	{
+    		deter.add(d[i]);
+    	}
+    	String[] nd = new String[] {
+    		"program","decls","decl","stmt","compoundstmt",
+    		"stmts","ifstmt","assgstmt","boolexpr","boolop",
+    		"arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"
+    	};
+    	for(int i=0;i<nd.length;i++)
+    	{
+    		nondeter.add(nd[i]);
+    	}
+    	process.push(new Node("program",0));
+    }
+    
+    
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int line=0;
+        while(sc.hasNextLine())
+        {
+        	String aline = sc.nextLine();
+        	String[] word = aline.split(" ");
+        	int length = word.length;
+        	for(int i=0;i<length;i++)
+        	{
+        		String temp = word[i];
+        		Node tempnode;
+        		if(deter.contains(temp))
+        		{
+        			input.add(new Node(temp));
+        		}
+        		else if(temp.charAt(0)>='0'&&temp.charAt(0)<='9')//数字
+        		{
+        			tempnode = new Node();
+        			if(temp.contains(".")) {//实数
+        				tempnode.state="REALNUM";
+        				tempnode.val = Double.parseDouble(temp);
+        				input.add(tempnode);
+        			}
+        			else//整数
+        			{
+        				tempnode.state="INTNUM";
+        				tempnode.val = Integer.parseInt(temp);
+        				input.add(tempnode);
+        			}
+        		}
+        		else//ID
+        		{
+        			tempnode = new Node();
+        			tempnode.state="ID";
+        			tempnode.ID = temp;
+        			input.add(tempnode); 
+        		}
+        		line_symbol[line]++;
+        	}        
+           line++;
+        }
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+    	initial();
+        read_prog();
+        
+        int begin=0;
+        while(true) {
+        	
+        	//查询预测表
+        	int x=0;
+        	int y=0;
+        	
+        	x = nondeter.indexOf(process.lastElement().state);
+        	y = deter.indexOf(input.get(begin).state);
+
+        	int cases = table[x][y];
+        	
+        	//获得产生式
+        	String cfg = cfgs[cases-1];
+        	String[] production = cfg.split(" -> ");
+        	production = production[1].split(" ");
+        	
+        	Node parent = process.pop();
+        	
+        	if(!production[0].equals("E"))
+        	for(int i=production.length-1;i>=0;i--)
+        	{
+        		process.add(new Node(production[i],parent.level+1));
+        	}
+        	
+        	//文法规则处理
+        	translation(parent,cases-1,begin);
+        	
+        	while(!process.isEmpty()&&process.lastElement().state.equals(input.get(begin).state))
+        	{
+        		process.pop();
+        		begin++;
+        	}
+        	if(process.empty()&&begin==input.size())
+        		break;
+        }
+        printresult();
+        
+    }
+    
+    public static void translation(Node parent, int rule,int begin) {
+    	
+    	if(rule==3)//decl -> int ID = INTNUM
+    	{
+    		Node ID = input.get(begin+1);
+    		ID.type = "INTNUM";
+    		Node num = input.get(begin+3);
+    		if(!num.state.equals("INTNUM")) {
+    			int line = finderror(begin);
+    			error=true;
+    			error_information.add("error message:line "+line+",realnum can not be translated into int type");
+    			input.get(begin+3).state="INTNUM";
+    		}
+    	
+    		ID.val = num.val;
+    		result.add(ID);
+    	}
+    	else if(rule==4)//decl -> real ID = REALNUM
+    	{
+    		Node ID = input.get(begin+1);
+    		ID.type = "REALNUM";
+    		Node num = input.get(begin+3);
+    		if(!num.state.equals("REALNUM")) {
+    			System.out.println(ID.state+"类型不匹配"+num.type);
+    		}
+    		else
+    		{
+    			ID.val = num.val;
+    		}
+    		result.add(ID);
+    	}
+    	else if(rule==6)//stmt -> assgstmt
+    	{
+    		Node assgstmt = process.get(process.size()-1);
+    		assgstmt.ifstmt = parent.ifstmt;
+    	}
+    	else if (rule==12)//assgstmt -> ID = arithexpr ;
+    	{
+    		Node arithexpr = process.get(process.size()-3);
+    		arithexpr.ID = input.get(begin).ID;//传递需要赋值的变量
+    		arithexpr.ifstmt = parent.ifstmt;
+    	}
+    	else if(rule==13)//boolexpr -> arithexpr boolop arithexpr
+    	{
+    		Node arithexpr1 = process.get(process.size()-1);
+    		arithexpr1.ID = "boolexpr";
+    		Node arithexpr2 = process.get(process.size()-3);
+    		arithexpr2.ID = "boolexpr";
+    	}
+    	else if(rule==14)//boolop -> <
+    	{
+    		Node arithexpr = process.get(process.size()-2);
+    		arithexpr.caculate[0] = '<';
+    		arithexpr.inh = parent.inh;
+    	}
+    	else if(rule==16)//boolop -> <=
+    	{
+    		Node arithexpr = process.get(process.size()-2);
+    		arithexpr.caculate[0] = '<';
+    		arithexpr.caculate[1] = '=';
+    		arithexpr.inh = parent.inh;
+    	}
+    	else if(rule==17)//boolop -> >=
+    	{
+    		Node arithexpr = process.get(process.size()-2);
+    		arithexpr.caculate[0] = '>';
+    		arithexpr.caculate[1] = '=';
+    		arithexpr.inh = parent.inh;
+    	}
+    	else if(rule==18)//boolop -> ==
+    	{
+    		Node arithexpr = process.get(process.size()-2);
+    		arithexpr.caculate[0] = '=';
+    		arithexpr.caculate[1] = '=';
+    		arithexpr.inh = parent.inh;
+    	}
+    	else if(rule==19)//arithexpr -> multexpr arithexprprime
+    	{
+    		Node multexpr = process.get(process.size()-1);
+    		multexpr.ID = parent.ID;
+    		Node arithexprprime = process.get(process.size()-2);
+    		arithexprprime.ID = parent.ID;
+    		arithexprprime.inh = parent.inh;
+    		arithexprprime.ifstmt = parent.ifstmt;
+    		arithexprprime.caculate = parent.caculate;
+    	}
+    	else if(rule==20)//arithexprprime -> + multexpr arithexprprime
+    	{
+    		Node multexpr = process.get(process.size()-2);
+    		multexpr.ID = parent.ID;
+    		multexpr.val = parent.val;
+    		Node arithexprprime = process.get(process.size()-3);
+    		arithexprprime.ID = parent.ID;
+    		multexpr.caculate[0] = '+';
+    	}
+    	else if(rule==21)//arithexprprime -> - multexpr arithexprprime
+    	{
+    		Node multexpr = process.get(process.size()-2);
+    		multexpr.ID = parent.ID;
+    		multexpr.val = parent.val;
+    		Node arithexprprime = process.get(process.size()-3);
+    		arithexprprime.ID = parent.ID;
+    		multexpr.caculate[0] = '-';
+    	}
+    	else if(rule==22)//arithexprprime -> E
+    	{
+    		if(!parent.ID.equals("boolexpr"))
+    		{
+    			if(parent.ifstmt)
+    			{
+    				Node ID = result.get(getfromresult(parent.ID));
+    				ID.val = parent.val;
+    			}	
+    		}
+    		else
+    		if(process.get(process.size()-1).state.equals("boolop"))
+    		{
+    			Node boolop = process.get(process.size()-1);
+    			boolop.inh = parent.val;
+    		}
+    		else
+    		{
+    			Node stmt1 = process.get(process.size()-3);
+				Node stmt2 = process.get(process.size()-5);
+    			if(parent.caculate[0]=='<'&&parent.caculate[1]!='=')
+    			{
+    				if(parent.inh<parent.val) {
+    					stmt2.ifstmt=false;
+    					stmt1.ifstmt=true;
+    				}
+    				else
+    				{
+    					stmt1.ifstmt=false;
+    					stmt2.ifstmt=true;
+    				}
+    			}
+    			else if(parent.caculate[0]=='<'&&parent.caculate[1]=='=')
+    			{
+    				if(parent.inh<=parent.val) {
+    					stmt2.ifstmt=false;
+    					stmt1.ifstmt=true;
+    				}
+    				else
+    				{
+    					stmt1.ifstmt=false;
+    					stmt2.ifstmt=true;
+    				}
+    			}
+    			else if(parent.caculate[0]=='>'&&parent.caculate[1]=='=')
+    			{
+    				if(parent.inh>=parent.val) {
+    					stmt2.ifstmt=false;
+    					stmt1.ifstmt=true;
+    				}
+    				else
+    				{
+    					stmt1.ifstmt=false;
+    					stmt2.ifstmt=true;
+    				}
+    			}
+    			else if(parent.caculate[0]=='='&&parent.caculate[1]=='=')
+    			{
+    				if(parent.inh==parent.val) {
+    					stmt2.ifstmt=false;
+    					stmt1.ifstmt=true;
+    				}
+    				else
+    				{
+    					stmt1.ifstmt=false;
+    					stmt2.ifstmt=true;
+    				}
+    			}
+    		}
+    			
+    	}
+    	else if(rule==23)//multexpr -> simpleexpr multexprprime
+    	{
+    		Node simpleexpr = process.get(process.size()-1);
+    		simpleexpr.ID = parent.ID;
+    		simpleexpr.val = parent.val;
+    		simpleexpr.caculate = parent.caculate;
+    		Node multexprprime = process.get(process.size()-2);
+    		multexprprime.ID = parent.ID;
+    	}
+    	else if(rule==24)//multexprprime -> * simpleexpr multexprprime
+    	{
+    		Node simpleexpr = process.get(process.size()-2);
+    		simpleexpr.caculate[0] = '*';
+    		simpleexpr.val = parent.val;
+    		Node multexprprime = process.get(process.size()-3);
+    		multexprprime.ID = parent.ID;
+    	}
+    	else if(rule==25)//multexprprime -> / simpleexpr multexprprime
+    	{
+    		Node simpleexpr = process.get(process.size()-2);
+    		simpleexpr.caculate[0] = '/';
+    		simpleexpr.val = parent.val;
+    		Node multexprprime = process.get(process.size()-3);
+    		multexprprime.ID = parent.ID;
+    	}
+    	else if(rule==26)//multexprprime -> E
+    	{
+    		Node arithexprprime = process.get(process.size()-1);
+    		arithexprprime.val = parent.val;
+    	}
+    	else if(rule==27)//simpleexpr -> ID
+    	{
+    		Node multexprprime = process.get(process.size()-2);
+    		Node ID = result.get(getfromresult(input.get(begin).ID));
+    		if(parent.caculate[0]=='+')
+    			multexprprime.val = parent.val+ID.val;
+    		else if(parent.caculate[0]=='-')
+    			multexprprime.val = parent.val-ID.val;
+    		else if(parent.caculate[0]=='*')
+    			multexprprime.val = parent.val*ID.val;
+    		else if(parent.caculate[0]=='/')
+    		{
+    			if(ID.val!=0)
+    				multexprprime.val = parent.val/ID.val;
+    			else
+    			{
+    				error = true;
+    				error_information.add("error message:line "+finderror(begin)+",division by zero");
+    				multexprprime.val = parent.val;
+    			}
+    		}
+    		else
+    			multexprprime.val = ID.val;
+
+    	}
+    	else if(rule==28)//simpleexpr -> INTNUM
+    	{
+    		Node multexprprime = process.get(process.size()-2);
+    		Node INTNUM = input.get(begin);
+    		if(parent.caculate[0]=='+')
+    			multexprprime.val = parent.val+INTNUM.val;
+    		else if(parent.caculate[0]=='-')
+    			multexprprime.val = parent.val-INTNUM.val;
+    		else if(parent.caculate[0]=='*')
+    			multexprprime.val = parent.val*INTNUM.val;
+    		else if(parent.caculate[0]=='/')
+    		{
+    			if(INTNUM.val!=0)
+    				multexprprime.val = parent.val/INTNUM.val;
+    			else
+    			{
+    				error = true;
+    				error_information.add("error message:line "+finderror(begin)+",division by zero");
+    				multexprprime.val = parent.val;
+    			}
+    		}
+    		else
+    			multexprprime.val = INTNUM.val;
+    	}
+    	else if(rule==29)//simpleexpr -> REALNUM
+    	{
+    		Node multexprprime = process.get(process.size()-2);
+    		Node REALNUM = input.get(begin);
+    		if(parent.caculate[0]=='+')
+    			multexprprime.val = parent.val+REALNUM.val;
+    		else if(parent.caculate[0]=='*')
+    			multexprprime.val = parent.val*REALNUM.val;
+    		else if(parent.caculate[0]=='/')
+    			multexprprime.val = parent.val/REALNUM.val;
+    		else
+    			multexprprime.val = REALNUM.val;
+    	} 
+    }
+
+    public static int getfromresult(String ID) {
+    	for(int i=0;i<result.size();i++)
+		{
+			if(result.get(i).ID.equals(ID))
+			{
+				return i;
+			}
+		}
+		return 0;
+    }
+    public static int finderror(int begin)
+    {
+    	int temp = 0;
+    	int i=0;
+    	for(;temp<begin;i++)
+    	{
+    		temp += line_symbol[i];
+    	}
+    	return i;
+    }
+    public static void printresult() {
+        if(!error)
+        {
+            for(int i=0;i<result.size()-1;i++) {
+    		Node temp = result.get(i);
+    		if(temp.type.equals("INTNUM"))
+    		{
+    			System.out.println(temp.ID+": "+(int)temp.val);
+    		}
+    		else
+    		{
+    			System.out.println(temp.ID+": "+temp.val);
+    		}
+    		
+    	}
+        Node temp = result.get(result.size()-1);
+        if(temp.type.equals("INTNUM"))
+    		{
+    			System.out.print(temp.ID+": "+(int)temp.val);
+    		}
+    		else
+    		{
+    			System.out.print(temp.ID+": "+temp.val);
+    		}
+        }
+        else
+        {
+        	for(int i=0;i<error_information.size()-1;i++)
+        	{
+        		System.out.println(error_information.get(i));
+        	}
+        	System.out.print(error_information.get(error_information.size()-1));
+        }
+    	
+    }
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+class Node{
+	String state;
+	String ID;
+	String type;//类型判断
+	double val;//综合属性
+	double inh;//继承属性
+	char[] caculate = new char[2];
+	boolean ifstmt=true;
+	int level;
+	public Node(String s){
+		state = s;
+	}
+	public Node(String s, int l) {
+		state = s;
+		level = l;
+	}
+	public Node() {
+		
+	}
+}

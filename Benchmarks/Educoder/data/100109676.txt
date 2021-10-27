@@ -1,0 +1,98 @@
+package step1;
+
+/**
+ * Created by zengpeng on 2018/3/3.
+ */
+public class BSTree {
+
+    private TreeNode root;//根结点
+
+    public BSTree() {
+        root = null;
+    }
+
+    /**
+     * 向树root中插入key
+     *
+     * @param key 要插入的值
+     */
+    public void insert(int key) {
+        /********** Begin *********/
+		// 所有的数据本身不具备有节点关系的匹配，那么一定要将其包装在Node类之中
+		TreeNode newNode = new TreeNode(key); // 保存节点
+		if (this.root == null) { // 现在没有根节点
+			this.root = newNode; // 作为根节点
+		} else { // 需要将其保存到一个合适的节点
+			this.root.addNode(newNode); // 交由Node类进行处理
+		}
+        /********** End *********/
+    }
+
+    public void preOrder() {
+        preOrder(root);
+    }
+
+    public void inOrder() {
+        inOrder(root);
+    }
+
+    public void postOrder(){
+        postOrder(root);
+    }
+
+    private void preOrder(TreeNode node) {
+        if (node != null) {
+            System.out.print(node.item + " ");
+            preOrder(node.leftChild);
+            preOrder(node.rightChild);
+        }
+    }
+
+    private void inOrder(TreeNode node) {
+        if (node != null) {
+            inOrder(node.leftChild);
+            System.out.print(node.item + " ");
+            inOrder(node.rightChild);
+        }
+    }
+
+    private void postOrder(TreeNode node) {
+        if (node != null) {
+            postOrder(node.leftChild);
+            postOrder(node.rightChild);
+            System.out.print(node.item + " ");
+        }
+    }
+
+
+    public static class TreeNode {
+        private TreeNode leftChild;
+        private TreeNode rightChild;
+        private int item;
+
+        public TreeNode(int item) {
+            this(null, null, item);
+        }
+
+        public TreeNode(TreeNode leftChild, TreeNode rightChild, int item) {
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
+            this.item = item;
+        }
+        public void addNode(TreeNode newNode) {
+			if (newNode.item < this.item) {// 进行比较 比当前节点 小
+				if (this.leftChild == null) { // 没有左子树
+					this.leftChild = newNode; // 保存左子树
+				} else {
+					this.leftChild.addNode(newNode); // 递归调用
+				}
+			} else {
+				if (this.rightChild == null) {// 没有右子树
+					this.rightChild = newNode; // 保存右子树
+				} else {
+					this.rightChild.addNode(newNode); // 递归调用
+				}
+			}
+		}
+    }
+}

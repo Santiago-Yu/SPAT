@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    char a[10005];
+    char b[10005];
+    int c[10005]={0};
+    int max=0;
+    cin>>a;
+    cin>>b;
+    for(int i=0;i<strlen(a);i++)
+    {
+        for(int j=0;j<strlen(b);j++)
+        {
+            c[i]=0;
+            if(a[i]==b[j])
+            {
+                c[i]++;
+                int k,m;
+                for(k=i+1,m=j+1;k<strlen(a),m<strlen(b);k++,m++)
+                {
+                    if(a[k]==b[m])
+                    {
+                        c[i]++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if(c[i]>max) max=c[i];
+            }
+        }
+    }
+    cout<<max;
+}

@@ -1,0 +1,75 @@
+
+
+package step2;
+/*本关的编程任务是补全右侧代码片段中Begin至End中间的代码，
+ * 完成MyFavourateTeam类以实现其需要实现的接口，具体要求如下：
+
+通过setSports()设置喜欢的体育赛事类型，如篮球、足球；
+通过setTeam()设置支持的队伍，如洛杉矶湖人、皇家马德里等；
+通过introduction()大声说出你喜欢的运动，和喜欢的球队，格式如下：
+“我最喜欢的体育运动是xxx，我最喜欢的球队是xxx”。（具体输入输出格式可参见测试样例）
+评测说明
+平台将自动编译补全后的代码，并生成若干组测试数据，接着根据程序的输出判断程序是否正确。
+
+以下是测试样例：
+
+测试输入：
+篮球 洛杉矶湖人
+预期输出：
+我最喜欢的体育运动是篮球，我最喜欢的球队是洛杉矶湖人
+*/
+import java.util.Scanner;
+
+public class SportsEvents {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String sports = scanner.next();
+        String team = scanner.next();
+        MyFavourateTeam myFavourateTeam = new MyFavourateTeam();
+        myFavourateTeam.setSports(sports);
+        myFavourateTeam.setTeam(team);
+        myFavourateTeam.introduction();
+    }
+}
+
+interface Sports {
+    void setSports(String sports);
+}
+
+interface Team {
+    void setTeam(String team);
+}
+
+interface ChooseTeam extends Sports, Team {
+    void introduction();
+}
+
+/********** Begin *********/
+
+class MyFavourateTeam implements ChooseTeam {
+	String team;
+	String sports;
+	@Override
+	public void setSports(String sports) {
+		// TODO Auto-generated method stub
+		this.sports = sports;
+	}
+
+	@Override
+	public void setTeam(String team) {
+		// TODO Auto-generated method stub
+		this.team = team;
+	}
+
+	@Override
+	public void introduction() {
+		
+		System.out.println("我最喜欢的体育运动是"+sports+"，我最喜欢的球队是"+team);
+		
+	}
+	
+    
+    
+}
+
+/********** End *********/

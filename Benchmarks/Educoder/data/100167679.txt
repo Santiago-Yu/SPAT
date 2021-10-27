@@ -1,0 +1,302 @@
+import java.util.*;
+
+
+public class Java_LLParserAnalysis
+{
+    private static HashMap<String,Integer> nonterminals=new HashMap<String, Integer>();
+    private static HashMap<String,Integer> terminals=new HashMap<String, Integer>();
+    private static int [][] LL1table= new int[15][21];
+    private static List<String> expr=new ArrayList<>();
+    private static StringBuffer prog = new StringBuffer();
+    private static StringBuffer token=new StringBuffer();
+    private static List<String> input=new ArrayList<>();
+    private static Stack<String> stack=new Stack<String>();
+    private static List<String> ans=new ArrayList<>();
+    private static int tabindex=1;
+    private static HashMap<String,Integer> leftSimbol = new HashMap<String, Integer>();
+    private static String error;
+    private static boolean hasError=false;
+    private static int errorRow=0;
+    private static List<Integer> row=new ArrayList<>();
+    private static int numOfRow=1;
+    private static int numOfRemovedInputs=0;
+    private static String missingword;
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog(){
+
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine()){
+            //prog.append(sc.nextLine());
+            String str=sc.nextLine();
+            int index=0;
+            while(index<str.length()){
+                token.delete(0,token.length());
+                while(index<str.length()&&str.charAt(index)==' '){
+                    index++;
+                }
+                while(index<str.length()&&str.charAt(index)!=' '){
+                    char c=str.charAt(index);
+                    token.append(c);
+                    index++;
+                }
+                if(token.length()!=0) {
+                    input.add(token.toString());
+                }
+            }
+            row.add(input.size());
+        }
+    }
+
+
+    // add your method here!!
+
+    private static void initialize(){
+         expr.add("start");
+         expr.add("compoundstmt");
+         expr.add("ifstmt");
+         expr.add("whilestmt");
+         expr.add("assgstmt");
+         expr.add("compoundstmt");
+         expr.add("{ stmts }");
+         expr.add("stmt stmts");
+         expr.add("E");
+         expr.add("if ( boolexpr ) then stmt else stmt");
+         expr.add("while ( boolexpr ) stmt");
+         expr.add("ID = arithexpr ;");
+         expr.add("arithexpr boolop arithexpr");
+         expr.add("<");
+         expr.add(">");
+         expr.add("<=");
+         expr.add(">=");
+         expr.add("==");
+         expr.add("multexpr arithexprprime");
+         expr.add("+ multexpr arithexprprime");
+         expr.add("-multexpr arithexprprime");
+         expr.add("E");
+         expr.add("simpleexpr multexprprime");
+         expr.add("* simpleexpr multexprprime");
+         expr.add("/simpleexpr multexprprime");
+         expr.add("E");
+         expr.add("ID");
+         expr.add("NUM");
+         expr.add("( arithexpr )");
+
+
+
+        for(int i=1;i<15;i++){
+            for(int j=1;j<21;j++){
+                LL1table[i][j]=0;
+            }
+        }
+        LL1table[1][1]=1;
+        LL1table[2][1]=5;
+        LL1table[3][1]=6;
+        LL1table[4][1]=7;
+        LL1table[4][2]=8;
+        LL1table[2][3]=2;
+        LL1table[4][3]=7;
+        LL1table[5][3]=9;
+        LL1table[2][4]=3;
+        LL1table[4][4]=7;
+        LL1table[6][4]=10;
+        LL1table[2][5]=4;
+        LL1table[4][5]=7;
+        LL1table[7][5]=11;
+        LL1table[8][5]=12;
+        LL1table[10][5]=18;
+        LL1table[12][5]=22;
+        LL1table[14][5]=26;
+        LL1table[9][6]=13;
+        LL1table[9][7]=14;
+        LL1table[9][8]=15;
+        LL1table[9][9]=16;
+        LL1table[9][10]=17;
+        LL1table[8][11]=12;
+        LL1table[10][11]=18;
+        LL1table[12][11]=22;
+        LL1table[14][11]=27;
+        LL1table[11][12]=19;
+        LL1table[13][12]=25;
+        LL1table[11][13]=20;
+        LL1table[13][13]=25;
+        LL1table[13][14]=23;
+        LL1table[13][15]=24;
+        LL1table[13][18]=25;
+        LL1table[13][19]=25;
+        LL1table[8][17]=12;
+        LL1table[10][17]=18;
+        LL1table[12][17]=22;
+        LL1table[14][17]=28;
+        LL1table[11][18]=21;
+        LL1table[11][19]=21;
+        LL1table[13][6]=25;
+        LL1table[13][7]=25;
+        LL1table[13][8]=25;
+        LL1table[13][9]=25;
+        LL1table[13][10]=25;
+        LL1table[11][6]=21;
+        LL1table[11][7]=21;
+        LL1table[11][8]=21;
+        LL1table[11][9]=21;
+        LL1table[11][10]=21;
+        String nt[]={"program","stmt" ,
+                "compoundstmt",
+                "stmts" ,
+                "ifstmt" ,
+                "whilestmt",
+                "assgstmt" ,
+                "boolexpr" ,
+                "boolop" ,
+                "arithexpr" ,
+                "arithexprprime",
+                "multexpr" ,
+                "multexprprime" ,
+                "simpleexpr"};
+        String t[]={"{"	,"}","if","while",	"ID",
+                "<",">",	"<=",	">=",	"==",
+                "NUM"	,"+",	"-",	"*"	,"/",
+                "$",	"(",	")",";","="};
+
+        for(int i=0;i<nt.length;i++){
+            nonterminals.put(nt[i],i+1);
+        }
+        for(int i=0;i<t.length;i++){
+            terminals.put(t[i],i+1);
+        }
+
+    }
+
+    private static String removeTab(String str){
+        int index=0;
+        String newstr="";
+        while(str.charAt(index)=='\t'){
+            index++;
+        }
+        return str.substring(index);
+    }
+
+
+    private static List<String> process(String str,int tab){
+        int index=0;
+        List<String> res=new ArrayList<>();
+        StringBuffer word=new StringBuffer();
+        while(index<str.length()){
+            word.delete(0,word.length());
+            while(str.charAt(index)==' '){
+                index++;
+            }
+            for(int i=0;i<tab;i++){
+                word.append('\t');
+            }
+
+            while(index<str.length()&&str.charAt(index)!=' '){
+                char c=str.charAt(index);
+                word.append(c);
+                index++;
+            }
+            res.add(word.toString());
+        }
+        return res;
+    }
+
+    private static int numOfTab(String str){
+        int index=0;
+        while(str.charAt(index)=='\t'){
+            index++;
+        }
+        return index;
+    }
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        stack.push("program");
+        while(!stack.empty()) {
+            String top=removeTab(stack.peek());
+             if (top.equals("E")) {
+                ans.add(stack.pop());
+            } else {
+                if (nonterminals.containsKey(top)) {
+                    int ntindex = nonterminals.get(top);
+                    int tindex = terminals.get(input.get(0));
+                    int code = LL1table[ntindex][tindex];
+                    if (code != 0) {
+                        String expression = expr.get(code);
+                        int tabindex=0;
+                        if(!leftSimbol.containsKey(top)){
+                            leftSimbol.put(top,numOfTab(stack.peek())+1);
+                             tabindex=leftSimbol.get(top);
+                        }else {
+                            tabindex=numOfTab(stack.peek())+1;
+                        }
+                        List<String>    res = process(expression,tabindex);
+                        String s="";
+                        s+=stack.pop();
+                        ans.add(s);
+                        for (int i = res.size() - 1; i >= 0; i--) {
+                            stack.push(res.get(i));
+                        }
+                    }else{
+                        hasError=true;
+                        String s=top;
+                        int index=stack.size()-1;
+                        while(nonterminals.containsKey(s)){
+                            index--;
+                            s=removeTab(stack.get(index));
+                        }
+                        missingword=s;
+                        input.add(0,s);
+                        for(int i=0;i<row.size();i++){
+                            if(numOfRemovedInputs<=row.get(i)){
+                                numOfRow=i+1;
+                                break;
+                            }
+                        }
+                        errorRow=numOfRow;
+                    }
+                } else {
+                    if (top.equals(input.get(0))) {
+                        input.remove(0);
+                        String s="";
+                        s+=stack.pop();
+                        ans.add(s);
+                        numOfRemovedInputs++;
+                    }else{
+                        hasError=true;
+                        for(int i=0;i<row.size();i++){
+                            if(numOfRemovedInputs<row.get(i)){
+                                numOfRow=i+1;
+                                break;
+                            }
+                        }
+                        errorRow=numOfRow;
+                        ans.add(stack.pop());
+                    }
+
+                }
+            }
+        }
+        if(hasError){
+            System.out.println("语法错误,第"+errorRow+"行,缺少"+"\""+missingword+"\"");
+        }
+        for(int i=0;i<ans.size()-1;i++){
+            System.out.println(ans.get(i));
+        }
+        System.out.print(ans.get(ans.size()-1));
+
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        initialize();
+        analysis();
+    }
+}

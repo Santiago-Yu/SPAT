@@ -1,0 +1,41 @@
+package step1;
+import java.util.Arrays;
+import java.util.TreeSet;
+
+public class Task {
+    class Day implements Comparable<Day> {
+		Day(int temp, int day) {
+			this.temp = temp;
+			this.day = day;
+		}
+		@Override
+		public int compareTo(Day o) {
+			if(temp != o.temp)
+				return temp - o.temp;
+			return o.day - day;
+		}
+		int temp;
+		int day;
+	}
+	public  int[] dailyTemps(Integer[] temps){
+		/********** BEGIN **********/
+		int [] a = new int[temps.length];
+		Arrays.fill(a, 0);
+		//有哪些温度低的
+		TreeSet<Day> set = new TreeSet<Day>();
+		
+		//把以前比这一天温度低的,都更新了
+		for(int i=0; i<temps.length; i++) {
+			Day nowDay = new Day(temps[i], i);
+			while(set.lower(nowDay) != null) {
+				Day day = set.lower(nowDay);
+				set.remove(day);
+				a[day.day] = i - day.day;
+			}
+			set.add(nowDay);
+		}
+		
+		return a;
+		/********** END **********/
+	}
+}

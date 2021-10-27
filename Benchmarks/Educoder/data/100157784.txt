@@ -1,0 +1,40 @@
+
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in=new Scanner(System.in);
+        int a=in.nextInt();
+        int b=a/2;
+        int b1=b;
+        int c=a%2;
+        int c1=c;
+        long sum,i,j,counter,counter1,counter2;
+        sum=0;
+        int e;
+        for(i=b;i>=0;i--)
+        {
+            counter=1;counter1=1;counter2=1;
+            c=c+2;
+            b=b-1;
+            if(c>0&&b>0)
+            {
+           for(j=c+b,e=b;e>0;e--,j--)
+        	   counter=counter*j;
+           for(j=b;j>=1;j--)
+        	   counter1=counter1*j;
+           sum=sum+counter/counter1;
+            }
+            else if(c==0||b==0)
+                sum=sum+1;
+	}
+        if(c1==1)
+            sum=sum+b1+1;
+        else
+            sum=sum+1;
+        
+        System.out.print(sum);
+
+}
+}

@@ -1,0 +1,70 @@
+package step3;
+
+import java.io.File;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File dir) {
+		Stack<File> fileDir = new Stack();
+		List<String> fileName = new ArrayList();
+		fileDir.push(dir);
+		File file = null;
+		int level1 = getFileLevel(dir);
+		while (!fileDir.isEmpty()) {
+			file = fileDir.pop();
+			int level2 = getFileLevel(file);
+			if (file.isDirectory()) {
+				for(int i = 0; i<2*(level2 - level1); i++)
+					System.out.print(" ");
+				System.out.print("+--");
+				System.out.println(file.getName());
+				List<File> tempFile = Arrays.asList(file.listFiles());
+				Collections.sort(tempFile, new Comparator<File>() {
+					@Override
+					public int compare(File o1, File o2) {
+						// TODO Auto-generated method stub
+						return o2.getName().compareTo(o1.getName());
+					}
+				});
+				for (File f : tempFile) {
+					if(f.isDirectory()) {
+						fileDir.push(f);
+						continue;
+					}
+					String str = f.getName();
+					str = str.substring(str.indexOf('.')+1);
+					if(str.compareTo("jpg")  == 0||str.compareTo("png") == 0||str.compareTo("bmp") == 0)
+						fileDir.push(f);
+				}
+			} else if (file.isFile()) {
+				for(int i = 0; i<2*(level2 - level1); i++)
+					System.out.print(" ");
+				System.out.print("--");
+				System.out.println(file.getName());
+			}
+		}
+	}
+
+	public int getFileLevel(File file) {
+		String str = file.getAbsolutePath();
+		int count = 0;
+		for (int i = 0; i < str.length(); i++) {
+			if (str.charAt(i) == '/') {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	/********** END **********/
+}

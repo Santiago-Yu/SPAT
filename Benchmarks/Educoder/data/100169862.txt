@@ -1,0 +1,22 @@
+package step3;
+import java.util.Scanner;
+public class Main{
+    public static void main(String[]args){
+        Scanner cin = new Scanner(System.in);
+        /***Begin your code here***/
+        int n = cin.nextInt();
+        int a = n%10;
+		int b = n/10%10;
+        int c = n/100%10;
+		int d = n/1000%10;
+		if(n<100||n>9999)
+		System.out.println("neither");
+		else if(n<1000&&a*a*a+b*b*b+c*c*c==n)
+		System.out.println("narcissistic");
+		else if(n>=1000&&a*a*a*a+b*b*b*b+c*c*c*c+d*d*d*d==n)
+		System.out.println("rose");
+		else System.out.println("neither");
+        /***End your code here***/
+        cin.close();
+    }
+}

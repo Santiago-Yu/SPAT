@@ -1,0 +1,35 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+      if(ferry.length == 0 || ferry[0].length == 0){
+          return 0;
+      }
+      int[][] ex = new int[ferry.length][ferry[0].length];
+      int count = 0;
+
+      for (int row=0;row<ferry.length;row++){
+        for (int col=0;col<ferry[row].length;col++){
+            if(ex[row][col] == 0 && ferry[row][col] == '+'){
+                setVisited(ex,row,col,ferry);
+                count++;
+            }
+      	}
+      }
+      return count;
+     }
+         
+      public void setVisited(int[][] ex,int row,int col,char[][] ferry){
+          if(col<0||row<0||col>=ferry[0].length|| row>=ferry.length ||ferry[row][col]!='+'||ex[row][col] == 1)
+              return;
+         ex[row][col] = 1;
+          setVisited(ex,row + 1,col,ferry);
+          setVisited(ex,row - 1,col,ferry);
+          setVisited(ex,row,col + 1,ferry);
+          setVisited(ex,row,col - 1,ferry);
+      }
+         
+      /***********END ***************/
+}

@@ -1,0 +1,534 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.*;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+public class Task{
+    
+    public static void main(String[] args) throws IOException {
+        //读取文件内容至list集合中
+        List<User> userlist = getUserTagsFromCsv("src/step1/user_tag.csv");
+        int minSupport = 1;
+        int tagRecommendNum = 4;
+        Map<String, Map<String, Double>> scoreMap = new HashMap<String, Map<String, Double>>();
+        List<List<String>> transRecords = getTagFromCsv(scoreMap, minSupport, "src/step1/tag_cooccurrence.csv");
+        FPGrowth fpGrowth = new FPGrowth(scoreMap, minSupport, transRecords.size());
+        fpGrowth.compute(transRecords, null);
+
+        Map<Integer, List<Tag>> userRecommend = new HashMap<Integer, List<Tag>>();
+        List<String> data = new ArrayList<>();
+        for (User user : userlist) {
+            List<Tag> scoreList = new ArrayList<Tag>();
+            List<Tag> userTagList = user.getTags();
+            for (Map.Entry<String, Map<String, Double>> entry : scoreMap.entrySet()) {
+                double tempScore = 0.0;
+                Map<String, Double> tempMap = entry.getValue();
+                for (Tag tag : userTagList) {
+                    if (tempMap.containsKey(tag.getName())) {
+                        tempScore += tempMap.get(tag.getName()) * tag.getWeight();
+                    }
+                }
+                Tag tag = new Tag(entry.getKey(), tempScore);
+                scoreList.add(tag);
+            }
+
+            Collections.sort(scoreList, new Comparator<Tag>() {
+                @Override
+                public int compare(Tag t1, Tag t2) {
+                    //降序排列
+                    return t2.getWeight().compareTo(t1.getWeight());
+                }
+            });
+
+            List<String> newUserTagList = new ArrayList<String>();
+            Set<String> userTagSet = user.getTagSet();
+            Iterator<Tag> iter = scoreList.iterator();
+            while (iter.hasNext() && newUserTagList.size() < tagRecommendNum) {
+                Tag tempTag = iter.next();
+                if (!userTagSet.contains(tempTag.getName())) {
+                    newUserTagList.add(tempTag.getName());
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < newUserTagList.size(); i++) {
+                sb.append(newUserTagList.get(i)).append(",");
+            }
+            data.add(sb.toString().substring(0, sb.toString().length() - 1));
+        }
+
+
+//        for (User user : userlist) {
+//            data.add(user.getTagStr());
+//        }
+        //将数据写到user_recommand.csv中
+        writeCsvFile("src/step1/user_recommand.csv", data);
+    }
+
+
+    /**
+     * 读取user_tag文件信息至list集合中
+     *
+     * @param path 文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    public static List<User> getUserTagsFromCsv(String path) throws IOException {
+        // 创建创建用户集合并读取文件数据
+        List<User> userList = new ArrayList<>();
+        try {
+            // 创建CSV读对象   需要设置编码格式为UTF-8
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)), Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读这行的第一列
+                String id = csvReader.get(0);
+                //System.out.println(id);
+                String tagName = csvReader.get(1);
+               // System.out.println(tagName);
+                String weight = csvReader.get(2);
+                //System.out.println(weight);
+                String[] tagItems = tagName.split(",");
+                String[] weightItems = weight.split(",");
+                List<Tag> tags = new ArrayList<>();
+                Set<String> tagSet = new HashSet<>();
+                User user = new User();
+                user.setTagStr(tagName);
+                user.setUserId(Integer.valueOf(id));
+                for (int j = 0; j < tagItems.length; j++) {
+                    Tag tag = new Tag();
+                    tag.setName(tagItems[j]);
+                    tagSet.add(tagItems[j]);
+                    tag.setWeight(Double.valueOf(weightItems[j].replace("[", "").replace("]", "")));
+                    tags.add(tag);
+                }
+                user.setTags(tags);
+                user.setTagSet(tagSet);
+                userList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    /**
+     * 读取tag_coocurrence.csv
+     *
+     * @param path 路径
+     * @return 读取后生成map集合
+     * @throws IOException
+     */
+    public static List<List<String>> getTagFromCsv(Map<String, Map<String, Double>> scoreMap, int minSupport, String path) {
+        // 创建创建用户集合并读取文件数据
+        List<List<String>> transRecord = new LinkedList<List<String>>();
+        Map<String, Integer> name2IDMap = new HashMap<String, Integer>();
+        try {
+            // 创建CSV读对象   需要设置编码格式为UTF-8
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)), Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                String tagName = csvReader.get(1);
+                String[] tagItems = tagName.split(",");
+                List<String> record = new LinkedList<String>();
+                for (String string : tagItems) {
+                    if (!name2IDMap.containsKey(string)) {
+                        name2IDMap.put(string, 1);
+
+                    } else {
+                        name2IDMap.put(string, name2IDMap.get(string) + 1);
+                    }
+                    record.add(string);
+                }
+                transRecord.add(record);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int size = transRecord.size();
+        Iterator<Map.Entry<String, Integer>> it = name2IDMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Integer> entry = it.next();
+            if (entry.getValue() >= minSupport) {
+                scoreMap.put(entry.getKey(), new HashMap<String, Double>());
+                //scoreMap.get(entry.getKey()).put(entry.getKey(), entry.getValue() * 1.0 / size);
+            }
+        }
+        return transRecord;
+    }
+
+    /**
+     * 写结果文件
+     *
+     * @param filePath 文件路径
+     * @param data     要写入的数据
+     * @throws IOException
+     */
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"id", "recommand_tags"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+        int id = 1;
+        for (String tag : data) {
+            String[] content = {id++ + "", tag};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+// 标签
+class Tag {
+    private String name; // 标签名
+    private Double weight; // 权重值
+
+    public Tag() {
+    }
+
+    public Tag(String name, double weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+}
+
+// 用户
+class User {
+    private int userId;
+    private List<Tag> tags;
+    private String tagStr;
+    private Set<String> tagSet;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagStr() {
+        return tagStr;
+    }
+
+    public void setTagStr(String tagStr) {
+        this.tagStr = tagStr;
+    }
+
+    public Set<String> getTagSet() {
+        return tagSet;
+    }
+
+    public void setTagSet(Set<String> tagSet) {
+        this.tagSet = tagSet;
+    }
+}
+
+class FPGrowth {
+    private int minSupport;
+    private int itemNum;
+    private Map<String, Map<String, Double>> scoreMap;
+
+
+    public FPGrowth(Map<String, Map<String, Double>> scoreMap, int minSupport, int itemNum) {
+        this.itemNum = itemNum;
+        this.minSupport = minSupport;
+        this.scoreMap = scoreMap;
+    }
+
+    public void compute(List<List<String>> transRecords, List<String> postPattern) {
+        List<FPTreeNode> headerTable = buildHeaderTable(transRecords);
+
+        FPTreeNode treeRoot = buildFPTree(transRecords, headerTable);
+
+        if (treeRoot.getChildren() == null || treeRoot.getChildren().size() == 0) {
+            return;
+        }
+        if (postPattern != null) {
+            for (FPTreeNode header : headerTable) {
+                if (postPattern.size() == 1) {
+                    //System.out.println(header.getCount() + "\t" + header.getNodeName() + "\t" + postPattern.get(0));
+                    scoreMap.get(header.getNodeName()).put(postPattern.get(0), header.getCount() * 1.0 / itemNum);
+                    scoreMap.get(postPattern.get(0)).put(header.getNodeName(), header.getCount() * 1.0 / itemNum);
+                }
+            }
+        }
+
+        for (FPTreeNode header : headerTable) {
+            List<String> newPostPattern = new LinkedList<>();
+            newPostPattern.add(header.getNodeName());
+            if (postPattern != null) {
+                newPostPattern.addAll(postPattern);
+            }
+            List<List<String>> newTransRecords = new LinkedList<List<String>>();
+            FPTreeNode backNode = header.getNextNode();
+            while (backNode != null) {
+                int counter = backNode.getCount();
+                List<String> preNodes = new ArrayList<>();
+                FPTreeNode parent = backNode;
+                while ((parent = parent.getParent()).getNodeName() != null) {
+                    preNodes.add(parent.getNodeName());
+                }
+                while (counter-- > 0) {
+                    newTransRecords.add(preNodes);
+                }
+                backNode = backNode.getNextNode();
+            }
+            compute(newTransRecords, newPostPattern);
+
+        }
+    }
+
+    public List<FPTreeNode> buildHeaderTable(List<List<String>> transRecords) {
+        if (transRecords.size() > 0) {
+            List<FPTreeNode> F1 = new ArrayList<>();
+            Map<String, FPTreeNode> map = new HashMap<>();
+            for (List<String> record : transRecords) {
+                for (String item : record) {
+                    if (map.keySet().contains(item)) {
+                        map.get(item).countIncrement(1);
+                    } else {
+                        FPTreeNode node = new FPTreeNode(item);
+                        node.setCount(1);
+                        map.put(item, node);
+                    }
+                }
+            }
+
+            Set<String> names = map.keySet();
+            for (String name : names) {
+                FPTreeNode tmpNode = map.get(name);
+                if (tmpNode.getCount() >= minSupport) {
+                    F1.add(tmpNode);
+                }
+            }
+            Collections.sort(F1);
+
+            return F1;
+        } else
+            return null;
+
+    }
+
+    public FPTreeNode buildFPTree(List<List<String>> transRecords, List<FPTreeNode> F1) {
+        FPTreeNode root = new FPTreeNode();
+
+        for (List<String> transRecord : transRecords) {
+
+            LinkedList<String> record = sortByF1(transRecord, F1);
+            FPTreeNode subTreeRoot = root;
+            FPTreeNode tmpRoot = null;
+
+            if (root.getChildren() != null) {
+                while (!record.isEmpty() && (tmpRoot = subTreeRoot.findChild(record.peek())) != null) {
+                    tmpRoot.countIncrement(1);
+                    subTreeRoot = tmpRoot;
+                    record.poll();
+
+                }
+            }
+            addNodes(subTreeRoot, record, F1);
+        }
+        return root;
+    }
+
+
+    private void addNodes(FPTreeNode subTreeRoot, LinkedList<String> record, List<FPTreeNode> F1) {
+
+        if (record.size() > 0) {
+            while (record.size() > 0) {
+                String item = record.poll();
+
+                FPTreeNode leafNode = new FPTreeNode(item);
+                leafNode.setCount(1);
+                leafNode.setParent(subTreeRoot);
+                subTreeRoot.addChild(leafNode);
+
+                for (FPTreeNode f1 : F1) {
+                    if (f1.getNodeName().equals(item)) {
+                        while (f1.getNextNode() != null) {
+                            f1 = f1.getNextNode();
+                        }
+                        f1.setNextNode(leafNode);
+                        break;
+                    }
+                }
+                addNodes(leafNode, record, F1);
+
+            }
+        }
+    }
+
+    public LinkedList<String> sortByF1(List<String> transRecord, List<FPTreeNode> F1) {
+        Map<String, Integer> map = new HashMap<>();
+        for (String item : transRecord) {
+            for (int i = 0; i < F1.size(); i++) {
+                FPTreeNode tmpNode = F1.get(i);
+                if (tmpNode.getNodeName().equals(item)) {
+                    map.put(item, i);
+                }
+            }
+        }
+        List<Map.Entry<String, Integer>> al = new ArrayList<Map.Entry<String, Integer>>(map.entrySet());
+        Collections.sort(al, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> et, Map.Entry<String, Integer> et1) {
+                //降序排列
+                return et.getValue() - et1.getValue();
+            }
+        });
+        LinkedList<String> res = new LinkedList<>();
+        for (Map.Entry<String, Integer> entry : al) {
+            res.add(entry.getKey());
+        }
+
+        return res;
+    }
+
+    public Map<String, Map<String, Double>> getScoreMap() {
+        return scoreMap;
+    }
+}
+
+class FPTreeNode implements Comparable<FPTreeNode> {
+    private int id;
+    private String nodeName;//节点名称
+    private int count;//计数
+    private FPTreeNode parent;//父节点
+    private List<FPTreeNode> children;
+    private FPTreeNode nextNode;//下一个同名节点
+
+    public FPTreeNode() {
+    }
+
+    public FPTreeNode(String name) {
+        this.nodeName = name;
+    }
+
+    public int getID() {
+        return this.id;
+    }
+
+    public void setID(int id) {
+        this.id = id;
+    }
+
+    public String getNodeName() {
+        return this.nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
+    }
+
+    public int getCount() {
+        return this.count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public FPTreeNode getParent() {
+        return this.parent;
+    }
+
+    public void setParent(FPTreeNode parent) {
+        this.parent = parent;
+    }
+
+    public List<FPTreeNode> getChildren() {
+        return this.children;
+    }
+
+    public void setChildren(List<FPTreeNode> children) {
+        this.children = children;
+    }
+
+    public FPTreeNode getNextNode() {
+        return this.nextNode;
+    }
+
+    public void setNextNode(FPTreeNode nextNode) {
+        this.nextNode = nextNode;
+    }
+
+    public void addChild(FPTreeNode child) {
+        if (this.getChildren() == null) {
+            List<FPTreeNode> list = new ArrayList<FPTreeNode>();
+            list.add(child);
+            this.setChildren(list);
+        } else {
+            this.getChildren().add(child);
+        }
+    }
+
+    public FPTreeNode findChild(String name) {
+        List<FPTreeNode> children = this.getChildren();
+        if (children != null) {
+            for (FPTreeNode child : children) {
+                if (child.getNodeName().equals(name)) {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public void countIncrement(int n) {
+        this.count += n;
+    }
+
+    @Override
+    public int compareTo(FPTreeNode node) {
+        int count = node.getCount();
+        return count - this.count;
+    }
+
+}

@@ -1,0 +1,40 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+		int a = date.charAt(0)-48;
+        int c;
+        int st;
+        int[]dd  = {0,1,0,1,0,0,	1,0,0,0,1,
+                    0,0,0,0,1,	0,0,0,0,0,
+                    1,0,0,0,0,	0,0,1,0,0,
+                    0,0,0,0,0,	1,0,0,0,0,
+                    0,0,0,0,1,	0,0,0,0,0,
+                    0,0,0,0,1,	0,0,0,0,0,
+                    0,0,0,0,0,  1,0,0,0,0,
+                    0,0,0,0,0,  0,0,1,0,0,
+                    0,0,0,0,0,  0,0,0,0,0,
+                    1,0,};
+        if(date.length() == 3){
+            c = date.charAt(2)-48;
+        }
+        else{
+            c = (date.charAt(2)-48)*10 + (date.charAt(3)-48);
+        }
+        if(a  == 7)
+        {
+            st = c;
+        }
+		else if(a == 8){
+            st = c + 31;
+        }
+        else{
+            st = c + 31 + 31;
+        }
+        if(dd[st]==1)return true;
+        else return false;
+		
+	}
+}
+

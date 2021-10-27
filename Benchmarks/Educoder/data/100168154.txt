@@ -1,0 +1,40 @@
+package step2;
+
+import java.util.Scanner;
+
+
+public class FindZhiShu {
+
+
+	public static void main(String[] args) {
+		   /*
+		     打印输出质数的时候务必按照如下格式：System.out.print(质数+" ")；
+		     使用print进行打印同时被打印输出的质数后加上一个空格，
+		     以便于与平台提供的结果格式保持一致！
+            */
+
+		   /**********begin**********/
+		Scanner sc=new Scanner (System.in);
+		int i,j,k,num;
+//		int count=0;
+		for(num=1;num<1000;num++)
+			{
+				k=(int)(Math.sqrt(num));//写在循环外面只用计算判断一次
+				for(j=2;j<=k;j++)
+				{
+					if(num%j==0)
+					{
+						break;
+					}
+				}
+				if(j>(int)(Math.sqrt(num))&&num!=1)
+				{
+					System.out.print(num+" ");
+//					count++;
+//					if(count%5==0)
+//					System.out.println("\n");
+				}
+			}
+           /**********end**********/	
+	}
+}

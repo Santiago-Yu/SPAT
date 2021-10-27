@@ -1,0 +1,71 @@
+package step2;
+import java.util.*;
+ class pos {
+	int x;
+	int y;
+	pos(){};
+	pos(int x,int y){
+		this.x=x;
+		this.y=y;
+	}
+}
+public class Task {
+    static int count = 0;
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        int [][] visited = new int[n][m];
+        for(int i=0;i<n;i++)
+			for(int j=0;j<m;j++){
+				if(area[i][j] == 'x') visited[i][j]=1;
+			}
+		while(find(visited) != null){
+    		//System.out.println(count);
+    		count+=1;
+    		pos now = find(visited);
+    		bfs(now,visited);
+    	}
+        return count;
+    }
+		/********* End *********/	
+     public static pos find(int visited[][]){
+    	for(int i=0;i<visited.length;i++)
+    		for(int j=0;j<visited[0].length;j++)
+    		{
+    			if(visited[i][j] == 0) {
+    				pos p = new pos(i,j);
+    				return p;
+    			}
+    		}
+    	return null;
+    }
+    public static void bfs(pos p ,int [][] visited){
+		visited[p.x][p.y] = 1;
+		Queue<pos> queue = new LinkedList<>();
+		queue.add(p);
+		while(!queue.isEmpty()){
+			pos now = queue.peek();
+			if(now.x-1>=0 && visited[now.x-1][now.y] == 0){
+				pos next = new pos(now.x-1,now.y);
+				visited[now.x-1][now.y] = 1;
+				queue.add(next);
+			}
+			if(now.x + 1 <=visited.length-1 && visited[now.x+1][now.y] == 0){
+				pos next = new pos(now.x+1,now.y);
+				visited[now.x+1][now.y] = 1;
+				queue.add(next);
+			}
+			if(now.y - 1 >=0 && visited[now.x][now.y-1] == 0){
+				pos next = new pos(now.x,now.y-1);
+				visited[now.x][now.y-1] = 1;
+				queue.add(next);
+			}
+			if(now.y + 1 <=visited[0].length-1 && visited[now.x][now.y+1] == 0){
+				pos next = new pos(now.x,now.y+1);
+				visited[now.x][now.y+1] = 1;
+				queue.add(next);
+			}
+			queue.poll();
+		}
+			
+	}
+}

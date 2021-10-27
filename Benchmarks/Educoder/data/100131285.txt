@@ -1,0 +1,25 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        if(num2 < num1){
+            int tmp = num1;
+            num1 = num2;
+            num2 = tmp;
+        }
+        int sum = 0;
+        for (int i = num1;i <= num2;i++){
+            /**分解为一个一个的**/
+            int tmp = i;
+        	while(tmp > 0){
+                sum += (tmp%10);
+                tmp /= 10;
+            }
+        }
+        return sum;
+		/********** END **********/
+	}
+}

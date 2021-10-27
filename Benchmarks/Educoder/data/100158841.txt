@@ -1,0 +1,31 @@
+package Q205;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in=new Scanner(System.in);
+        int m=in.nextInt();
+        in.nextLine();
+        String[] s=in.nextLine().split(" ");
+        int[] n=new int[s.length];
+        for(int i=0;i<s.length;i++){
+        	n[i]=Integer.parseInt(s[i]);
+        }
+        int[][] w=new int[n.length][m+1];
+        for(int i=0;i<n.length;i++){
+        	for(int j=1;j<=m;j++){
+                if(i==0){
+                	w[i][j]=n[i]<=j?n[i]:0;
+                    continue;
+                }
+                if(j>=n[i]){
+                    w[i][j]=w[i-1][j]<w[i-1][j-n[i]]+n[i]?w[i-1][j-n[i]]+n[i]:w[i-1][j];
+                }
+                else w[i][j]=w[i-1][j];
+            }
+        }
+        System.out.print(w[n.length-1][m]);
+	}
+
+}

@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class HelloWorld {
+	
+	public static void main(String[] args) {
+		//获取输入的数据并添加至集合
+		Scanner sc = new Scanner(System.in);
+		ArrayList list = new ArrayList<>();
+        int length = sc.nextInt();
+		for(int i =0 ; i< length; i++){
+			list.add(sc.next());
+		}
+		/********** Begin *********/
+		list.remove(0); //删除第一个
+        int a = list.size()-1;
+        list.remove(a);
+        list.add("hello");
+        list.add("educoder");
+        list.set(2,"list");
+        int n = list.size()-1;
+        for(int j=0;j<=n;j++){
+        String s = (String)list.get(j);
+        System.out.println(s);
+        }
+        
+		/********** End **********/
+	}
+}

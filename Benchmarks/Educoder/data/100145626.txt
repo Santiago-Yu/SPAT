@@ -1,0 +1,30 @@
+package step4;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		int year = Integer.valueOf(releaseDate.substring(0, 4));
+		int month = Integer.valueOf(releaseDate.substring(5,7));
+		int dayOfMonth = Integer.valueOf(releaseDate.substring(8));
+		Calendar calendar = new GregorianCalendar(year,month-1,dayOfMonth);
+		calendar.add(Calendar.DATE, day);
+		return format.format(calendar.getTime());
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

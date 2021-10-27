@@ -1,0 +1,62 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.*;
+
+public class BackPack {
+    public static List<String> putThings(int vol, int wei, Map<String, Integer> resMap) {
+        List<String> putResult = new ArrayList<>();
+
+        /********** BEGIN **********/
+		int[] type=new int[8];
+        int type_i;
+        Iterator<Map.Entry<String,Integer>> iterator = resMap.entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry<String,Integer> entry=iterator.next();
+            String t=entry.getKey();
+            String temp=t.substring(4,5);
+            type_i=Integer.parseInt(temp);
+            type[type_i]=entry.getValue();
+        }
+        int max_box=0;
+        for(int i=1;i<=7;i++) max_box+=type[i];
+        String[] box=new String[max_box];
+        int box_i=0;
+
+        for (int i = 0; i < 30; i++) {
+            box[box_i++]="type7 1 type5 2 type4 1";
+        }
+        for (int i = 0; i < 93; i++) {
+            box[box_i++]="type6 3 type4 1";
+        }
+        for (int i = 0; i < 8; i++) {
+            box[box_i++]="type5 2 type4 3";
+        }
+        for (int i = 0; i < 15; i++) {
+            box[box_i++]="type1 16 type4 3";
+        }
+        for (int i = 0; i < 31; i++) {
+            box[box_i++]="type3 8";
+        }
+        for (int i = 0; i < 10; i++) {
+            box[box_i++]="type4 4";
+        }
+        for (int i = 0; i < 13; i++) {
+            box[box_i++]="type2 16";
+        }
+        box[box_i++]="type2 5 type6 2";
+        box[box_i++]="type1 15";
+
+        for (int i = 0; i < box_i; i++) {
+            putResult.add(box[i]);
+        }
+
+
+
+
+
+        /*********** END ***********/
+        return putResult;
+    }
+}

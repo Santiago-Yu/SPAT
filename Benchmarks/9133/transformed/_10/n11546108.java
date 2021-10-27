@@ -1,0 +1,44 @@
+class n11546108 {
+	@Override
+	public void run() {
+		try {
+			String ligneEnCours;
+			BufferedReader in = new BufferedReader(new InputStreamReader(new URL(urlInfo).openStream()));
+			informations = "";
+			int i = 0;
+			while ((ligneEnCours = in.readLine()) != null) {
+				switch (i) {
+				case 0:
+					version = ligneEnCours;
+					break;
+				case 1:
+					url = ligneEnCours;
+					break;
+				default:
+					informations += ligneEnCours + '\n';
+					break;
+				}
+				i++;
+			}
+			in.close();
+			erreur = false;
+		} catch (IOException e) {
+			erreur = true;
+			texteErreur = e.getMessage();
+			if (texteErreur.equals("Network is unreachable")) {
+				texteErreur = "Pas de r¨¦seau";
+				numErreur = 1;
+			}
+			if (e instanceof FileNotFoundException) {
+				texteErreur = "Probl¨¨me param¨¦trage";
+				numErreur = 2;
+			}
+			e.printStackTrace();
+		} finally {
+			for (ActionListener al : listeners) {
+				al.actionPerformed(null);
+			}
+		}
+	}
+
+}

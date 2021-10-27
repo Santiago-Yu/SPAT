@@ -1,0 +1,50 @@
+package step1;
+import java.util.Scanner;
+
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        int x,y;
+        System.out.println("请输入西瓜重量：");
+        x=sc.nextInt();
+         System.out.println("请输入顾客所付钱数：");
+        y=sc.nextInt();
+        double a=0;
+		double b=0;
+        
+        
+         if(x<20)
+        { if(x<15)
+            {if(x<10)
+               {if(x<5)
+                  {a=(y-x*1.05);
+                   System.out.printf("西瓜应付钱数：%.2f\n",(y-a));
+                   System.out.printf("应找钱数：%.2f\n",a);
+                  }
+                   else{a=(float) (y-x*1.00);
+                       System.out.printf("西瓜应付钱数：%.2f\n",(y-a));
+                       System.out.printf("应找钱数：%.2f\n",a);
+                       }
+               }
+               else
+               {a=(float) (y-x*0.95);
+                   System.out.printf("西瓜应付钱数：%.2f\n",(y-a));
+                   System.out.printf("应找钱数：%.2f\n",a);
+                   }
+            }
+            else
+            {a=(float) (y-x*0.90);
+             System.out.printf("西瓜应付钱数：%.2f\n",(y-a));
+             System.out.printf("应找钱数：%.2f\n",a);
+            }
+        }
+        else
+        {a=(float) (y-x*0.85);
+         System.out.printf("西瓜应付钱数：%.2f\n",(y-a));
+         System.out.printf("应找钱数：%.2f\n",a);
+        }
+		/******End******/	
+	}
+
+}

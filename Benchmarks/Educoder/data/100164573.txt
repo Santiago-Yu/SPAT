@@ -1,0 +1,22 @@
+package step2;
+
+public class Equation {
+    double a, b, c;
+    public Equation(){}
+    public Equation(double a,double b,double c)    {this.a=a;this.b=b;this.c=c;}
+    public void set_Equation(double a,double b,double c){this.a=a;this.b=b;this.c=c; }
+    public void set_a(double a){this.a=a; }
+    public void set_b(double b ){this.b=b; }
+    public void set_c(double c){this.c=c; }
+    public double get_a(){return a; }
+    public double get_b(){return b; }
+    public double get_c(){return c; }
+    public double deta(){   
+        return  b*b-4*a*c;  }  //计算并返回deta
+    public double getX1(){  
+        return (-b+Math.sqrt(deta()))/(2*a); } //第一个解
+    public double getX2(){  
+        return (-b-Math.sqrt(deta()))/(2*a); } //第二个解
+    public String toString(){ 
+        return "方程为： "+a+"*X*X"+b+"*X"+c+"=0"; }
+}

@@ -1,0 +1,25 @@
+package step1;
+import java.util.*;
+public class Yard {
+	private float length;
+    private float width;
+    Yard(float length,float width){
+    	this.length=length;
+        this.width=width;
+    }
+    public float getPerimeter(){
+    	return (length+width)*2;
+    }
+    public float getAcreage(){
+    	return length*width;
+    }
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        float a,b;
+        a=sc.nextFloat();
+        b=sc.nextFloat();
+    	Yard yard=new Yard(a,b);
+        System.out.print(String.valueOf(yard.getPerimeter()) + ' ' + String.valueOf(yard.getAcreage()));
+    }
+}
+

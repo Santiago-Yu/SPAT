@@ -1,0 +1,67 @@
+package step2;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.Set;
+
+public class Task {
+	
+ public int getTheWay(int num,int bagCapacity,long[] snacks){
+    	int count=0;
+    	int k;
+    	long temp;
+    	Map<Integer,Long> maptemp = new HashMap<Integer,Long>();
+    	Map<Integer,Long> map = new HashMap<Integer,Long>();
+    	for(int i = 0;i<num;i++) {
+    		temp = snacks[i];
+    		 k = i;
+    		for(int j = i+1;j<num;j++) {
+    			if(snacks[j]<temp)
+    			{
+    				temp = snacks[j];
+    				k = j;
+    			}
+    		}
+    		snacks[k] = snacks[i];
+    		snacks[i] = temp;
+    	}
+    	for(int i = 0;i<snacks.length;i++) {
+    		map.put(i, snacks[i]);
+    	}
+    	
+    	count = getNum(map,maptemp,num,0,bagCapacity);
+    	
+    	return count+1;
+	}
+    public int getNum(Map<Integer,Long> map,Map<Integer,Long> maptemp,int k,long sum,int bagCapacity) {
+    	int count=0;
+    	int flag = -1;
+    	Map<Integer,Long> maptemps = maptemp;
+    	Iterator<Map.Entry<Integer,Long>> it = maptemp.entrySet().iterator();
+    	while(it.hasNext()) {
+    		Map.Entry<Integer,Long> entry=it.next();
+	        flag = entry.getKey();
+    	}
+    	flag++;
+    	
+    	if(k>0)
+	    	for(int i = flag;i<map.size();i++) {
+	    		
+	    		if(!maptemps.containsKey(i)&&sum+map.get(i)<=bagCapacity)
+	    		{
+	    			maptemps.put(i, map.get(i));
+	    			count+= 1+getNum(map,maptemps,--k,sum+map.get(i),bagCapacity);
+	    		}
+	    		maptemps.clear();
+	    		maptemps = maptemp;
+	    	
+	    	}
+    	return count;
+    }
+		
+}

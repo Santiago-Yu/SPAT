@@ -1,0 +1,40 @@
+package step2;
+import java.util.ArrayList;
+import java.util.List;
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+
+        List<Integer>  temp = new ArrayList<>();
+		for(int i=0 ; i<abilities.length;i++ ){
+    		int sum=1;
+    		traceBack(temp,
+    	    		abilities,selectedNum,distance,i,sum);
+    	}
+		long max=0;
+        for(int i=0;i<temp.size();i++){
+    		if(max<temp.get(i)) max = temp.get(i);
+    	}
+        return max;
+
+    }
+
+     public static void traceBack( List<Integer> temp,
+    		int[] abilities,int selectedNum,int distance,int pos,int sum){
+    	if(selectedNum == 0 || pos == abilities.length) {
+    		temp.add(sum);	
+    	}
+    	else {
+    		int t = Math.min(pos+distance,abilities.length);
+    	 for(int i =pos;i<t;i++) {
+    		 sum = sum*abilities[i];
+    		 traceBack(temp,abilities,selectedNum-1,distance,i+1,sum);
+             if(abilities[i]!=0)
+    		 sum= sum/abilities[i];
+    	 }
+    	}
+    }
+	/********* End *********/
+}

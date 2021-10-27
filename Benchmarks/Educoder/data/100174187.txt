@@ -1,0 +1,77 @@
+package step4;
+
+import java.util.Scanner;
+
+public class ForPractice4 {
+		public static void main(String[] args) {
+	/*****start*****/
+	Scanner input = new Scanner(System.in);
+	int surplus = 1000;//余额
+
+	System.out.println("欢迎使用中国人民银行ATM取款机");//界面
+    System.out.println("输入取款金额：");
+	int getMoney = input.nextInt();
+	if(getMoney>0&&getMoney<=1000){
+		
+		surplus= test(surplus,getMoney);
+     
+	int choice = input.nextInt();
+//			switch(choice){
+//				case 2:
+//					  test(surplus,getMoney);
+//				      break;
+//				case 1:
+//
+//				break;
+//
+//				   //   continue;	  
+//			}
+	if(choice==2) {
+		 System.out.println("输入取款金额：");
+		int getMoney2 = input.nextInt();
+		surplus= test(surplus,getMoney2);
+	}
+	
+	int getMoney3 = input.nextInt();
+	surplus =test(surplus,getMoney3);
+	
+	if(surplus==1) {
+		
+			int getMoney5 = input.nextInt();
+			surplus= test(surplus,getMoney5);
+	}
+	
+	int choice2 = input.nextInt();
+	
+	if(choice2==2) {
+		 System.out.println("输入取款金额：");
+		int getMoney4 = input.nextInt();
+		surplus= test(surplus,getMoney4);
+	}else {
+		System.out.println("取款结束！");
+	}
+	}	
+	}
+	
+
+public static int test( int surplus, int getMoney){
+	if(surplus>=getMoney){ 
+		surplus -= getMoney;
+		System.out.println("剩余金额：" + surplus + 
+		"，是否继续（'1'：结束，'2'：继续）：");
+		return surplus;
+		}
+	else{
+		System.out.println("目前余额："+surplus + "无法满足您的取款需求！" );
+		System.out.println("输入取款金额：");
+		
+		return surplus;
+	}
+	
+}
+
+	
+		
+		/*****end*****/
+	}
+

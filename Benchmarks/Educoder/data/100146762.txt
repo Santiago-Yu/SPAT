@@ -1,0 +1,78 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        
+        mergeSortMethod(nums,0,nums.length-1);
+       
+        int count =0;
+        int result[] = new int[3];
+        
+        for(int i = 1; i<=10000;i++){
+            if(i!=nums[i-count-1]){
+                result[count] = i;
+                count++;
+                if(count==3){
+                    break;
+                }
+            }
+        }
+        int a = (result[0]+"").length();
+        int b = (result[1]+"").length();
+        int c = (result[2]+"").length();
+        long sum = result[2]%11L;
+        
+        
+        sum+= result[1]*Math.pow(10,c)%11L;
+        sum+= result[0]*Math.pow(10,b+c)%11L;
+        int result1 =(int)(sum%11L);
+        
+        return result1;
+	
+	}
+      
+ 
+        private void mergeSort(int[] array,int first,int between,int last) {
+        int n1 = between-first+1;//因为first有可能等于零，下标可以从零开始，比如2-0=2，但其实数组大小应该为3，所以应该加1
+        int n2 = last-between;//n1构造的数组已经包含了between下标的元素，所以n2就不用包含between下标的元素了
+        int[] lArray = new int[n1];//该数组装载array的first到between下标的值
+        int[] rArray = new int[n2];//该数组状态array的between到last的值
+        int i,j,temp;
+        //将first-between区间的元素拷贝到lArray数组，
+        for (i=0,temp=first;temp<=between;) {
+            lArray[i++] = array[temp++];
+        }
+        //将between+1到last的元素拷贝到rArray数组
+        for (j = 0,temp = between+1;temp<=last;) {
+            rArray[j++] = array[temp++];
+        }
+        //当i和j都没有移动到尽头时，对两个数组的第i个元素和第j个元素比较
+        for(i=0,j=0;i<lArray.length&&j<rArray.length;){//i和j表示lArray移动的下标和rArray数组移动的下标
+            if(lArray[i]<=rArray[j]){//如果lArray的第i个元素小于rArray的第j个元素，就将lArray的第i个元素拷贝到array中，first移动
+                array[first++] = lArray[i++];
+            }else {//同理
+                array[first++] = rArray[j++];
+            }
+        }
+
+        while(i<lArray.length){//当上面的循环有一个已经移动到尽头（j已经移动到尽头），就将lArray的剩下的值赋值给array，因为lArray已经是有序的
+            array[first++] = lArray[i++];
+        }
+        while(j<rArray.length){//当上面的循环有一个已经移动到尽头（i已经移动到尽头），就将rArray的剩下的值赋值给array，因为rArray已经是有序的
+            array[first++] = rArray[j++];
+        }
+    }
+ public void mergeSortMethod(int[] array,int first,int last){
+        if(first>=last) return;//表示array的first和last指向同一个元素，只有一个元素就不用排序了，否则就继续分割
+        int between = (first+last)/2;
+        mergeSortMethod(array,first,between);//把要排序区间分割前一半进行递归排序
+        mergeSortMethod(array,between+1,last);//把要排序区间的后一半进行递归排序
+        //当执行到下面这个函数时，说明first-between区间，between-last区间都已经有序了，再合并这两个有序区间成为一个新的从first-last的有序区间
+        mergeSort(array,first,between,last);
+    }
+
+	/********* End *********/
+}

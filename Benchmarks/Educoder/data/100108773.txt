@@ -1,0 +1,99 @@
+package step4;
+
+import java.util.NoSuchElementException;
+
+/**
+ * Created by sykus on 2017/12/29.
+ */
+public class MyQueue<T> {
+
+    private Node<T> head;// 头结点，不存数据
+    private Node<T> front;//指向队头结点
+    private Node<T> tail;//指向队尾结点
+    private int size;
+
+
+    public MyQueue() {
+        head = new Node<T>();
+        front = tail = null;
+        size = 0;
+    }
+
+    /**
+     * 入队
+     *
+     * @param item
+     */
+    public void enqueue(T item) {
+        /********** Begin *********/
+
+        Node<T> oldTail = tail;
+
+        Node<T> newNode = new Node<T>();
+        newNode.item = item;
+        newNode.next = null;
+        if (null == front) {//空队列
+            head.next = newNode;
+            front = newNode;
+        } else {
+            oldTail.next = newNode;
+        }
+        tail = newNode;
+        ++size;
+
+        /********** End *********/
+
+    }
+
+    /**
+     * 出队
+     *
+     * @return
+     */
+    public T dequeue() {
+        if (isEmpty())
+            throw new NoSuchElementException("队列为空！");
+
+        /********** Begin *********/
+
+        T val = front.item;
+        head.next = front.next;
+        front.next = null;
+        front = head.next;//此时队头为后继结点
+        --size;
+        if (null == head.next) {//出队的是队列中的最后一个元素
+            front = tail = null;
+        }
+        return val;
+
+        /********** End *********/
+
+    }
+
+    /**
+     * 返回队列中元素数量
+     *
+     * @return
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * 判断一个队列是否为空
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        return (front == null);
+    }
+
+    /**
+     * 链表结点内部类
+     */
+    private static class Node<E> {
+        private E item;
+        private Node<E> next;
+    }
+}
+

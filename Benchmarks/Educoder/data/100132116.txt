@@ -1,0 +1,29 @@
+package step1;
+
+import java.util.Arrays;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temps){
+		/********** BEGIN **********/
+		int len = temps.length;
+		int[] a = new int[len];
+		Integer[] in = new Integer[len];
+		in =  Arrays.copyOf(temps, len);
+		int temp = 0;
+		for(int i = 0; i < temps.length; i++){
+			
+			for(int j = i; j < in.length; j++){
+				
+				if(temps[i] < in[j]){
+					temp = Math.abs(j - i);
+					a[i] = temp;
+					break;
+				}else{
+					temp = 0;
+				}	
+			}
+			
+		}
+		return a;
+	}
+}

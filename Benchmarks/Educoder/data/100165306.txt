@@ -1,0 +1,62 @@
+package task6;
+
+public class ScaleBox extends Box{         
+    int Type;//1 长方体 2 圆柱体
+    public ScaleBox(){}
+    public ScaleBox(int boxType) {
+        //TODO write your code here
+        //super(boxType);
+        this.Type = boxType;
+    }
+    public ScaleBox(int boxType, double width,double height,double depth) {
+        //TODO write your code here
+    	super(width, height, depth);
+        this.Type = boxType;
+/*      this.width = width;
+        this.height = height;
+        this.depth = depth;
+*/
+    }
+    
+	public void setType(int Type){this.Type = Type;}    
+/*	public void setWidth(double width){this.width = width;}
+	public void setHeight(double height){this.height = height;}
+	public void setDepth(double depth){this.depth = depth;}*/    
+    public double getType(){return Type;}
+/*    public double getWidth(){return width;}
+	public double getHeight(){return height;}
+	public double getDepth(){return depth;}*/   
+    
+    public double printVolumn(){
+    	double vol;
+        double width = getWidth();
+        double height = getHeight();
+        double depth = getDepth();
+        if (Type == 1){vol = width * height * depth;}
+        else {vol = 3.14 * width * width * height;}
+        return vol;
+    }
+    
+    public static void main(String[] args){
+/*    	ScaleBox box1 = new ScaleBox(2);
+        box1.setType(1);
+        box1.setWidth(15);
+        box1.setHeight(24);
+        box1.setDepth(12);*/
+        ScaleBox box2 = new ScaleBox(1,10,20,30);
+        System.out.printf("the volume is: %6.1f", box2.printVolumn());
+    }
+}
+ /**********************Begin*******************/
+    //TODO write your code here
+
+/*    private double width;
+    private double height;
+    private double depth;
+    private int Type;
+*/
+
+
+ /**********************End*******************/
+
+

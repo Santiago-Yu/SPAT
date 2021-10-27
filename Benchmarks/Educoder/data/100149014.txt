@@ -1,0 +1,43 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+if (arr.length < 3) {
+			return 0;
+		}
+
+		int maxLen = 0;
+		int curLen = 0;
+		
+		for (int i = 1; i < arr.length-1; i++) {
+			if(arr[i-1] > arr[i] && arr[i+1] > arr[i]) {
+				//System.out.println("find arr[" + i + "] = " + arr[i]);
+				curLen = 1;
+				for (int j = i-1; j >= 0; j--) {
+					if (arr[j] > arr[j+1]) {
+						curLen += 1;
+						//System.out.println("L -- [" + j + "] = " + arr[j] + "\t" + curLen);
+					} else {
+						break;
+					}
+				}
+				
+				for (int k = i+1; k<arr.length; k++) {
+					//System.out.println(arr[k]);
+					if (arr[k] > arr[k-1]) {
+						curLen += 1;
+						//System.out.println("R -- [" + k + "] = " + arr[k] + "\t" + curLen);
+					} else {
+						break;
+					}
+				}
+				
+				maxLen = maxLen > curLen ? maxLen : curLen;
+			}
+			
+		}
+		return maxLen;
+
+    }
+}

@@ -1,0 +1,24 @@
+package step1;
+
+import java.util.List;
+
+public class Task<T extends Comparable<? super T>> {
+
+    public void insert(List<T> list, T x) {
+
+        int l = 0, r = list.size() - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (bs(list.get(mid), x) > 0) r = mid;
+            else l = mid + 1;
+        }
+
+        list.add(l , x);
+    }
+
+    public int bs(T a, T b) {
+        if (a.compareTo(b) >= 0) return 1;
+        else return 0;
+    }
+
+}

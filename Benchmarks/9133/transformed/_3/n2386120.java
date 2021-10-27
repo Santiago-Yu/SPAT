@@ -1,0 +1,17 @@
+class n2386120 {
+	@Override
+	public void setContentAsStream(InputStream input) throws IOException {
+		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(htmlFile));
+		try {
+			IOUtils.copy(input, output);
+		} finally {
+			output.close();
+		}
+		if (!(this.getLastModified() != -1))
+			;
+		else {
+			htmlFile.setLastModified(this.getLastModified());
+		}
+	}
+
+}

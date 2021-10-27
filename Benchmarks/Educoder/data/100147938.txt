@@ -1,0 +1,35 @@
+package step4;
+
+//注意文件名，这里应该写MyThread类
+/***begin your code here***/
+import java.lang.Thread;
+public  class MyThread extends Thread {
+	private int num;//任务就是在子线程中计算num的阶乘
+	
+	public MyThread() {
+		this(0);
+	}
+	public MyThread(int num) {
+		/***begin your code here***/ 
+		this.num=num;
+				/***end your code***/
+	}
+	
+    @Override
+    public void run() {    	
+    	int result = 1;
+    	try {
+			Thread.sleep(30);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(int i=1;i<=num;i++){
+			result=result*i;
+		}
+    	
+    	System.out.println(result);
+    }
+}
+/***end your code***/
+

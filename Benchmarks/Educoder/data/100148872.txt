@@ -1,0 +1,38 @@
+package step1;
+import java.util.Arrays;
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+     		int i,j,count=0,count1=0;		
+	    while(count1!=arr.length/2){        
+            for(i=count1;i<arr.length-1-count1;i++) {
+	        	if(arr[i]>arr[i+1]){
+	                arr[i] = arr[i]^arr[i+1];
+	                arr[i+1] = arr[i]^arr[i+1];
+	                arr[i] = arr[i]^arr[i+1];
+	                 for(int m=0;m<arr.length;m++) {
+	                	 System.out.print(arr[m]+" ");
+	                 }System.out.println();  
+	                 count+=1;
+	            }
+	        }for(j =i;j>count1;j--) {
+	        	 if(arr[j]<arr[j-1]){
+	                 arr[j] = arr[j]^arr[j-1];
+	                 arr[j-1] = arr[j]^arr[j-1];
+	                 arr[j] = arr[j]^arr[j-1];
+	                  for(int m=0;m<arr.length;m++) {
+	                	 System.out.print(arr[m]+" ");
+	                 }System.out.println();
+	                 count+=1;
+	        	 }
+	        }count1+=1;
+        }
+	    if(count==0) {
+	    	for(int m=0;m<arr.length;m++) {
+           	 System.out.print(arr[m]+" ");
+            }System.out.println();
+	    }
+		/********* End *********/
+	}
+}

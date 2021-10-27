@@ -1,0 +1,32 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+				//在while过程中，a与b的值会发生改变，所以需要将a，b的值赋  
+		 int oa=length;		//长和宽的最大公因数，即为最大正方形的边长
+		 int ob=width; 
+		 int r;	//辗转相除法临时变量
+		 //用辗转相除法求出长和宽的最大公因数，即为最大正方形的边长
+		 while(ob!=0)
+		 {    
+			 r=oa%ob; 
+			 oa=ob;        	
+			 ob=r;        
+		}
+		int num=(length*width)/(oa*oa);	//最大正方形的数量
+		System.out.println(oa+"\n"+num);
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

@@ -1,0 +1,45 @@
+package step1;
+//编写一个Cube类继承Rectangle
+public class Cube extends Rectangle{
+	/*********begin*********/
+    double bian;
+	//创建两个构造函数  
+    //创建 无参 构造函数  调用父类构造方法默认 宽高 都为10
+	public Cube(){
+    	super(10,10);
+    	this.bian=10;
+    }
+    
+    //创建 有参 构造函数 参数为 double d
+	public Cube(double d){
+    	super(d,d);
+    	this.bian=d;
+    }
+	//调用父类中的area方法和perimeter方法
+		double mj=super.area();
+		double zc=super.perimeter();
+
+	//编写计算体积的方法
+	public double tj(){
+    	return bian*bian*bian;
+    }
+	public static void main(String[] args){
+	//创建两个正方体实例对象，并按相应格式输出正方体的底面周长，底面面积和体积。
+    //创建一个 无参 正方体对象
+        Cube zft1=new Cube();
+	
+	System.out.println("c底面周长："+ zft1.zc  );
+	System.out.println("c底面面积："+ zft1.mj  );
+	System.out.println("c体积："+ zft1.tj()     );
+
+                       
+    //创建一个 有参 正方体对象 参数值为： 5
+    Cube zft2 = new Cube(5);                   
+    System.out.println("c1底面周长："+ zft2.zc   );
+    System.out.println("c1底面面积："+ zft2.mj );
+    System.out.println("c1体积："+ zft2.tj()     );                   
+
+	/*********end*********/	
+
+	}
+}

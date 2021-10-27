@@ -1,0 +1,18 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int [] ts={0,31,59,90,120,151,181,212,243,273,304,334};
+        int djt=ts[month-1]+day;
+        if(year%4==0&&year%100!=0||year%400==0)
+             if(month>2)
+                 djt++;
+        System.out.print(String.valueOf(djt));
+
+	
+
+
+		/********** End *********/
+	}
+}

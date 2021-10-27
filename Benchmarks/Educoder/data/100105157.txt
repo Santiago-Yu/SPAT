@@ -1,0 +1,33 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        int sum = 0;
+    		int before = 0;
+    		String q=data;
+            while(q.indexOf(" ")!=-1)
+            {
+            int a = q.indexOf(" ");
+            sum = sum + a;
+            q = q.substring(a+1);
+            //System.out.println(sum);
+            String w = data.substring(before, sum);
+            
+            StringBuffer ans1 = new StringBuffer(w);
+            w = ans1.reverse().toString();
+            ans.append(w);
+            ans.append(" ");
+            
+            sum = sum + 1;
+            before=sum;
+            }
+            String w = data.substring(before-1, data.length());        
+            StringBuffer ans1 = new StringBuffer(w);
+            w = ans1.reverse().toString();
+            ans.append(w);
+        /********** End *********/
+        return ans;
+    }
+}

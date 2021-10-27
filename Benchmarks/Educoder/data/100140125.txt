@@ -1,0 +1,34 @@
+package step4;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        
+        while(true)
+        {
+            int i=data.indexOf(" ");
+            if(i==0)//如果第一个就是空格
+            {
+                data=data.substring(1);
+                continue;
+            }
+            else if (i>0)
+            {
+				StringBuffer sb=new StringBuffer(data.substring(0,i));
+                System.out.print(sb.reverse() + " ");
+                data=data.substring(i);
+            }
+            else if(i<0)
+            {
+                //末尾
+                StringBuffer sb=new StringBuffer(data);
+          		System.out.print(sb.reverse()+" ");
+                break;
+            }
+        }
+
+        /********** End *********/
+        return ans;
+    }
+}

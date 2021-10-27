@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int a[50];
+    int num,max1,i,max0,keep,ans,j;
+    cin>>num;
+    max0=1;
+    max1=num/3;
+    keep=0;
+    ans=0;
+    for(i=0;i<=max1;i++)//sandegeshu
+    {
+        keep=num;
+        keep-=3*i;
+        for(j=0;j<i;j++)
+        {
+            max0*=3;
+        }
+        while(keep>0)
+        {
+            keep-=2;
+            max0*=2;
+        }
+        if(keep==0)
+            ans=max(max0,ans);
+        max0=1;
+        
+    }
+    cout << ans;
+    return 0;
+}

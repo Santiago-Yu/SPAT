@@ -1,0 +1,83 @@
+package case1;
+
+import java.util.Scanner;
+
+public class Task1 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String dog_name = sc.next();
+		String dog_sex = sc.next();
+		String color = sc.next();
+		String  cat_name= sc.next();
+		String cat_sex = sc.next();
+		double weight = sc.nextDouble();
+		
+		Dog dog = new Dog(dog_name,dog_sex,color);
+		dog.talk();
+		dog.eat();
+		Cat cat = new Cat(cat_name,cat_sex,weight);
+		cat.talk();
+		cat.eat();
+		
+	}
+}
+
+abstract class Pet{
+	public String name;
+	public String sex;
+	Pet(String name, String sex){
+		this.name = name;
+		this.sex = sex;
+	}
+	 void talk() {
+		// TODO Auto-generated method stub
+
+	}
+	void eat() {
+		// TODO Auto-generated method stub
+
+	}
+	
+}
+
+class Dog extends Pet{
+	private String color;
+	Dog(String name, String sex, String color) {
+		super(name, sex);
+		this.color = color;
+	}
+
+	@Override
+	void talk() {
+		System.out.println("名称："+name+"，性别："+sex+"，颜色："+color+"，汪汪叫");
+		
+	}
+
+	@Override
+	void eat() {
+		System.out.println(name+"吃骨头！");
+		
+	}
+	
+}
+class Cat extends Pet{
+	private double weight;
+	Cat(String name, String sex, double weight) {
+		super(name, sex);
+		this.weight = weight;
+	}
+
+	@Override
+	void talk() {
+		System.out.println("名称："+name+"，性别："+sex+"，体重："+weight+"kg，喵喵叫");
+		
+		
+	}
+
+	@Override
+	void eat() {
+		System.out.println(name + "吃鱼！");
+		
+	}
+	
+}

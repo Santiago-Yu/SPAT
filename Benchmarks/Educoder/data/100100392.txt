@@ -1,0 +1,42 @@
+package step2;
+
+import java.io.*;
+import java.util.Scanner;
+public class CatchException {
+   public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String string = scanner.nextLine();
+        count(string);
+        }
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+       
+        	public static void count(String s) {
+        		 
+        	    int chars, space, num, others;
+        	   chars = space = num = others = 0;
+        	    try {
+        	    for (int i = 0; i < s.length(); i++) {
+        	      if (Character.isDigit(s.charAt(i))) {
+        	        num++;
+        	        continue;
+        	      }
+        	      if ((s.charAt(i)>='A'&&s.charAt(i)<='z')) {
+        	        chars++;
+        	        continue;
+        	      }
+        	      if ((s.charAt(i)==' ')) {
+        	    	  space++;
+        	        continue;
+        	      } else {
+        	        others++;
+        	      }
+        	    }
+        	    System.out.print("letter="+chars+",space="+space +",number=" + num + ",other=" + others);
+        }
+        catch(Exception e) {
+        	System.out.println(e.getMessage());
+        }
+        /********** End *********/
+        	}
+}

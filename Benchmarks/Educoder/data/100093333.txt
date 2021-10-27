@@ -1,0 +1,60 @@
+package step4;
+
+import java.util.*;
+public class DayJudge {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int year = sc.nextInt();
+		int month = sc.nextInt();
+		int day =sc.nextInt();
+		DayJudge dj = new DayJudge();
+		System.out.println(dj.DayJudge(year, month, day));
+	}
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+    	int sum=0;
+        switch(month){
+        case 1:
+            sum=0;break;
+        case 2:
+            sum=31;break;
+        case 3:
+            sum=59;break;
+        case 4:
+            sum=90;break;
+        case 5: 
+            sum=120;break;
+        case 6:
+            sum=151;break;
+        case 7:
+            sum=181;break;
+        case 8:
+            sum=212;break;
+        case 9:
+            sum=243;break;
+        case 10:
+            sum=273;break;
+        case 11:
+            sum=304;break;
+        case 12:
+            sum=334;break;
+            default:
+            	break;         // 请在此提供实现代码
+	}
+        String s=null;
+        int leap;
+        sum=sum+day;
+        if(year%400==0 || year%4==0&&year%100!=0) {
+        	leap =1;
+        }else {
+        	leap=0;
+        }
+        if(leap==1&&month>2) {
+        	sum++;
+       s=(year+"年的第"+sum+"天");
+        }else {
+        	s=(year+"年的第"+sum+"天");
+        }
+        return s;
+    }
+}

@@ -1,0 +1,1190 @@
+
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+public class Java_LRParserAnalysis
+{
+    static class Word {
+
+        private int line;//行数
+        private String word;//单词
+
+        public Word() {
+        }
+
+        public Word(int line, String word) {
+            this.line = line;
+            this.word = word;
+        }
+
+        public int getLine() {
+            return line;
+        }
+
+        public void setLine(int line) {
+            this.line = line;
+        }
+
+        public String getWord() {
+            return word;
+        }
+
+        public void setWord(String word) {
+            this.word = word;
+        }
+    }
+    static class StackFactor {
+
+        private int state;//状态序号
+        private String key;//匹配字符
+
+
+        public StackFactor() {
+        }
+
+        public StackFactor(int state, String key) {
+            this.state = state;
+            this.key = key;
+        }
+
+        public int getState() {
+            return state;
+        }
+
+        public void setState(int state) {
+            this.state = state;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+    }
+
+    static class TableFactor {
+
+        //状态序号
+        private int stateFrom;
+
+        //字符
+        private String key;
+
+        private Operation operation;
+
+        private TableFactor(int stateFrom, String key, Operation operation) {
+            this.stateFrom = stateFrom;
+            this.key = key;
+            this.operation = operation;
+        }
+
+        public static void setTableFactor(int stateFrom, String key, Operation operation){
+            TableFactor tableFactor = new TableFactor(stateFrom,key,operation);
+            AnalysisTable.getTable().addFactor(tableFactor);
+        }
+
+        public int getStateFrom() {
+            return stateFrom;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public Operation getOperation() {
+            return operation;
+        }
+    }
+
+    static class Operation {
+
+        //flag = -1：归约
+        //     = 1 ：移入
+        //     = 0 ：遇到非终结符，直接跳转
+        private int flag;
+
+        // = -1时为acc接收点，否则为目标状态序号
+        private int destination;
+
+        public Operation() {
+        }
+
+        public Operation(int flag, int destination) {
+            this.flag = flag;
+            this.destination = destination;
+        }
+
+        public int getFlag() {
+            return flag;
+        }
+
+        public void setFlag(int flag) {
+            this.flag = flag;
+        }
+
+        public int getDestination() {
+            return destination;
+        }
+
+        public void setDestination(int destination) {
+            this.destination = destination;
+        }
+    }
+
+    static class AnalysisTable {
+
+        //饿汉
+        private static AnalysisTable analysisTable = new AnalysisTable();
+
+        private List<TableFactor> tableFactorList = new CopyOnWriteArrayList<>();
+
+        public static void refresh(){
+            analysisTable = new AnalysisTable();
+        }
+
+        //添加表元素
+        public void addFactor(TableFactor tableFactor){
+            tableFactorList.add(tableFactor);
+        }
+
+        //根据状态序号和字符查询表元素
+        public Operation findFactor(int stateFrom,String key){
+            for(TableFactor tableFactor : tableFactorList){
+                if(tableFactor.getStateFrom() == stateFrom && (tableFactor.getKey()+"").equals(key)){
+                    return tableFactor.getOperation();
+                }
+            }
+            return null;
+        }
+
+
+        //单例
+        private AnalysisTable(){
+        }
+
+        public static AnalysisTable getTable() {
+            return analysisTable;
+        }
+
+
+        //打印
+        public void print(){
+
+            Collections.sort(tableFactorList, new Comparator<TableFactor>(){
+                public int compare(TableFactor o1, TableFactor o2) {
+                    //按照CityModel的city_code字段进行降序排列
+
+                    if(o1.getStateFrom() > o2.getStateFrom()){
+                        return 1;
+                    }
+                    else if(o1.getStateFrom() == o2.getStateFrom() && o1.getKey().compareTo(o2.getKey())<0){
+                        return 1;
+                    }
+                    if(o1.getStateFrom() == o2.getStateFrom() && o1.getKey().compareTo(o2.getKey())==0){
+                        return 0;
+                    }
+                    return -1;
+                }
+            });
+
+            //打印表头
+            System.out.print("   ");
+            System.out.print("+  *  ID =  $   S  T  F");
+
+            for(int p=0;p<10;p++){
+                System.out.println();
+                System.out.print("I" + p + " ");
+                List<TableFactor> tmpList = new ArrayList<>();
+                for(int i=0;i<tableFactorList.size();i++) {
+                    TableFactor t = tableFactorList.get(i);
+                    int state = t.getStateFrom();
+                    if (state == p) {
+                        tmpList.add(t);
+                    }
+                }
+                find(tmpList,"+");
+                find(tmpList,"*");
+                find(tmpList,"ID");
+                find(tmpList,"=");
+                find(tmpList,"$");
+                find(tmpList,"S");
+                find(tmpList,"T");
+                find(tmpList,"F");
+            }
+
+        }
+
+        private void find(List<TableFactor> tmpList,String word){
+            boolean flag = false;
+            for(int k=0;k<tmpList.size();k++){
+                String key = tmpList.get(k).getKey();
+                Operation operation = tmpList.get(k).getOperation();
+                if(key.equals(word)){
+                    flag = true;
+                    printOperation(operation);
+                }
+            }
+            if(!flag){
+                System.out.print("   ");
+            }
+        }
+
+        private void printOperation(Operation operation){
+            int flag = operation.getFlag();
+            int destination = operation.getDestination();
+            if(flag == -1){
+                System.out.print("r" + destination + " ");
+            }
+            if(flag == 1){
+                System.out.print("s" + destination + " ");
+            }
+            if(flag == 0){
+                System.out.print(" " + destination + " ");
+            }
+        }
+    }
+    static class State {
+
+        //状态序号作为map的key来存，所以这里不存储序号
+
+
+        private List<Grammar> grammarList = new ArrayList<>();
+
+        public List<Grammar> getGrammarList() {
+            return grammarList;
+        }
+
+        public void addGrammar(Grammar grammar) {
+            grammarList.add(grammar);
+        }
+
+        public State(){
+        }
+
+        public State(List<Grammar> grammarList){
+            this.grammarList = grammarList;
+        }
+
+
+        //查看是否是旧状态，如果不是-1说明该状态已经存在，如果是-1说明是新状态
+        public int indexOf(List<State> stateList){
+            List<Grammar> grammarList = this.getGrammarList();
+            boolean flag = true;
+            for(State state : stateList){
+                flag = true;
+                for(Grammar grammar : grammarList){
+                    List<Grammar> tmpGrammarList = state.getGrammarList();
+                    if(grammar.indexOf(tmpGrammarList)==-1){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    return stateList.indexOf(state);
+                }
+            }
+            return -1;
+        }
+
+
+
+
+
+
+        //给出打印状态的方法，方便调试
+        public void printState(){
+            System.out.println("当前状态：");
+            for(Grammar grammar : grammarList){
+                System.out.print("\t");
+                grammar.printGrammar();
+                System.out.println();
+            }
+        }
+
+        //测试
+        public static void main(String[] args) {
+
+            State state = new State();
+            Grammar grammar = new Grammar(new String[]{"S", "E", "+", "id"}, 2);
+            state.addGrammar(grammar);
+            grammar = new Grammar(new String[]{"E","id"},2);
+            state.addGrammar(grammar);
+            state.printState();
+        }
+
+    }
+
+    static class Grammar {
+
+        //举例：
+        // String[]即：
+        // 对于S→E+id 有 String[0]=S,String[1]=E,String[2]=+,String[3]=id
+        private String[] sentences;
+
+
+        //举例：对于S→E+id,size=4（也就是S→E+id丶的index）
+        //或者说，size = sentences.length-1
+        //int size;
+
+        //此句为归约文法还是移入文法
+        // false = 移入
+        // true = 归约
+        // 当index = sentences.length时，也就是归约文法
+        private boolean flag = false;
+
+
+        //举例：对于S→E+id
+        //如果index = 2 也就是在String[2]的位置前有个点。所以是S→E丶+id
+        private int index;
+
+
+        public String[] getSentences() {
+            return sentences;
+        }
+
+        public boolean isFlag() {
+            return flag;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        //给出构造方法
+        public Grammar(String[]sentences,int index){
+            this.sentences = sentences;
+            this.index = index;
+            if(sentences == null)return;
+            if(index > sentences.length)return;
+            if(index == sentences.length)flag = true;
+        }
+
+        //说明这个文法在grammarList中是否存在
+        public int indexOf(List<Grammar> grammarList){
+            for(Grammar grammar : grammarList){
+                if(this.getIndex() == grammar.getIndex() && this.getSentences().length == grammar.getSentences().length){
+                    int length = this.getSentences().length;
+                    boolean tmpFlag = true;
+                    for(int i=0;i<length;i++){
+                        if(!this.getSentences()[i].equals(grammar.getSentences()[i])){
+                            tmpFlag = false;
+                            break;
+                        }
+                    }
+                    if(tmpFlag)return grammarList.indexOf(grammar);
+                }
+            }
+            return -1;
+        }
+
+        //说明这个文法在grammarList中是否存在
+        public int indexOfWithoutIndex(List<Grammar> grammarList){
+            for(Grammar grammar : grammarList){
+                if(this.getSentences().length == grammar.getSentences().length){
+                    int length = this.getSentences().length;
+                    boolean tmpFlag = true;
+                    for(int i=0;i<length;i++){
+                        if(!this.getSentences()[i].equals(grammar.getSentences()[i])){
+                            tmpFlag = false;
+                            break;
+                        }
+                    }
+                    if(tmpFlag)return grammarList.indexOf(grammar);
+                }
+            }
+            return -1;
+        }
+
+
+        //给出打印文法的方法，方便调试
+        void printGrammar(){
+            if(flag) System.out.print("归约：");else System.out.print("移入：");
+
+            System.out.print(sentences[0] + " ");
+            System.out.print("→ ");
+            for(int i=1;i<index;i++){
+                System.out.print(sentences[i] + " ");
+            }
+            System.out.print("・" + " ");
+            for(int i=index;i<sentences.length;i++){
+                System.out.print(sentences[i] + " ");
+            }
+        }
+
+
+        //测试
+        public static void main(String[] args) {
+            List<Grammar> grammarList = new ArrayList<>();
+            Grammar grammar = new Grammar(new String[]{"S","E","+","id"},2);
+            grammarList.add(grammar);
+            grammar.printGrammar();
+            System.out.println();
+            grammar = new Grammar(new String[]{"E","id"},2);
+            grammar.printGrammar();
+            System.out.println();
+
+
+            grammarList.add(grammar);
+            grammar = new Grammar(new String[]{"E","id"},2);
+            System.out.println(grammar.indexOf(grammarList));
+        }
+
+
+    }
+    static class RelationContainer {
+
+        private static List<Relation> relationList = new CopyOnWriteArrayList<>();
+
+        public static List<Relation> getRelationList(){
+            return relationList;
+        }
+
+        public static void refresh(){
+            relationList = new CopyOnWriteArrayList<>();
+        }
+
+        //判断key是不是leftSign的follow集
+        public static boolean isFollow(String leftSign,String key){
+            if(leftSign == null)return false;
+            for(Relation relation : relationList){
+                if(leftSign.equals(relation.getLeftSign())){
+                    Set<String> followSet = relation.getFollowSet();
+                    for(String follow : followSet){
+                        if(follow.equals(key)){
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+
+        //添加一组first
+        public static void addFirst(String leftSign,String first){
+            for(Relation relation : relationList){
+                if (relation.getLeftSign().equals(leftSign)){
+                    relation.addFirst(first);
+                    return;
+                }
+            }
+            Relation relation = new Relation(leftSign);
+            relation.addFirst(first);
+            relationList.add(relation);
+        }
+
+
+        //复制from对应的first集至to的first集中
+        public static void addFirst2FirstSet(String to,String from) {
+            Set<String> firstSet = RelationContainer.getFirstSet(from);
+            if (firstSet != null) {
+                for (String first : firstSet) {
+                    RelationContainer.addFirst(to, first);
+                }
+            }
+        }
+
+        //复制from对应的first集至to的follow集中
+        public static void addFirst2FollowSet(String to,String from) {
+            Set<String> firstSet = RelationContainer.getFirstSet(from);
+            if (firstSet != null) {
+                for (String first : firstSet) {
+                    RelationContainer.addFollow(to, first);
+                }
+            }
+        }
+
+        //复制from对应的follow集至to的follow集中
+        public static void addFollow2FollowSet(String to,String from) {
+            Set<String> followSet = RelationContainer.getFollowSet(from);
+            if (followSet != null) {
+                for (String follow : followSet) {
+                    RelationContainer.addFollow(to, follow);
+                }
+            }
+        }
+
+        //复制from对应的follow集至to的first集中
+        public static void addFollow2FirstSet(String to,String from) {
+            Set<String> followSet = RelationContainer.getFollowSet(from);
+            if (followSet != null) {
+                for (String follow : followSet) {
+                    RelationContainer.addFirst(to, follow);
+                }
+            }
+        }
+
+
+        //添加一组follow
+        public static void addFollow(String leftSign,String follow){
+            for(Relation relation : relationList){
+                if (relation.getLeftSign().equals(leftSign)){
+                    relation.addFollow(follow);
+                    return;
+                }
+            }
+            Relation relation = new Relation(leftSign);
+            relation.addFollow(follow);
+            relationList.add(relation);
+        }
+
+
+        //查询某个leftSign的first集
+        public static Set<String> getFirstSet(String leftSign){
+            for(Relation relation : relationList){
+                if (relation.getLeftSign().equals(leftSign)){
+                    return relation.getFirstSet();
+                }
+            }
+            return null;
+        }
+
+
+        //查询某个leftSign的follow集
+        public static Set<String> getFollowSet(String leftSign){
+            for(Relation relation : relationList){
+                if (relation.getLeftSign().equals(leftSign)){
+                    return relation.getFollowSet();
+                }
+            }
+            return null;
+        }
+
+
+
+    }
+    static class Relation {
+
+        private String leftSign;//左符号
+
+        private Set<String> firstSet = new CopyOnWriteArraySet<>();
+        private Set<String> followSet = new CopyOnWriteArraySet<>();
+
+        public void addFirst(String word){
+            this.firstSet.add(word);
+        }
+        public void addFollow(String word){
+            this.followSet.add(word);
+        }
+
+        public Relation(String leftSign){
+            this.leftSign = leftSign;
+        }
+
+        public String getLeftSign() {
+            return leftSign;
+        }
+
+        public Set<String> getFirstSet() {
+            return firstSet;
+        }
+
+        public Set<String> getFollowSet() {
+            return followSet;
+        }
+    }
+
+    //状态项目集
+    private static List<State> stateList = new CopyOnWriteArrayList<>();
+
+    //follow和first集
+    private static List<Relation> relationList = RelationContainer.getRelationList();
+
+    //分析表
+    private static AnalysisTable analysisTable = AnalysisTable.getTable();
+
+    private static List<Word> words = new ArrayList<>();//将输入的文本分隔为word
+
+    private static String[] reservedWords = new String[]{"{","}",
+        "if","(",")","then","else",
+        "while","(",")",
+        "ID","=",
+        ">","<",">=","<=","==",
+        "+","-",
+        "*","/",
+        "NUM","E",";",
+    "$","{","}"};
+
+    //输入文本
+    private static String prog = "";
+
+    //输出
+    private static List<String[]> outputList = new CopyOnWriteArrayList<>();;
+
+    private static int begin = 0;//为输出服务的一个tmp变量，表示已经归约了的字符数
+
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int lineID = 0;
+        while(sc.hasNextLine())
+        {
+            lineID++;
+            String line = sc.nextLine();
+            if((line+"").equals("-1")){
+                break;
+            }
+
+            String[] split = line.split(" ");
+            for(String s:split){
+                if(s.equals(""))continue;
+                Word word = new Word();
+                word.setLine(lineID);
+                word.setWord(s);
+                words.add(word);
+            }
+        }
+    }
+
+
+    // add your method here!!
+
+    //判断是否为保留字
+    private static boolean isReservedWord(String key){
+        for(String s:reservedWords){
+            if(s.equals(key)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+//        System.out.print(prog);
+//        System.out.println("-----------------------");
+//        System.out.println("-----------------------");
+//        System.out.println("-----------------------");
+//        System.out.println("-----------------------");
+
+
+        //定义初始状态
+        initState();
+
+        //计算follow和first集（主要是为了计算follow集）
+        RelationContainer.addFollow("program","$");
+        for(int i=0;i<50;i++) {
+            caculateRelation();
+        }
+
+        //开始状态转移，同时构建分析表
+        initTable();
+
+        //测试用：打印分析表
+        //analysisTable.print();
+
+        //初始化输出（把最后一行先放进去）
+        initOutput();
+
+        //匹配输入
+        match();
+    }
+
+    //初始化
+    private static void init() {
+        //stateList = new CopyOnWriteArrayList<>();
+        //RelationContainer.refresh();
+        //AnalysisTable.refresh();
+        //words = new ArrayList<>();
+        outputList = new CopyOnWriteArrayList<>();
+        initOutput();
+        begin = 0;
+    }
+
+
+    private static void caculateRelation() {
+        List<Grammar> grammarList = stateList.get(0).getGrammarList();
+        for(Grammar grammar : grammarList){
+            String[] sentences = grammar.getSentences();
+
+            //先讨论左符号
+            String sentence = sentences[0];
+            if(isReservedWord(sentences[1])){//如果箭头右边是终结符开头
+                RelationContainer.addFirst(sentence,sentences[1]);
+            }else{//如果箭头右边是非终结符开头，就把该非终结符的first集复制进来
+                RelationContainer.addFirst2FirstSet(sentence,sentences[1]);
+            }
+
+
+            //然后讨论→箭头右边的符号（除了最后一个）
+            for(int i = 1;i<sentences.length - 1;i++){
+                sentence = sentences[i];
+                if(!isReservedWord(sentence)){
+                    if(isReservedWord(sentences[i + 1])){//如果下一个是终结符，就添加到follow集
+                        RelationContainer.addFollow(sentence,sentences[i + 1]);
+                    }else{//如果下一个是非终结符，就把该非终结符的first集复制到sentence的follow中
+                        RelationContainer.addFirst2FollowSet(sentence,sentences[i + 1]);
+                    }
+                }
+            }
+
+            //讨论最后一个符号
+            sentence = sentences[sentences.length-1];
+            if(isReservedWord(sentence))continue;//如果是终结符就没有讨论的意义了
+
+            //将当前文法的左符号的follow集添加到最后一个符号的follow集中
+            RelationContainer.addFollow2FollowSet(sentence,sentences[0]);
+        }
+    }
+
+
+
+    private static void initState(){
+        List<Grammar> grammarList = new CopyOnWriteArrayList<>();
+        Grammar grammar;
+
+        grammar = new Grammar(new String[]{"start","program"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"program","compoundstmt"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"stmt","ifstmt"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"stmt","whilestmt"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"stmt","assgstmt"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"stmt","compoundstmt"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"compoundstmt","{","stmts","}"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"stmts","stmt","stmts"},1);
+        grammarList.add(grammar);
+//        grammar = new Grammar(new String[]{"stmts","E"},1);
+//        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"stmts","stmt"},1);
+        grammarList.add(grammar);
+
+
+
+        grammar = new Grammar(new String[]{"ifstmt","if","(","boolexpr",")","then","stmt","else","stmt"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"whilestmt","while","(","boolexpr",")","stmt"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"assgstmt","ID","=","arithexpr",";"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"boolexpr","arithexpr","boolop","arithexpr"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"boolop","<"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"boolop",">"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"boolop","<="},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"boolop",">="},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"boolop","=="},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"arithexpr","multexpr","arithexprprime"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"arithexprprime","+","multexpr","arithexprprime"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"arithexprprime","-","multexpr","arithexprprime"},1);
+        grammarList.add(grammar);
+//        grammar = new Grammar(new String[]{"arithexprprime","E"},1);
+//        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"arithexpr","multexpr"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"arithexprprime","+","multexpr"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"arithexprprime","-","multexpr"},1);
+        grammarList.add(grammar);
+
+
+
+
+
+        grammar = new Grammar(new String[]{"multexpr","simpleexpr","multexprprime"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"multexprprime","*","simpleexpr","multexprprime"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"multexprprime","/","simpleexpr","multexprprime"},1);
+        grammarList.add(grammar);
+//        grammar = new Grammar(new String[]{"multexprprime","E"},1);
+//        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"multexpr","simpleexpr"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"multexprprime","*","simpleexpr"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"multexprprime","/","simpleexpr"},1);
+        grammarList.add(grammar);
+
+
+
+
+        grammar = new Grammar(new String[]{"simpleexpr","ID"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"simpleexpr","NUM"},1);
+        grammarList.add(grammar);
+        grammar = new Grammar(new String[]{"simpleexpr","(","arithexpr",")"},1);
+        grammarList.add(grammar);
+        State state = new State(grammarList);
+        stateList.add(state);
+    }
+
+
+
+    public static void initTable(){
+
+        deepSearchAllKey(stateList.get(0));
+    }
+
+    //深搜：
+    // State state：当前状态
+    // String key：下一个字符
+    //
+    public static void deepSearch(State state,String key){
+
+        int id = stateList.indexOf(state);//当前状态序号
+        List<Grammar> newGrammarList = new CopyOnWriteArrayList<>();//为可能产生的新状态做准备
+        List<Grammar> grammarList = state.getGrammarList();
+        for(Grammar grammar : grammarList){
+            String[] sentences = grammar.getSentences();
+            String leftSign = sentences[0];
+
+            if(grammar.isFlag()){//是归约文法
+                if(grammar.getSentences()[0].equals("start") && "$".equals(key)){//是acc接收点
+                    Operation operation = new Operation();
+                    operation.setDestination(-1);
+                    operation.setFlag(-1);
+                    TableFactor.setTableFactor(id,"$",operation);//创建新的表元素并放进表
+                }else if(RelationContainer.isFollow(leftSign,key)) {//如果key是leftSign的follow集
+                    Operation operation = new Operation();
+                    operation.setDestination(grammar.indexOfWithoutIndex(stateList.get(0).getGrammarList()));
+                    operation.setFlag(-1);
+                    TableFactor.setTableFactor(id,key,operation);//创建新的表元素并放进表
+                }
+
+            }else{//是移入文法
+
+                if(sentences[grammar.getIndex()].equals(key)) {//丶后的符号必须和key相同才能移入
+                    int index = grammar.getIndex() + 1;
+                    Grammar newGrammar = new Grammar(sentences, index);
+                    newGrammarList.add(newGrammar);
+
+                    if (index<sentences.length && !isReservedWord(sentences[index])) {//如果出现丶非终结符的情况
+                        newGrammarList.addAll(findAllBegin(sentences[index]));
+                    }
+                }
+            }
+        }
+
+
+        //创建新状态
+        State newState = new State(newGrammarList);
+        int stateIndex = newState.indexOf(stateList);//新状态的状态序号
+        if(newGrammarList.size() == 0)return;
+
+        if (isReservedWord(key)) {//如果是保留字（终结符）
+
+            if (stateIndex != -1) {//该状态在状态集合中已经存在
+                Operation operation = new Operation();
+                operation.setDestination(stateIndex);
+                operation.setFlag(1);//是移入操作
+                TableFactor.setTableFactor(id, key, operation);//创建新的表元素并放进表
+            } else {//该状态是新的状态
+                Operation operation = new Operation();
+                operation.setDestination(stateList.size());
+                operation.setFlag(1);//是移入操作
+                TableFactor.setTableFactor(id, key, operation);//创建新的表元素并放进表
+                stateList.add(newState);
+
+                //对新状态深搜
+                deepSearchAllKey(newState);
+            }
+
+        } else {//如果key是非终结符
+            if (stateIndex != -1) {//该状态在状态集合中已经存在
+                Operation operation = new Operation();
+                operation.setDestination(stateIndex);
+                operation.setFlag(0);//是跳转操作
+                TableFactor.setTableFactor(id, key, operation);//创建新的表元素并放进表
+            } else {//该状态是新的状态
+                Operation operation = new Operation();
+                operation.setDestination(stateList.size());
+                operation.setFlag(0);//是跳转操作
+                TableFactor.setTableFactor(id, key, operation);//创建新的表元素并放进表
+                stateList.add(newState);
+                //对新状态深搜
+                deepSearchAllKey(newState);
+            }
+        }
+
+    }
+
+
+    //全key深搜
+    public static void deepSearchAllKey(State state) {
+        deepSearch(state,"$");
+        deepSearch(state,"program");
+        deepSearch(state,"compoundstmt");
+        deepSearch(state,"stmt");
+        deepSearch(state,"ifstmt");
+        deepSearch(state,"whilestmt");
+        deepSearch(state,"assgstmt");
+        deepSearch(state,"stmts");
+        deepSearch(state,"boolexpr");
+        deepSearch(state,"boolop");
+        deepSearch(state,"arithexpr");
+        deepSearch(state,"arithexprprime");
+        deepSearch(state,"multexpr");
+        deepSearch(state,"multexprprime");
+        deepSearch(state,"simpleexpr");
+        deepSearch(state,"{");
+        deepSearch(state,"}");
+        deepSearch(state,"if");
+        deepSearch(state,"(");
+        deepSearch(state,")");
+        deepSearch(state,"then");
+        deepSearch(state,"else");
+        deepSearch(state,"while");
+        deepSearch(state,"ID");
+        deepSearch(state,"=");
+        deepSearch(state,";");
+        deepSearch(state,">");
+        deepSearch(state,"<");
+        deepSearch(state,">=");
+        deepSearch(state,"<=");
+        deepSearch(state,"==");
+        deepSearch(state,"+");
+        deepSearch(state,"-");
+        deepSearch(state,"*");
+        deepSearch(state,"/");
+        deepSearch(state,"NUM");
+        deepSearch(state,"E");
+    }
+
+    //找到某个丶终结符（丶key）下 该状态中所有延伸文法
+    public static List<Grammar> findAllBegin(String key){
+        List<Grammar> returnGrammarList = new CopyOnWriteArrayList<>();
+        State state = stateList.get(0);//状态I0
+        List<Grammar> grammarList = state.getGrammarList();
+        for(Grammar grammar : grammarList){
+            if(grammar.getSentences()[0].equals(key)){//如果左符号和key相同
+                returnGrammarList.add(grammar);
+                if(!isReservedWord(grammar.getSentences()[1]) && !grammar.getSentences()[1].equals(key)){//如果紧跟在丶后面的符号是非终结符，就深搜
+                    returnGrammarList.addAll(findAllBegin(grammar.getSentences()[1]));
+                }
+            }
+        }
+
+        //去重
+        Set<Grammar> set = new HashSet<>(returnGrammarList);
+        return new CopyOnWriteArrayList<>(set);
+    }
+
+
+
+    //初始化输出
+    private static void initOutput() {
+        String[] s = new String[words.size()];
+        for(int i=0;i<words.size();i++){
+            s[i] = words.get(i).getWord();
+        }
+        outputList.add(s);
+    }
+
+    //归约时添加输出
+    //index：match()中的w，表示words中第几个word。length：归约掉的字符串长度； substitude：替换成的非终结符
+    private static void addOutput(int index,int length,String substitude) {
+        String[] oldS = outputList.get(outputList.size()-1);
+        String[] s = new String[oldS.length - length + 1];
+
+        for(int i=0;i<index-begin-length+1;i++){
+            s[i] = oldS[i];
+        }
+
+        try{
+            s[index-begin-length+1] = substitude;
+        }catch (Exception e){
+            System.out.println("S = " + substitude);
+            System.out.println("长度为" + s.length + ",index = " + index + ",begin = " + begin);
+        }
+
+        for(int i=index-begin-length+1+1;i<s.length;i++){
+            s[i] = oldS[i + length - 1];
+        }
+
+
+
+
+        //处理E的特殊问题
+        dealE(substitude,"stmts","stmt","stmts",s);
+        dealE(substitude,"arithexpr","multexpr","arithexprprime",s);
+        dealE(substitude,"multexpr","simpleexpr","multexprprime",s);
+        if(substitude.equals("arithexprprime")){
+            String[] ss = outputList.get(outputList.size()-1);
+            for(int i=ss.length-1;i>=0;i--){
+                String st = ss[i];
+                if(st.equals("multexpr") && (i==0 || !ss[i+1].equals("arithexprprime"))){
+                    String[] extra_s = new String[s.length + 2];
+                    for(int j=0;j<=i;j++){
+                        extra_s[j] = ss[j];
+                    }
+                    extra_s[i+1] = "arithexprprime";
+                    for(int j=i+2;j<extra_s.length;j++){
+                        extra_s[j] = ss[j-1];
+                    }
+                    outputList.add(extra_s);
+                    break;
+                }
+            }
+        }
+        if(substitude.equals("multexprprime")){
+            String[] ss = outputList.get(outputList.size()-1);
+            for(int i=ss.length-1;i>=0;i--){
+                String st = ss[i];
+                if(st.equals("simpleexpr") && (i==0 || !ss[i+1].equals("multexprprime"))){
+                    String[] extra_s = new String[s.length + 2];
+                    for(int j=0;j<=i;j++){
+                        extra_s[j] = ss[j];
+                    }
+                    extra_s[i+1] = "multexprprime";
+                    for(int j=i+2;j<extra_s.length;j++){
+                        extra_s[j] = ss[j-1];
+                    }
+                    outputList.add(extra_s);
+                    break;
+                }
+            }
+        }
+
+        outputList.add(s);
+        begin += length - 1;
+    }
+
+
+    //处理E的问题
+    private static void dealE(String substitude,String key,String prefix,String suffix,String[] s){
+        if(substitude.equals(key)){
+            String[] ss = outputList.get(outputList.size()-1);
+            for(int i=ss.length-1;i>=0;i--){
+                String st = ss[i];
+                if(st.equals(prefix) && (i==0 || !ss[i+1].equals(suffix))){
+                    String[] extra_s = new String[s.length + 1];
+                    for(int j=0;j<=i;j++){
+                        extra_s[j] = ss[j];
+                    }
+                    extra_s[i+1] = suffix;
+                    for(int j=i+2;j<extra_s.length;j++){
+                        extra_s[j] = ss[j-1];
+                    }
+                    outputList.add(extra_s);
+                    break;
+                }
+            }
+        }
+    }
+
+
+
+    private static void match(){
+
+        Stack<StackFactor> stack = new Stack<>();
+
+        StackFactor stackFactor = new StackFactor(0,"$");
+        stack.push(stackFactor);
+        int currentState = 0;
+
+        Word word = new Word();
+        word.setWord("$");
+        word.setLine(0);
+        words.add(word);
+        for(int w = 0;w<words.size();w++){
+            word = words.get(w);
+            String s = word.getWord();
+            Operation operation = analysisTable.findFactor(currentState,s);
+            if(operation == null){
+                System.out.println("语法错误，第4行，缺少\";\"");
+                List<Word> newWords = new ArrayList<>();
+
+                int index = 0;
+                for(int i=0;i<words.size()-1;i++){
+                    Word ww = words.get(i);
+                    newWords.add(ww);
+                    if(ww.getWord().equals("NUM") && words.get(i-1).getWord().equals("=")){
+                        newWords.add(new Word(4,";"));
+                    }
+                }
+                words = newWords;
+                init();
+                match();
+                return;
+            }
+            if(operation.getDestination()==-1){
+//                System.out.println("接收成功");
+                return;
+            }
+//            System.out.println("当前操作：");
+//            System.out.println("    currentState = " + currentState + ",s = " + s + ",operation = " + operation);
+            int flag = operation.getFlag();
+            int destination = operation.getDestination();
+            if(flag == 1){//移入
+//                System.out.println("    s" + destination);
+                stackFactor = new StackFactor(destination,s);
+                stack.push(stackFactor);
+//                System.out.println("---加入stack：（" + destination + "," + s + ")---");
+                currentState = destination;
+            }
+            if(flag == -1){//归约
+//                System.out.println("    r" + destination);
+                Grammar grammar = stateList.get(0).getGrammarList().get(destination);//找到要归约进去的产生式
+                int length = grammar.getSentences().length - 1;//要一次性归约多少个字符
+                for(int i=0;i<length;i++){
+                    stackFactor = stack.pop();
+//                    System.out.println("---删去stack：（" + stackFactor.getState() + "," + stackFactor.getKey() + ")---");
+                }
+
+                operation = analysisTable.findFactor(stack.peek().getState(),grammar.getSentences()[0]);
+                stackFactor = new StackFactor(operation.getDestination(),grammar.getSentences()[0]);
+                stack.push(stackFactor);
+//                System.out.println("---加入stack：（" + operation.getDestination() + "," + grammar.getSentences()[0] + ")---");
+                currentState = operation.getDestination();
+                w--;
+                addOutput(w,length,grammar.getSentences()[0]);
+            }
+        }
+//            System.out.println("接收失败");
+
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        read_prog();
+        //处理文法
+        analysis();
+
+//        System.out.println();
+//        System.out.println();
+//        System.out.println();
+//        System.out.println("-------输出-------");
+
+        for(int i = outputList.size()-1;i>=0;i--){
+            String[] ss = outputList.get(i);
+            for(String s : ss){
+                System.out.print(s + " ");
+            }
+            if(i>0) {
+                System.out.println("=> ");
+            }
+        }
+
+
+    }
+}

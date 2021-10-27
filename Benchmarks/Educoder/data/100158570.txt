@@ -1,0 +1,29 @@
+#include <iostream>
+#include<string.h>
+using namespace std;
+int main()
+{
+    char a[50], b[50];
+    cin >> a >> b;
+    int x,y,i=strlen(a),j=strlen(b),c[50][50]={0};
+    for (x=0; x<i; x++)
+    {
+        for (y=0; y<j; y++)
+        {
+            if (a[x]==b[y])
+            {
+                if (x==0 || y==0)
+                    c[x][y]=1;
+                else
+                    c[x][y]=c[x-1][y-1]+1;
+            }
+        }
+    }
+    int max=0;
+    for (x=0; x<i; x++)
+        for (y=0; y<j; y++)
+            if (c[x][y]>max)
+                max=c[x][y];
+    cout <<max;
+    return 0;
+}

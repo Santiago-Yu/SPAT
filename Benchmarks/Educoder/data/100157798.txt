@@ -1,0 +1,39 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+
+		String str = scanner.nextLine();
+		ArrayList<Integer> list = new ArrayList<Integer>();
+
+		int temp = 0;
+
+		while (true) {
+
+			char[] charArray = str.toCharArray();
+
+			for (char c : charArray) {
+				temp += Math.pow(Integer.valueOf(c) - 48, 2);
+			}
+//			System.out.println(temp);
+
+			if (temp == 1) {
+				System.out.print("YES");
+				break;
+			} else {
+				if (list.indexOf(temp) != -1) {
+					System.out.print("NO");
+					break;
+				} else {
+					list.add(temp);
+					str = String.valueOf(temp);
+					temp = 0;
+				}
+			}
+
+		}
+
+	}
+}

@@ -1,0 +1,22 @@
+package step3;
+import java.util.Scanner;
+public class SumOfDigit {
+	public static void main(String[] args) {
+		/******Begin******/
+        Scanner input = new Scanner(System.in);
+        System.out.println("请输入一个五位数字：");
+        int num = input.nextInt();
+        int a = num%10;
+        int b1 = num%100;
+        int b = (b1-a)/10;
+        int c1 = num%1000;
+        int c = (c1-b1)/100;
+        int d1 = num%10000;
+        int d = (d1-c1)/1000;
+        int e1 = num%100000;
+        int e =(e1-d1)/10000;
+        int f = a+b+c+d+e;
+        System.out.println(num+"的各位数字之和是："+f);
+		/******End******/
+	}
+}

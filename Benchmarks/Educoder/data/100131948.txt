@@ -1,0 +1,41 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+public int level=0;
+    public void showDirStructure(File file)	{
+
+        if(file.isDirectory()){
+            for (int i=0;i<level;i++){
+                System.out.print("  ");
+            }
+
+            System.out.println("+--"+file.getName());
+            for (String f:file.list()) {
+                level++;
+                showDirStructure(new File(file.getPath()+"/"+f));
+                level--;
+            }
+        }else {
+            String[] houzhui = file.getName().split("\\.");
+            String s =houzhui[houzhui.length-1];
+
+            if(s.equals("jpg")||s.equals("png")||s.equals("bmp")){
+                for (int i = 0; i < level; i++) {
+                    System.out.print("  ");
+                }
+                System.out.println("--" + file.getName());
+
+            }
+
+        }
+    }
+
+
+	
+
+	/********** END **********/
+}

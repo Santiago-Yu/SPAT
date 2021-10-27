@@ -1,0 +1,60 @@
+package step1;
+import java.util.Scanner;
+
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        int x,y;
+        System.out.println("请输入西瓜重量：");
+        x=sc.nextInt();
+        System.out.println("请输入顾客所付钱数：");
+        y=sc.nextInt();
+        float z;
+        double m,n;
+        if(x>20){
+            z=0.85f;
+            m=z*x;
+        	n=y-m;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",m));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",n));
+        }else if(x>15&&x<=20){
+            z=0.9f;
+            m=z*x;
+        	n=y-m;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",m));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",n));
+        }else if(x>10&&x<=15){
+            z=0.95f;
+            m=z*x;
+        	n=y-m;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",m));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",n));
+        }else if(x>5&&x<=10){
+            z=1.0f;
+            m=z*x;
+        	n=y-m;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",m));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",n));
+        }else if(x<=5){
+            z=1.05f;
+            m=z*x;
+        	n=y-m;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(String.format("%.2f",m));
+            System.out.print("应找钱数：");
+            System.out.println(String.format("%.2f",n));
+        }
+            
+		/******End******/	
+	}
+
+}

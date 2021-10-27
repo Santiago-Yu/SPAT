@@ -1,0 +1,42 @@
+package step4;
+
+/**
+ * Created by sykus on 2018/3/20.
+ */
+public class QuickSort {
+
+    public void sort(int arr[], int low, int high) {
+        /********** Begin *********/
+
+        int i = low;
+        int j = high + 1;
+        int povit = arr[low];
+        while (i < j) {
+            while (j > low && arr[--j] >= povit) ;
+            while (i < high && arr[++i] <= povit) ;
+            if (i>=j)break;
+            int temp = arr[j];
+            arr[j] = arr[i];
+            arr[i] = temp;
+            print(arr);
+        }
+        int temp = arr[j];
+        arr[j] = arr[low];
+        arr[low] = temp;
+        print(arr);
+
+        if (i > low) sort(arr, low, j - 1);
+        if (j < high) sort(arr, j + 1, high);
+
+        /********** End *********/
+    }
+
+
+    private static void print(int arr[]) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+}
+

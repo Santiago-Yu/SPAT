@@ -1,0 +1,75 @@
+package step4;
+
+public class Task {
+	public int year = 0;
+public int month = 0;
+public int days = 0;
+public boolean flag = false;
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+String[] date = releaseDate.split("-");
+String dateString = null;
+year = Integer.parseInt(date[0]);
+month = Integer.parseInt(date[1]);
+days = Integer.parseInt(date[2]);
+days = days+day ;
+while(days>getDayByMonth(year,month)||month>12){
+    if(days>getDayByMonth(year,month)){
+    days-=getDayByMonth(year,month);
+    month += 1;
+    }
+    if(month>12){
+        year++;
+        month=1;
+    }
+   
+}
+
+dateString = year + "-" + get(month) + "-" + get(days);
+
+return dateString;
+}
+
+public boolean isLeapYear(int year) {
+flag = false;
+if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
+flag = true;
+}
+return flag;
+}
+
+public int getDayByMonth(int year, int month) {
+int day = 0;
+int[] daybymonth = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+if (month == 2) {
+if (isLeapYear(year)) {
+day = 29;
+} else {
+day = 28;
+}
+} else {
+day = daybymonth[month - 1];
+}
+return day;
+
+}
+    public String get(int n){
+    if(n<10){return "0"+n;}
+    else{return n+"";}
+        
+
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+}
+	
+	
+}

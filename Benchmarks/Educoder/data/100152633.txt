@@ -1,0 +1,67 @@
+package step2;
+import java.util.Scanner;
+
+public class TestJava12_3 {
+
+	public static void main(String[] args) {
+		/******Begin******/
+        double x,y,z=0;
+        String a;
+        Scanner sc=new Scanner(System.in);
+        System.out.println("请输入第一个数字：");
+        x=sc.nextDouble();
+        System.out.println("请输入运算符（+、-、*、/、%）：");
+        a=sc.next();
+        System.out.println("请输入第二个数字：");
+        y=sc.nextDouble();
+        switch(a){
+            case "+":
+                z=x+y;
+                System.out.print(String.format("%.1f",x));
+                System.out.print(" + ");
+                System.out.print(String.format("%.1f",y));
+                System.out.print("=");
+                System.out.println(String.format("%.1f",z));
+            break;
+            case "-":
+                z=x-y;
+                System.out.print(String.format("%.1f",x));
+                System.out.print(" - ");
+                System.out.print(String.format("%.1f",y));
+                System.out.print("=");
+                System.out.println(String.format("%.1f",z));
+            break;
+            case "*":
+                z=x*y;
+                System.out.print(String.format("%.1f",x));
+                System.out.print(" * ");
+                System.out.print(String.format("%.1f",y));
+                System.out.print("=");
+                System.out.println(String.format("%.1f",z));
+            break;
+            case "/":
+                z=x%y;
+                System.out.print(String.format("%.1f",x));
+                System.out.print(" / ");
+                System.out.print(String.format("%.1f",y));
+                System.out.print("=");
+                System.out.println(String.format("%.1f",z));
+            break;
+            case "%":
+                z=x%y;
+                System.out.print(String.format("%.1f",x));
+                System.out.print(" % ");
+                System.out.print(String.format("%.1f",y));
+                System.out.print("=");
+                System.out.println(String.format("%.1f",z));
+            break;
+            default:
+            System.out.println("输入的运算符有误！");
+        }
+        
+        
+		
+		/******End******/
+	}
+
+}

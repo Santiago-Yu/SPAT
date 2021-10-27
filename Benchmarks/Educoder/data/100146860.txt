@@ -1,0 +1,40 @@
+package step1;
+import java.math.BigInteger;
+import java.util.Arrays;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] num){
+       int[] initial = new int[10001];
+		for (int i = 0; i < num.length; i++) {
+			initial[num[i]] = 1;
+		}
+		int[] inum = new int[3];
+		int index = -1;
+		for (int i = 1; i < initial.length; i++) {
+			if (initial[i] == 1)
+				continue;
+			inum[++index] = i;
+		}
+		int n = inum.length;
+		for (int i = 0; i < n - 1; i++) {
+			for (int j = 0; j < n - i - 1; j++) {
+				if (inum[j] > inum[j + 1]) {
+					int t = inum[j + 1];
+					inum[j + 1] = inum[j];
+					inum[j] = t;
+				}
+			}
+		}
+		String str="";
+		for(int tmp:inum)
+			str+=tmp;
+		BigInteger bnum=new BigInteger(str);
+		bnum=bnum.mod(new BigInteger(11+""));
+		String str1=bnum.toString();
+		int result=Integer.parseInt(str1);
+		return result;
+	}
+
+	/********* End *********/
+}

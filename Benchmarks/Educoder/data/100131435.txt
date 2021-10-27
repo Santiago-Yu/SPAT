@@ -1,0 +1,57 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    static int q = 0;
+	public void showDirStructure(File file)	{
+        
+       System.out.println("+--"+file.getName());
+        for(File i :file.listFiles())
+        {
+            if(i.isDirectory())
+                { 
+                    q++;
+                   for(int w =0;w<q;w++)         //层次打印
+                   {
+                       System.out.print("  ");
+                   }
+                //    System.out.println("+--"+i.getName());      //名字打印
+                    showDirStructure(i);
+                q--;
+                }
+                    
+                 
+           else
+           {
+               q++;
+                 for(int w =0;w<q;w++)         //层次打印
+                   {
+                       System.out.print("  ");
+                   }
+             
+               System.out.println("--"+i.getName());      //名字打印
+               q--;
+               
+               
+            
+           }
+            
+           
+        }
+        
+        
+		
+
+
+
+
+
+	}
+	
+
+
+	/********** END **********/
+}

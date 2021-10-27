@@ -1,0 +1,47 @@
+package step1;
+
+public class Task {
+
+	public double solve(double x1, double y1, double r1,
+                        double x2, double y2, double r2) {
+        /********* Begin *********/
+        double sumOfArea = Math.acos(-1.0) * (r1 * r1 + r2 * r2);
+        double dup = 0.0;
+//        if(circlesInteract(x1, y1, r1, x2, y2, r2)){
+//            double dist = dis(x1, y1, x2, y2);
+//            double an1 = Math.acos(cos_angle(r1, r2, dist));
+//            double an2 = Math.acos(cos_angle(r2, r1, dist));
+//            double tri1 = 0.5 * r1 * r1 * Math.sin(an1 * 2);
+//            double tri2 = 0.5 * r2 * r2 * Math.sin(an2 * 2);
+//            double s1 = r1 * r1 * an1;
+//            double s2 = r2 * r2 * an2;
+//            dup = (s1 - tri1) + (s2 - tri2);
+//        }
+        dup = interArea(x1, y1, r1, x2, y2, r2);
+        double res = sumOfArea - dup;
+        return Double.valueOf(String.format("%.5f", res));
+        /********* End *********/
+    }
+
+    double interArea(double a1,double b1, double r1, double a2, double b2, double r2){
+        double A1,A2,s1,s2,s;
+        double d=Math.sqrt((a2-a1)*(a2-a1)+(b2-b1)*(b2-b1));
+        if(d>=r1+r2)  {
+            return 0.0;
+        }
+        else if(d<=Math.abs(r1-r2)&&d>=0)
+        {
+            if(r1>r2)
+                return (Math.PI*r2*r2);
+            else return(Math.PI*r1*r1);
+        }
+        else {
+            A1 = 2 * Math.acos((d * d + r1 * r1 - r2 * r2) / (2 * d * r1));
+            A2 = 2 * Math.acos((d * d + r2 * r2 - r1 * r1) / (2 * d * r2));
+            s1 = 0.5 * r1 * r1 * Math.sin(A1) + 0.5 * r2 * r2 * Math.sin(A2);
+            s2 = A1 / 2 * r1 * r1 + A2 / 2 * r2 * r2;
+            s = s2 - s1;
+        }
+        return s;
+    }
+}

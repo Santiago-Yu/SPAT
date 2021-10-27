@@ -1,0 +1,42 @@
+package step2;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateException extends Exception{
+	private int year;
+	private int month;
+	private int day;	
+	public DateException(String s){
+		super(s);
+	}	
+	public DateException(int year,int month,int day) throws DateException{
+		super("构造日期");
+		/*****Begin*****/
+        if(year<1900 || year>2100) throw new DateException("年份必须在1900到2100之间");
+        else if(((year%4==0&&year%100!=0)||year%400==0) && month == 2 && day > 29) throw new DateException("该月只有29天");
+        else if( month == 2 && day > 28) throw new DateException("该月只有28天");
+        else if(month < 0 || month > 12) throw new DateException("月份必须在1到12之间");
+        else if(day < 0 || day > 31) throw new DateException("日期必须在1到31之间");
+        else if((month == 2 || month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
+            throw new DateException("该月不能出现31天");
+		this.year = year;
+        this.month = month;
+        this.day = day;	
+		/******End******/
+	}
+	
+	public Date getDate()throws ParseException{ 
+		Date date =null;
+		/*****Begin*****/
+        String dateStr = year + "-" + month + "-" + day;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+        date = sdf.parse(dateStr);
+		/******End******/		
+		return date;
+	}
+    
+}

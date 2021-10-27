@@ -1,0 +1,58 @@
+package step2;
+
+public class Task {
+	
+	public int getDaysNum(String startTime,String endTime){
+	
+				int s[] = {1,3,6,10,15,21,28};
+		int e[] = {5,14,24};
+		int day = 0;
+		int startm = startTime.charAt(0)-'0';
+		int endm = endTime.charAt(0)-'0';
+		int startd;
+		int end;
+		if(startTime.length()<4)
+			startd = startTime.charAt(2)-'0';
+		else startd =  (startTime.charAt(2)-'0')*10+(startTime.charAt(3)-'0');
+		if(endTime.length()<4)
+			end = endTime.charAt(2)-'0';
+		else end =  (endTime.charAt(2)-'0')*10+(endTime.charAt(3)-'0');
+		if(startm==7) {
+			if(endm==7) {	
+				for(int i = startd;i<=end;i++) {
+					for(int j = 0;j<s.length;j++) {
+						if(i == s[j]) {
+							day++;
+						}
+					}
+				}
+			}
+			else {
+				for(int i = startd;i<=31;i++) {
+					for(int j = 0;j<s.length;j++) {
+						if(i == s[j])
+							day++;
+					}
+				}
+				for(int i = 0;i<=end;i++) {
+					for(int j = 0;j<e.length;j++) {
+						if(i == e[j])
+							day++;
+					}
+				}
+			}
+		}
+		else if(startm==8) {
+			for(int i = startd;i<=end;i++) {
+				for(int j = 0;j<e.length;j++) {
+					if(i == e[j])
+						day++;
+				}
+			}
+		}
+		return day;
+		
+		
+	}
+	
+}

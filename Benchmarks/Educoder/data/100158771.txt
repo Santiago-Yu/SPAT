@@ -1,0 +1,39 @@
+/*  */package Q102;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		// write your code here
+				String money = in.nextLine();
+		int money1[] = {0,0,0};
+		for(int i = 0;i<money.length();i++) {
+			if(money.charAt(i)=='5') {
+				money1[0]++;
+			}
+			else if(money.charAt(i)=='1') {
+				money1[1]++;
+				i++;
+			}
+			else if(money.charAt(i)=='2') {
+				money1[2]++;
+				i++;
+			}
+		}
+		if(money1[1]>money1[0]) {
+			System.out.print("false");
+			return;
+		}
+		else {
+			money1[0]=money1[0]-money1[1];
+		}
+		if(money1[2]>money1[0]||(money1[2]<money1[0]&&money1[1]*10+money1[0]*5<money1[2]*15)) {
+			System.out.print("false");
+		}
+		else {
+			System.out.print("true");
+		}	
+    
+	}
+
+}

@@ -1,0 +1,65 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+      	boolean flag1 = true;
+		for(int i = 0; i < arr.length - 1; i++) {            
+            if (arr[i] > arr[i + 1]) {  
+                flag1 = false;
+                break;
+            }else{
+                 flag1 = true;
+                 
+            }
+           
+      	}
+        if(flag1){
+        	for(int k=0;k<arr.length;k++){
+                System.out.print(arr[k]+" ");
+            }
+            System.out.println();
+        }
+        
+        
+        boolean flag = true;              
+        while(flag){
+            for(int i=0;i<arr.length-1;i++) {
+                if(arr[i]>arr[i+1]) {
+                    int b = 0;
+                    b = arr[i+1];
+                    arr[i+1] = arr[i];
+                    arr[i] = b;	
+                    for(int k=0;k<arr.length;k++){
+                        System.out.print(arr[k]+" ");
+                    }
+                    System.out.println();
+                }
+            }
+
+            for(int j=arr.length-1;j>0;j--) {
+                if(arr[j]<arr[j-1]) {
+                    int c = 0;
+                    c = arr[j-1];
+                    arr[j-1] = arr[j];
+                    arr[j] = c;
+                    for(int k=0;k<arr.length;k++){
+                        System.out.print(arr[k]+" ");
+                    }
+                    System.out.println();
+                }
+            }
+
+            for (int i = 0; i < arr.length - 1; i++) {
+                 if (arr[i] > arr[i + 1]) {
+                      flag = true;
+                      break;
+                 }else {
+                    flag = false;
+                 }
+            }
+         }
+		/********* End *********/
+	}
+}

@@ -1,0 +1,49 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int leap = 0;
+        int total = 0;
+        if(year%100!=0&&year%4==0||year%400==0)
+        {
+            leap = 1;
+        }
+        else
+            leap = 0;
+        switch (month - 1)  
+    {  
+        case 12:  
+            total += 31;  
+        case 11:  
+            total += 30;  
+        case 10:  
+            total += 31;  
+        case 9:  
+            total += 30;  
+        case 8:  
+            total += 31;  
+        case 7:  
+            total += 31;  
+        case 6:  
+            total += 30;  
+        case 5:  
+            total += 31;  
+        case 4:  
+            total += 30;  
+        case 3:  
+            total += 31;  
+        case 2:  
+            total += 28 + leap;//如果是闰年，isRun的值是1，否则是0；  
+        case 1:  
+            total += 31;  
+             
+            break;  
+    }  
+         total = total + day;
+	
+		System.out.print(total);
+
+		/********** End *********/
+	}
+}

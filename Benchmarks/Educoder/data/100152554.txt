@@ -1,0 +1,22 @@
+package step3;
+import java.util.Scanner;
+
+public class TestJava11_4 {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        int month,sum;
+        System.out.println("请输入月份：");
+        month=sc.nextInt();
+        System.out.println("请输入订购机票的数量：");
+        sum=sc.nextInt();
+        if(7<=month&&month<=9){System.out.println("优惠率：5%");}
+        else if(sum<20){System.out.println("优惠率：5%");}
+        else if(1<=month&&month<=5&&month==10&&month==11){if(sum>20)System.out.println("优惠率：30%");}
+        else if (sum<20){System.out.println("优惠率：20%");}
+        else if (month==4){System.out.println("优惠率：30%");}
+        else {System.out.println("优惠率：10%");}
+		/******End******/	
+	}
+
+}

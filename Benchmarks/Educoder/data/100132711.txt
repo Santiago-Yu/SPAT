@@ -1,0 +1,70 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 	int length = ferry.length;
+        if(length == 0)
+            return 0;
+        int witdh = ferry[0].length;
+        int num = 0;
+        for(int i = 0;i < length; i++)
+        {
+            for(int j = 0; j < witdh; j++)
+            {
+                if(ferry[i][j] == '+')
+                {
+                    if(i == length-1 && j == witdh-1)//最右下
+                        ++num;
+                    else if(j == witdh-1)//最右
+                    {
+                        ++num;
+                        for(int k = i; k < length; k++)
+                            if(ferry[k][j] == '+')
+                                ferry[k][j] = 'o';
+                            else
+                                break;
+                    }
+                    else if(i == length-1)//最下和右
+                    {
+                        ++num;
+                        for(int k = j; k < witdh; k++)
+                        {
+                            if(ferry[i][k] == '+')
+                                ferry[i][k] = 'o';
+                            else
+                                break;
+                        }
+                    }
+                    else if(ferry[i+1][j] == '+')
+                    {
+                        ++num;
+                        for(int k = i; k < length; k++)
+                            if(ferry[k][j] == '+')
+                                ferry[k][j] = 'o';
+                            else
+                                break;
+                    }
+                    else if(ferry[i][j+1] == '+')
+                    {
+                        ++num;
+                        for(int k = j; k < witdh; k++)
+                        {
+                            if(ferry[i][k] == '+')
+                                ferry[i][k] = 'o';
+                            else
+                                break;
+                        }
+                    }
+                    else 
+                        ++num;
+                }
+            }
+        }
+        return num;
+    
+         
+      /***********END ***************/
+	 }
+}

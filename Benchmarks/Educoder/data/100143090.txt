@@ -1,0 +1,41 @@
+package step4;
+
+import java.io.*;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		BufferedReader bufferedReader = new BufferedReader(
+                new FileReader("src/step4/input/input.txt"));
+        BufferedWriter bufferedWriter = new BufferedWriter(
+                new FileWriter("src/step4/output/output.txt"));
+
+        String str = "";
+        while( (str = bufferedReader.readLine()) != null){
+            bufferedWriter.write(str);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+        }
+        
+        bufferedReader.close();
+        bufferedWriter.close();
+        
+        BufferedReader bufferedReaderjpg1 = new BufferedReader(
+                new FileReader("src/step4/input/input.jpg"));
+        BufferedWriter bufferedWriterjpg2 = new BufferedWriter(
+                new FileWriter("src/step4/output/output.jpg"));
+
+        String str2 = "";
+        while( (str2 = bufferedReaderjpg1.readLine()) != null){
+            bufferedWriterjpg2.write(str2);
+            bufferedWriterjpg2.newLine();
+            bufferedWriterjpg2.flush();
+        }
+        bufferedReaderjpg1.close();
+        bufferedWriterjpg2.close();
+		
+		
+		/********* End *********/		
+	}
+}

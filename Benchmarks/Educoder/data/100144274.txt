@@ -1,0 +1,44 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+	public void showDirStructure(File file)	{
+		if (file.isDirectory()) {
+			System.out.println("+--" + file.getName());
+		}
+		int Blank = 2;
+		haha(file, Blank);
+	}
+ 
+	public static void haha(File file, int Blank ) {
+		File[] files = file.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory()) {
+				for (int k = 0; k < Blank; k++) {
+					System.out.print(" ");
+				}
+				System.out.println("+--" + files[i].getName());
+				
+				haha(files[i], Blank+2);
+			} else {
+				int end =  files[i].toString().indexOf(".");
+				String suffix = files[i].toString().substring(end+1);
+			
+				if(suffix.equals("jpg") || suffix.equals("png") || suffix.equals("bmp")) {
+					for (int k = 0; k < Blank; k++) {
+						System.out.print(" ");
+					}
+					System.out.println("--" + files[i].getName());
+				}
+			}
+		}
+	}
+	
+	
+
+	/********** End **********/
+}

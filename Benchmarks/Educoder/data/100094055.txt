@@ -1,0 +1,21 @@
+package chapter1.step3;
+
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class FarheheitToCentigrade {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		DecimalFormat df=new DecimalFormat("#.00");
+		Scanner sc=new Scanner(System.in);
+		double temfarenheit = sc.nextDouble();   //华氏度
+        /********** Begin *********/
+		//计算摄氏度
+        double Centigrade;
+        Centigrade=5*(temfarenheit-32)/9;
+        String s=df.format(Centigrade);
+        //利用DecimalFormat保留摄氏度的两位小数并输出
+        System.out.print("If the Farenheit is "+temfarenheit);
+        System.out.print(",the Centigrade is "+s);
+	}
+}

@@ -1,0 +1,68 @@
+package task5;
+
+import java.util.Scanner;
+public class Box {
+
+    private double width;
+    private double height;
+    private double depth;
+    private int boxType;
+   
+    private double x;
+    private double y;
+    private double z;
+    
+    public Box(int p) {
+        this.boxType = p;
+    }
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+ public static void main(String[] args){
+     Scanner input=new Scanner(System.in);
+     int p;
+     double a;
+     double b;
+     double c;
+    p=input.nextInt();
+     Box box=new Box(p);
+     a=input.nextDouble();
+     b=input.nextDouble();
+     c=input.nextDouble();
+     box.setWidth(a);
+     box.setHeight(b);
+     box.setDepth(c);
+     System.out.println("the width is:"+box.getWidth());
+     System.out.println("the height is:"+box.getHeight());
+      System.out.println("the depth is:"+box.getDepth());
+    }
+
+    public void setWidth(double a) {
+        this.x=a;
+    }
+    public void setHeight(double b) {
+        this.y=b;
+    } 
+    public void setDepth(double c) {
+        this.z=c;
+    }       
+
+   public Double getWidth() {
+      return x;
+    }
+    public Double getHeight() {
+      return y;
+    }
+    public Double getDepth() {
+      return z;
+    }
+
+}

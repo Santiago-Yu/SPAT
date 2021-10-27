@@ -1,0 +1,57 @@
+package Q102;
+import java.util.*;
+import java.util.Arrays;
+
+public class Main {
+
+	public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        String[] str=new String[100];
+        int i=0;
+        while(sc.hasNext())
+        {
+        	String word = sc.next();
+			str[i] = word;
+			i++;
+        }
+        int j5=0;
+    	int j10=0;
+    	int flag=0;
+    	//for(String j:str ) System.out.printf(j+"  ");
+        for(int j=0;str[j]!=null;j++) {
+        	if(str[j].compareTo("5")==0)
+    			j5++;
+    			else if(str[j].compareTo("10")==0)
+    		    {
+    				j10++;
+    				j5--;
+    	     	}
+    			else if(str[j].compareTo("20")==0){
+    				if(j10>0){
+    					j10--;
+    					j5--;
+    				}
+    				else{
+    					j5-=3;
+    				}
+    			}
+    			i++;
+    			if(j5<0||j10<0)
+    			{
+    				System.out.printf("false");
+    				flag=1;
+    				break;
+    			}
+        }
+        if(flag==0)
+        {
+        	System.out.printf("true");
+
+        }
+        }
+	
+
+
+
+
+}

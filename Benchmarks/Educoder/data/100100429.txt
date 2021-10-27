@@ -1,0 +1,43 @@
+package step2;
+
+
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        char [] st=null;
+        int letter=0,space=0,number=0,other=0;
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+        try {
+        	 while((str = reader.readLine()) != null){
+        	      //System.out.println(str);//此时str就保存了一行字符串
+        		 st=str.toCharArray();
+        		 for(int i=0;i<str.length();i++){
+        			 if(st[i]>=48 && st[i]<=57){
+        				 number++;
+        				 //System.out.println("输入了一个数字");
+        				 }else if((st[i]>=65 && st[i]<=90) ||(st[i]>=97 && st[i]<=122)){
+        					 letter++;
+        				 //System.out.println("输入了一个字母");
+        				 }else if (st[i]==32) {//返回为true，则读入的字符串是空格
+        			            //System.out.println("It is empty");}
+        					 space++;}
+        				 else{
+        					 other++;
+        				 //System.out.println("输入了一个其他字符");
+        				 }
+        		 }
+        	}
+            System.out.print("letter="+letter+",space="+space+",number="+number+",other="+other);
+        }
+        catch(IOException e) {
+        	e.printStackTrace();
+        }
+        /********** End *********/
+    }
+}

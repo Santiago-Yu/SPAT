@@ -1,0 +1,32 @@
+package step;
+public class SequenceStack {
+	private int[] stackArray;
+	private int top;
+	public SequenceStack(int top,int MaxSize){
+		this.top=top;
+		stackArray=new int[MaxSize];
+	}
+	public void push(int val){
+		/********* Begin *********/
+        if(top==stackArray.length)
+        {
+        	int[] sta=stackArray;
+            stackArray=new int[stackArray.length*2];
+            System.arraycopy(sta,0,stackArray,0,sta.length);
+        }
+		else
+        {
+            top++;
+        	stackArray[top]=val;
+        }
+		/********* End *********/
+	}
+
+	public int pop(){
+		if(top==-1){
+			System.out.println("数据栈已空，无法删除元素");
+		}
+		top--;
+		return stackArray[top+1];
+	}
+}

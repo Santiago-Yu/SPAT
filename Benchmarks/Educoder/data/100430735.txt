@@ -1,0 +1,22 @@
+    @Override
+    public void run() {
+        try {
+            FileChannel out = new FileOutputStream(outputfile).getChannel();
+            long pos = 0;
+            status.setText("Slu膷ova膷: Proces Slu膷ov谩n铆 spu拧t臎n.. Pros铆m 膷ekejte..");
+            for (int i = 1; i <= noofparts; i++) {
+                FileChannel in = new FileInputStream(originalfilename.getAbsolutePath() + "." + "v" + i).getChannel();
+                status.setText("Slu膷ova膷: Slu膷uji 膷谩st " + i + "..");
+                this.splitsize = in.size();
+                out.transferFrom(in, pos, splitsize);
+                pos += splitsize;
+                in.close();
+                if (deleteOnFinish) new File(originalfilename + ".v" + i).delete();
+                pb.setValue(100 * i / noofparts);
+            }
+            out.close();
+            status.setText("Slu膷ova膷: Hotovo..");
+            JOptionPane.showMessageDialog(null, "Slou膷eno!", "Slu膷ova膷", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+        }
+    }

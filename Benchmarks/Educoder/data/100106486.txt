@@ -1,0 +1,29 @@
+package Step4;
+
+import java.util.Scanner;
+
+public class regex {
+	 public static void main(String[] args) {
+		 Scanner sc=new Scanner(System.in);
+		 String w = sc.nextLine();
+         checkQQ (w);
+         sc.close();
+	 }
+	 public static void checkQQ(String qq) {
+		 /********** Begin *********/
+         char arr[]=qq.toCharArray();
+		 int t = 0;
+		 for(int i=0;i<arr.length;i++){
+			 if (!Character.isDigit(arr[i])){ 
+				   break; 
+			}
+			 t++;
+		 }
+		 if(arr.length==10&&t>=arr.length)
+			 System.out.println("合法qq");
+		 else
+			 System.out.println("非法qq");
+
+         /********** End *********/
+	 }
+}

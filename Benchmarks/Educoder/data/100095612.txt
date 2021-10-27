@@ -1,0 +1,61 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        if(month>12||day>31){
+			System.out.println("输入日期有误");
+			return;
+		}
+		int count = 0;//这是一年的第几天
+		int countMonth = 0;
+		switch(month){
+			case 1:
+				countMonth=0;
+                break;
+			case 2:
+				countMonth=31;//31
+                break;
+			case 3:
+				countMonth=59;//31+28
+                break;
+			case 4:
+				countMonth=90;//59+31
+                break;
+			case 5:
+				countMonth=120;//90+30
+                break;
+			case 6:
+				countMonth=151;//120+31
+                break;
+			case 7:
+				countMonth=181;//151+30
+                break;
+			case 8:
+				countMonth=212;//181+31
+                break;
+			case 9:
+				countMonth=243;//212+31
+                break;
+			case 10:
+				countMonth=273;//243+30
+                break;
+			case 11:
+				countMonth=304;//273+31
+                break;
+			case 12:
+				countMonth=334;//304+30
+                break;
+		}
+		//如果是闰年
+		if((year%4==0&&year%100!=0)||year%400==0){
+			//如果输入月分大于三月，二月天数加一
+			if(month>2){
+				countMonth=countMonth+1;
+			}
+		}
+		count=countMonth+day;
+		System.out.print(count);
+		/********** End *********/
+	}
+}

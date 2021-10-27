@@ -1,0 +1,18 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		java.util.Date date = java.sql.Date.valueOf(releaseDate);
+		java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		java.util.Calendar c = java.util.Calendar.getInstance();
+	     c.setTime(date);
+	     c.add(java.util.Calendar.DATE, day);
+	     java.util.Date d = c.getTime();
+    	 String month = format.format(d);
+         return month;
+	}
+
+}
+	

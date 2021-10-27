@@ -1,0 +1,26 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+        System.out.println("+--"+file.getName());
+        showDirectTree(file,"");
+	}
+    public static void showDirectTree(File dir,String interval){
+        File[] files = dir.listFiles();
+        interval += "  ";
+        for(File file : files){
+            if(file.isDirectory()){
+                System.out.println(interval + "+--" + file.getName());
+                showDirectTree(file,interval +"");
+            }else if(file.getName().endsWith("bmp")|| file.getName().endsWith("png") ||file.getName().endsWith("jpg")){
+                System.out.println(interval + "--" + file.getName());
+            }
+        }
+    }
+                               
+	/********** END **********/
+}

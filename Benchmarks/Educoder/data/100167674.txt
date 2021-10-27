@@ -1,0 +1,816 @@
+import java.util.*;
+
+public class Java_LLParserAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine());
+            prog.append(System.lineSeparator());
+        }
+    }
+
+    // add your method here!!
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        Lexer lexer = new Lexer(prog.toString());
+        LLParser parser = new LLParser(lexer.getTokens());
+        parser.printSyntaxTree();
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+
+class LLParser {
+    private List<Token> tokens;
+    private int currentTokenIndex;
+
+    private Stack<TreeNode> stack;
+
+    private TreeNode syntaxTree;
+    private boolean hasError;
+
+    public LLParser(List<Token> tokens) {
+        this.tokens = tokens;
+        hasError = false;
+        parse();
+        if (hasError)
+            parse();
+    }
+
+    public void printSyntaxTree() {
+        syntaxTree.print();
+    }
+
+    private void parse() {
+        currentTokenIndex = 0;
+        stack = new Stack<TreeNode>();
+        syntaxTree = null;
+        hasError = false;
+
+        TreeNode root = new TreeNode(Grammar.START_SYMBOL);
+        stack.push(root);
+
+        while (!stack.empty() && hasToken()) {
+            if (Grammar.isTerminal(currentSymbol()))
+                matchTerminal();
+            else
+                matchNonterminal();
+        }
+        syntaxTree = root;
+    }
+
+    private void matchTerminal() {
+        String symbol = currentSymbol();
+        String input = currentToken().getSymbol();
+        if (symbol.equals(input)) {
+            stack.pop();
+            nextToken();
+        } else {
+            addToken(symbol);
+            System.out.printf("语法错误,第%d行,缺少\"%s\"\n",
+                    currentToken().getLine(), symbol);
+            hasError = true;
+        }
+    }
+
+    private void matchNonterminal() {
+        TreeNode top = stack.pop();
+        String symbol = top.getSymbol();
+        String input = currentToken().getSymbol();
+        List<String> production = Grammar.lookup(symbol, input);
+        Stack<TreeNode> nodes = new Stack<TreeNode>();
+        if (production != null) {
+            for (String string : production) {
+                TreeNode node = new TreeNode(string);
+                top.addChild(node);
+                if (!symbol.equals(Grammar.EMPTY_SYMBOL))
+                    nodes.push(node);
+            }
+            while (!nodes.empty())
+                stack.push(nodes.pop());
+        }
+    }
+
+    private String currentSymbol() {
+        return stack.peek().getSymbol();
+    }
+
+    private boolean hasToken() {
+        return currentToken() != null;
+    }
+
+    private Token currentToken() {
+        if (currentTokenIndex < tokens.size())
+            return tokens.get(currentTokenIndex);
+        else
+            return null;
+    }
+
+    private Token nextToken() {
+        currentTokenIndex += 1;
+        return currentToken();
+    }
+
+    private void addToken(String symbol) {
+        currentTokenIndex -= 1;
+        Token token = new Token(symbol, currentToken().getLine());
+        currentTokenIndex += 1;
+        tokens.add(currentTokenIndex, token);
+    }
+}
+
+class TreeNode {
+    private String symbol;
+    private List<TreeNode> children;
+
+    public TreeNode(String symbol) {
+        this.symbol = symbol;
+        children = new ArrayList<TreeNode>();
+    }
+
+    public void addChild(TreeNode node) {
+        children.add(node);
+    }
+
+    public void addChildren(List<TreeNode> nodes) {
+        children.addAll(nodes);
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void print() {
+        print(0);
+    }
+
+    public void print(int indent) {
+        StringUtilities.printIndent(indent);
+        System.out.print(symbol);
+        for (TreeNode node : children) {
+            System.out.printf("\n");
+            node.print(indent + 1);
+        }
+    }
+}
+
+class Grammar {
+    static final String START_SYMBOL = "program";
+    static final String EMPTY_SYMBOL = "E";
+
+    static final List<String> TERMINALS = new ArrayList<String>() {
+        {
+            add("{");
+            add("}");
+            add("if");
+            add("(");
+            add(")");
+            add("then");
+            add("else");
+            add("while");
+            add("ID");
+            add("=");
+            add(";");
+            add("<");
+            add(">");
+            add("<=");
+            add(">=");
+            add("==");
+            add("+");
+            add("-");
+            add("*");
+            add("/");
+            add("NUM");
+            add("$");
+        }
+    };
+
+    static final List<String> NONTERMINALS = new ArrayList<String>() {
+        {
+            add("arithexpr");
+            add("arithexprprime");
+            add("assgstmt");
+            add("boolexpr");
+            add("boolop");
+            add("compoundstmt");
+            add("ifstmt");
+            add("multexpr");
+            add("multexprprime");
+            add("program");
+            add("simpleexpr");
+            add("stmt");
+            add("stmts");
+            add("whilestmt");
+        }
+    };
+
+    private static final Map<String, Map<String, List<String>>> LL_PARSE_TABLE =
+            new HashMap<String, Map<String, List<String>>>() {
+                {
+                    put("program", new HashMap<String, List<String>>() {
+                        {
+                            put("{", new ArrayList<String>() {
+                                {
+                                    add("compoundstmt");
+                                }
+                            });
+                        }
+                    });
+                    put("stmt", new HashMap<String, List<String>>() {
+                        {
+                            put("{", new ArrayList<String>() {
+                                {
+                                    add("compoundstmt");
+                                }
+                            });
+                            put("if", new ArrayList<String>() {
+                                {
+                                    add("ifstmt");
+                                }
+                            });
+                            put("while", new ArrayList<String>() {
+                                {
+                                    add("whilestmt");
+                                }
+                            });
+                            put("ID", new ArrayList<String>() {
+                                {
+                                    add("assgstmt");
+                                }
+                            });
+                        }
+                    });
+                    put("compoundstmt", new HashMap<String, List<String>>() {
+                        {
+                            put("{", new ArrayList<String>() {
+                                {
+                                    add("{");
+                                    add("stmts");
+                                    add("}");
+                                }
+                            });
+                        }
+                    });
+                    put("stmts", new HashMap<String, List<String>>() {
+                        {
+                            put("{", new ArrayList<String>() {
+                                {
+                                    add("stmt");
+                                    add("stmts");
+                                }
+                            });
+                            put("}", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("if", new ArrayList<String>() {
+                                {
+                                    add("stmt");
+                                    add("stmts");
+                                }
+                            });
+                            put("while", new ArrayList<String>() {
+                                {
+                                    add("stmt");
+                                    add("stmts");
+                                }
+                            });
+                            put("ID", new ArrayList<String>() {
+                                {
+                                    add("stmt");
+                                    add("stmts");
+                                }
+                            });
+                        }
+                    });
+                    put("ifstmt", new HashMap<String, List<String>>() {
+                        {
+                            put("if", new ArrayList<String>() {
+                                {
+                                    add("if");
+                                    add("(");
+                                    add("boolexpr");
+                                    add(")");
+                                    add("then");
+                                    add("stmt");
+                                    add("else");
+                                    add("stmt");
+                                }
+                            });
+                        }
+                    });
+                    put("whilestmt", new HashMap<String, List<String>>() {
+                        {
+                            put("while", new ArrayList<String>() {
+                                {
+                                    add("while");
+                                    add("(");
+                                    add("boolexpr");
+                                    add(")");
+                                    add("stmt");
+                                }
+                            });
+                        }
+                    });
+                    put("assgstmt", new HashMap<String, List<String>>() {
+                        {
+                            put("ID", new ArrayList<String>() {
+                                {
+                                    add("ID");
+                                    add("=");
+                                    add("arithexpr");
+                                    add(";");
+                                }
+                            });
+                        }
+                    });
+                    put("boolexpr", new HashMap<String, List<String>>() {
+                        {
+                            put("(", new ArrayList<String>() {
+                                {
+                                    add("arithexpr");
+                                    add("boolop");
+                                    add("arithexpr");
+                                }
+                            });
+                            put("ID", new ArrayList<String>() {
+                                {
+                                    add("arithexpr");
+                                    add("boolop");
+                                    add("arithexpr");
+                                }
+                            });
+                            put("NUM", new ArrayList<String>() {
+                                {
+                                    add("arithexpr");
+                                    add("boolop");
+                                    add("arithexpr");
+                                }
+                            });
+                        }
+                    });
+                    put("boolop", new HashMap<String, List<String>>() {
+                        {
+                            put("<", new ArrayList<String>() {
+                                {
+                                    add("<");
+                                }
+                            });
+                            put(">", new ArrayList<String>() {
+                                {
+                                    add(">");
+                                }
+                            });
+                            put("<=", new ArrayList<String>() {
+                                {
+                                    add("<=");
+                                }
+                            });
+                            put(">=", new ArrayList<String>() {
+                                {
+                                    add(">=");
+                                }
+                            });
+                            put("==", new ArrayList<String>() {
+                                {
+                                    add("==");
+                                }
+                            });
+                        }
+                    });
+                    put("arithexpr", new HashMap<String, List<String>>() {
+                        {
+                            put("(", new ArrayList<String>() {
+                                {
+                                    add("multexpr");
+                                    add("arithexprprime");
+                                }
+                            });
+                            put("ID", new ArrayList<String>() {
+                                {
+                                    add("multexpr");
+                                    add("arithexprprime");
+                                }
+                            });
+                            put("NUM", new ArrayList<String>() {
+                                {
+                                    add("multexpr");
+                                    add("arithexprprime");
+                                }
+                            });
+                        }
+                    });
+                    put("arithexprprime", new HashMap<String, List<String>>() {
+                        {
+                            put(")", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put(";", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("<", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put(">", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("<=", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put(">=", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("==", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("+", new ArrayList<String>() {
+                                {
+                                    add("+");
+                                    add("multexpr");
+                                    add("arithexprprime");
+                                }
+                            });
+                            put("-", new ArrayList<String>() {
+                                {
+                                    add("-");
+                                    add("multexpr");
+                                    add("arithexprprime");
+                                }
+                            });
+                        }
+                    });
+                    put("multexpr", new HashMap<String, List<String>>() {
+                        {
+                            put("(", new ArrayList<String>() {
+                                {
+                                    add("simpleexpr");
+                                    add("multexprprime");
+                                }
+                            });
+                            put("ID", new ArrayList<String>() {
+                                {
+                                    add("simpleexpr");
+                                    add("multexprprime");
+                                }
+                            });
+                            put("NUM", new ArrayList<String>() {
+                                {
+                                    add("simpleexpr");
+                                    add("multexprprime");
+                                }
+                            });
+                        }
+                    });
+                    put("multexprprime", new HashMap<String, List<String>>() {
+                        {
+                            put(")", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put(";", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("<", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put(">", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("<=", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put(">=", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("==", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("+", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("-", new ArrayList<String>() {
+                                {
+                                    add("E");
+                                }
+                            });
+                            put("*", new ArrayList<String>() {
+                                {
+                                    add("*");
+                                    add("simpleexpr");
+                                    add("multexprprime");
+                                }
+                            });
+                            put("/", new ArrayList<String>() {
+                                {
+                                    add("/");
+                                    add("simpleexpr");
+                                    add("multexprprime");
+                                }
+                            });
+                        }
+                    });
+                    put("simpleexpr", new HashMap<String, List<String>>() {
+                        {
+                            put("(", new ArrayList<String>() {
+                                {
+                                    add("(");
+                                    add("arithexpr");
+                                    add(")");
+                                }
+                            });
+                            put("ID", new ArrayList<String>() {
+                                {
+                                    add("ID");
+                                }
+                            });
+                            put("NUM", new ArrayList<String>() {
+                                {
+                                    add("NUM");
+                                }
+                            });
+                        }
+                    });
+                }
+            };
+
+    static boolean isTerminal(String symbol) {
+        return StringUtilities.listContains(Grammar.TERMINALS, symbol);
+    }
+
+    static boolean isNonterminal(String symbol) {
+        return StringUtilities.listContains(Grammar.NONTERMINALS, symbol);
+    }
+
+    public static List<String> lookup(String nonterminal, String terminal) {
+        if (LL_PARSE_TABLE.containsKey(nonterminal))
+            return LL_PARSE_TABLE.get(nonterminal).get(terminal);
+        else
+            return null;
+    }
+}
+
+class Lexer {
+    private ProgramIterator program;
+    private List<Token> tokens;
+    private int currentLine;
+
+    public Lexer(String text) {
+        program = new ProgramIterator(text);
+        tokens = new ArrayList<Token>();
+        currentLine = 1;
+        tokenize();
+    }
+
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    private void tokenize() {
+        while (program.hasNext()) {
+            if (StringUtilities.listContains(Token.WHITESPACE_CHARACTERS,
+                    program.current())) {
+                skipWhitespace();
+            } else {
+                Token token = new Token(matchNonwhitespaceCharacters(), currentLine);
+                tokens.add(token);
+            }
+        }
+    }
+
+    private void skipWhitespace() {
+        String character = program.current();
+        while (character != program.DONE) {
+            if (StringUtilities.listContains(Token.NEWLINE_STRINGS, character)) {
+                currentLine += 1;
+            } else if (StringUtilities.listContains(Token.WHITESPACE_CHARACTERS,
+                    character)) {
+            } else {
+                break;
+            }
+            character = program.next();
+        }
+    }
+
+    private String matchNonwhitespaceCharacters() {
+        StringBuilder matchedPart = new StringBuilder();
+        String character = program.current();
+        while (
+                character != program.DONE &&
+                        !StringUtilities.listContains(Token.WHITESPACE_CHARACTERS, character)) {
+            matchedPart.append(character);
+            character = program.next();
+        }
+        return matchedPart.toString();
+    }
+}
+
+class Token {
+
+    public static final List<String> WHITESPACE_CHARACTERS =
+            new ArrayList<String>() {
+                {
+                    add("\u0009"); // character tabulation
+                    add("\n");     // line feed
+                    add("\u000B"); // line tabulation
+                    add("\u000C"); // form feed
+                    add("\r");     // carriage return
+                    add("\u0020"); // space
+                    add("\u0085"); // next line
+                    add("\u00A0"); // no-break space
+                    add("\u1680"); // ogham space mark
+                    add("\u2000"); // en quad
+                    add("\u2001"); // em quad
+                    add("\u2002"); // en space
+                    add("\u2003"); // em space
+                    add("\u2004"); // three-per-em space
+                    add("\u2005"); // four-per-em space
+                    add("\u2006"); // six-per-em space
+                    add("\u2007"); // figure space
+                    add("\u2008"); // punctuation space
+                    add("\u2009"); // thin space
+                    add("\u200A"); // hair space
+                    add("\u2028"); // line separator
+                    add("\u2029"); // paragraph separator
+                    add("\u202F"); // narrow no-break space
+                    add("\u205F"); // medium mathematical space
+                    add("\u3000"); // ideographic space
+                    add("\t");     // horizontal tabulation
+                    add("\u000B"); // vertical tabulation
+                    add("\f");     // form feed
+                    add("\u001C"); // file separator
+                    add("\u001D"); // group separator
+                    add("\u001E"); // record separator
+                    add("\u001F"); // unit separator
+                }
+            };
+    public static final List<String> NEWLINE_STRINGS = new ArrayList<String>() {
+        {
+            add("\n");   // LF
+            add("\r");   // CR
+            add("\r\n"); // CR LF
+            add("\n\r"); // LF+CR
+        }
+    };
+
+    private String symbol;
+    private int line;
+
+    public Token(String symbol, int line) {
+        this.symbol = symbol;
+        this.line = line;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public int getLine() {
+        return line;
+    }
+}
+
+class ProgramIterator implements ListIterator {
+    public final String DONE = "";
+    private final String text;
+    private final int[] codePoints;
+    private final int beginIndex = 0;
+    private final int endIndex;
+    private int currentIndex;
+
+    public ProgramIterator(String text) {
+        this.text = text;
+        codePoints = text.codePoints().toArray();
+        endIndex = codePoints.length;
+        currentIndex = 0;
+    }
+
+    public int currentCodePoint() {
+        if (currentIndex >= beginIndex || currentIndex < endIndex)
+            return codePoints[currentIndex];
+        else
+            return -1;
+    }
+
+    public String current() {
+        if (currentIndex < beginIndex)
+            return DONE;
+        else if (currentIndex >= endIndex)
+            return DONE;
+        else
+            return StringUtilities.fromCodePoint(currentCodePoint());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return currentIndex < endIndex;
+    }
+
+    @Override
+    public String next() {
+        if (current() != DONE)
+            currentIndex += 1;
+        return current();
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return currentIndex > beginIndex;
+    }
+
+    @Override
+    public String previous() {
+        if (current() != DONE)
+            currentIndex -= 1;
+        return current();
+    }
+
+    @Override
+    public int nextIndex() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int previousIndex() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void set(Object o) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void add(Object o) {
+        throw new UnsupportedOperationException();
+    }
+}
+
+class StringUtilities {
+    public static boolean listContains(List<String> list, String string) {
+        return list.stream().parallel().anyMatch(string::equals);
+    }
+
+    public static boolean listContainsPrefix(List<String> list, String prefix) {
+        return list.stream().parallel().anyMatch((item) -> item.startsWith(prefix));
+    }
+
+    public static String fromCodePoint(int codePoint) {
+        return new String(Character.toChars(codePoint));
+    }
+
+    public static void printIndent(int indent) {
+        for (int i = 0; i < indent; ++i)
+            System.out.print("\t");
+    }
+}

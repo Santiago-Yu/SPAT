@@ -1,0 +1,431 @@
+
+
+import java.util.*;
+@SuppressWarnings("unchecked")
+public class Java_LLParserAnalysis
+{
+    public static Map<String, String> keyToValue = new HashMap<String, String >() {
+        {
+            put("program","A");
+            put("compoundstmt","B");
+            put("stmt","C");
+            put("ifstmt","D");
+            put("whilestmt","E");
+            put("assgstmt","F");
+            put("stmts","G");
+            put("if","s");
+            put("boolexpr","I");
+            put("then","t");
+            put("else","u");
+            put("while","v");
+            put("arithexpr","M");
+            put("boolop","N");
+            put("multexpr","O");
+            put("arithexprprime","P");
+            put("simpleexpr","Q");
+            put("multexprprime","R");
+            put("{","a");
+            put("}","b");
+            put("E","c");
+            put("(","d");
+            put(")","e");
+            put("ID","f");
+            put("=","g");
+            put(";","h");
+            put("<","i");
+            put(">","j");
+            put("<=","k");
+            put(">=","l");
+            put("==","m");
+            put("+","n");
+            put("-","o");
+            put("*","p");
+            put("/","q");
+            put("NUM","r");
+        }
+    };
+    public static Map<String, String> valueToKey = new HashMap<String, String >() {
+        {
+            put("A","program");
+            put("B","compoundstmt");
+            put("C","stmt");
+            put("D","ifstmt");
+            put("E","whilestmt");
+            put("F","assgstmt");
+            put("G","stmts");
+            put("s","if");
+            put("I","boolexpr");
+            put("t","then");
+            put("u","else");
+            put("v","while");
+            put("M","arithexpr");
+            put("N","boolop");
+            put("O","multexpr");
+            put("P","arithexprprime");
+            put("Q","simpleexpr");
+            put("R","multexprprime");
+            put("a","{");
+            put("b","}");
+            put("c","E");
+            put("d","(");
+            put("e",")");
+            put("f","ID");
+            put("g","=");
+            put("h",";");
+            put("i","<");
+            put("j",">");
+            put("k","<=");
+            put("l",">=");
+            put("m","==");
+            put("n","+");
+            put("o","-");
+            put("p","*");
+            put("q","/");
+            put("r","NUM");
+        }
+    };
+
+    public static String[] cfg = {"AB","CD","CE","CF","CB","BaGb","Gc","GCG","DsdIetCuC",
+            "EvdIeC","FfgMh","IMNM","Ni","Nj","Nk","Nl","Nm","MOP","PnOP","PoOP","Pc",
+            "OQR","RpQR","RqQR","Rc","Qf","Qr","QdMe"};
+    public static Vector<Character>[] follow = new Vector[18];
+    public static Vector<Character>[] first = new Vector[18];
+    public static int[][] table = new int[18][23];
+
+    private static StringBuffer prog = new StringBuffer();
+    private static List<Integer> output = new ArrayList<>();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+
+    }
+
+
+    // add your method here!!
+
+    private static boolean isStop(char c){
+        return c >='a' && c <= 'v';
+    }
+
+    private static boolean isNonStop(char c){
+        return c >= 'A' && c <= 'R';
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void initFirst(){
+        for(int i = 0; i < cfg.length; i++){
+            String product = cfg[i];
+            if(product.length() == 2 && product.charAt(1) == 'c'){
+                first[product.charAt(0)-'A'].add('c');
+            }
+        }
+        boolean k = true;
+        while(k){
+            boolean change = false;
+            for(int i = 0; i < cfg.length; i++){
+                String product = cfg[i];
+
+                for(int j = 1; j < product.length(); j++){
+                    if(isStop(product.charAt(j))){
+                        if(!first[product.charAt(0)-'A'].contains(product.charAt(j))){
+                            first[product.charAt(0)-'A'].add(product.charAt(j));
+                            change = true;
+                        }
+                        break;
+                    }else if(!first[product.charAt(j)-'A'].contains('c')){
+                        for(Object cO : first[product.charAt(j)-'A'].toArray()){
+                            Character cc = (Character) cO;
+                            if(!first[product.charAt(0)-'A'].contains(cc)){
+                                first[product.charAt(0)-'A'].add(cc);
+                                change = true;
+                            }
+                        }
+                        break;
+                    }else if(j == product.length()-1){
+                        if(!first[product.charAt(0)-'A'].contains('c')){
+                            first[product.charAt(0)-'A'].add('c');
+                            change = true;
+                        }
+                    }
+                }
+            }
+            if(!change){
+                k = false;
+            }
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Character> first(String str){
+        List<Character> result = new ArrayList<>();
+
+        char[] chars = str.toCharArray();
+        for(int i = 0; i < chars.length; i++ ){
+            char c = chars[i];
+            if(isStop(c)) {
+                if(!result.contains(c)){
+                    result.add(c);
+                }
+                break;
+            }else{
+                boolean key = true;
+                for(Object cO : first[c-'A'].toArray()){
+                    Character cc = (Character) cO;
+                    if(cc != 'c'){
+                        if(!result.contains(cc)){
+                            result.add(cc);
+                        }
+                    }else if(i == chars.length-1){
+                       result.add('c');
+                    }else{
+                        key = false;
+                    }
+                }
+                if(key){
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void initFollow(){
+        follow[0].add('$');
+        boolean k = true;
+        while (k){
+            boolean change = false;
+            for(int i = 0; i < cfg.length; i++){
+                String product = cfg[i];
+                Character pre = product.charAt(0);
+                String post = product.substring(1);
+                char[] postChars = post.toCharArray();
+
+                for(int j = 0; j < postChars.length; j++){
+                    char cur = postChars[j];
+                    if(isNonStop(cur)){
+                        if(j < postChars.length - 1){
+                            List<Character> chars =  first(post.substring(j+1));
+                            for(Character c : chars){
+                                if(c != 'c' && !follow[cur-'A'].contains(c)){
+                                    follow[cur-'A'].add(c);
+                                    change = true;
+                                }else if(c == 'c'){
+                                    for(Character cc : follow[pre-'A']){
+                                        if(!follow[cur-'A'].contains(cc)){
+                                            follow[cur-'A'].add(cc);
+                                            change = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }else{
+                            for(Character cc : follow[pre-'A']){
+                                if(!follow[cur-'A'].contains(cc)){
+                                    follow[cur-'A'].add(cc);
+                                    change = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            k = change;
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void init(){
+        for(int i = 0; i < 18; i++){
+            Vector<Character> vector1 = new Vector<>();
+            Vector<Character> vector2 = new Vector<>();
+            first[i] = vector1;
+            follow[i] = vector2;
+            for(int j = 0; j < 23; j++){
+                table[i][j] = -1;
+            }
+        }
+
+
+        initFirst();
+        initFollow();
+
+        /*for(int i = 0; i < 18; i++){
+            System.out.print("First("+(char)('A'+i)+"): ");
+            System.out.println(first[i].toString());
+        }
+
+        for(int i = 0; i < 18; i++){
+            System.out.print("Follow("+(char)('A'+i)+"): ");
+            System.out.println(follow[i].toString());
+        }*/
+
+
+
+
+        for(int i = 0; i < cfg.length; i++){
+            Character pre = cfg[i].charAt(0);
+            String post = cfg[i].substring(1);
+
+            for(char c : first(post)){
+                if(c != 'c'){
+                    table[pre-'A'][c-'a'] = i;
+                }else{
+                    for(Object cO : follow[pre-'A']){
+                        Character cc = (Character) cO;
+                        if(cc != '$'){
+                            table[pre-'A'][cc-'a'] = i;
+                        }else{
+                            table[pre-'A'][22] = i;
+                        }
+                    }
+                }
+            }
+        }
+
+       /* for(int i = 0; i < 18; i++){
+            for(int j = 0; j < 23; j++){
+                System.out.print(table[i][j] + " ");
+            }
+            System.out.println();
+        }*/
+    }
+
+    private static int now = 0;
+
+    @SuppressWarnings("unchecked")
+    private static void printLine(int level){
+        String product = cfg[output.get(now++)];
+        Character pre = product.charAt(0);
+        for(int i = 0; i < level; i++){
+            System.out.print("\t");
+        }
+        System.out.println(valueToKey.get(Character.toString(pre)));
+        char[] post = product.substring(1).toCharArray();
+        for(char c : post){
+            if(isNonStop(c)){
+                printLine(level+1);
+            }else{
+                for(int i = 0; i < level+1; i++){
+                    System.out.print("\t");
+                }
+                System.out.print(valueToKey.get(Character.toString(c)));
+                if(level == 1 && c==post[post.length-1]){
+
+                }else{
+                    System.out.println();
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void print(){
+        printLine(0);
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    @SuppressWarnings("unchecked")
+    private static void analysis()
+    {
+        Stack<Character> stack = new Stack();
+        stack.push('$');
+        stack.push('A');
+
+        Scanner sc = new Scanner(System.in);
+        int lineCount = 0;
+        boolean accept = false;
+        while(!accept && sc.hasNextLine())
+        {
+            String curLine = sc.nextLine();
+            String[] curLineStrs = curLine.split(" ");
+            lineCount++;
+            int i = 0;
+            while (i < curLineStrs.length){
+                String curStr = curLineStrs[i];
+                if(curStr.isEmpty()) {
+                    i++;
+                    continue;
+                }
+                Character curStop = keyToValue.get(curStr).charAt(0);
+                Character curNonStop = (Character) stack.peek();
+
+                /*System.out.println(curNonStop + "  " + curStop);*/
+                if(curNonStop == '$'){
+                    accept = true;
+                    break;
+                }
+                if(isStop(curNonStop)){
+                    if(curNonStop.equals(curStop)) {
+                        stack.pop();
+                        i++;
+                    }else{
+                        /*System.out.println(curNonStop + "   " + curStop);*/
+                        int linenow = lineCount;
+                        if(i==0){
+                            linenow--;
+                        }
+                        System.out.println("语法错误,第"+ linenow +"行,缺少\"" + valueToKey.get(Character.toString(curNonStop))+ "\"");
+                        stack.pop();
+                    }
+                }else{
+                    if(table[curNonStop-'A'][curStop-'a'] != -1){
+                        stack.pop();
+                        int productId = table[curNonStop-'A'][curStop-'a'];
+                        output.add(productId);
+                        String product = cfg[productId];
+                        for(int j = product.length()-1; j > 0; j--){
+                            if(product.charAt(j) != 'c'){
+                                stack.push(product.charAt(j));
+                            }
+                        }
+                    }else{
+                        for(int j = 0; j < 23; j++){
+                            if(table[curNonStop-'A'][j] != -1){
+                                //char c = (char)('a' + j);
+                                //System.out.println("语法错误,第"+ lineCount +"行,缺少\"" + valueToKey.get(Character.toString(c) + "\"");
+                                stack.pop();
+                                String product = cfg[table[curNonStop-'A'][j]];
+                                output.add(table[curNonStop-'A'][j]);
+                                for(int k = product.length()-1; k > 0; k--){
+                                    if(product.charAt(k) != 'c'){
+                                        stack.push(product.charAt(k));
+                                    }
+
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+
+            }
+            if(stack.peek() == '$'){
+                break;
+            }
+
+
+        }
+
+        print();
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        init();
+        analysis();
+    }
+}

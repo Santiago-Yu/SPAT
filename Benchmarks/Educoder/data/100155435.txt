@@ -1,0 +1,48 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+	int mboxType;
+   
+    
+    
+    public Box(int boxType){
+    	mboxType = boxType;
+       
+    }
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume() {
+        //TODO your code
+        double v = 0;
+       switch(mboxType){
+           case 1:v = width*height*depth;break;
+           case 2:v = width*width*height*3.14;break;
+        default:break;
+        }
+       // System.out.println(mboxType);
+        return v;
+    }
+    public static void main(String[] args){
+        
+     	Box box = new Box(Box.CYLINDER);
+        box.width = 10;
+        box.height = 20;
+        box.depth = 10;
+        double volume = box.volume();
+        System.out.println("the volumn is:" + volume);
+    }
+
+}

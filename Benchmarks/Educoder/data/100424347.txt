@@ -1,0 +1,14 @@
+    public static boolean writeFileByBinary(InputStream pIs, File pFile, boolean pAppend) {
+        boolean flag = false;
+        try {
+            FileOutputStream fos = new FileOutputStream(pFile, pAppend);
+            IOUtils.copy(pIs, fos);
+            fos.flush();
+            fos.close();
+            pIs.close();
+            flag = true;
+        } catch (Exception e) {
+            LOG.error("灏嗗瓧鑺傛祦鍐欏叆锟�?" + pFile.getName() + "鍑虹幇寮傚父锟�?", e);
+        }
+        return flag;
+    }

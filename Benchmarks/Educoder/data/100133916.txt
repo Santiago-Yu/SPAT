@@ -1,0 +1,24 @@
+package case4;
+
+public class overridingTest {
+	public static void main(String[] args) {
+		Student s =new Student();
+		s.talk("张三",18,"哈佛大学");
+	}
+}
+class Person {
+	String name;
+	int age;
+	String talk(String name) {
+		return name;	
+	}
+	int talk(int age) {
+		return age;
+	}
+}
+class Student extends Person{
+	String school;
+	void talk(String name,int age,String school) {
+		System.out.println("我是："+name+"，今年："+age+"岁，我在"+school+"上学");
+	}
+}

@@ -1,0 +1,19 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static int gcd(int a,int b){
+        return b==0?a:gcd(b,a%b);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int length = sc.nextInt();	//长
+        int width = sc.nextInt();	//宽
+        int rl = Math.max(length,width);
+        int rw = Math.min(length,width);
+        int edge = gcd(rl,rw);
+        System.out.println(edge);
+        System.out.println((length*width)/(edge*edge));
+    }
+}

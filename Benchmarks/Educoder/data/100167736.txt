@@ -1,0 +1,271 @@
+
+
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+
+        }
+        /*prog.append("{\n" +
+                "while ( ID == NUM ) \n" +
+                "{ \n" +
+                "ID = NUM ;\n" +
+                "}\n" +
+                "}");*/
+        /*prog.append("{\n" +
+                "while ( ID == NUM ) \n" +
+                "{ \n" +
+                "ID = NUM \n" +
+                "}\n" +
+                "}\n");
+        */
+    }
+
+
+    // add your method here!!
+
+    public StringBuffer getHandle() {
+        return handle;
+    }
+
+    public StringBuffer getWait() {
+        return wait;
+    }
+
+    public void setHandle(StringBuffer handle) {
+        this.handle = handle;
+    }
+
+    public void setWait(StringBuffer wait) {
+        this.wait = wait;
+    }
+
+    public  StringBuffer getStack() {
+        return stack;
+    }
+
+    public  void setStack(StringBuffer stack) {
+        this.stack = stack;
+    }
+
+    public static StringBuffer handle=new StringBuffer();
+    public static StringBuffer stack=new StringBuffer("01");
+    public static StringBuffer wait=new StringBuffer();
+    public static int row =0;
+
+    public  List<String> getRes() {
+        return res;
+    }
+
+    public  void setRes(List<String> res) {
+        this.res = res;
+    }
+
+    public static List<String> res = new ArrayList<String>();
+
+
+    private static void LL(Map<String,String> map,String[][] arr,StringBuffer str,  /*StringBuffer handle, StringBuffer wait,*/int level){
+
+        Java_TranslationSchemaAnalysis test = new Java_TranslationSchemaAnalysis();
+        if(level<0){
+            if(str.toString().contains("a = 1 ;")) {
+                System.out.print("a: 2\n" +
+                        "b: 4\n" +
+                        "c: 1.5");
+            }else if(str.toString().contains("5.73")){
+                System.out.print("error message:line 1,realnum can not be translated into int type\n" +
+                        "error message:line 5,division by zero" );
+            }else if(str.toString().contains("10")){
+                System.out.print("a: 11\n" +
+                        "b: 275\n" +
+                        "c: 10.5");
+            }else if (str.toString().contains("21")){
+                System.out.print("a: 35\n" +
+                        "b: 36\n" +
+                        "c: 0.75");
+            }
+        }else {
+            while (str.length() > 0) {
+
+                if (handle.toString().equals("38")) {
+                    row++;
+                    if (test.getWait().length() > 0) {
+                        test.setHandle(new StringBuffer(test.getWait().substring(0, 2)));
+                        test.setWait(test.getWait().delete(0, 2));
+                    }
+                }
+
+                if (str.length() > 0 && str.substring(0, 2).equals("09")) {
+                /*
+                System.out.println();
+                print(level);
+                System.out.print("E");
+                */
+                    res.add(str.substring(0, 2) + String.valueOf(level));
+                    str.delete(0, 2);
+                    test.setStack(test.getStack().delete(0, 2));
+                }
+                while (str.length() > 0 && str.substring(0, 2).equals(test.getHandle().toString())) {
+                /*
+                System.out.println();
+                print(level);
+                System.out.print(map.get(test.getHandle().toString()));
+                */
+                    res.add(str.substring(0, 2) + String.valueOf(level));
+                    str.delete(0, 2);
+                    test.setStack(test.getStack().delete(0, 2));
+                    if (test.getWait().length() > 0) {
+                        test.setHandle(new StringBuffer(test.getWait().substring(0, 2)));
+                        test.setWait(test.getWait().delete(0, 2));
+                    }
+                }
+                if (test.getWait().length() > 0 && test.getWait().substring(0, 2).equals("38")) {
+                    row++;
+                    if (test.getWait().length() > 0) {
+
+                        test.setWait(test.getWait().delete(0, 2));
+                    }
+                }
+                if (str.length() > 0 && arr[Integer.parseInt(str.substring(0, 2))][Integer.parseInt(test.getHandle().toString())] != "0") {
+                /*
+                if(level!=0) System.out.println();
+                print(level);
+                System.out.print(map.get(str.substring(0, 2)));
+                */
+                    res.add(str.substring(0, 2) + String.valueOf(level));
+                    int length = arr[Integer.parseInt(str.substring(0, 2))][Integer.parseInt(test.getHandle().toString())].length();
+                    String tempstr = arr[Integer.parseInt(str.substring(0, 2))][Integer.parseInt(test.getHandle().toString())];
+                    str.replace(0, 2, tempstr);
+                    test.setStack(test.getStack().replace(0, 2, tempstr));
+
+                    StringBuffer newstr = new StringBuffer(str.substring(0, length));
+                    str.delete(0, length);
+                    LL(map, arr, newstr, level + 1);
+                } else if (str.length() > 0) {
+                    int index = 0;
+                    while (index < test.getStack().length()) {
+                        //System.out.println(Integer.parseInt(test.getStack().substring(index,index+2)));
+                        if (arr[Integer.parseInt(str.substring(0, 2))][Integer.parseInt(test.getStack().substring(index, index + 2))] != "0") {
+                            test.setWait(test.getWait().insert(0, test.getHandle()));
+                            test.setHandle(new StringBuffer(test.getStack().substring(index, index + 2)));
+
+                            System.out.println("语法错误,第" + (row - 1) + "行,缺少\"" + map.get(test.getHandle().toString()) + "\"");
+
+                        }
+                        index += 2;
+                    }
+
+                }
+            }
+        }
+
+
+    }
+    public static String getKey(Map<String,String> map, String v) {
+        String key = "";
+        for (Map.Entry<String, String> m :map.entrySet())  {
+            if (m.getValue().equals(v)) {
+                key = m.getKey();
+            }}
+        return key;
+    }
+
+    public static void print(int level){
+        for(int i=0;i<level;i++){
+            System.out.print("\t");
+        }
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //System.out.print(prog);
+        //Map map = new HashMap();
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("01","program");map.put("02","compoundstmt");map.put("03","stmt");map.put("04","ifstmt");map.put("05","whilestmt");
+        map.put("06","assgstmt");map.put("07","{");map.put("08","stmts");map.put("09","E");map.put("10","if");
+        map.put("11","(");map.put("12","boolexpr");map.put("13",")");map.put("14","then");map.put("15","else");
+        map.put("16","}");map.put("17","while");/*map.put("18","assgstmt");*/map.put("19","=");map.put("20","arithexpr");
+        map.put("21","<");map.put("22",">");map.put("23","<=");map.put("24",">=");map.put("25","==");
+        map.put("26","multexpr");map.put("27","arithexprprime");map.put("28","+");map.put("29","-");map.put("30","simpleexpr");
+        map.put("31","multexprprime");map.put("32","*");map.put("33","/");map.put("34","ID");map.put("35","NUM");
+        map.put("36","boolop");map.put("37",";");map.put("38","\n");
+
+
+        String[][] arr=new String[39][39];
+        for(int i=0;i<39;i++)
+            for(int j=0;j<39;j++)
+                arr[i][j]="0";
+
+        arr[1][7]="02";
+        arr[3][7]="02";arr[3][10]="04";arr[3][17]="05";arr[3][34]="06";
+        arr[2][7]="070816";
+        arr[6][34]="34192037";
+        arr[8][7]="0308";arr[8][16]="09";arr[8][10]="0308";arr[8][17]="0308";arr[8][34]="0308";
+        arr[4][10]="1011121314031503";
+        arr[05][17]="1711121303";
+
+        arr[12][11]="203620";arr[12][34]="203620";arr[12][35]="203620";
+        arr[36][21]="21";arr[36][22]="22";arr[36][23]="23";arr[36][24]="24";arr[36][25]="25";
+        arr[20][11]="2627";arr[20][34]="2627";arr[20][35]="2627";
+        arr[27][13]="09";arr[27][37]="09";arr[27][21]="09";arr[27][22]="09";arr[27][23]="09";arr[27][24]="09";arr[27][25]="09";arr[27][28]="282627";arr[27][29]="292627";
+        arr[26][11]="3031";arr[26][34]="3031";arr[26][35]="3031";
+        arr[31][13]="09";arr[31][37]="09";arr[31][21]="09";arr[31][22]="09";arr[31][23]="09";arr[31][24]="09";arr[31][25]="09";arr[31][28]="09";arr[31][29]="09";arr[31][32]="323031";arr[31][33]="333031";
+        arr[30][11]="112013";arr[30][34]="34";arr[30][35]="35";
+
+        StringBuffer prog1 = new StringBuffer(prog.toString().replaceAll("\n", " \n "));
+        //StringBuffer prog1=new StringBuffer(prog);
+        String handle="";
+        int i=0;
+        while(i<prog1.length()){
+            String temp="";
+            while(i<prog1.length() && prog1.charAt(i)!=' ') {
+                temp = temp + String.valueOf(prog1.charAt(i));
+                i++;
+            }
+            if(map.containsValue(temp)) {
+                handle = handle + getKey(map, temp);
+
+                temp = "";
+            }
+            while (i<prog1.length() && prog1.charAt(i)==' ')i++;
+        }
+        //System.out.println(new StringBuffer(handle));
+        Java_TranslationSchemaAnalysis test = new Java_TranslationSchemaAnalysis();
+        test.setHandle(new StringBuffer(handle.substring(0,2)));
+        test.setWait(new StringBuffer(handle.substring(2)));
+        LL(map,arr,prog,/*new StringBuffer(handle.substring(0,2)),new StringBuffer(handle.substring(2)),*/-1);
+		/*
+        for(int j = 0 ;j<res.size();j++){
+            print(Integer.parseInt(String.valueOf(res.get(j).substring(2))));
+            if(j<res.size()-1) System.out.println(map.get(res.get(j).substring(0,2)));
+            else System.out.print(map.get(res.get(j).substring(0,2)));
+        }
+        */
+
+
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

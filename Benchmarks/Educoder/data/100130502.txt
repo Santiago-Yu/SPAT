@@ -1,0 +1,28 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		/********** BEGIN **********/
+        double result = 0;
+        if(n<=0||n>100){
+            System.out.println("输入错误！请输入满足0<n≤100的值");
+            return;
+        }
+		if((n%2)==0){//输入的n为偶数
+            for(int i=2 ; i<=n ; i += 2){
+                result = result +  (double)3/i;
+            }
+        }else{//输入的n为奇数
+            for(int i = 1 ; i<=n ; i += 2){
+                result = result + (double)4/i;
+            }
+        }
+        System.out.println(result);
+		/********** END **********/
+	}
+}

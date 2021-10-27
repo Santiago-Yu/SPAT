@@ -1,0 +1,58 @@
+package step1;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+public class Task {
+    private static Lock lock = new ReentrantLock(); 
+	private static int state = 0;// 用state来判断轮到谁执行	
+	private static final int RUN_NUMBER=5;//表示循环的次数
+	//A线程
+	static class ThreadA extends Thread {
+		public void run() {
+			for (int i = 0; i < RUN_NUMBER;) {
+ 				lock.lock();//获取锁定
+				if (state % 3 == 0) {
+					System.out.println("Java ThreadAA");
+					state++;
+					i++;
+				}
+ 				lock.unlock();//释放锁定,不释放锁定，会被该线程一直保持
+			}
+		}
+	}
+	//B线程
+	static class ThreadB extends Thread {
+		public void run() {
+			for (int i = 0; i < RUN_NUMBER;) {
+ 				lock.lock();
+				if (state % 3 ==1) {
+					System.out.println("Java ThreadBB");
+					state++;
+					i++;
+				}
+ 				lock.unlock();
+			}
+		}
+	}
+	//C线程
+	static class ThreadC extends Thread {
+		public void run() {
+			for (int i = 0; i < RUN_NUMBER;) {
+ 				lock.lock();
+				if (state % 3 == 2) {
+					System.out.println("Java ThreadCC");
+					state++;
+					i++;
+				}
+ 				lock.unlock();
+			}
+		}
+	}
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+	    new ThreadA().start();
+		new ThreadB().start();
+		new ThreadC().start();
+		/********* End *********/
+	}
+}

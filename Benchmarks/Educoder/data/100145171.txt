@@ -1,0 +1,31 @@
+package step2;
+
+public class Task {
+	public static void main(String[] args){
+        Task task = new Task();
+        task.getNum(3);
+        task.getNum(4);
+        task.getNum(1543);
+        task.getNum(1544);
+        task.getNum(100000);
+        task.getNum(12345678);
+        task.getNum(99999);
+        task.getNum(987654321);
+    }
+    
+	public int getNum(int n){
+		/********* Begin *********/
+		int sum=0;
+        while(n!=0){
+            if(n%2!=0){
+                sum=sum+1;
+                n=n/2;
+            }
+            else
+                n=n/2;
+        }
+        return sum;
+		/********* End *********/
+	}
+	
+}

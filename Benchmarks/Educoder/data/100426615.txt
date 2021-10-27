@@ -1,0 +1,19 @@
+    public boolean executeUpdate(String strSql) throws SQLException {
+        getConnection();
+        boolean flag = false;
+        stmt = con.createStatement();
+        logger.info("###############::鎵цSQL璇彞鎿嶄綔(鏇存柊鏁版嵁 鏃犲弬鏁�):" + strSql);
+        try {
+            if (0 < stmt.executeUpdate(strSql)) {
+                close_DB_Object();
+                flag = true;
+                con.commit();
+            }
+        } catch (SQLException ex) {
+            logger.info("###############Error DBManager Line126::鎵цSQL璇彞鎿嶄綔(鏇存柊鏁版嵁 鏃犲弬鏁�):" + strSql + "澶辫触!");
+            flag = false;
+            con.rollback();
+            throw ex;
+        }
+        return flag;
+    }

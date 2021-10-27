@@ -1,0 +1,38 @@
+package step3;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class DeleteFiles {
+    public static void start() throws IOException {
+        StringBuilder data = new StringBuilder("");
+        /********** Begin *********/
+        //读取readme.txt文件
+        File file1 = new File("src/step3/readme.txt");
+        if (file1.exists()) {
+            System.out.println("true");
+            FileReader fileReader = new FileReader(file1);
+            int read = fileReader.read();
+            while (read != -1) {
+                System.out.print((char)read); 
+                read = fileReader.read();   
+            }
+        }
+        
+		
+        
+        //写入readmeCopy.txt文件
+        File file2 = new File("src/step3/readmeCopy.txt"); 
+        if (!file2.exists()) {
+            file2.createNewFile();
+        }
+        
+        //删除readme.txt文件
+        if (file1.exists()) {   //如果文件存在
+            //file1.delete();   //删除该文件
+        }
+        /********** End *********/
+    }
+}

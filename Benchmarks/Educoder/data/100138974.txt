@@ -1,0 +1,36 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread myThread = new MyThread(num);
+		myThread.run();
+		System.out.println("子线程计算结果为："+myThread.sum);
+	}
+}
+
+
+class MyThread	extends Thread  {
+	int n;public int sum;
+	public MyThread(int n){
+		this.n = n;
+	}
+    public void run(){
+    	
+    	sum = count(this.n);
+    }
+    
+    int count(int n){
+    	if(n<1)
+    		return 0;
+    	if(n == 1)
+    		return 1;
+    	else if(n == 2)
+    		return 1;
+    	else return count(n-1)+count(n-2);
+    }
+}

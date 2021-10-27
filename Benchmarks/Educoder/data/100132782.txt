@@ -1,0 +1,55 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+    
+	 int nrow = ferry.length;
+          if(nrow == 0)
+         return 0;
+		int ncol = ferry[0].length;
+         
+		Boolean[][] mark = new Boolean[nrow][ncol];
+		int num = 0;
+		Boolean isOne = false;
+		for (int i = 0; i < nrow; i++) {
+			for (int j = 0; j < ncol; j++) {
+				mark[i][j] = false;
+			}
+		}
+		for (int i = 0; i < nrow; i++) {
+			for (int j = 0; j < ncol; j++) {
+
+				isOne = false;
+				if (ferry[i][j] == '+') {
+					mark[i][j] = true;
+					if (i > 0) {
+						if (mark[i - 1][j] == true)
+							isOne = true;
+					}
+					if (i < nrow - 1) {
+						if (mark[i + 1][j] == true)
+							isOne = true;
+					}
+					if (j > 0) {
+						if (mark[i][j - 1] == true)
+							isOne = true;
+					}
+					if (j < ncol - 1) {
+						if (mark[i][j + 1] == true)
+							isOne = true;
+					}
+					if (isOne == false) {
+						num++;
+					}
+				}
+
+			}
+		}
+		return num;
+	 
+         
+      /***********END ***************/
+	 }
+}

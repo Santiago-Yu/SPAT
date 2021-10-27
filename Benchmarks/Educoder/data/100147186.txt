@@ -1,0 +1,47 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+       
+                long[][] f = new long[numbers + 1][selectedNum + 1];
+                long[][] g = new long[numbers + 1][selectedNum + 1];
+
+                //初始化k=1的情况
+                for(int one = 1;one<=numbers;one++){
+                    f[one][1] = abilities[one];
+                    g[one][1] = abilities[one];
+                }
+                //自底向上递推
+                for(int k=2;k<=selectedNum;k++){
+                    for(int one = k;one<=numbers;one++){
+                        //求解当one和k定的时候，最大的分割点
+                        long tempMax = Long.MIN_VALUE;
+                        long tempMin = Long.MAX_VALUE;
+                        for(int left = Math.max(k-1,one-distance);left<=one-1;left++){
+                            if(tempMax<Math.max(f[left][k-1]*abilities[one],g[left][k-1]*abilities[one])){
+                                tempMax=Math.max(f[left][k-1]*abilities[one],g[left][k-1]*abilities[one]);
+                            }
+                            if(tempMin>Math.min(f[left][k-1]*abilities[one],g[left][k-1]*abilities[one])){
+                                tempMin=Math.min(f[left][k-1]*abilities[one],g[left][k-1]*abilities[one]);
+                            }
+                        }
+                        f[one][k] = tempMax;
+                        g[one][k] = tempMin;
+                    }
+                }
+                //n选k最大的需要从最后一个最大的位置选
+                long result = Long.MIN_VALUE;
+                for(int one = selectedNum;one<=numbers;one++){
+                    if(result<f[one][selectedNum]){
+                        result = f[one][selectedNum];
+                    }
+                }
+               return result;
+            }
+    
+
+	/********* End *********/
+}

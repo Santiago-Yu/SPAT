@@ -1,0 +1,20 @@
+package step4;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+ 
+	DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate localDate = LocalDate.parse(releaseDate, df);
+		LocalDate days = localDate.plusDays(day);
+		return days.format(df);
+
+
+        /********* End *********/
+	}
+	
+	
+}

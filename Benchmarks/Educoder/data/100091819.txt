@@ -1,0 +1,27 @@
+package step1;
+import java.util.Scanner;
+public class IsOfVowels {
+        public static void main(String[] args)  {
+
+        // 从命令行读入一个字符
+        // 这个字符取自测试集的输入
+        Scanner sc= new Scanner(System.in);
+        String s = sc.next();
+        char ch = s.charAt(0);
+
+        IsOfVowels voc = new IsOfVowels();
+        if(voc.IsOfVowels(ch)==true)
+            System.out.println("元音字母");
+        else
+            System.out.println("非元音字母");
+    }
+	// 判断输入字符是否是元音字母
+	public boolean IsOfVowels(char ch){
+        
+        if(ch=='a'||ch=='A'||ch=='e'||ch=='E'||ch=='i'||ch=='I'||ch=='o'||ch=='O'||ch=='u'||ch=='U')
+        return true;
+        else
+            return false;
+		// 请在此添加实现代码
+    
+}}

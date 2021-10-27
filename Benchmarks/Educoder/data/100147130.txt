@@ -1,0 +1,55 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+ int []ab=new int[numbers];
+       int x=0;
+       for(int i=0;i<abilities.length;i++){
+           if(abilities[i]!=0)
+           ab[x++]=abilities[i];
+       }
+       long[][] max = new long[selectedNum][numbers];  
+        long[][] min = new long[selectedNum][numbers];  
+        for(int i = 0; i < selectedNum; i++)  
+            for(int j = 0; j < numbers; j++){  //给二维数组赋初值
+                max[i][j] = 1;  
+                if(i == 0){  
+                    min[i][j] = ab[j];  
+                    max[i][j] =ab[j];
+                }
+            
+            }  
+  
+        for(int i = 1; i < selectedNum; i++)  
+            for(int j = 0; j < numbers; j++)  
+                for(int m = 1; m <= distance; m++){  
+                    if(j - m >= 0){  
+                        if(abilities[j] > 0){  
+                            min[i][j] = Math.min(min[i][j], min[i - 1][j - m] * ab[j]);  
+                            max[i][j] = Math.max(max[i][j], max[i - 1][j - m] * ab[j]);  
+                        } else{  
+                            min[i][j] = Math.min(min[i][j], max[i - 1][j - m] * ab[j]); 
+                            max[i][j] = Math.max(max[i][j], min[i - 1][j - m] * ab[j]);  
+                        }  
+                    }  
+                }  
+        long Max = 0;  
+        for(int i = 0; i < numbers; i++){
+        	if(Max>max[selectedNum-1][i]){
+        		Max=Max;
+        	}
+        	else{Max=max[selectedNum - 1][i];}
+            
+        }
+        return Max;  
+
+
+      
+       
+    }
+
+	/********* End *********/
+}

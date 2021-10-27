@@ -1,0 +1,76 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+public class BackPack {
+    public static List<String> putThings(int vol, int wei, Map<String, Integer> resMap) {        List<String> putResult = new ArrayList<>();
+
+        /********** BEGIN **********/
+        int[] n = new int[7];
+        int i;
+        for(i=0; i<7; i++)
+            n[i] = resMap.get("type"+(1+i));
+
+        int a = n[4]/2;
+        int min=Math.min(Math.min(a, n[6]), n[3]);
+        for(i=0; i<min; i++){
+            n[6]--; n[3]--; n[4]-=2;
+            String str="type4 1 type5 2 type7 1";
+            putResult.add(str);
+        }  //type7完
+
+        a = n[3]/3;
+        min = Math.min(a, n[4]/2);
+        for(i=0; i<min; i++){
+            n[3]-=3; n[4]-=2;
+            String str="type4 3 type5 2";
+            putResult.add(str);
+        }  //type5完
+
+        a = n[0]/16;
+        min = Math.min(a, n[3]/3);
+        for(i=0; i<min; i++){
+            n[3]-=3; n[0]-=16;
+            String str="type1 16 type4 3";
+            putResult.add(str);
+        }  
+
+        a = n[5]/3;
+        min = Math.min(a, n[3]);
+        for(i=0; i<min; i++){
+            n[3]--; n[5]-=3;
+            String str="type4 1 type6 3";
+            putResult.add(str);
+        }
+
+        min = n[1]/16;
+        for(i=0; i<min; i++){
+            n[1]-=16;
+            String str="type2 16";
+            putResult.add(str);
+        }
+
+        min = n[2]/8;
+        for(i=0; i<min; i++){
+            n[2]-=8;
+            String str="type3 8";
+            putResult.add(str);       
+          }
+
+       min = n[3]/4;
+        for(i=0; i<min; i++){
+           n[3]-=4;
+            String str="type4 4";
+            putResult.add(str);
+         }
+        String str1="type1 12 type6 2";
+        putResult.add(str1);
+        String str2="type1 3 type2 5";
+        putResult.add(str2);
+
+        /*********** END ***********/
+       return putResult;
+    }
+}

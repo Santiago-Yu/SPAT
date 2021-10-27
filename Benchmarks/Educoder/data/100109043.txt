@@ -1,0 +1,69 @@
+package step1;
+
+/**
+ * Created by zengpeng on 2018/2/9.
+ */
+public class BinaryTree {
+
+    private TreeNode root;//根节点
+
+    public BinaryTree() {
+        root = null;
+    }
+
+    public void preOrder(TreeNode root) {
+        /********** Begin *********/
+if(root==null) return;
+        else
+        {
+            System.out.println(root.item);
+            preOrder(root.leftChild);
+            preOrder(root.rightChild);
+        }
+        /********** End *********/
+    }
+
+    /**
+     *以数组arr的数据，依次从上至下，从左至右构建一颗二叉树
+     *
+     * @param arr
+     * @param n
+     * @return
+     */
+    public TreeNode createTree(int arr[]) {
+        TreeNode tmp[] = new TreeNode[arr.length + 1];
+        for (int k = 1; k <= arr.length; k++) {
+            TreeNode node = new TreeNode(arr[k - 1]);
+            tmp[k] = node;
+            if (k == 1) {
+                root = node;
+            } else {
+                int j = k / 2;
+                if (k % 2 == 0) {
+                    tmp[j].leftChild = node;
+                } else {
+                    tmp[j].rightChild = node;
+                }
+            }
+        }
+
+        return root;
+    }
+
+    public static class TreeNode {
+        private TreeNode leftChild;
+        private TreeNode rightChild;
+        private int item;
+
+        public TreeNode(int item) {
+            this(null, null, item);
+        }
+
+        public TreeNode(TreeNode leftChild, TreeNode rightChild, int item) {
+            this.leftChild = leftChild;
+            this.rightChild = rightChild;
+            this.item = item;
+        }
+    }
+
+}

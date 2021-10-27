@@ -1,0 +1,68 @@
+package step1;
+
+public class Task {
+
+	 public static double solve(double x1, double y1, double r1,
+                               double x2, double y2, double r2) {
+        /********* Begin *********/
+        if (Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)) > (r1 + r2)) {
+            //两个圆没有相交
+            return Math.PI * r1 * r1 + Math.PI * r2 * r2;
+        } else if (Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)) < (r1 + r2) &&
+                (Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)) > r1) &&
+                (Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2)) > r2)) {
+
+            //两个圆的圆心不再同一个圆内部
+            double juli = Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
+            double p = (r1 + r2 + juli) / 2;
+            double mianji = Math.sqrt(p * (p - r1) * (p - r2) * (p - juli)) * 2;
+            double xianchang = mianji / juli * 2;
+            double theta1 = Math.asin(xianchang / 2 / r1) * 360 / Math.PI;
+            double theta2 = Math.asin(xianchang / 2 / r2) * 360 / Math.PI;
+
+//            System.out.println("canshu      " + (xianchang / 2));
+//            System.out.println("juli        " + juli);
+//            System.out.println("mianji      " + mianji);
+//            System.out.println("xianchagn   " + xianchang);
+//            System.out.println("theta1      " + theta1);
+//            System.out.println("theta2      " + theta2);
+
+            double mianji1 = Math.pow(r1, 2) * Math.PI * (360 - theta1) / 360;
+            double mianji2 = Math.pow(r2, 2) * Math.PI * (360 - theta2) / 360;
+
+//            System.out.println("mianji1     " + mianji1);
+//            System.out.println("mianji2     " + mianji2);
+
+            double total = mianji1 + mianji2 + mianji;
+            return total;
+
+        } else {
+             if (r1 < r2) {
+                double temp = r1;
+                r1 = r2;
+                r2 = temp;
+
+                temp = x1;
+                x1 = x2;
+                x2 = temp;
+
+                temp = y1;
+                y1 = y2;
+                y2 = temp;
+            }
+            double juli = Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
+            double p = (r1 + r2 + juli) / 2;
+            double mianji = Math.sqrt(p * (p - r1) * (p - r2) * (p - juli)) * 2;
+            double xianchang = mianji / juli * 2;
+            double theta1 = Math.asin(xianchang / 2 / r1) * 360 / Math.PI;
+            double theta2 = Math.asin(xianchang / 2 / r2) * 360 / Math.PI;
+
+            double mianji1 = Math.pow(r1, 2) * Math.PI * (360 - theta1) / 360;
+            double mianji2 = Math.pow(r2, 2) * Math.PI * theta2 / 360;
+
+            double total = mianji1 + mianji + mianji2;
+            return total;
+        }
+        /********* End *********/
+    }
+}

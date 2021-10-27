@@ -1,0 +1,70 @@
+package step1;
+
+import java.util.Scanner;
+import java.text.DecimalFormat;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle();
+        circle.setRadius(radius);
+        Rectangle rectangle = new Rectangle();
+        rectangle.setLength(length);
+        rectangle.setWidth(width);
+         DecimalFormat decimalFormat = new DecimalFormat("0.0000000");
+        System.out.println(decimalFormat.format(circle.getAcreage()));
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape {
+    public abstract double getAcreage();
+}
+
+class Circle extends Shape {
+    private double radius;
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public double getAcreage() {
+        return radius*radius*3.1415926;
+    }
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public void setLength(double length) {
+        this.length = length;
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    @Override
+    public double getAcreage() {
+        return length*width;
+    }
+}
+/********** End *********/

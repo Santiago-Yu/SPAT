@@ -1,0 +1,47 @@
+package step2;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Task {
+	int n = 0;
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+        if (n == 0)
+        System.out.println("+--"+file.getName());
+		String e = "  ";
+		for(int i = 0;i<n;i++)
+			e = e + "  ";
+		File[] fileList = file.listFiles();
+		ArrayList<File> files = new ArrayList<>(fileList.length);
+		for(int i = 0;i<fileList.length;i++){
+			files.add(fileList[i]);
+		}
+		List<File> end = files.stream()
+		.sorted((m,n)->m.getName().compareTo(n.getName()))
+		.collect(Collectors.toList());
+		for (File file2 : end) {
+			if(file2.isFile()){
+				System.out.println(e+"--"+file2.getName());
+			}
+			if(file2.isDirectory()){
+				System.out.println(e+"+--"+file2.getName());
+				n++;
+				showDirStructure(file2);
+				n--;
+			}
+		}
+	
+
+
+
+
+
+	}
+	
+
+
+	/********** END **********/
+}

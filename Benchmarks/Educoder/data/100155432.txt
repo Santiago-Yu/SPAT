@@ -1,0 +1,39 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    int boxType;
+    
+	public Box(int Type){
+        if (Type == 1){
+            boxType = 1;
+        } else {
+            boxType = 2;
+        }
+    }
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume() {
+        //TODO your code
+        double v = 0;
+        if (boxType == 1) {
+        	v = width * depth * height;
+        } else {
+            v = 3.14 * width * depth * height;
+        }
+        return v;
+    }
+
+}

@@ -1,0 +1,45 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	/********** Bgin **********/
+	FileFilter filter = file->{//文件过滤器
+        if(file.isDirectory()) return true;
+		if(file.isFile()) {
+			String fileName = file.getName().toLowerCase();
+			if(fileName.endsWith(".bmp")||fileName.endsWith(".jpg")||fileName.endsWith(".png"))
+				return true;
+		}
+		return false;
+	};
+	public void showDirStructure(File file)	{
+		int count=0;
+		if(file.isDirectory()) {
+			System.out.println("+--"+file.getName());
+		}
+		count+=2;
+		demo(file,count);
+	}
+	
+	public void demo(File file,int count)	{
+		File [] arr = file.listFiles(filter);//调用图片过滤器
+		for(int i=0;i<arr.length;i++) {
+			if(arr[i].isDirectory()) {//文件夹
+				for(int j=0;j<count;j++) {
+					System.out.print(" ");
+				}
+				System.out.println("+--"+arr[i].getName());
+				demo(arr[i],count+2);
+			}
+			else if(arr[i].isFile()) {
+				for(int j=0;j<count;j++) {
+					System.out.print(" ");
+				}
+				System.out.println("--"+arr[i].getName());
+		}	
+	}
+	}
+	/********** End **********/
+}

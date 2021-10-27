@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		int len = temperatures.length;
+		int[] myTemper = new int[len];
+		for(int i=0;i<len;i++){
+			int j=i,flag =0;  //每次循环初始化 j，flag
+			if(i == len-1){
+				myTemper[i]=0;
+				break;
+			}else
+			while(j<len){  //寻找升温天，找到跳出循环
+				if(temperatures[j]>temperatures[i]){ //若出现升温
+					myTemper[i] = j-i;
+					flag = 1;
+					break;
+				}
+				j++;
+			}
+			if(flag == 0){   //循环结束没有升温
+				myTemper[i]=0;
+			}
+		}
+		return myTemper;
+		/********** END **********/
+	}
+}

@@ -1,0 +1,39 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		/********** BEGIN **********/
+		double count = 0.0;
+		if((n%2) == 0) {
+			if(n == 2) {
+				count = (double) 3/n;
+			}else {				
+				for(int i = 2; i < n + 2; i += 2) {
+					double j = (double) 3/i;
+					count = count + j;
+				}
+			}
+		}else {
+			if(n == 1) {
+				count = 4.0;
+			}else {				
+				for(int i = 1; i < n + 2; i += 2) {
+					double j = (double) 4/i;
+					count = count + j;
+				}
+			}
+		}
+		System.out.println(count);
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

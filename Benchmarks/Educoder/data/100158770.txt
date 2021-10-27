@@ -1,0 +1,36 @@
+package Q102;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		int num[] = {5, 10, 20};
+		int cnt[] = new int [3];
+		Scanner cin = new Scanner(System.in);
+		int sum = 0;
+		int back = 0;
+		int f = 0;
+		while (cin.hasNextInt()){
+			int tmp = cin.nextInt();
+			back = tmp - 5;
+			if (back > sum){
+				f = 1;
+			}else {
+				for(int i = 2; i >= 0; -- i){
+					if (num[i] == back + 5) ++ cnt[i];
+				}
+				for (int i = 2; i >= 0; -- i){
+					while (cnt[i] != 0 && num[i] <= back){
+						-- cnt[i];
+						back -= num[i];
+					}
+				}
+				if (back == 0) sum += 5;
+				else f = 1;
+			}
+		}
+		if (f == 1) System.out.print("false");
+		else System.out.print("true");
+	}
+
+}

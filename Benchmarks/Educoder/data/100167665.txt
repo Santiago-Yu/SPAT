@@ -1,0 +1,353 @@
+import java.util.*;
+
+public class Java_LLParserAnalysis
+{
+        private static StringBuffer prog = new StringBuffer();
+//    private static String[] TS = new String[]{"{","}","if","(",")","then","else","while","ID",
+//                                                "=",">","<",">=","<=","==","+","-","*","/","NUM","E"};
+//    private static String[] NTS = new String[]{"program","stmt","compoundstmt","stmts","ifstmt",
+//                                                "whilestmt","assgstmt","boolexpr","boolop","arithexpr",
+//                                                "arithexprprime","multexpr","multexprprime","simpleexpr"};
+// LL表为HashMap，读入流和输出流为Queue，操作为Stack
+    private static HashMap<String,String[]> Map=new HashMap<String, String[]>();
+    private static Queue<String> progQueue=new LinkedList<String>();
+    private static Stack<String> TStack=new Stack<String>();
+    private static Queue<String> resultQueue=new LinkedList<String>();
+    private static Queue<String> errorQueue=new LinkedList<String>();
+
+    //初始化Map为LL表
+    private static void initMap(){
+        String[] g1=new String[]{"compoundstmt"};
+        String[] g2=new String[]{"ifstmt"};
+        String[] g3=new String[]{"whilestmt"};
+        String[] g4=new String[]{"assgstmt"};
+        String[] g5=new String[]{"{","stmts","}"};
+        String[] g6=new String[]{"stmt","stmts"};
+        String[] g7=new String[]{"E"};
+        String[] g8=new String[]{"if","(","boolexpr",")","then","stmt","else","stmt"};
+        String[] g9=new String[]{"while","(","boolexpr",")","stmt"};
+        String[] g10=new String[]{"ID","=","arithexpr",";"};
+        String[] g11=new String[]{"arithexpr","boolop","arithexpr"};
+        String[] g12=new String[]{"<"};
+        String[] g13=new String[]{">"};
+        String[] g14=new String[]{"<="};
+        String[] g15=new String[]{">="};
+        String[] g16=new String[]{"=="};
+        String[] g17=new String[]{"multexpr","arithexprprime"};
+        String[] g18=new String[]{"+","multexpr","arithexprprime"};
+        String[] g19=new String[]{"-","multexpr","arithexprprime"};
+        String[] g20=new String[]{"simpleexpr","multexprprime"};
+        String[] g21=new String[]{"*","simpleexpr","multexprprime"};
+        String[] g22=new String[]{"/","simpleexpr","multexprprime"};
+        String[] g23=new String[]{"ID"};
+        String[] g24=new String[]{"NUM"};
+        String[] g25=new String[]{"(","arithexpr",")"};
+        Map.put("program{",g1);
+        Map.put("stmt{",g1);
+        Map.put("compoundstmt{",g5);
+        Map.put("stmts{",g6);
+        Map.put("multexpr{",g20);
+        Map.put("stmts}",g7);
+        Map.put("stmtif",g2);
+        Map.put("stmtsif",g6);
+        Map.put("ifstmtif",g8);
+        Map.put("boolexpr(",g11);
+        Map.put("arithexpr(",g17);
+        Map.put("simpleexpr(",g25);
+        Map.put("arithexprprime)",g7);
+        Map.put("multexprprime)",g7);
+        Map.put("stmtwhile",g3);
+        Map.put("stmtswhile",g6);
+        Map.put("whilestmtwhile",g9);
+        Map.put("multexprID",g20);
+        Map.put("stmtID",g4);
+        Map.put("stmtsID",g6);
+        Map.put("assgstmtID",g10);
+        Map.put("boolexprID",g11);
+        Map.put("arithexprID",g17);
+        Map.put("simpleexprID",g23);
+        Map.put("boolop>",g13);
+        Map.put("boolop<",g12);
+        Map.put("boolop>=",g15);
+        Map.put("boolop<=",g14);
+        Map.put("boolop==",g16);
+        Map.put("arithexprprime+",g18);
+        Map.put("multexprprime+",g7);
+        Map.put("arithexprprime-",g19);
+        Map.put("multexprprime-",g7);
+        Map.put("multexprprime*",g21);
+        Map.put("multexprprime/",g22);
+        Map.put("boolexprNUM",g11);
+        Map.put("arithexprNUM",g17);
+        Map.put("multexprNUM",g20);
+        Map.put("simpleexprNUM",g24);
+        Map.put("arithexprprime;",g7);
+        Map.put("multexprprime;",g7);
+        Map.put("arithexprprime=",g7);
+        Map.put("arithexprprime>",g7);
+        Map.put("arithexprprime<",g7);
+        Map.put("arithexprprime>=",g7);
+        Map.put("arithexprprime<=",g7);
+        Map.put("arithexprprime==",g7);
+        Map.put("multexprprime=",g7);
+        Map.put("multexprprime>",g7);
+        Map.put("multexprprime<",g7);
+        Map.put("multexprprime>=",g7);
+        Map.put("multexprprime<=",g7);
+        Map.put("multexprprime==",g7);
+    }
+
+    //简单的词法分析，将读入流分割成一个个token
+    private static void initprog(){
+        int position=0;
+        int length=prog.length();
+        while (position<length)
+        {
+            if (prog.charAt(position)==' '||prog.charAt(position)=='\t'||prog.charAt(position)==' ')
+            {
+                position++;
+                continue;
+            }
+            else if (prog.charAt(position)=='i')
+            {
+                progQueue.offer("if");
+                position+=2;
+            }
+            else if (prog.charAt(position)=='e')
+            {
+                progQueue.offer("else");
+                position+=4;
+            }
+            else if (prog.charAt(position)=='t')
+            {
+                progQueue.offer("then");
+                position+=4;
+            }
+            else if (prog.charAt(position)=='w')
+            {
+                progQueue.offer("while");
+                position+=5;
+            }
+            else if (prog.charAt(position)=='I')
+            {
+                progQueue.offer("ID");
+                position+=2;
+            }
+            else if (prog.charAt(position)=='N')
+            {
+                progQueue.offer("NUM");
+                position+=3;
+            }
+            else if (prog.charAt(position)=='>')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer(">=");
+                    position+=2;
+                }
+                else{
+                    progQueue.offer(">");
+                    position++;
+                }
+            }
+            else if (prog.charAt(position)=='<')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer("<=");
+                    position+=2;
+                }
+                else{
+                    progQueue.offer("<");
+                    position++;
+                }
+            }
+            else if (prog.charAt(position)=='=')
+            {
+                if (prog.charAt(position+1)=='=')
+                {
+                    progQueue.offer("==");
+                    position+=2;
+                }
+                else
+                {
+                    progQueue.offer("=");
+                    position++;
+                }
+            }
+            else
+            {
+                String temp="";
+                temp+=prog.charAt(position);
+                progQueue.offer(temp);
+                position++;
+            }
+        }
+    }
+
+    private static void read_prog()
+    {
+//        Scanner sc = new Scanner(System.in);
+//        while(sc.hasNextLine())
+//        {
+//            String str=sc.nextLine();
+//            if (str.equals("of"))
+//                break;
+//            else
+//            {
+//                prog.append(str);
+//                prog.append("\n");
+//            }
+//        }
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+    //输出暂存地
+    private static void output(String str,int tnum)
+    {
+        String temp="";
+        for (int i=0;i<tnum;i++)
+            temp+="\t";
+        temp+=str;
+        resultQueue.offer(temp);
+    }
+
+    //错误输出
+    private static void errorouput(String error,int line)
+    {
+        String temp="语法错误,第"+line+"行,缺少\""+error+"\"";
+        errorQueue.offer(temp);
+    }
+
+    //所有操作全部结束后在进行输出
+    private static void print()
+    {
+        while (!errorQueue.isEmpty())
+        {
+            System.out.println(errorQueue.peek());
+            errorQueue.poll();
+        }
+        System.out.print(resultQueue.peek());
+        resultQueue.poll();
+        while (!resultQueue.isEmpty())
+        {
+            System.out.println();
+            System.out.print(resultQueue.peek());
+            resultQueue.poll();
+        }
+    }
+
+    private static void LL_course()
+    {
+        String terminal;
+        String word;
+        String key="";
+        int count=0;
+        int line=1;
+        int lasterrorline=0;
+        while (!progQueue.isEmpty())
+        {
+            word=progQueue.peek();
+            if (TStack.isEmpty())
+                break;
+            terminal=TStack.peek();
+            //Terminal的空格作为递进的计数器，空格分隔不同层次的Terminal
+            if (terminal.equals(" "))
+            {
+                TStack.pop();
+                count--;
+                continue;
+            }
+            //保留回车计算错误所在行数，但不参与语法分析
+            if (word.equals("\n"))
+            {
+                progQueue.poll();
+                line++;
+                continue;
+            }
+            key=terminal+word;
+            if (word.equals(terminal))
+            {
+                output(word,count);
+                progQueue.poll();
+                TStack.pop();
+            }
+            else if(terminal.equals("E"))
+            {
+                output(terminal,count);
+                TStack.pop();
+            }
+            else if (Map.get(key)!=null)
+            {
+                output(terminal,count);
+                TStack.pop();
+                TStack.push(" ");
+                count++;
+                String[] hashresult=Map.get(key);
+                for (int i=hashresult.length-1;i>=0;i--)
+                {
+                    TStack.push(hashresult[i]);
+                }
+            }
+            else
+            {
+                if (terminal.equals(";"))
+                {
+                    output(terminal,count);
+                    TStack.pop();
+                }
+                else {
+                    if ((line-1)!=lasterrorline)
+                    {
+                        errorouput(";", line-1);
+                        lasterrorline=line-1;
+                    }
+                    key = terminal + ";";
+                    output(terminal, count);
+                    TStack.pop();
+                    TStack.push(" ");
+                    count++;
+                    String[] hashresult = Map.get(key);
+                    for (int i = hashresult.length - 1; i >= 0; i--) {
+                        TStack.push(hashresult[i]);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void analysis()
+    {
+        read_prog();
+        initMap();
+        initprog();
+        TStack.push("program");
+        LL_course();
+        print();
+//        while (!progQueue.isEmpty())
+//        {
+//            System.out.println(progQueue.peek());
+//            progQueue.poll();
+//        }
+    }
+
+    public static void main(String[] args) {
+        analysis();
+//        while (!progQueue.isEmpty())
+//        {
+//            System.out.println(progQueue.peek());
+//            progQueue.poll();
+//        }
+
+//        String key="";
+//        key="program"+"{";
+//        String[] temp=Map.get(key);
+//        for (int i=0;i<temp.length;i++)
+//            System.out.println(temp[i]);
+    }
+}

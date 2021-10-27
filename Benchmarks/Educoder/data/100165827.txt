@@ -1,0 +1,73 @@
+
+package step4;
+import step1.Person;
+import step1.Date;
+import step2.Student;
+import step3.Course;
+
+public class Report {
+    private Student s;//学生基本信息
+    private String major; //所学专业  
+    private Course[] selCourse;//所选课程
+   /************Begin****************/
+    public Report(){
+		this.s=new Student();
+		this.major="Material";
+		this.selCourse=new Course[5];
+		selCourse[0]=new Course(300,"Math",2018,12,1,100);
+		selCourse[1]=new Course(301,"Physics",2018,12,2,99);
+		selCourse[2]=new Course(302,"Chemistry",2018,12,3,98);
+		selCourse[3]=new Course(303,"biology",2018,12,4,97);
+		selCourse[4]=new Course(304,"material",2018,12,5,96);
+
+		
+	}
+	public Report(Student s,String major,Course[] selCourse){
+		this.s=s;
+		this.major=major;
+		this.selCourse=selCourse;
+	}
+	public void setReport(Student s,String major,Course[] selCourse){
+		this.s=s;
+		this.major=major;
+		this.selCourse=selCourse;
+	}
+	public Student getStudent(){
+		return s;
+	}
+	public String getmajor(){
+		return major;
+	}
+	public Course[] getCourse(){
+		return selCourse;
+	}
+	public String toString(){
+		String str="";
+		int i;
+		int n=selCourse.length;
+		str=s.toString()+" major:"+major+"\n";
+		for(i=0;i<n;i++){	
+				str+=selCourse[i]+"\n";	
+		}
+		return str;
+	} 
+
+
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+    /************End****************/
+
+  
+}

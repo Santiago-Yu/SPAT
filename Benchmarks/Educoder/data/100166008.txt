@@ -1,0 +1,65 @@
+package step1;
+import step1.Date;
+
+public class Person {
+	private String name; // 姓名
+	private String number; // 身份证号
+	private Date birthday; // 出生日期
+
+	/************ Begin *************/
+	public Person(String name, String number, Date birthday) {
+		super();
+		this.name = name;
+		this.number = number;
+      	this.birthday=birthday;
+	}
+
+		public Person(String name, String number, int year,int month,int day) {
+		super();
+		this.name = name;
+		this.number = number;
+		this.birthday = new Date(year,month,day);
+	}
+
+	public Person() {
+		super();
+		this.birthday = new Date(1999,9,9);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public void setInfo(String name, String number, Date birthday) {
+		this.name = name;
+		this.number = number;
+		this.birthday = birthday;
+	}
+
+	@Override
+	public String toString() {
+		return "name=" + name + " number=" + number + " birthday:" + birthday ;
+	}
+
+	/************ End *************/
+}

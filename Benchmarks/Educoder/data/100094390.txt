@@ -1,0 +1,22 @@
+package step1;
+
+import java.util.Scanner;
+
+public class DecomposeFactor {
+	public static void decompose(int score) {
+		double ret = 0.0;
+		if(score < 100 && score >= 90) ret = 4.0;
+		if(score < 90 && score >= 80) ret = 3.5;
+		if(score < 80 && score >= 70) ret = 3.0;
+		if(score < 70 && score >= 60) ret = 2.5;
+		if(score < 60) ret = 0.0;
+		System.out.print(ret);
+	}
+	
+	public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+		int sco = sc.nextInt();
+		decompose(sco);
+	}
+}

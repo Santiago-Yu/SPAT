@@ -1,0 +1,48 @@
+package step3;
+import java.util.*;
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+		List<Integer> result = new ArrayList<>();
+		int start = 0;
+		while(start < arr.length-1){
+			int count1 = 1;
+			int count2 = 1;
+			int reward = start;
+			for(int i = start+1; i < arr.length; i++ ){
+				if(arr[i-1] > arr[i]){
+					count1++;
+					reward = i;
+				}
+				else break;
+			}
+			if(count1 == 1 ) {
+				start+=1;
+				continue;
+			}
+			for(int i = reward + 1 ;i<arr.length ; i ++){
+				if(arr[i-1] < arr[i]){
+					count2++;
+					reward = i;
+				}
+				else break;
+			}
+			if(count2 == 1 ) {
+				start+=1;
+				continue;
+			}
+		//	System.out.println(count);
+			result.add(count1+count2-1);
+			start ++;
+		}
+		if(result.isEmpty()) return 0;
+		int max = 0; 
+		for(int i = 0; i<result.size();i++){
+			if(max < result.get(i)) max = result.get(i);
+		}
+		return max;
+		
+		/********* End *********/	
+	}
+}

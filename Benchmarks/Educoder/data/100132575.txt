@@ -1,0 +1,40 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int num1=length;
+		int num2=width;
+		int temp1=num1;
+		int temp2=num2;
+		if(num1<num2){
+            int temp=num1;
+            num1=num2;
+            num2=temp;
+        }
+
+        int remainder = num1%num2;
+        int n1=num1,n2=num2;
+
+        while(remainder!=0){
+            num1=num2;
+            num2=remainder;
+            remainder=num1%num2;
+        }
+       int num=(temp1/num2)*(temp2/num2);
+       System.out.println(num2+"\n"+num);
+
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

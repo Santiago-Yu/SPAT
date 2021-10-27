@@ -1,0 +1,36 @@
+package step1;
+import java.text.DecimalFormat;
+import java.util.Scanner;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+		DecimalFormat df = new DecimalFormat( "0.0000000");
+        System.out.println(df.format(circle.gets()));
+        System.out.print(rectangle.gets());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape { public abstract double gets();
+
+}
+
+class Circle extends Shape {
+    private double radius;
+    public Circle(double x){ radius=x;}
+	public double gets(){ return radius*radius*3.1415926;}
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+	public Rectangle(double y,double x){ width=y; length=x;}
+	public double gets(){ return length*width;}
+}
+/********** End *********/

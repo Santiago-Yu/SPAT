@@ -1,0 +1,33 @@
+package step2;
+
+/**
+ * Created by sykus on 2018/3/20.
+ */
+public class InsertionSort {
+
+    public static void sort(int arr[]) {
+        /********** Begin *********/
+
+        for (int i = 1; i < arr.length; i++) {
+            int j = i;
+            int tmp = arr[j];
+            while (j > 0 && tmp < arr[j - 1]) {
+                arr[j] = arr[j - 1];
+                j--;
+            }
+            arr[j] = tmp;
+
+            print(arr);
+        }
+
+        /********** End *********/
+    }
+
+    private static void print(int arr[]) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
+}
+

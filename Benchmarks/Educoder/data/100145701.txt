@@ -1,0 +1,53 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String s=releaseDate;
+		String[] split =s.split("-");
+		int a=Integer.parseInt(split[0]);
+		int b=Integer.parseInt(split[1]);
+		int c=Integer.parseInt(split[2]);
+		int days[]={31,28,31,30,31,30,31,31,30,31,30,31};
+		if((a%4==0&&a%100!=0)||a%400==0) {
+			days[1]=29; //闰年二月29
+		}else {
+			days[1]=28;
+	}
+	c=c+day;
+	while ( c > days[b-1] ) {
+		c -= days[b-1] ;
+		b+=1;
+	    if(b>12) {
+	    	b=1;
+	    	a += 1 ;
+	    }
+
+	if ((a%4==0&&a%100!=0)||a%400==0 )
+		days[1]=29;
+		else
+		days[1]=28;
+    }    
+        if(b<10&&c<10)
+           return a+"-"+"0"+b+"-"+"0"+c;
+		if(b<10&&c>=10)
+            return a+"-"+"0"+b+"-"+c;
+        if(b>=10&&c<10)
+            return a+"-"+b+"-"+"0"+c;
+        if(b>=10&&c>=10)
+            return a+"-"+b+"-"+c;
+		return "";
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

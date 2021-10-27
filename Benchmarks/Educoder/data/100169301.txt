@@ -1,0 +1,90 @@
+package step1;
+import java.util.List;
+import java.util.ArrayList;
+public class Task {
+
+    public static String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuffer wb=new StringBuffer(s);
+        //int q=s.length();
+        int gb=p;//索引
+        for(Operation operation:ops){
+            int q=wb.length();//文本长度
+            String cz=operation.getT();//操作
+            if(cz.equals("I")){
+                wb.insert(gb,operation.getS().toLowerCase());
+                gb+=operation.getS().length();
+            }
+            if(cz.equals("B")){
+                if(gb-operation.getL()<0){wb.delete(0,gb);}
+                if(gb-operation.getL()>0){wb.delete(gb-operation.getL(),gb);}
+                gb-=operation.getL();
+                if(gb<=0){
+                	gb=0;
+                }
+            }
+            if(cz.equals("D")){
+                if(gb+operation.getL()>q-1){
+                    wb.delete(gb,q);
+                    }
+                if(gb+operation.getL()<=q-1){
+                    wb.delete(gb,gb+operation.getL());
+                    }
+            }
+            if(cz.equals("L")){
+                gb-=operation.getL();
+                if(gb<=0){
+                	gb=0;
+                }
+
+            }
+            if(cz.equals("R")){
+                gb+=operation.getL();
+                if(gb>=q){
+                	gb=q;
+            	}
+            }
+    	}
+        return String.valueOf(wb);	
+        /**********   End  **********/
+    }
+    
+    static class Operation {
+        String t;
+        String s;//文本
+        int l;
+        public String getT() {
+            return t;
+        }
+
+        public void setT(String t) {
+            this.t = t;
+        }
+
+        public String getS() {
+            return s;
+        }
+
+        public void setS(String s) {
+            this.s = s;
+        }
+
+        public int getL() {
+            return l;
+        }
+
+        public void setL(int l) {
+            this.l = l;
+        }
+        @Override
+        public String toString() {
+            return "Operation{" +
+                    "t='" + t + '\'' +
+                    ", s='" + s + '\'' +
+                    ", l=" + l +
+                    '}';
+        }
+    }
+ 
+    
+}

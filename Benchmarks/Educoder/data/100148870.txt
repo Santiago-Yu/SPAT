@@ -1,0 +1,50 @@
+package step1;
+
+public class Task {
+	
+    public void printArr(Integer[] arr) {
+		for(int i=0; i<arr.length; i++) {
+			System.out.print(arr[i]+" ");
+		}
+        System.out.println();
+	}
+    
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		int length = arr.length;
+        boolean flag = false;
+		int begin = 0, end = length-1, swapNum;
+		while(begin < end) {
+			for(int i = begin; i<end; i++) {
+				if(arr[i]>arr[i+1]) {
+					swapNum = arr[i];
+					arr[i] = arr[i+1];
+					arr[i+1] = swapNum;
+					printArr(arr);
+                    flag = true;
+				}
+			}
+            if(!flag)
+                break;
+			end--;
+			//printArr(arr);
+			if(begin == end)
+				break;
+			for(int i = end; i>begin; i--) {
+				if(arr[i]<arr[i-1]) {
+					swapNum = arr[i];
+					arr[i] = arr[i-1];
+					arr[i-1] = swapNum;
+					printArr(arr);
+				}
+				
+			}
+			begin++;
+			//printArr(arr);
+		}
+        if(!flag)
+            printArr(arr);
+		
+		/********* End *********/
+	}
+}

@@ -1,0 +1,41 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public static String getLevel(int level)  {  
+		//A mutable sequence of characters. 
+		StringBuilder sb=new StringBuilder();  
+		for(int l=0;l<level;l++)    {   
+			sb.append("  ");   
+			}  
+		return sb.toString(); 
+			}
+	static int len2 = 0;
+public void showDirStructure(File file)	{
+	
+	System.out.println(getLevel(len2)+"+--"+file.getName());
+	int len1 = len2;
+	//System.out.println(len2++);
+	len2++;
+	File[] files=file.listFiles(); 
+	for(int i=0;i<files.length;i++){ 
+		if(files[i].isDirectory()){    
+		//这里面用了递归的算法   
+		showDirStructure(files[i]); 
+	
+		} 
+	else { 
+		//System.out.println(len2);
+		System.out.println(getLevel(len2)+"--"+files[i].getName());  
+		}	  
+	}
+	len2 = len1;
+}
+
+
+
+	/********** END **********/
+}

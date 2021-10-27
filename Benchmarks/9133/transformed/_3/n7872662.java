@@ -1,0 +1,38 @@
+class n7872662 {
+	private static boolean prepareProbeFile(String completePath, String outputFile) {
+		try {
+			File inFile = new File(completePath + fSep + "probe.txt");
+			FileChannel inC = new FileInputStream(inFile).getChannel();
+			BufferedReader br = new BufferedReader(new FileReader(inFile));
+			File outFile = new File(completePath + fSep + "SmartGRAPE" + fSep + outputFile);
+			FileChannel outC = new FileOutputStream(outFile, true).getChannel();
+			boolean endOfFile = true;
+			short movieName = 0;
+			int customer = 0;
+			while (endOfFile) {
+				String line = br.readLine();
+				if (!(line != null))
+					endOfFile = false;
+				else {
+					if (line.indexOf(":") >= 0) {
+						movieName = new Short(line.substring(0, line.length() - 1)).shortValue();
+					} else {
+						customer = new Integer(line).intValue();
+						ByteBuffer outBuf = ByteBuffer.allocate(6);
+						outBuf.putShort(movieName);
+						outBuf.putInt(customer);
+						outBuf.flip();
+						outC.write(outBuf);
+					}
+				}
+			}
+			br.close();
+			outC.close();
+			return true;
+		} catch (IOException e) {
+			System.err.println(e);
+			return false;
+		}
+	}
+
+}

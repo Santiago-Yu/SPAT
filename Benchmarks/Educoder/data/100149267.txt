@@ -1,0 +1,31 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int sum = 0;
+		for (int i = 0; i<n; i++){
+			for (int j = 0; j<m; j++){
+				if (area[i][j] == 'o'){
+					sum++;
+					find(area, i, j);
+				}
+			}
+		}
+		return sum;
+		/********* End *********/	
+	}
+	public void find(char[][] array, int row, int column){
+		int m = array.length;
+		int n = array[0].length;
+		if ((row<0) || (row >= m) || (column<0) || (column >= n) || (array[row][column] != 'o')){
+			return;
+		}
+		array[row][column] = 0;
+		find(array, row, column + 1);
+		find(array, row, column - 1);
+		find(array, row + 1, column);
+		find(array, row - 1, column);
+	}
+}

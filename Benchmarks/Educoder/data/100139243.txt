@@ -1,0 +1,24 @@
+package step3;
+
+public class MyThread implements Runnable {
+    
+	    public void run(){
+            for(int i=1;i<=5;i++){
+            	System.out.print(Thread.currentThread().getName());
+              //  Thread.set.Priority();
+                if(i%2==0)
+                    Thread.yield();
+                
+            }
+  			      
+        }
+    public static void main(String[] args) throws Exception {   
+        MyThread t=new MyThread();
+        Thread a=new Thread(t);
+      //  Thread b=new Thread(t);
+      ///  Thread c=new Thread(t);
+        a.setName("EDU");// b.setName("D"); c.setName("U");
+        a.start();//b.start();c.start();
+        
+    }   
+}

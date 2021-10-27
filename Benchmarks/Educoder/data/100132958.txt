@@ -1,0 +1,33 @@
+package step2;
+import java.util.*;
+public class Task {
+	
+	public int getDaysNum(String startTime, String endTime) {
+		ArrayList<Integer> standard = new ArrayList<>();
+		for (int i = 1; i < 11; i++) {
+			standard.add(0);
+			for (int j = 0; j < i; j++) {
+				standard.add(1);
+			}
+		}
+		int starttime = DayToInt(startTime);
+		int endtime = DayToInt(endTime);
+		int ans=0;
+		for (int i = starttime; i <= endtime; i++) {
+			if(standard.get(i)==0)
+				ans++;
+		}
+		return ans;
+	}
+
+	private int DayToInt(String startTime) {
+		int ans = 0;
+		if (startTime.startsWith("7")) {
+			ans = Integer.valueOf(startTime.substring(2)) - 1;
+		} else if (startTime.startsWith("8")) {
+			ans = Integer.valueOf(startTime.substring(2)) + 30;
+		}
+		return ans;
+	}
+	
+}

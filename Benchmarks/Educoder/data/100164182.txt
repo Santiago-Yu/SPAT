@@ -1,0 +1,32 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+		public static void main(String[] args) {
+			Scanner scan1=new Scanner(System.in);
+			/******Begin******/
+			int number = scan1.nextInt();
+			IsPrime ip = new IsPrime();
+			if(number%2 == 0){
+				System.out.print("偶数");
+			}else if(number > 1){
+				if(ip.prime(number) == true){
+					System.out.print("素数");
+				}else  if(number%2 != 0)
+					System.out.print("奇数");
+			}
+
+
+	         
+			/******End******/
+		}
+}
+class IsPrime{
+	public boolean prime(int n) {
+		for(int i=2; i<n; i++) {
+			if(n%i == 0) 
+				return false;
+		}
+		return true;
+	}
+}

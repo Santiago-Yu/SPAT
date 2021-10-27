@@ -1,0 +1,77 @@
+package task3;
+import java.util.Scanner;
+public class Task3 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        double n = sc.nextDouble();
+        double m = sc.nextDouble();
+        /********* Begin *********/
+       Shape[] shapes = new Shape[] { new Triangle(n, m), new Retangle(n, m),
+                new Circle(n) };
+        System.out.println("三角形面积为：" + shapes[0].calArea());
+        System.out.println("矩形面积为：" + shapes[1].calArea());
+        System.out.println("圆形面积为：" + shapes[2].calArea());
+        
+        
+        /********* End *********/
+    }
+}
+// Shape
+/********* Begin *********/
+ abstract class Shape{
+     public abstract double calArea();
+}
+
+
+
+/********* End *********/
+// Triangle
+/********* Begin *********/
+  class Triangle extends Shape{
+    private double n,m;
+    public Triangle(double n,double m){
+        this.n=n;
+        this.m=m;
+    }
+   public double calArea(){
+       return (this.n * this.m)/2;
+   }
+    
+}
+
+
+
+/********* End *********/
+// Retangle
+/********* Begin *********/
+  class Retangle extends Shape{
+    private double n,m;
+       public Retangle(double n,double m){
+        this.n=n;
+        this.m=m;
+    }
+   public double calArea(){
+       return this.n * this.m;
+   }
+}
+
+
+
+/********* End *********/
+// Circle
+/********* Begin *********/
+  class Circle extends Shape{
+    private double n;
+    
+    public Circle(double n){
+        this.n=n;
+    }
+      public double calArea(){
+       return this.n *this.n*Math.PI;
+   }
+    
+}
+
+
+
+/********* End *********/

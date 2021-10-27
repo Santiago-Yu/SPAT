@@ -1,0 +1,32 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+        String data=scanner.next();
+        String name=scanner.next();
+        int lon=name.length();
+        int yuan=data.length();
+        int c=0;
+        int a=0;
+        int sum=0;
+        int count=0;
+        while(c!=-1){
+			c=data.indexOf(name);
+            System.out.println(sum+c);
+            a=c+lon;
+            count=sum+c+a;
+            
+              data=data.substring(a);
+              sum=sum+a;
+            
+            if(sum+lon>=yuan-1)
+                break;
+            
+        }
+        /********** End *********/
+    }
+}

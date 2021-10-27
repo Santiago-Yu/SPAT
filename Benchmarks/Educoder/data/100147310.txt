@@ -1,0 +1,37 @@
+package task1;
+
+import java.util.*;
+
+public class Task1 {
+	public static void main(String[] args) {
+		int day = 0;
+		int month = 0;
+		int year = 0;
+		int sum = 0;
+		int leap;
+		Scanner input = new Scanner(System.in);
+		year = input.nextInt();
+		month = input.nextInt();
+		day = input.nextInt();
+		
+		/********* Begin *********/
+		leap = day;
+		int m[] = {-1,31,0,31,30,31,30,31,31,30,31,30,31};
+		if(year % 4 == 0 && year % 100 != 0 || year % 100 == 0 && year % 400 == 0) {
+			m[2] = 29;
+		}else {
+			m[2] = 28;
+		}
+		for(int i=1;i<month;i++) {
+			sum = sum + m[i];
+		}
+		System.out.println(year+"年"+month+"月"+day+"日是这一年的第"+(sum+leap)+"天");
+        
+        
+		
+        
+        
+
+		/********* End *********/
+	}
+}

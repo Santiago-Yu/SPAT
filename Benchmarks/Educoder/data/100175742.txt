@@ -1,0 +1,32 @@
+package step4;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class HelloWorld {
+	
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		//动态创建数组
+		int[] arr = new int[sc.nextInt()];
+		for(int w = 0 ; w< arr.length ; w++){
+			arr[w] = sc.nextInt();
+		}
+		/********** Begin **********/
+		for (int i = 0; i < arr.length-1; i++) {
+		for (int q =i; q<arr.length-1; q++)
+if(arr[i] < arr[q+1]){
+int temp = arr[i];
+arr[i] = arr[q+1];
+arr[q+1] = temp;
+}}
+		
+		System.out.println(Arrays.toString(arr));
+		
+		
+		
+		
+		/********** End **********/
+	}
+}

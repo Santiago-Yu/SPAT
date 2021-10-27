@@ -1,0 +1,30 @@
+package step1;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temps){
+		/********** BEGIN **********/
+		List<Integer> list = new ArrayList<>();
+        int[] a = new int[temps.length];
+        boolean k;
+        for(int i = 0; i < temps.length; i++) {
+            k = true;
+            for(int j = i + 1; j < temps.length; j++) {
+                if (temps[j] > temps[i]) {
+                    a[i] = j - i;
+                    list.add(j - i);
+                    k = false;
+                    break;
+                }
+            }
+            if(k) {
+                a[i] = 0;
+            }
+        }
+
+		return a;
+		/********** END **********/
+	}
+}

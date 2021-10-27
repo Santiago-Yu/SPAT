@@ -1,0 +1,44 @@
+package case3;
+
+public class superTest {
+		public static void main(String[] args) {
+		// 实例化子类对象s，调用talk()方法打印信息
+		/********* begin *********/
+         Student s = new Student("张三",18,"哈佛大学");
+         s.school = "哈佛大学";
+        s.talk();
+        
+        
+
+		/********* end *********/
+		
+	}
+}
+
+class Person {
+	String name;
+     int age;
+     Person(){
+    	 name = "张三";
+     	age = 18; 
+     }
+    public void talk(){
+    	
+        System.out.println("我是："+name+"，今年："+age+"岁，我在");
+
+    }
+}
+
+class Student extends Person {
+	String school;
+    Student(String name,int age,String school){
+    	super();       
+    }
+
+    public void talk(){
+    	Person p  = new Person();
+    	 System.out.println("姓名："+name+"，年龄："+age+"，学校："+school);
+
+        
+    }
+}

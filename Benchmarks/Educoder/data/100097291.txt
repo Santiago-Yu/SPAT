@@ -1,0 +1,27 @@
+package step2;
+
+// 利用 Runnable 接口实现
+/********** Begin *********/
+public class MyThread implements Runnable{
+/********** End *********/
+	private String name;
+ public MyThread(String name) {
+     /********** Begin *********/
+this.name=name;
+		/********** End *********/
+System.out.println("运行:"+name);
+ }  
+ public void run() {
+     /********** Begin *********/
+
+		/********** End *********/
+     
+ }
+ public static void main(String[]args)
+ {
+	 MyThread mythread=new MyThread("B");
+	 Thread th=new Thread(mythread);
+	 th.start();
+	 System.out.println("运行:A");
+ }
+}

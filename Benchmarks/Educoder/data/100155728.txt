@@ -1,0 +1,51 @@
+package task6;
+
+import java.util.Scanner;
+public class ScaleBox   extends Box   { //继承Box类
+
+    private String unit;
+  //TODO 定义私有变量unit
+
+    public  ScaleBox(int boxType) {       
+        super(boxType);
+    
+    }
+
+    public void setUnit(String unit){
+      this.unit=unit;
+    }//实现 getUnit、setUnit方法
+
+     public String getUnit(){
+      return this.unit; 
+    }
+    public void printVolumn(){         
+       
+        super.volume();
+        double volume=volume();
+        System.out.println("the volumn is:"+volume+unit);
+    }
+	public static void main(String[] args){
+      Scanner input=new Scanner(System.in);
+        int p;
+        double a;
+        double b;
+        double c;
+       String x;
+        p=input.nextInt();
+        a=input.nextDouble();
+        b=input.nextDouble();
+        c=input.nextDouble();
+        x=input.nextLine();
+      ScaleBox box=new ScaleBox(p);       
+        box.setWidth(a);
+        box.setHeight(b);
+        box.setDepth(c);
+        box.setUnit(x);
+       box.printVolumn();
+    }
+//实现printVolumn()方法，在该方法中调用父类的方法计算体积 最后输出体积
+    
+}
+
+
+

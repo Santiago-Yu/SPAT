@@ -1,0 +1,52 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int judgeYear,i,sum=0;
+        if(year % 4 == 0||year % 400 == 0){
+        	judgeYear = 1;
+        }
+        else{
+			judgeYear = 0;
+        }
+        switch(judgeYear){
+        	case 1:
+                for(i=1;i<month;i++){
+                    if(i==2){
+                    	sum+=29;
+                        continue;
+                    }
+                	if(i%2==0){
+                    	sum+=30;
+                    }
+                    if(i%2!=0){
+                    	sum+=31;
+                    }
+                }
+                break;
+            case 0:
+                for(i=1;i<month;i++){
+                    if(i==2){
+                    	sum+=28;
+                        continue;
+                    }
+                	if(i%2==0){
+                    	sum+=30;
+                    }
+                    if(i%2!=0){
+                    	sum+=31;
+                    }
+                }
+                break;
+            default:
+                System.out.print("打印默认值");
+                break;
+        }
+        sum+=day;
+        System.out.print(sum);
+
+
+		/********** End *********/
+	}
+}

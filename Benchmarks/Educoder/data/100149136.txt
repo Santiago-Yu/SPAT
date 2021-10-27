@@ -1,0 +1,33 @@
+package step2;
+import java.util.Arrays;
+public class Task {
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int result=0;
+         for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+            if(area[i][j]=='o'){
+                result++;
+                erase(area,i,j);
+            }
+            }
+        }
+        return result;
+		/********* End *********/	
+	}
+    public static void erase(char[][] A,int i,int j){
+        A[i][j]='x';
+        while(i>0&&A[i-1][j]=='o'){
+        erase(A,i-1,j);
+        }
+		while(i<A.length-1&&A[i+1][j]=='o'){
+        erase(A,i+1,j);
+        }
+		while(j<A[0].length-1&&A[i][j+1]=='o'){
+        erase(A,i,j+1);
+        }
+        while(j>0&&A[i][j-1]=='o'){
+        erase(A,i,j-1);
+        }
+    }
+}

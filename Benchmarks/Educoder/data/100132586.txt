@@ -1,0 +1,30 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+		int gcd = gcd1(length,width);
+		System.out.println(gcd);
+		System.out.println(length/gcd * width/gcd);
+		
+		
+		
+		/********** END **********/
+	}
+	
+	public static int gcd1(int a, int b) { 
+		int k = 0; 
+		do { 
+			k = a % b; 
+			a = b; 			
+			b = k; 
+		} while (k != 0); 
+		return a; 
+	} 
+}

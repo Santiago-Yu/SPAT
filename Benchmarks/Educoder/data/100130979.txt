@@ -1,0 +1,93 @@
+package main.java.step1;
+
+import java.io.*;
+import java.util.Random;
+
+public class LogisticRegressionBaseline {
+
+    public void  logisticRegressionBaseline(){    
+    /*训练集位于 src/main/java/step1/train.csv
+    测试集位于 src/main/java/step1/test.csv
+    请将生成的结果存放在 answer/test_prediction.csv
+    */
+	/********** BEGIN **********/
+	Random rand = new Random();
+        try {
+            double[] w=new double[13];
+            double eta=rand.nextDouble()*2-1;//学习因子
+            //double eta=0.2;
+            for (int i = 0; i < 13; i++) {
+                w[i]=rand.nextDouble()*2-1;
+            }
+            for(int j = 0 ; j < 10 ; j++){
+            FileInputStream fis=new FileInputStream("src/main/java/step1/train.csv");
+            InputStreamReader isr=new InputStreamReader(fis);
+            BufferedReader br=new BufferedReader(isr);
+            String string =br.readLine();
+            String string2=null;
+            while((string2=br.readLine())!=null){
+                String[] arr2=string2.split(",");
+                double[] x=new double[13];
+                for (int i = 1; i < arr2.length-1; i++) {
+                    x[i]=Double.valueOf(arr2[i].trim());
+                }
+                x[0]=1;
+                double d=Double.valueOf(arr2[arr2.length-1].trim());//期望
+                double m=0;
+                for (int i = 0; i < arr2.length-1; i++) {
+                    m+=w[i]*x[i];
+                }
+                double y=(m>=0)?1:0;
+                for (int i = 0; i < arr2.length-1; i++) {
+                    w[i]=w[i]+eta*(d-y)*x[i];
+                }
+            }
+            br.close();
+            isr.close();
+            fis.close();
+            }
+            FileInputStream fis2=new FileInputStream("src/main/java/step1/test.csv");
+            InputStreamReader isr2=new InputStreamReader(fis2);
+            BufferedReader br2=new BufferedReader(isr2);
+            File  file =new File("answer/test_prediction.csv");
+            if (!file.exists()){
+                file.createNewFile();
+            }
+            PrintWriter pw=new PrintWriter(file);
+            String s1="id,type";
+            pw.println(s1);
+            pw.flush();
+            String str2 =br2.readLine();
+            String str_test=null;
+            while((str_test=br2.readLine())!=null){
+                String[] arr2=str_test.split(",");
+                double[] x=new double[13];
+                int ID=Integer.valueOf(arr2[0].trim());
+                for (int i = 1; i < arr2.length-1; i++) {
+                    x[i]=Double.valueOf(arr2[i].trim());
+                }
+                x[0]=1;
+                double m=0;
+                for (int i = 0; i < arr2.length-1; i++) {
+                    m+=w[i]*x[i];
+                }
+                int y=(m>=0)?1:0;
+                String res=String.valueOf(ID)+","+String.valueOf(y);
+                pw.println(res);
+                pw.flush();
+            }
+            pw.close();
+            br2.close();
+            isr2.close();
+            fis2.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+	/********** END **********/
+    }
+}

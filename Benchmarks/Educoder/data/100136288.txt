@@ -1,0 +1,90 @@
+package case2;
+
+import java.util.Scanner;
+
+public class Task2 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String cName = sc.next();
+		String cSex = sc.next();
+		int cAge = sc.nextInt();
+		String eName = sc.next();
+		String eSex = sc.next();
+		int eAge = sc.nextInt();
+		Person c=new Chinese(cName,cSex,cAge);
+        showEat(c);
+        Person e=new English(eName,eSex,eAge);
+        showEat(e);
+        Chinese c1=(Chinese) c;
+        c1.shadowBoxing();
+        English e1=(English) e;
+        e1.horseRiding();
+	}
+    public static void showEat(Person p){
+        if(p instanceof Chinese){
+            p.eat();
+        }
+        if(p instanceof English){
+            p.eat();
+        }
+    }
+}
+abstract class Person {
+	private String name;
+    private String sex;
+    private int age;
+    abstract void eat();
+    public String getName(){
+        return name;
+    }
+    public void setName(String name){
+        this.name=name;
+    }
+    public String getSex(){
+        return sex;
+    }
+    public void setSex(String sex){
+        this.sex=sex;
+    }
+    public int getAge(){
+        return age;
+    }
+    public void setAge(int age){
+        this.age=age;
+    }
+    public Person(String name,String sex,int age ){
+        this.name=name;
+        this.sex=sex;
+        this.age=age;
+    }
+}
+class Chinese extends Person {
+	public Chinese(String name,String sex,int age){
+        super(name,sex,age);
+    }
+    @Override
+    void eat(){
+        System.out.println("姓名："+super.getName()+
+                           "，性别："+super.getSex()+
+                          "，年龄："+super.getAge()+
+                           "，我是中国人，我喜欢吃饭！");
+    }
+    void shadowBoxing(){
+        System.out.println(super.getName()+"在练习太极拳！");
+    }
+}
+class English extends Person {
+	public English(String name,String sex,int age){
+        super(name,sex,age);
+    }	
+	@Override
+    void eat(){
+        System.out.println("姓名："+super.getName()+"，性别："
+                           +super.getSex()+
+                          "，年龄："+super.getAge()
+                           +"，我是英国人，我喜欢吃三明治！");
+    }
+    void horseRiding(){
+        System.out.println(super.getName()+"在练习骑马！");
+    }
+}

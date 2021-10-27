@@ -1,0 +1,63 @@
+package step1;
+
+public class Task {
+    public void display(Integer[] arr) {
+		for (int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i] + " ");
+		}
+		System.out.println();
+	}
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+				int left = 0, right = 1;
+		boolean ltor = true, sorted = false, changed = false,hasSorted = true;
+		if (arr.length <= 1)
+			return;
+
+		while (!sorted) {
+			sorted = true;
+			changed = false;
+			if (ltor) {
+				left = 0;
+				right = 1;
+				while (right < arr.length) {
+					if (arr[left] > arr[right]) {
+						int tmp = arr[left];
+						arr[left] = arr[right];
+						arr[right] = tmp;
+						changed = true;
+						hasSorted = false;
+						display(arr);
+					}
+					left++;
+					right++;
+				}
+                ltor = false;
+			} else {
+				left = arr.length - 2;
+				right = arr.length - 1;
+				while (left > 0) {
+					if (arr[left] > arr[right]) {
+						int tmp = arr[left];
+						arr[left] = arr[right];
+						arr[right] = tmp;
+						changed = true;
+						hasSorted = false;
+						display(arr);
+					}
+					left--;
+					right--;
+				}
+                ltor = true;
+			}
+			if (changed)
+				sorted = false;
+		}
+		if (hasSorted)
+			display(arr);
+
+		
+		/********* End *********/
+	}
+}

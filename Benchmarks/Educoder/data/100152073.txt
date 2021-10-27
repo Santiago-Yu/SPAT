@@ -1,0 +1,34 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+          double areaok=0.0;
+          double pi=3.14159265358;
+		  double a=Math.abs(x1-x2);
+          double b=Math.abs(y1-y2);
+		  double c=a*a+b*b;
+          double distance=Math.sqrt(c);
+          double R1=Math.abs(r1);
+          double R2=Math.abs(r2);
+          if(distance>=R1+R2) 
+             areaok=pi*R1*R1+pi*R2*R2;
+		  if(distance<R1+R2&&distance>Math.abs(R1-R2)){ 
+             double k1=Math.acos((distance*distance+R1*R1-R2*R2)/(2*distance*R1));
+             double a1=k1*R1*R1;
+             double k2=Math.acos((distance*distance+R2*R2-R1*R1)/(2*distance*R2));
+             double a2=k2*R2*R2;
+             double s=(distance+R1+R2)/2;
+             double area=a1+a2-Math.sqrt(s*(s-distance)*(s-R1)*(s-R2))*2;
+             areaok=pi*R1*R1+pi*R2*R2-area;
+          }
+          if(distance<=Math.abs(R1-R2)){
+              if(R1<=R2) areaok=pi*R1*R1;
+              areaok=pi*R2*R2;
+          }
+		  /********* End *********/
+	 return areaok; 
+     }
+}

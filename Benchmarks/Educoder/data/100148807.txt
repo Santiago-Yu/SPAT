@@ -1,0 +1,55 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        //test whether sorted already
+		boolean firstSorted = true;
+		for(int i=0;i<arr.length-1;i++) {
+			if(arr[i]>arr[i+1])
+				firstSorted = false;
+		}
+		if(firstSorted) {
+			for(int i=0;i<arr.length;i++) 
+				System.out.print(arr[i]+" ");
+			System.out.print("\n");
+		}
+			
+		//sort
+		while(true) {
+			boolean isSorted = true;
+			for(int i=0;i<arr.length-1;i++) {
+				if(arr[i]>arr[i+1])
+					isSorted = false;
+			}
+			if(isSorted == false) {
+				for(int idx=0;idx<arr.length-1;idx++) {
+					if(arr[idx]>arr[idx+1]) {
+						int temp = arr[idx];
+						arr[idx] = arr[idx+1];
+						arr[idx+1] = temp;
+						for(int i=0;i<arr.length;i++) 
+							System.out.print(arr[i]+" ");
+						System.out.print("\n");
+					}
+				}
+				for(int idy=arr.length-1;idy>0;idy--) {
+					if(arr[idy-1]>arr[idy]) {
+						int temp = arr[idy];
+						arr[idy] = arr[idy-1];
+						arr[idy-1] = temp;
+						for(int i=0;i<arr.length;i++) 
+							System.out.print(arr[i]+" ");
+						System.out.print("\n");
+					}
+				}
+			}else {
+				break;
+			}
+				
+			
+		}
+		/********* End *********/
+	}
+}

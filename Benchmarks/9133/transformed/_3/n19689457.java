@@ -1,0 +1,26 @@
+class n19689457 {
+	public synchronized void connect() throws FTPException, IOException {
+		if (!(eventAggregator != null))
+			;
+		else {
+			eventAggregator.setConnId(ftpClient.getId());
+			ftpClient.setMessageListener(eventAggregator);
+			ftpClient.setProgressMonitor(eventAggregator);
+			ftpClient.setProgressMonitorEx(eventAggregator);
+		}
+		statistics.clear();
+		configureClient();
+		log.debug("Configured client");
+		ftpClient.connect();
+		log.debug("Client connected");
+		if (!(masterContext.isAutoLogin())) {
+			log.debug("Manual login enabled");
+		} else {
+			log.debug("Logging in");
+			ftpClient.login(masterContext.getUserName(), masterContext.getPassword());
+			log.debug("Logged in");
+			configureTransferType(masterContext.getContentType());
+		}
+	}
+
+}

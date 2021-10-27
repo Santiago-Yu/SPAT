@@ -1,0 +1,107 @@
+package step2;
+import sun.tools.jar.resources.jar;
+/**
+ * Created by sykus on 2018/1/15.
+ */
+public class MyCircleLinkedList {
+    private Node head;//头结点, 不存数据
+    private Node tail;//尾结点, 指向链表的最后一个节点
+    private int size;
+
+    public MyCircleLinkedList() {
+        head = new Node(Integer.MIN_VALUE, null);
+        head.next = head;
+        tail = head;
+        size = 0;
+    }
+
+    /**
+     * 添加到链表尾部
+     *
+     * @param item
+     */
+    public void add(int item) {
+        Node node = new Node(item, tail.next);
+        tail.next = node;
+        tail = node;
+        ++size;
+
+    }
+
+    /**
+     * 遍历链表并输出元素
+     */
+    public void output() {
+        Node p = head;
+        while (p.next != head) {
+            p = p.next;
+            System.out.println(p.item);
+        }
+    }
+
+
+    /**
+     * 删除从头结点开始的第index个结点
+     * index从0开始
+     *
+     * @param index
+     * @return
+     */
+    public int remove(int index) {
+        checkPosIndex(index);
+
+        /********** Begin *********/
+        int tt=0;
+        Node en=head;
+        Node en2Node = head;
+        if(index==0)
+        {
+        tt=head.item;
+        head=head.next;
+        }
+        else {
+        	int hh=-1;
+			while (hh!=index) {
+			en2Node=en;
+			en=en.next;	
+			hh++;
+		}
+        if(hh==index)
+        {
+        	tt=en.item;
+        	en2Node.next =en.next;
+        	size--;
+        }
+		}
+        
+        return tt;
+
+        /********** End *********/
+    }
+
+    public boolean isEmpty() {
+        return head.next == head;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    private void checkPosIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+    }
+
+    //结点内部类
+    private static class Node {
+        int item;
+        Node next;
+
+        Node(int item, Node next) {
+            this.item = item;
+            this.next = next;
+        }
+    }
+}
+

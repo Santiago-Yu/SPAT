@@ -1,0 +1,48 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+	        long[][] f = new long[numbers + 1][selectedNum + 1]; 
+        long[][] g = new long[numbers + 1][selectedNum + 1];
+        //初始化两个数组，即K=1的情况
+        for(int i = 1; i <= numbers; i++) {
+            f[i][1] = abilities[i];
+            g[i][1] = abilities[i];
+        }
+        //从k = 2开始填充（遍历每一行）
+        for(int curK = 2; curK <= selectedNum; curK++) {
+            for(int curN = curK; curN <= numbers; curN++) {  //遍历每一列
+                long tempMax = Long.MIN_VALUE;         //临时最大、最小值变量
+                long tempMin = Long.MAX_VALUE;
+                //根据left的两个边界条件进行遍历
+                for(int left = Math.max(curK - 1, curN - distance); left <= curN - 1; left++){
+                    //根据所得的递推公式更新最小值 最大值
+                    if(tempMax < Math.max(f[left][curK - 1] * abilities[curN], g[left][curK - 1] * abilities[curN])) {
+                        tempMax = Math.max(f[left][curK - 1] * abilities[curN], g[left][curK - 1] * abilities[curN]);
+                    }
+                    
+                    if(tempMin > Math.min(f[left][curK - 1] * abilities[curN], g[left][curK - 1] * abilities[curN])) {
+                        tempMin = Math.min(f[left][curK - 1] * abilities[curN], g[left][curK - 1] * abilities[curN]);
+                    }
+                }
+                //更新最大值
+                f[curN][curK] = tempMax;
+                //更新最小值
+                g[curN][curK] = tempMin;
+            }
+        }
+        //确定了K值，要得到最大值，则遍历第K列，即搜索f[curN~n][K]  （curN >= k）
+        long maxResult = Long.MIN_VALUE;
+        for(int curN = selectedNum; curN <= numbers; curN++) {
+            if(f[curN][selectedNum] > maxResult)
+                maxResult = f[curN][selectedNum];
+        }
+   
+		return maxResult;
+    }
+
+	/********* End *********/
+}

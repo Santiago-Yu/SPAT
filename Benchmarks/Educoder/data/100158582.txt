@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+   // cout << "Hello, world!" << endl;
+    char x[1000],y[1000];
+    scanf("%s",x);
+    scanf("%s",y);
+    int fleg=0,cc,dd=0;
+    for(int aa=0;aa<50;aa++)
+    {
+       for(int bb=0;bb<50;bb++){
+           
+          if(x[aa]==y[bb]){
+              cc=1;
+              for(int i=1;i<=100;i++){
+                   if(x[aa+i]==y[bb+i]&&x[aa+i]!=0&&y[bb+i]!=0)
+                       cc++;
+                  if(x[aa+i]!=y[bb+i])
+                      break;
+              }
+          }
+       
+        if(cc>dd)
+        {
+            dd=cc;
+        }
+       }
+    }
+    printf("%d",dd);
+    return 0;
+}

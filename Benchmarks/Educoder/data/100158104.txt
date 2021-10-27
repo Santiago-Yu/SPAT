@@ -1,0 +1,65 @@
+package step1;
+
+/**
+ * 学员任务文件
+ */
+public class Reflect_stu {
+
+    public static void main(String[] args) {
+        System.out.println("通过Object 类中的 getClass() 获取的 Class 对象为：" + getPersonClass1());
+        System.out.println("通过静态方法 Class.forName() 获取的 Class 对象为：" + getPersonClass2());
+        System.out.println("通过类字面常量获取 Class 的对象为：" + getPersonClass3());
+    }
+
+    /**
+     * 通过 Object 类中的 getClass() 获取的 Class 对象
+     *
+     * @return
+     */
+    public static Class getPersonClass1() {
+        /********** Begin *********/
+		Person p=new Person();
+		Class clazz=p.getClass();
+
+
+
+        return clazz;
+        /********** End *********/
+    }
+
+    /**
+     * 通过静态方法 Class.forName() 获取的 Class 对象
+     * <p>
+     * 注意：Person 类的全路径为: step1.Person
+     *
+     * @return
+     */
+    public static Class getPersonClass2() {
+        /********** Begin *********/
+		Class clazz=null;
+		String className ="step1.Person";
+		try{
+			clazz=Class.forName(className);
+		}catch(ClassNotFoundException e){
+			e.printStackTrace();
+		}
+
+
+        return clazz;
+        /********** End *********/
+    }
+
+    /**
+     * 通过类字面常量获取 Class 的对象
+     *
+     * @return
+     */
+    public static Class getPersonClass3() {
+        /********** Begin *********/
+		Class clazz =Person.class;
+
+
+        return clazz;
+        /********** End *********/
+    }
+}

@@ -1,0 +1,75 @@
+
+
+package step4;
+
+import step2.Student;
+import step3.Course;
+
+public class Report {
+    private Student s;//学生基本信息
+    private String major; //所学专业  
+    private Course[] selCourse;//所选课程
+   /************Begin****************/
+    
+    
+    public Report(Student s,String major,Course[] selCourse) {
+		// TODO Auto-generated constructor stub
+    	
+    	this.s = s;
+    	this.major = major;
+    	this.selCourse = selCourse;
+    	
+    	
+	}
+
+    
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+		String s1 = "";
+		for(int i = 0;i<selCourse.length;i++){
+			s1 = s1+selCourse[i]+"\n";
+		}
+    	return "name="+s.getName()+" "
+    			+"number="+s.getNumber()+" "+
+    	"birthday:"+s.getBirthday()+
+    	"reg_num:"+s.getReg_num()+
+    	"reg_day:"+s.getreg_day()+" "+"major:"+major+"\n"+s1;
+    }
+
+
+	public Student getStudent() {
+		return s;
+	}
+
+
+	public void setS(Student s) {
+		this.s = s;
+	}
+
+
+	public String getMajor() {
+		return major;
+	}
+
+
+	public void setMajor(String major) {
+		this.major = major;
+	}
+
+
+	public Course[] getSelCourse() {
+		return selCourse;
+	}
+
+
+	public void setSelCourse(Course[] selCourse) {
+		this.selCourse = selCourse;
+	}
+
+
+
+    /************End****************/
+
+  
+}

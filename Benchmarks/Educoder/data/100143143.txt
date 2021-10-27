@@ -1,0 +1,47 @@
+package step4;
+
+import java.io.*;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		FileReader fr=new FileReader("src//step4//input//input.txt");
+		char[] c=new char[10240];
+		int y=fr.read(c);
+        StringBuilder builder = new StringBuilder();
+        builder.append(c,0,y);
+		File file=new File("src//step4//output//output.txt");
+        FileWriter fw=new FileWriter(file);
+        
+        fw.write(c,0,builder.length());
+        fw.close();
+        /*FileInputStream fs = new FileInputStream("src//step4//input//input.jpg");
+		FileOutputStream fos = new FileOutputStream("src//step4//output//output.jpg");
+        int len = 1;
+		byte[] bys = new byte[fs.available()];
+        while( (len = fs.read(bys)) != -1){
+    	fos.write(bys, 0, len);
+		}
+        fs.close();
+		fos.close();*/
+        FileInputStream fi=new FileInputStream("src//step4//input//input.jpg");
+		BufferedInputStream in=new BufferedInputStream(fi);
+		FileOutputStream fo=new FileOutputStream("src//step4//output//output.jpg");
+		BufferedOutputStream out=new BufferedOutputStream(fo);
+
+        byte[] buf=new byte[1024];
+		int len=in.read(buf);
+		while(len!=-1){
+        out.write(buf, 0, len);
+		len=in.read(buf);
+		}
+
+		out.close();
+		fo.close();
+		in.close();
+		fi.close();
+		}
+		/********* End *********/		
+	}
+

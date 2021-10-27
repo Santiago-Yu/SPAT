@@ -1,0 +1,21 @@
+package step1;
+
+public class Task {
+	public String inversion(String str){
+		/********* Begin *********/
+				char [] c = str.toCharArray();
+		for(int i = 0;i < c.length/2;i++){
+			char [] temp = {'0'};
+			temp [0] = c [i];
+			c [i] = c [c.length-i-1];
+			c [c.length-i-1]  = temp [0];
+			
+		}
+		str = String.copyValueOf(c);
+				
+		return str;
+		
+		
+		/********* End *********/
+	}
+}

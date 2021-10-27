@@ -1,0 +1,57 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Task {
+	
+private List<Integer> concaveCenters = new LinkedList<Integer>(); 
+	
+	public int concaveValley(Integer[] arr) {
+		concaveCount(arr); 
+		if (concaveCenters == null ||  concaveCenters.size() == 0)
+			return 0;
+		
+		
+		int[] len = new int[concaveCenters.size()]; 
+		
+		for (int i = 0; i < len.length; ++i) {
+			len[i] = getLen(arr, concaveCenters.get(i));
+		}
+		
+		Arrays.sort(len);
+		
+		return len[len.length - 1]; 
+	}
+
+	public void concaveCount(Integer[] arr) {
+		for (int i = 1; i < arr.length - 1; ++i) {
+			if (arr[i] < arr[i - 1] && arr[i] < arr[i + 1])
+				concaveCenters.add(i); 
+		}		
+	}
+	
+	public int getLen(Integer[] arr, int idx) {
+		int idx1 = idx;
+		int idx2 = idx-1;
+		while (idx2>=0 &&   arr[idx2] > arr[idx1]) {
+			idx2--; 
+			idx1--; 
+		}
+		
+		int idx3 = idx; 
+		int idx4 = idx+1;
+		
+		while (idx4<=arr.length - 1 &&   arr[idx4] > arr[idx3]) {
+			idx4++; 
+			idx3++; 
+		}
+		
+		idx4--; 
+		idx2++;
+		
+		return idx4-idx2+1; 
+	}
+
+}

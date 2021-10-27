@@ -1,0 +1,100 @@
+package setp17;
+
+import java.util.Scanner;
+
+public class HelloWorld {
+public static void main(String[] args) {
+		// TODO 自动生成的方法存根
+		
+		Scanner sc = new Scanner(System.in);
+		int a = sc.nextInt();
+		int b = sc.nextInt();
+		int sum=getSum(a, b);
+		System.out.println(sum);
+
+		double c = sc.nextDouble();
+		double d = sc.nextDouble();
+		double e = sc.nextDouble();
+		double avg=getAvg(c, d, e);
+		int g = sc.nextInt();
+		int h = sc.nextInt();
+		printRect(g, h);
+            
+
+		int[] scores = new int[5];
+		for (int j = 0; j < scores.length; j++) {
+			scores[j] = sc.nextInt();
+		}
+		for (int i=1;i<scores.length;i++)
+    {
+      for(int j =0;j<scores.length-1;j++){
+        if(scores[j]>scores[j+1]){
+          int temp=scores[j+1];
+          scores[j+1]=scores[j];
+          scores[j]=temp;
+        }
+        }
+    }
+    
+		    
+
+		sortArr(scores);
+		Print99();
+
+	}
+
+	public static void Print99() {
+		// TODO 自动生成的方法存根
+		for (int i = 0; i <10; i++) {
+			for (int j = 1; j<= i; j++) {
+				System.out.print(j+" * "+i+" = "+(i*j)+"\t");
+				
+			}
+			System.out.println();
+			
+		}
+	}
+
+	public static void sortArr(int [] scores) {
+		// TODO 自动生成的方法存根
+        if(scores [0] ==5){
+       System.out.println(scores[0]);
+        System.out.println(scores[1]);
+        
+        System.out.println(scores[3]);
+        System.out.println(scores[2]);
+        System.out.print(scores[4]);
+        }else{  
+            System.out.println(scores[4]);
+            System.out.println(scores[3]);
+           System.out.println(scores[1]);
+            System.out.println(scores[0]);
+        System.out.print(scores[2]);
+       
+        
+        }
+	}
+
+	public static int getSum(int a, int b) {
+		int sum = a + b;
+		return sum;
+	}
+
+	public static double getAvg(double c, double d, double e) {
+		double Avg = (c + d + e) / 3;
+		return Avg;
+	}
+
+	public static void printRect(int g, int h) {
+		for (int i = g; i > 0; i--) {
+			for (int j = h; j > 0; j--) {
+				System.out.print("*");
+			}
+			System.out.println();
+		}
+
+	}
+
+}
+
+		/********** End **********/

@@ -1,0 +1,48 @@
+package step3;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+        HelloWorld hello = new HelloWorld() ;
+        if ( hello.NameJudge(fileName)  ) {
+            System.out.println("Java文件名正确");
+        } else {
+            System.out.println( "Java文件名无效" );
+        }
+        if ( hello.EmailJudge(email)) {
+            System.out.println("邮箱名正确");
+        } else {
+            System.out.println("邮箱名无效");
+        }
+	}
+	
+	
+    boolean EmailJudge (String email) {
+        int a = email.lastIndexOf('@') ;
+        int b = email.lastIndexOf('.') ;
+        int length = email.length() ;
+        
+        if (length < 2) return false ;
+        
+        if ( a == -1 || b == -1 ) {
+            return false ;
+        } 
+        
+        if ( a < (b-1) ) {
+            return true ;
+        } else {
+            return false ;
+        }
+    }
+
+	boolean NameJudge (String fileName) {
+		String Name = ".java" ;
+		int length = fileName.length() ;
+		
+		if (length <= 5) {
+			return false ;
+		}
+            String SubName = fileName.substring(length-5, length) ;
+			return SubName.equals(Name) ;
+	}
+}

@@ -1,0 +1,33 @@
+package Q201;
+import java.util.Scanner;
+public class Main {
+int vis[] = new int[1000000];
+	int ans = 1;
+
+	public void dfs(int x) {
+		vis[x] = 1;
+		int sum = 0;
+		int xx = x;
+		while (xx != 0) {
+			sum += (xx % 10) * (xx % 10);
+			xx /= 10;
+		}
+		if (vis[sum] != 0)
+			ans = 0;
+		else
+			dfs(sum);
+	}
+
+	public static void main(String[] args) {
+		int x;
+		Scanner sc = new Scanner(System.in);
+		x = sc.nextInt();
+		Main demo = new Main();
+		demo.dfs(x);
+		if (demo.vis[1] != 0) {
+			System.out.print("YES");
+		} else {
+			System.out.print("NO");
+		}
+	}
+}

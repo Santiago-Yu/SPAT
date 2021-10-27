@@ -1,0 +1,45 @@
+package step1;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Test {
+	public static void main(String[] args) {
+		ForPractice1.test();
+		try {
+//			String filePath=System.getProperty("user.dir");
+//			System.out.println(filePath);
+			FileReader fr = new FileReader("src/step1/ForPractice1.java");
+			StringBuilder sb = new StringBuilder();
+			char[] c = new char[1024];
+			int len = 0;
+			while( (len = fr.read(c)) != -1){
+				sb.append(c, 0, len);
+			}
+			String str = sb.toString();
+			boolean result1 = str.contains("\"*\"");
+			boolean result2 = str.contains("\'*\'");
+			int count = appearNumber(str,"for");
+			if(count!=2){
+				System.out.println("结果错误，每次只能输出一颗星,还需要用嵌套for循环哦.");
+			}
+			} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static int appearNumber(String srcText, String findText) {
+	    int count = 0;
+	    Pattern p = Pattern.compile(findText);
+	    Matcher m = p.matcher(srcText);
+	    while (m.find()) {
+	        count++;
+	    }
+	    return count;
+	}
+}

@@ -1,0 +1,80 @@
+package task05;
+
+import java.util.Scanner;
+
+/*
+ * 说明：根据提示，补充完整 begin 和 end 之间的代码。
+ *     （其他代码可以不用改）
+ */
+
+/**************** begin *****************/
+// 在此定义学生类名
+class student
+/**************** end *****************/
+{
+	/**************** begin *****************/
+	 // 将姓名name和年龄age属性定义为私有的
+	     private String name;
+	     private int age;
+	/**************** end *****************/
+
+
+	/**************** begin *****************/
+	/*
+	 * 定义一个无参的构造方法：方法体输出一行文字"无参的构造方法"；
+	 */
+        void A()
+        {
+        	System.out.println("无参的构造方法");
+        }
+	/**************** end *****************/
+
+
+	/**************** begin *****************/
+	/*
+	 * 定义一个接收一个String类型参数的构造方法：
+	 * 方法体中：使用this关键字调用无参构造方法，
+	 * 并使用String类型参数为姓名赋值，再输出一行文字"一个参数的构造方法"；
+	 */
+        void A(String n) {
+        	this.A();
+        	this.name=n;
+        	System.out.println("一个参数的构造方法");
+        	}
+
+	/**************** end *****************/
+	
+
+	/**************** begin *****************/
+	/*
+	 * 定义一个接收String类型和int类型两个参数的构造方法：
+	 * 方法体中：使用this关键字调用一个参数的构造方法，
+	 * 并使用int类型参数为年龄赋值(不用为姓名赋值)，再输出一行文字"两个参数的构造方法"；
+	 */
+        void A(String n,int a) {
+        	this.A(n);
+        	this.age=a;
+        	System.out.println("两个参数的构造方法");
+        }
+	/**************** end *****************/
+	
+	void speak() {
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+
+public class Task05 {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+
+		/**************** begin *****************/
+		/*
+		 * 调用学生类的两个参数的构造方法创建对象，参数值为运行时接收从键盘输入；
+		 * 使用对象调用speak()方法。
+		 */
+          student s1=new student();
+          s1.A(scan.next(),scan.nextInt() );
+          s1.speak();
+		/**************** end *****************/
+	}
+}

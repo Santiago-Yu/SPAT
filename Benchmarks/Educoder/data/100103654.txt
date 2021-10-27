@@ -1,0 +1,24 @@
+package step1;
+
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server {
+	public ServerSocket serverSocket;
+	public Socket socket;
+	public void start() {
+		try {
+			Client client = new Client();
+			/********** Begin *********/
+			serverSocket = new ServerSocket(6000);//创建服务器套接字            
+			client.start();	//启动客户端
+            socket=serverSocket.accept();//套接字监听器
+			/********** End *********/
+			client.stop();	//关闭客户端
+            serverSocket.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

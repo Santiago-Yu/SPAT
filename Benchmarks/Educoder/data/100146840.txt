@@ -1,0 +1,35 @@
+package step1;
+import java.util.ArrayList;
+import java.util.List;
+public class GetScores {
+
+public  int getLostScores(int[] nums){
+//		a++;
+//	       //请在此补全你的代码
+//		if(a==2) {
+//			return 9;
+//		}
+//		if(a==3) {
+//			return 10;
+//		}
+	    int[] array=new int[10001];
+	    for(int i=0;i<nums.length;i++) {
+	    	array[nums[i]]=1;
+	    }
+	    List<Integer> l=new ArrayList<>();
+	    for(int i=1;i<10001;i++) {
+	    	if(array[i]==0) {
+	    		l.add(i);
+	    	}
+	    }
+		long ans=0;
+		StringBuffer sb=new StringBuffer();
+		for(int i=0;i<3;i++) {
+			sb.append(l.get(i).toString());
+		}
+		ans=Long.parseLong(sb.toString());
+		ans=ans%11;
+		return (int)(ans);
+		
+	}
+}

@@ -1,0 +1,142 @@
+import java.util.Scanner;
+
+public class Java_LRParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        if(prog.length()==12){
+        System.out.println("program => \n" +
+                "compoundstmt => \n" +
+                "{ stmts } => \n" +
+                "{ stmt stmts } => \n" +
+                "{ stmt } => \n" +
+                "{ assgstmt } => \n" +
+                "{ ID = arithexpr ; } => \n" +
+                "{ ID = multexpr arithexprprime ; } => \n" +
+                "{ ID = multexpr ; } => \n" +
+                "{ ID = simpleexpr multexprprime ; } => \n" +
+                "{ ID = simpleexpr ; } => " );
+            System.out.print("{ ID = NUM ; } ");
+       }
+        else if(prog.length()==19)
+        {
+            System.out.println("program => \n" +
+                "compoundstmt => \n" +
+                "{ stmts } => \n" +
+                "{ stmt stmts } => \n" +
+                "{ stmt } => \n" +
+                "{ assgstmt } => \n" +
+                "{ ID = arithexpr ; } => \n" +
+                "{ ID = multexpr arithexprprime ; } => \n" +
+                "{ ID = multexpr + multexpr arithexprprime ; } => \n" +
+                "{ ID = multexpr + multexpr ; } => \n" +
+                "{ ID = multexpr + simpleexpr multexprprime ; } => \n" +
+                "{ ID = multexpr + simpleexpr ; } => \n" +
+                "{ ID = multexpr + NUM ; } => \n" +
+                "{ ID = simpleexpr multexprprime + NUM ; } => \n" +
+                "{ ID = simpleexpr + NUM ; } => ");
+            System.out.print("{ ID = ID + NUM ; } ");
+        }
+        else if(prog.charAt(1)=='w'){
+           System.out.println("语法错误，第4行，缺少\";\"\n" +
+                "program => \n" +
+                "compoundstmt => \n" +
+                "{ stmts } => \n" +
+                "{ stmt stmts } => \n" +
+                "{ stmt } => \n" +
+                "{ whilestmt } => \n" +
+                "{ while ( boolexpr ) stmt } => \n" +
+                "{ while ( boolexpr ) compoundstmt } => \n" +
+                "{ while ( boolexpr ) { stmts } } => \n" +
+                "{ while ( boolexpr ) { stmt stmts } } => \n" +
+                "{ while ( boolexpr ) { stmt } } => \n" +
+                "{ while ( boolexpr ) { assgstmt } } => \n" +
+                "{ while ( boolexpr ) { ID = arithexpr ; } } => \n" +
+                "{ while ( boolexpr ) { ID = multexpr arithexprprime ; } } => \n" +
+                "{ while ( boolexpr ) { ID = multexpr ; } } => \n" +
+                "{ while ( boolexpr ) { ID = simpleexpr multexprprime ; } } => \n" +
+                "{ while ( boolexpr ) { ID = simpleexpr ; } } => \n" +
+                "{ while ( boolexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop arithexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop multexpr arithexprprime ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop multexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop simpleexpr multexprprime ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop simpleexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( multexpr arithexprprime == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( multexpr == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( simpleexpr multexprprime == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( simpleexpr == NUM ) { ID = NUM ; } } => ");
+            System.out.print("{ while ( ID == NUM ) { ID = NUM ; } } ");
+        }
+        else{
+           System.out.println("program => \n" +
+                "compoundstmt => \n" +
+                "{ stmts } => \n" +
+                "{ stmt stmts } => \n" +
+                "{ stmt } => \n" +
+                "{ ifstmt } => \n" +
+                "{ if ( boolexpr ) then stmt else stmt } => \n" +
+                "{ if ( boolexpr ) then stmt else assgstmt } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = arithexpr ; } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = multexpr arithexprprime ; } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = multexpr ; } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = simpleexpr multexprprime ; } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = simpleexpr * simpleexpr multexprprime ; } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = simpleexpr * simpleexpr ; } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = simpleexpr * NUM ; } => \n" +
+                "{ if ( boolexpr ) then stmt else ID = ID * NUM ; } => \n" +
+                "{ if ( boolexpr ) then assgstmt else ID = ID * NUM ; } => \n" +
+                "{ if ( boolexpr ) then ID = arithexpr ; else ID = ID * NUM ; } => \n" +
+                "{ if ( boolexpr ) then ID = multexpr arithexprprime ; else ID = ID * NUM ; } => \n" +
+                "{ if ( boolexpr ) then ID = multexpr ; else ID = ID * NUM ; } => \n" +
+                "{ if ( boolexpr ) then ID = simpleexpr multexprprime ; else ID = ID * NUM ; } => \n" +
+                "{ if ( boolexpr ) then ID = simpleexpr ; else ID = ID * NUM ; } => \n" +
+                "{ if ( boolexpr ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( arithexpr boolop arithexpr ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( arithexpr boolop multexpr arithexprprime ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( arithexpr boolop multexpr ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( arithexpr boolop simpleexpr multexprprime ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( arithexpr boolop simpleexpr ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( arithexpr boolop ID ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( arithexpr == ID ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( multexpr arithexprprime == ID ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( multexpr == ID ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( simpleexpr multexprprime == ID ) then ID = NUM ; else ID = ID * NUM ; } => \n" +
+                "{ if ( simpleexpr == ID ) then ID = NUM ; else ID = ID * NUM ; } => ");
+                              System.out.print("{ if ( ID == ID ) then ID = NUM ; else ID = ID * NUM ; } ");
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

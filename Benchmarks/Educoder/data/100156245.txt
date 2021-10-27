@@ -1,0 +1,41 @@
+package step2;
+import java.util.Date;
+import java.util.Scanner;
+
+//输入三个整数，求三个整数中的最大数，用方法实现
+public class TestJava23_8 {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("请输入第1个整数：");
+		int n1=sc.nextInt();
+		System.out.println("请输入第2个整数：");
+		int n2=sc.nextInt();
+		System.out.println("请输入第3个整数：");
+		int n3=sc.nextInt();
+		//此处调用GetMaxValue方法，找到n1，n2，n3中的最大数并输出
+		TestJava23_8 hello=new TestJava23_8();
+        int h=hello.GetMaxValue(n1,n2,n3);
+        System.out.println(n1+","+n2+","+n3+"三个数中的最大数是："+h);
+		
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为GetMaxValue，实现求三个整数的最大数的功能，并返回
+		public static int GetMaxValue (int x1,int x2,int x3){
+    	int sum=0;
+        if(x1>x2){
+        sum=x1;
+        }else{
+        sum=x2;
+        }
+        if(sum<x3){
+        sum=x3;
+        }
+    return sum;
+    
+    }
+	
+	
+	
+	/*******End*********/
+}

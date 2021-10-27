@@ -1,0 +1,25 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        
+        int area=length*width,mod=length%width;
+        while(mod!=0){
+            length=width;
+            width=mod;
+            mod=length%width;
+        }
+		int maxLength=width;
+        int n=area/(maxLength*maxLength);
+        System.out.println(maxLength);
+		System.out.println(n);
+		
+		/********** END **********/
+	}
+}

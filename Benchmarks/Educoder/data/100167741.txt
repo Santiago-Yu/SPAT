@@ -1,0 +1,1164 @@
+import javax.swing.text.html.parser.Entity;
+import java.util.*;
+import java.util.regex.Pattern;
+
+/**
+ * @program: CompileLab
+ * @description: 编译原理语义分析实验
+ * @author: WenYuan
+ * @create: 2019-05-31 17:16
+ **/
+
+public class Java_TranslationSchemaAnalysis {
+  private static StringBuffer prog = new StringBuffer();
+
+  private static Map<String, String> actionMap = new HashMap<>();
+
+  private static Map<String, String> gotoMap = new HashMap<>();
+
+  private static Map<String, String> productionMap = new HashMap<>();
+
+  /**
+   * 用来判断是否改变本地变量，针对if语句使用
+   * 0表示没有进入if
+   * 1表示进入if并且判断为true
+   * 2表示进入if并且判断为false
+   */
+  private static int ifFlag = 0;
+
+  private static boolean enableChange = true;
+
+  private static boolean isFirstLine = true;
+
+  private static boolean isError = false;
+
+  /**
+   *  this method is to read the standard input
+   */
+  private static void read_prog()
+  {
+    Scanner sc = new Scanner(System.in);
+    while(sc.hasNextLine())
+    {
+      prog.append(sc.nextLine() + " \n ");
+    }
+  }
+
+  // add your method here!!
+
+  public static void myAnalysis(String input) {
+    processTable();
+
+    Deque<String> productions = new ArrayDeque<>();
+
+    Deque<String> inputStack = new ArrayDeque<>();
+    Deque<String> symbolStack = new ArrayDeque<>();
+    Deque<String> localStack = new ArrayDeque<>();
+
+    Deque<String> backupProductions = null;
+    Deque<String> backupInputStack = null;
+    Deque<String> backupSymbolStack = null;
+    Deque<String> backupLocalStack = null;
+
+    localStack.add("0");
+
+    String[] inputs = input.split(" ");
+    for (String str : inputs) {
+      if (str != null && str.length() > 0) {
+        inputStack.add(str);
+      }
+    }
+    inputStack.add("$end");
+
+    int line = 1;
+    String a = inputStack.peek();
+
+    //语义动作使用的栈
+    List<Item> syntaxStack = new ArrayList<>();
+    Map<String, Variable> localVariables = new HashMap<>();
+
+
+    while (true) {
+      //消除回车符
+      if (inputStack.peekFirst().equals("\n")) {
+        line++;
+        inputStack.removeFirst();
+        a = inputStack.peek();
+      }
+
+      Item item = new Item(a);
+
+      //讲字符转换成可识别的token
+      if (matchID(a)) {
+        item.setVal(a);
+        a = "ID";
+      }else if (matchINTNUM(a)) {
+        item.setVal(a);
+        a = "INTNUM";
+        item.setType("int");
+
+      }else if (matchREALNUM(a)) {
+        item.setVal(a);
+        a = "REALNUM";
+        item.setType("real");
+
+      }
+
+      item.setName(a);
+
+      String s = localStack.peekLast();
+      String mapKey = s + ',' + a;
+
+      String type = null;
+      String stateNum = null;
+
+      if (actionMap.containsKey(mapKey)) {
+        String mapValue = actionMap.get(mapKey);
+
+        String[] vals = mapValue.split(" ");
+
+        type = vals[0];
+        stateNum = vals[1];
+      }else {
+        mapKey = s + ',' + "$default";
+
+        if (actionMap.containsKey(mapKey)) {
+          String mapValue = actionMap.get(mapKey);
+
+          String[] vals = mapValue.split(" ");
+
+          type = vals[0];
+          stateNum = vals[1];
+        }
+      }
+
+
+      if ("shift".equals(type)) {
+        String str = inputStack.poll();
+        //不能把$end删掉，所以遇到就加回来
+        if (str.equals("$end")) {
+          inputStack.addFirst("$end");
+        }else {
+          symbolStack.add(str);
+        }
+        localStack.add(stateNum);
+
+        syntaxStack.add(item);
+
+        if (str.equals("else")) {
+          if (ifFlag == 1) {
+            enableChange = false;
+          }else if (ifFlag == 2) {
+            enableChange = true;
+          }
+        }
+
+        //backup for error recovery
+        backupInputStack = new ArrayDeque<>(inputStack);
+        backupLocalStack = new ArrayDeque<>(localStack);
+        backupSymbolStack = new ArrayDeque<>(symbolStack);
+        backupProductions = new ArrayDeque<>(productions);
+
+
+      }else if ("reduce".equals(type) && "accept".equals(stateNum)) {
+        break;
+      }else if ("reduce".equals(type)) {
+        String production = productionMap.get(stateNum);
+        String[] v1s = production.split("->");
+        String A = v1s[0];
+
+
+
+        int popCount = 0;
+
+        if (v1s.length > 1) {
+          popCount = v1s[1].split(" ").length;
+        }
+
+        if (A.equals("ifstmt")) {
+          ifFlag = 0;
+          enableChange = true;
+        }
+
+        if (enableChange) {
+          //如果是要执行的地方才分析其语义
+          int aline = line;
+          if (!inputStack.peekFirst().equals(";")) {
+            aline--;
+          }
+          processSyntax(syntaxStack, localVariables, stateNum, popCount, A, aline);
+        }
+
+
+        while (popCount-- > 0) {
+          symbolStack.removeLast();
+          localStack.removeLast();
+        }
+        String t = localStack.peekLast();
+        localStack.add(gotoMap.get(t + "," + A));
+        symbolStack.add(A);
+        productions.add(production);
+      }else {
+        //错误处理
+        String missSymbol = null;
+        for (String key : actionMap.keySet()) {
+          if (key.indexOf(s) >= 0) {
+            //取到对应的符号如22对应为22,; 则可以取到;
+            missSymbol = key.substring(s.length() + 1);
+          }
+        }
+        //inputStack.addFirst(s);
+        //recovery from backup and add s to input
+        inputStack = backupInputStack;
+        symbolStack = backupSymbolStack;
+        localStack = backupLocalStack;
+        productions = backupProductions;
+        if (missSymbol != null) {
+          if (missSymbol.equals("INTNUM")) {
+            int index = inputStack.getFirst().indexOf('.');
+            inputStack.addFirst(inputStack.remove().substring(0, index));
+          }
+          error(line, missSymbol);
+          //inputStack.addFirst(missSymbol);
+        }
+
+      }
+
+      a = inputStack.peek();
+
+      //if ()
+    }
+    //出错不打印结果
+    if (isError) {
+      return;
+    }
+
+    //outputAnswer(productions);
+    int size = localVariables.keySet().size();
+    for (String key : localVariables.keySet()) {
+      String val = localVariables.get(key).getValue();
+      if (localVariables.get(key).getType().equals("int")) {
+        int index = 0;
+        if ((index = val.indexOf('.')) > 0) {
+          val = val.substring(0,index);
+        }
+      }
+      if (size == 1) {
+        System.out.print(key + ": " + val);
+      }else {
+        System.out.println(key + ": " + val);
+      }
+      size--;
+    }
+
+  }
+
+  public static void processSyntax(List<Item> syntaxStack, Map<String, Variable> localVariables, String stateNum, int length, String A, int line) {
+    int top = syntaxStack.size() - 1;
+    switch (stateNum) {
+      case "4": {
+        //4#decl->int ID = INTNUM
+        top = syntaxStack.size() - 1;
+        if (syntaxStack.get(top).getType().equals("int")) {
+          String name = syntaxStack.get(top - 2).getVal();
+          String val = syntaxStack.get(top).getVal();
+          Variable variable = new Variable(name, "int", val);
+          localVariables.put(name, variable);
+        }else {
+            // TODO 类型错误处理
+
+        }
+        //接着删掉三个item就行了
+        while (length-- > 1) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.get(syntaxStack.size() - 1).setName("decl");
+        break;
+      }
+
+      case "5": {
+        //5#decl->real ID = REALNUM
+        top = syntaxStack.size() - 1;
+        if (syntaxStack.get(top).getType().equals("real")) {
+          String name = syntaxStack.get(top - 2).getVal();
+          String val = syntaxStack.get(top).getVal();
+          Variable variable = new Variable(name, "real", val);
+          localVariables.put(name, variable);
+        }else {
+          //TODO 类型错误处理
+        }
+        //接着删掉三个item就行了
+        while (length-- > 1) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.get(syntaxStack.size() - 1).setName("decl");
+        break;
+
+      }
+      case "13": {
+        //13#assgstmt->ID = arithexpr ;
+        top = syntaxStack.size() - 1;
+        Item assgstmt = new Item("assgstmt");
+        Item ID = syntaxStack.get(top - 3);
+        Variable v = localVariables.get(ID.getVal());
+        String type = v.getType();
+        Item arithexpr = syntaxStack.get(top - 1);
+        if (arithexpr.getType().equals("real") && type.equals("int")) {
+          //TODO 类型转换错误，无法从real转为int
+          if (!isFirstLine) {
+            System.out.println();
+          }
+          if (isFirstLine) {
+            isFirstLine = false;
+          }
+          System.out.print("error message:line "+ line +",realnum can not be translated into int type");
+          isError = true;
+        }else {
+          //assgstmt.setVal(arithexpr.getVal());
+          //修改本地变量
+
+          v.setValue(arithexpr.getVal());
+          localVariables.put(ID.getVal(), v);
+        }
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(assgstmt);
+        break;
+      }
+      case "14": {
+        //14#boolexpr->arithexpr boolop arithexpr
+        top = syntaxStack.size() - 1;
+        Item boolexpr = new Item("boolexpr");
+        boolexpr.setType("boolean");
+        Item boolop = syntaxStack.get(top - 1);
+        Item expr1 = syntaxStack.get(top - 2);
+        Item expr2 = syntaxStack.get(top);
+        String val1 = expr1.getVal();
+        String val2 = expr2.getVal();
+        double v1 = Double.parseDouble(val1);
+        double v2 = Double.parseDouble(val2);
+        if (boolop.getVal().equals("<") && v1 < v2) {
+          boolexpr.setVal("True");
+        }else if (boolop.getVal().equals(">") && v1 > v2){
+          boolexpr.setVal("True");
+        }else if (boolop.getVal().equals("<=") && (v1 < v2 || Math.abs(v1 - v2) < 0.00001)){
+          boolexpr.setVal("True");
+        }else if (boolop.getVal().equals(">=") && (v1 > v2 || Math.abs(v1 - v2) < 0.00001)){
+          boolexpr.setVal("True");
+        }else if (boolop.getVal().equals("==") && Math.abs(v1 - v2) < 0.00001){
+          boolexpr.setVal("True");
+        }else {
+          boolexpr.setVal("False");
+        }
+        if (boolexpr.getVal().equals("True")) {
+          ifFlag = 1;
+        }else {
+          ifFlag = 2;
+          enableChange = false;
+        }
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(boolexpr);
+        break;
+      }
+      case "15": {
+        //15#boolop-><
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("boolop");
+        item.setVal("<");
+        break;
+      }
+      case "16": {
+        //16#boolop->>
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("boolop");
+        item.setVal(">");
+        break;
+      }
+      case "17": {
+        //17#boolop-><=
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("boolop");
+        item.setVal("<=");
+        break;
+      }
+      case "18": {
+        //18#boolop->>=
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("boolop");
+        item.setVal(">=");
+        break;
+      }
+      case "19": {
+        //19#boolop->==
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("boolop");
+        item.setVal("==");
+        break;
+      }
+      case "20": {
+        //20#arithexpr->multexpr arithexprprime
+        top = syntaxStack.size() - 1;
+        Item arithexprprime = syntaxStack.get(top);
+        String symbol = arithexprprime.getSymbol();
+        String val = arithexprprime.getVal();
+        Item multexpr = syntaxStack.get(top - 1);
+        Item arithexpr = new Item("arithexpr");
+        if (symbol != null) {
+          if (symbol.equals("+")) {
+            String val1 = multexpr.getVal();
+            if (val1 == null) {
+              val1 = "0";
+            }
+            double v1 = Double.parseDouble(val1);
+            double v2 = Double.parseDouble(val);
+            arithexpr.setVal(Double.toString(v1 + v2));
+          }else if (symbol.equals("-")) {
+            double v1 = Double.parseDouble(multexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            arithexpr.setVal(Double.toString(v1 - v2));
+          }
+        }
+
+        //TODO 类型检查 简单的做法，当类型为int时，截掉小数点及其之后的字符
+        String type = getWideType(multexpr, arithexprprime);
+        arithexpr.setType(type);
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(arithexpr);
+        break;
+      }
+      case "21": {
+        //21#arithexprprime->+ multexpr arithexprprime
+        top = syntaxStack.size() - 1;
+        Item arithexprprime = syntaxStack.get(top);
+        String symbol = arithexprprime.getSymbol();
+        String val = arithexprprime.getVal();
+        Item multexpr = syntaxStack.get(top - 1);
+        Item arithexprprime1 = new Item("arithexprprime");
+        if (symbol != null) {
+          if (symbol.equals("+")) {
+            double v1 = Double.parseDouble(multexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            arithexprprime1.setVal(Double.toString(v1 + v2));
+          }else if (symbol.equals("-")) {
+            double v1 = Double.parseDouble(multexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            arithexprprime1.setVal(Double.toString(v1 - v2));
+          }
+        }
+
+        arithexprprime1.setSymbol("+");
+        arithexprprime1.setType(getWideType(multexpr, arithexprprime));
+        //TODO 类型检查
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(arithexprprime1);
+        break;
+      }
+      case "22": {
+        //22#arithexprprime->- multexpr arithexprprime
+        top = syntaxStack.size() - 1;
+        Item arithexprprime = syntaxStack.get(top);
+        String symbol = arithexprprime.getSymbol();
+        String val = arithexprprime.getVal();
+        Item multexpr = syntaxStack.get(top - 1);
+        Item arithexprprime1 = new Item("arithexprprime");
+        //if (symbol != null) {
+          if (symbol.equals("+")) {
+            double v1 = Double.parseDouble(multexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            arithexprprime1.setVal(Double.toString(v1 + v2));
+          }else if (symbol.equals("-")) {
+            double v1 = Double.parseDouble(multexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            arithexprprime1.setVal(Double.toString(v1 - v2));
+          }
+        //}
+
+        arithexprprime1.setSymbol("-");
+        arithexprprime1.setType(getWideType(multexpr, arithexprprime));
+        //TODO 类型检查
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(arithexprprime1);
+        break;
+      }
+      case "23": {
+        //23#arithexprprime->
+        top = syntaxStack.size() - 1;
+        Item arithexprprime = new Item("arithexprprime");
+
+        arithexprprime.setSymbol("+");
+        arithexprprime.setVal("0");
+        arithexprprime.setType("int");
+
+        syntaxStack.add(arithexprprime);
+        break;
+      }
+      case "24": {
+        //24#multexpr->simpleexpr multexprprime
+        top = syntaxStack.size() - 1;
+        Item multexprprime = syntaxStack.get(top);
+        String symbol = multexprprime.getSymbol();
+        String val = multexprprime.getVal();
+        Item simpleexpr = syntaxStack.get(top - 1);
+        Item multexpr = new Item("multexpr");
+        if (symbol != null) {
+          if (symbol.equals("*")) {
+            double v1 = Double.parseDouble(simpleexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            multexpr.setVal(Double.toString(v1 * v2));
+          }else if (symbol.equals("/")) {
+            double v1 = Double.parseDouble(simpleexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            //TODO 检查除0异常
+            if (v2 - 0 < 0.00001) {
+              if (!isFirstLine) {
+                System.out.println();
+              }
+              if (isFirstLine) {
+                isFirstLine = false;
+              }
+              System.out.print("error message:line "+ line +",division by zero");
+              isError = true;
+            }else {
+              multexpr.setVal(Double.toString(v1 / v2));
+            }
+
+          }
+        }
+        //TODO 类型检查
+        multexpr.setType(getWideType(simpleexpr, multexprprime));
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(multexpr);
+        break;
+      }
+      case "25": {
+        //25#multexprprime->* simpleexpr multexprprime
+        top = syntaxStack.size() - 1;
+        Item multexprprime = syntaxStack.get(top);
+        String symbol = multexprprime.getSymbol();
+        String val = multexprprime.getVal();
+        Item simpleexpr = syntaxStack.get(top - 1);
+        Item multexprprime1 = new Item("multexprprime");
+        if (symbol != null) {
+          if (symbol.equals("*")) {
+            double v1 = Double.parseDouble(simpleexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            multexprprime1.setVal(Double.toString(v1 * v2));
+          }else if (symbol.equals("/")) {
+            double v1 = Double.parseDouble(simpleexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            //TODO 检查除0异常
+            if (v2 - 0 < 0.00001) {
+              if (!isFirstLine) {
+                System.out.println();
+              }
+              if (isFirstLine) {
+                isFirstLine = false;
+              }
+              System.out.print("error message:line "+ line +",division by zero");
+              isError = true;
+            }else {
+              multexprprime1.setVal(Double.toString(v1 / v2));
+            }
+          }
+        }
+
+        multexprprime1.setSymbol("*");
+        multexprprime1.setType(getWideType(simpleexpr, multexprprime));
+        //TODO 类型检查
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(multexprprime1);
+        break;
+      }
+      case "26": {
+        //26#multexprprime->/ simpleexpr multexprprime
+        top = syntaxStack.size() - 1;
+        Item multexprprime = syntaxStack.get(top);
+        String symbol = multexprprime.getSymbol();
+        String val = multexprprime.getVal();
+        Item simpleexpr = syntaxStack.get(top - 1);
+        Item multexprprime1 = new Item("multexprprime");
+        if (symbol != null) {
+          if (symbol.equals("*")) {
+            double v1 = Double.parseDouble(simpleexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            multexprprime1.setVal(Double.toString(v1 * v2));
+          }else if (symbol.equals("/")) {
+            double v1 = Double.parseDouble(simpleexpr.getVal());
+            double v2 = Double.parseDouble(val);
+            //TODO 检查除0异常
+            multexprprime1.setVal(Double.toString(v1 / v2));
+          }
+        }
+
+        multexprprime1.setSymbol("/");
+        multexprprime1.setType(getWideType(simpleexpr, multexprprime));
+        //TODO 类型检查
+        //删除多余的item
+        while (length-- > 0) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        syntaxStack.add(multexprprime1);
+        break;
+      }
+      case "27": {
+        //27#multexprprime->
+        top = syntaxStack.size() - 1;
+        Item multexprprime = new Item("multexprprime");
+
+        multexprprime.setSymbol("*");
+        multexprprime.setVal("1");
+        multexprprime.setType("int");
+
+        syntaxStack.add(multexprprime);
+        break;
+      }
+      case "28": {
+        //28#simpleexpr->ID
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("simpleexpr");
+        String id = item.getVal();
+        Variable v = localVariables.get(id);
+        String val = v.getValue();
+        item.setVal(val);
+        item.setType(v.getType());
+        break;
+      }
+      case "29": {
+        //29#simpleexpr->INTNUM
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("simpleexpr");
+        item.setType("int");
+        break;
+      }
+      case "30": {
+        //30#simpleexpr->REALNUM
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top);
+        item.setName("simpleexpr");
+        item.setType("real");
+        break;
+      }
+      case "31": {
+        //31#simpleexpr->( arithexpr )
+        top = syntaxStack.size() - 1;
+        Item item = syntaxStack.get(top - 2);
+        item.setName("simpleexpr");
+        Item arithexpr = syntaxStack.get(top - 1);
+        item.setVal(arithexpr.val);
+        item.setType(arithexpr.type);
+        break;
+      }
+
+      default:
+        //Item item1 = syntaxStack.remove(syntaxStack.size() - 1);
+        //删除多余的item
+        while (length-- > 1) {
+          syntaxStack.remove(syntaxStack.size() - 1);
+        }
+        if (length > 0) {
+          syntaxStack.get(syntaxStack.size() - 1).setName(A);
+        }
+
+        //syntaxStack.add(item1);
+    }
+  }
+
+  public static String getWideType(Item item1, Item item2) {
+    String type = null;
+    if (item1 != null) {
+      if (item2 == null) {
+        type = item1.getType();
+      }else {
+        if (item1.getType().equals("real") || item2.getType().equals("real")) {
+          type = "real";
+        }else {
+          type = "int";
+        }
+      }
+    }else {
+      type = item2.getType();
+    }
+    return type;
+  }
+
+  public static String getValue(Item item) {
+    //如果是变量名形式，要获取idVal否则获取val就行了
+    if (item.getId() == null) {
+      return item.getVal();
+    }else {
+      return item.getIdVal();
+    }
+  }
+
+  public static boolean matchID (String input) {
+    //keys为全是小写字母的关键字，即可能误识别的部分
+    String[] keys = {"if", "then", "else", "int", "real"};
+    for (String key : keys) {
+      if (key.equals(input)) {
+        return false;
+      }
+    }
+
+    String pattern = "[a-z]+";
+    return Pattern.matches(pattern, input);
+  }
+
+  public static boolean matchREALNUM (String input) {
+    String pattern = "[0-9]+\\.[0-9]+";
+    return Pattern.matches(pattern, input);
+  }
+
+  public static boolean matchINTNUM (String input) {
+    String pattern = "[0-9]+";
+    return Pattern.matches(pattern, input);
+  }
+
+  private static void outputAnswer(Deque<String> queue) {
+    String init = "program => ";
+    System.out.println(init);
+    for (int i = queue.size() - 1; i >= 0; i--) {
+      String production = queue.removeLast();
+      String[] vals = production.split("->");
+      String A = vals[0];
+      String B = "";
+      if (vals.length > 1) {
+        //防止数组越界
+        B = vals[1];
+      }else {
+        //特殊处理当转换为空时要多替换一个空格
+        A = A + " ";
+      }
+      init = replaceLast(init, A, B);
+      if (i == 0) {
+        init = replaceLast(init," =>", "");
+        System.out.print(init);
+      }else {
+        System.out.println(init);
+      }
+
+    }
+    //System.out.println(replaceLast(init, " =>", ""));
+  }
+
+
+  // 替换字符串里最后出现的元素
+  public static String replaceLast( String text, String strToReplace,
+                                    String replaceWithThis ) {
+    return text.replaceFirst( "(?s)" + strToReplace + "(?!.*?" + strToReplace
+            + ")", replaceWithThis );
+  }
+
+  private static void error(int line, String X) {
+    if (X.equals("INTNUM")) {
+      if (!isFirstLine) {
+        System.out.println();
+      }
+      if (isFirstLine) {
+        isFirstLine = false;
+      }
+      System.out.print(
+              "error message:line "+ line +",realnum can not be translated into int type");
+      isError = true;
+    }
+  }
+
+  private static void processTable() {
+    String[] strings = ACTION.split("\n");
+    for (String str : strings) {
+      String[] strs = str.split(" ");
+
+      actionMap.put(strs[0], strs[1] + " " + strs[2]);
+    }
+
+    strings = GOTO.split("\n");
+    for (String str : strings) {
+      String[] strs = str.split(" ");
+      gotoMap.put(strs[0], strs[1]);
+    }
+
+    strings = PRODUCTION.split("\n");
+    for (String str : strings) {
+      String[] strs = str.split("#");
+      productionMap.put(strs[0], strs[1]);
+    }
+
+  }
+
+  // Analysis Table
+  private static final String PRODUCTION =
+          "0#$accept->program $end\n" +
+                  "1#program->decls compoundstmt\n" +
+                  "2#decls->decl ; decls\n" +
+                  "3#decls->\n" +
+                  "4#decl->int ID = INTNUM\n" +
+                  "5#decl->real ID = REALNUM\n" +
+                  "6#stmt->ifstmt\n" +
+                  "7#stmt->assgstmt\n" +
+                  "8#stmt->compoundstmt\n" +
+                  "9#compoundstmt->{ stmts }\n" +
+                  "10#stmts->stmt stmts\n" +
+                  "11#stmts->\n" +
+                  "12#ifstmt->if ( boolexpr ) then stmt else stmt\n" +
+                  "13#assgstmt->ID = arithexpr ;\n" +
+                  "14#boolexpr->arithexpr boolop arithexpr\n" +
+                  "15#boolop-><\n" +
+                  "16#boolop->>\n" +
+                  "17#boolop-><=\n" +
+                  "18#boolop->>=\n" +
+                  "19#boolop->==\n" +
+                  "20#arithexpr->multexpr arithexprprime\n" +
+                  "21#arithexprprime->+ multexpr arithexprprime\n" +
+                  "22#arithexprprime->- multexpr arithexprprime\n" +
+                  "23#arithexprprime->\n" +
+                  "24#multexpr->simpleexpr multexprprime\n" +
+                  "25#multexprprime->* simpleexpr multexprprime\n" +
+                  "26#multexprprime->/ simpleexpr multexprprime\n" +
+                  "27#multexprprime->\n" +
+                  "28#simpleexpr->ID\n" +
+                  "29#simpleexpr->INTNUM\n" +
+                  "30#simpleexpr->REALNUM\n" +
+                  "31#simpleexpr->( arithexpr )";
+
+  private static final String ACTION =
+          "0,int shift 1\n" +
+                  "0,real shift 2\n" +
+                  "0,$default reduce 3\n" +
+                  "1,ID shift 6\n" +
+                  "2,ID shift 7\n" +
+                  "3,$end shift 8\n" +
+                  "4,{ shift 9\n" +
+                  "5,; shift 11\n" +
+                  "6,= shift 12\n" +
+                  "7,= shift 13\n" +
+                  "8,$default reduce accept\n" +
+                  "9,if shift 14\n" +
+                  "9,ID shift 15\n" +
+                  "9,{ shift 9\n" +
+                  "9,$default reduce 11\n" +
+                  "10,$default reduce 1\n" +
+                  "11,int shift 1\n" +
+                  "11,real shift 2\n" +
+                  "11,$default reduce 3\n" +
+                  "12,INTNUM shift 22\n" +
+                  "13,REALNUM shift 23\n" +
+                  "14,( shift 24\n" +
+                  "15,= shift 25\n" +
+                  "16,if shift 14\n" +
+                  "16,ID shift 15\n" +
+                  "16,{ shift 9\n" +
+                  "16,$default reduce 11\n" +
+                  "17,$default reduce 8\n" +
+                  "18,} shift 27\n" +
+                  "19,$default reduce 6\n" +
+                  "20,$default reduce 7\n" +
+                  "21,$default reduce 2\n" +
+                  "22,$default reduce 4\n" +
+                  "23,$default reduce 5\n" +
+                  "24,ID shift 28\n" +
+                  "24,INTNUM shift 29\n" +
+                  "24,REALNUM shift 30\n" +
+                  "24,( shift 31\n" +
+                  "25,ID shift 28\n" +
+                  "25,INTNUM shift 29\n" +
+                  "25,REALNUM shift 30\n" +
+                  "25,( shift 31\n" +
+                  "26,$default reduce 10\n" +
+                  "27,$default reduce 9\n" +
+                  "28,$default reduce 28\n" +
+                  "29,$default reduce 29\n" +
+                  "30,$default reduce 30\n" +
+                  "31,ID shift 28\n" +
+                  "31,INTNUM shift 29\n" +
+                  "31,REALNUM shift 30\n" +
+                  "31,( shift 31\n" +
+                  "32,) shift 38\n" +
+                  "33,< shift 39\n" +
+                  "33,> shift 40\n" +
+                  "33,<= shift 41\n" +
+                  "33,>= shift 42\n" +
+                  "33,== shift 43\n" +
+                  "34,+ shift 45\n" +
+                  "34,- shift 46\n" +
+                  "34,$default reduce 23\n" +
+                  "35,* shift 48\n" +
+                  "35,/ shift 49\n" +
+                  "35,$default reduce 27\n" +
+                  "36,; shift 51\n" +
+                  "37,) shift 52\n" +
+                  "38,then shift 53\n" +
+                  "39,$default reduce 15\n" +
+                  "40,$default reduce 16\n" +
+                  "41,$default reduce 17\n" +
+                  "42,$default reduce 18\n" +
+                  "43,$default reduce 19\n" +
+                  "44,ID shift 28\n" +
+                  "44,INTNUM shift 29\n" +
+                  "44,REALNUM shift 30\n" +
+                  "44,( shift 31\n" +
+                  "45,ID shift 28\n" +
+                  "45,INTNUM shift 29\n" +
+                  "45,REALNUM shift 30\n" +
+                  "45,( shift 31\n" +
+                  "46,ID shift 28\n" +
+                  "46,INTNUM shift 29\n" +
+                  "46,REALNUM shift 30\n" +
+                  "46,( shift 31\n" +
+                  "47,$default reduce 20\n" +
+                  "48,ID shift 28\n" +
+                  "48,INTNUM shift 29\n" +
+                  "48,REALNUM shift 30\n" +
+                  "48,( shift 31\n" +
+                  "49,ID shift 28\n" +
+                  "49,INTNUM shift 29\n" +
+                  "49,REALNUM shift 30\n" +
+                  "49,( shift 31\n" +
+                  "50,$default reduce 24\n" +
+                  "51,$default reduce 13\n" +
+                  "52,$default reduce 31\n" +
+                  "53,if shift 14\n" +
+                  "53,ID shift 15\n" +
+                  "53,{ shift 9\n" +
+                  "54,$default reduce 14\n" +
+                  "55,+ shift 45\n" +
+                  "55,- shift 46\n" +
+                  "55,$default reduce 23\n" +
+                  "56,+ shift 45\n" +
+                  "56,- shift 46\n" +
+                  "56,$default reduce 23\n" +
+                  "57,* shift 48\n" +
+                  "57,/ shift 49\n" +
+                  "57,$default reduce 27\n" +
+                  "58,* shift 48\n" +
+                  "58,/ shift 49\n" +
+                  "58,$default reduce 27\n" +
+                  "59,else shift 64\n" +
+                  "60,$default reduce 21\n" +
+                  "61,$default reduce 22\n" +
+                  "62,$default reduce 25\n" +
+                  "63,$default reduce 26\n" +
+                  "64,if shift 14\n" +
+                  "64,ID shift 15\n" +
+                  "64,{ shift 9\n" +
+                  "65,$default reduce 12";
+
+  private static final String GOTO =
+          "0,program 3\n" +
+                  "0,decls 4\n" +
+                  "0,decl 5\n" +
+                  "4,compoundstmt 10\n" +
+                  "9,stmt 16\n" +
+                  "9,compoundstmt 17\n" +
+                  "9,stmts 18\n" +
+                  "9,ifstmt 19\n" +
+                  "9,assgstmt 20\n" +
+                  "11,decls 21\n" +
+                  "11,decl 5\n" +
+                  "16,stmt 16\n" +
+                  "16,compoundstmt 17\n" +
+                  "16,stmts 26\n" +
+                  "16,ifstmt 19\n" +
+                  "16,assgstmt 20\n" +
+                  "24,boolexpr 32\n" +
+                  "24,arithexpr 33\n" +
+                  "24,multexpr 34\n" +
+                  "24,simpleexpr 35\n" +
+                  "25,arithexpr 36\n" +
+                  "25,multexpr 34\n" +
+                  "25,simpleexpr 35\n" +
+                  "31,arithexpr 37\n" +
+                  "31,multexpr 34\n" +
+                  "31,simpleexpr 35\n" +
+                  "33,boolop 44\n" +
+                  "34,arithexprprime 47\n" +
+                  "35,multexprprime 50\n" +
+                  "44,arithexpr 54\n" +
+                  "44,multexpr 34\n" +
+                  "44,simpleexpr 35\n" +
+                  "45,multexpr 55\n" +
+                  "45,simpleexpr 35\n" +
+                  "46,multexpr 56\n" +
+                  "46,simpleexpr 35\n" +
+                  "48,simpleexpr 57\n" +
+                  "49,simpleexpr 58\n" +
+                  "53,stmt 59\n" +
+                  "53,compoundstmt 17\n" +
+                  "53,ifstmt 19\n" +
+                  "53,assgstmt 20\n" +
+                  "55,arithexprprime 60\n" +
+                  "56,arithexprprime 61\n" +
+                  "57,multexprprime 62\n" +
+                  "58,multexprprime 63\n" +
+                  "64,stmt 65\n" +
+                  "64,compoundstmt 17\n" +
+                  "64,ifstmt 19\n" +
+                  "64,assgstmt 20\n";
+
+  /**
+   *  you should add some code in this method to achieve this lab
+   */
+  private static void analysis()
+  {
+    read_prog();
+    //System.out.print(prog);
+    myAnalysis(prog.toString());
+  }
+
+  /**
+   * this is the main method
+   * @param args
+   */
+  public static void main(String[] args) {
+    analysis();
+  }
+}
+/**
+ * @program: CompileLab
+ * @description: 用来表示变量的类
+ * @author: WenYuan
+ * @create: 2019-06-01 18:34
+ **/
+
+class Variable {
+  String name;
+  String type;
+  String value;
+
+  public Variable(String name) {
+    this.name = name;
+  }
+
+  public Variable(String name, String type, String value) {
+    this.name = name;
+    this.type = type;
+    this.value = value;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
+  }
+}
+
+class Item {
+  /**
+   * TODO 可以考虑用继承来扩展不同种类的item
+   * 对于每个item来说
+   * name代表token名字为 ID INTNUM REALNUM等
+   * val代表值为 a 123 123.123等
+   * type代表类型为 int real等
+   * 仅在stmt->assgstmt时起作用
+   * id代表了变量名为 a b c等
+   * idval代表变量的值为 1 2 3等
+   * symbol代表符号 + - * /
+   */
+  public String name;
+  public String val;
+  public String type;
+  public String id;
+  public String idVal;
+  public String symbol;
+
+  public String getSymbol() {
+    return symbol;
+  }
+
+  public void setSymbol(String symbol) {
+    this.symbol = symbol;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getIdVal() {
+    return idVal;
+  }
+
+  public void setIdVal(String idVal) {
+    this.idVal = idVal;
+  }
+
+  public Item(String name) {
+    this.name = name;
+  }
+  public Item(String name, String val, String type) {
+    this.name = name;
+    this.val = val;
+    this.type = type;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getVal() {
+    return val;
+  }
+
+  public void setVal(String val) {
+    this.val = val;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+}
+

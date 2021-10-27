@@ -1,0 +1,30 @@
+package step1;
+
+public class A< T extends Comparable >{
+ private T t1,t2; 
+/*************BEGIN**************/
+    public int a = 0;
+    private T t;
+    public A(T t1, T t2){this.t1=t1; this.t2 = t2;}
+    public T getT(){return t1;}
+    public void setT(T t1, T t2){this.t1=t1;this.t2 = t2;}
+    public String toString(){return " "+t1;}
+    public T compare(){
+       a = t1.compareTo(t2);
+        if(a >= 0){
+            t = t1;
+        }
+        else if(a < 0){
+           t = t2;
+        }
+        return t;
+    }
+
+
+
+
+/*************END*****************/
+
+}
+
+

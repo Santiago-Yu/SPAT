@@ -1,0 +1,19 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+		String[] cell = data.split(" ");
+        for(int i = 0; i < cell.length; i++){
+       		StringBuffer use = new StringBuffer(cell[i]);
+            use = use.reverse();
+            use.append(" ");
+            ans.append(use);
+        }
+
+
+        /********** End *********/
+        return ans;
+    }
+}

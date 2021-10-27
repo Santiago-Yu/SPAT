@@ -1,0 +1,344 @@
+
+
+import java.util.*;
+
+/**
+ * @Author: Dunfu Peng
+ * @Date: 2019/4/29 21:07
+ */
+public class Java_LexAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            String str=sc.nextLine();
+ //           System.out.println(str);
+            prog.append(str+"\n");
+        }
+    }
+    // add your method here!!
+
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        lexAnalysis(prog.toString());
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+//        lexAnalysis("\n" +
+//                "int main()\n" +
+//                "{\n" +
+//                "int i2 = 0;// 注释 test\n" +
+//                "/*\n" +
+//                "这是注释\n" +
+//                "*/\n" +
+//                "for (i = 0; i != 10; ++i)\n" +
+//                "{\n" +
+//                "printf(\"%d\",i);\n" +
+//                "}\n" +
+//                "return 0;\n" +
+//                "}");
+    }
+
+
+    private static void lexAnalysis(String s) {
+        Analyze analyze = new Analyze();
+        List<String> wordList = null;
+        String ts;
+        String word;
+        int opcodes = -1;
+        int count = 1;
+        if (s.length() > 1) {
+            ts = analyze.preFunction(s);
+            wordList = analyze.divide(ts);
+            while (wordList.size() > 0) {
+                word = wordList.remove(0);
+                opcodes = analyze.getOpcodes(word);
+                if (wordList.size() > 0) {
+                    System.out.println(count + ": <" + word + "," + opcodes + ">");
+                } else {
+                    System.out.print(count + ": <" + word + "," + opcodes + ">");
+                }
+                count++;
+            }
+        }
+    }
+}
+
+class Analyze {
+    public static final int TWO_OPERATOR = 0;//两个操作符
+    public static final int THREE_OPERATOR = 1;//三个操作符
+    public static final int COMMENT = 2;//注释
+    public static final int NOT_MATCH = -1;//注释
+
+    String progs[] = {"auto", "break", "case", "char", "const", "continue", "default", "do", "double",
+            "else", "enum", "extern", "float", "for", "goto", "if", "int", "long", "register", "return",
+            "short", "signed", "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void",
+            "volatile", "while", "-", "--", "-=", "->", "!", "!=", "%", "%=", "&", "&&", "&=", "(", ")", "*",
+            "*=", ",", ".", "/", "/=", ":", ";", "?", "[", "]", "^", "^=", "{", "|", "||", "|=", "}", "~", "+",
+            "++", "+=", "<", "<<", "<<=", "<=", "=", "==", ">", ">=", ">>", ">>=", "\"", "//"
+    };
+    Map<String, Integer> map = new HashMap<String, Integer>();
+
+    public Analyze() {
+        for (int i = 0; i < progs.length; i++) {
+            map.put(progs[i], i + 1);
+        }
+        map.put("/*", 79);
+        map.put("*/", 79);
+    }
+
+    /**
+     * 预处理函数
+     */
+    public String preFunction(String codeText) {
+        String ts = "";
+        int i;
+        char ch, nc;
+        for (i = 0; i < codeText.length() - 1; i++) {
+            ch = codeText.charAt(i);
+            nc = codeText.charAt(i + 1);
+
+            if (ch == '\n') {//如果字符是换行符,将\n换成$
+                ch = '$';
+                ts = ts + ch;
+            } else if (ch == ' ' || ch == '\r' || ch == '\t') {
+                if (nc == ' ' || nc == '\r' || ch == '\t') {
+                    continue;//连续' '或者'\t'或者'\r'的情况，直接跳过
+                } else {
+                    ch = ' ';//一个' '或者'\t'或者'\r'的情况，将这些字符换成' '
+                    ts = ts + ch;
+                }
+            } else {
+                ts = ts + ch;//将字符连起来
+            }
+        }
+
+        ch = codeText.charAt(codeText.length() - 1);
+        if (ch != ' ' && ch != '\r' && ch != '\t' && ch != '\n') {
+            ts = ts + ch;
+        }
+//        System.out.println(ts);
+        return ts;
+    }
+
+    /**
+     * 将字符串分成一个个单词，存放在数组列表
+     * @param codeText
+     * @return
+     */
+    public List<String> divide(String codeText) {
+        List<String> wordList = new ArrayList<String>();
+        String tempWord = "";
+        char tempChar;
+        for (int i = 0; i < codeText.length(); i++) {
+            tempChar = codeText.charAt(i);
+            if (i == 0 && tempChar == ' ') {//字符串的第一个字符
+                continue;
+            }
+            if (tempChar == ' ') {//' '或者'\t'或者'\r'的情况
+                if (tempWord != "") {
+                    wordList.add(tempWord);
+                    tempWord = "";//置空
+                } else {
+                    continue;
+                }
+            } else if (!tempWord.equals("%") && (isDigit(tempChar) || isLetter(tempChar))) {
+                if (tempWord == "" || isDigit(tempWord.charAt(tempWord.length() - 1)) ||
+                        isLetter(tempWord.charAt(tempWord.length() - 1))) {//变量中可有字母和数字
+                    tempWord +=tempChar;
+                } else {//其他的字符的话说明前面的是一个独立的变量
+                    wordList.add(tempWord);
+                    tempWord = "";
+                    tempWord +=tempChar;
+                }
+            } else {
+                switch (isTwoOperator(tempWord, tempChar)) {
+                    case TWO_OPERATOR:
+                        tempWord = tempWord + tempChar;
+                        break;
+                    case COMMENT:
+                        int temp = i;
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(tempWord);
+                        if ((tempWord + tempChar).equals("//")) {
+                            while (temp < codeText.length()) {
+                                if (codeText.charAt(temp) != '$') {
+                                    sb.append(codeText.charAt(temp++));
+                                } else {
+                                    i = temp;
+                                    wordList.add(sb.toString());
+                                    tempWord = "";
+                                    break;
+                                }
+                            }
+                        } else {
+                            while (temp < codeText.length()) {
+                                if (codeText.charAt(temp) == '$') {
+                                    sb.append("\n");
+                                    temp++;
+                                } else {
+                                    sb.append(codeText.charAt(temp++));
+                                }
+                                if (sb.substring(sb.length() - 2, sb.length()).equals("*/")) {
+                                    break;
+                                }
+                            }
+                            i = temp + 1;
+                            tempWord = "";
+                            
+                            wordList.add(sb.toString());
+                            wordList.add("if");
+                        }
+                        break;
+                    case THREE_OPERATOR:
+                        if (i < codeText.length() - 1) {
+                            tempWord = tempWord + tempChar;
+                            tempChar = codeText.charAt(i + 1);
+                            i++;
+                            if (isThreeOperator(tempWord, tempChar)) {
+                                tempWord = tempWord + tempChar;
+                            }
+                        }
+                        break;
+                    default:
+                        if (tempWord == "" && tempChar != '$') {
+                            tempWord = tempWord + tempChar;
+                        } else if (tempWord == "" && tempChar == '$') {//若检测到$符号，就换行
+//                            row++;//行数加一
+                        } else {
+                            wordList.add(tempWord);
+                            tempWord = "";
+                            if (tempChar != '$') {
+                                tempWord = tempWord + tempChar;
+                            }
+                        }
+                }
+            }
+        }
+        if (tempWord != "") {
+            wordList.add(tempWord);
+        }
+        return wordList;
+    }
+
+    /**
+     * 判断是否是数字
+     */
+    public boolean isDigit(char ch) {
+        if (ch >= '0' && ch <= '9') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否是字母
+     */
+    public boolean isLetter(char ch) {
+        if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否由两个运算符组成
+     * 两个运算符的有：
+     * --,-=,->,!=,%=,&&,&=,*=./=,^=,||,|=,++,+=,<<,<=,==,>=,>>
+     *
+     * @param str
+     * @param ch
+     * @return
+     */
+    public int isTwoOperator(String str, char ch) {
+        char lc;
+        if (str.length() > 1 || str.length() == 0) {//字符数大于2和无字符的情况
+            return NOT_MATCH;
+        } else {//字符数等于2的情况
+            lc = str.charAt(str.length() - 1);
+            if (lc == '/' && (ch == '/' || ch == '*')) {
+                return COMMENT;//判断是否是注释
+            } else if ((ch == '>' && lc == '>') || (ch == '<' && lc == '<')) {
+                return THREE_OPERATOR;//需要进行是否是三个运算符的判断
+            } else if ((str + ch).equals("--") || (str + ch).equals("-=") || (str + ch).equals("->") || (str + ch).equals("!=") ||
+                    (str + ch).equals("%=") || (str + ch).equals("&&") || (str + ch).equals("&=") || (str + ch).equals("*=") ||
+                    (str + ch).equals("/=") || (str + ch).equals("^=") || (str + ch).equals("||") || (str + ch).equals("|=") ||
+                    (str + ch).equals("++") || (str + ch).equals("+=") || (str + ch).equals("<=") || (str + ch).equals("==") ||
+                    (str + ch).equals(">=") || (lc == '%' && isLetter(ch))) {
+                return TWO_OPERATOR;
+            }
+        }
+        return NOT_MATCH;
+    }
+
+    /**
+     * 判断是否由三个运算符组成
+     * 三个运算符的有：
+     * <<=,>>=
+     *
+     * @param str
+     * @param ch
+     * @return
+     */
+    public boolean isThreeOperator(String str, char ch) {
+        if (str.length() == 2 && ch == '=') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取操作码
+     *
+     * @param key
+     * @return
+     */
+    public int getOpcodes(String key) {
+        if (checkDigit(key) != 0) {//判断是否是数字串
+            return checkDigit(key);
+        } else {
+            if (map.containsKey(key)) {
+                return map.get(key);
+            }else if (key.contains("//")||key.contains("/*")){
+                return 79;
+            }else {
+                return 81;
+            }
+        }
+    }
+
+    /**
+     * 检查字符串是否为数字串，返回其机器码
+     */
+    public int checkDigit(String str) {
+        int i;
+        char ch;
+        for (i = 0; i < str.length(); i++) {
+            ch = str.charAt(i);
+            if (ch > '9' || ch < '0')
+                break;
+        }
+        if (i < str.length()) {
+            return 0;//不可识别的情况
+        } else {
+            return 80;//常数
+        }
+    }
+}
+

@@ -1,0 +1,36 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        /********** Begin *********/
+           try {
+        	String s = reader.readLine();
+        	char[] charArray = s.toCharArray();
+        	char temp;
+        	int letter = 0,space = 0,number = 0,other = 0;
+        	
+        	for (int i = 0; i < charArray.length; i++) {
+				temp=charArray[i];
+				if((temp>=65&&temp<=90)||(temp>=97&&temp<=122)){
+					letter++;
+				}else if(temp==' '){
+					space++;
+				}else if(temp>='1'&&temp<='9'){
+					number++;
+				}else{
+					other++;
+				}
+			}
+        	
+        	System.out.print("letter="+letter+",space="+space+",number="+number+",other="+other);
+        }
+        catch(IOException e) {
+        	
+        }
+        /********** End *********/
+    }
+}

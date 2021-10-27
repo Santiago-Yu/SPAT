@@ -1,0 +1,32 @@
+package step3;
+
+import java.io.*;
+
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		File file = new File("src/step3/output/output.txt");
+        if(!file.exists())
+        {
+            file.createNewFile();
+        }
+        FileWriter fw = new FileWriter(new String("src/step3/output/output.txt"));
+        FileReader fr = new FileReader(new String("src/step3/input/input.txt"));
+        char []str = new char[1024];
+        int len = 0;
+        while( (len = fr.read(str)) != -1)
+        {
+            fw.write(str,0,len);
+        }
+        fw.close();
+        fr.close();
+        
+		
+		
+		
+		
+		/********* End *********/		
+	}
+}

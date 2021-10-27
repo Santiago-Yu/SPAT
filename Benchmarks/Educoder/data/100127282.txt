@@ -1,0 +1,35 @@
+package step1;
+//编写一个Cube类继承Rectangle
+public class Cube extends Rectangle{
+	/*********begin*********/
+	//创建两个构造方法
+    public Cube(){
+        super(10,10);
+    }
+    public Cube(double l){
+        super(l,l);
+    }
+    //调用父类中的area方法和perimeter方法
+    public double area(){        
+        return super.area();
+    }
+    public double perimeter(){
+        return super.perimeter();
+    }
+    //编写计算体积的方法
+    public double getCube(){    
+        return super.area()*super.getWidth();
+    }
+    public static void main(String[] args){
+        //创建两个正方体实例对象，并按相应格式输出正方体的底面周长，底面面积和体积。
+        Cube c=new Cube();
+        System.out.println("c底面周长："+c.perimeter());
+        System.out.println("c底面面积："+c.area());
+        System.out.println("c体积："+c.getCube());
+        Cube c1=new Cube(5);
+        System.out.println("c1底面周长："+c1.perimeter());
+        System.out.println("c1底面面积："+c1.area());
+        System.out.println("c1体积："+c1.getCube());
+    }
+}
+

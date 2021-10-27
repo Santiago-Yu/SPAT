@@ -1,0 +1,44 @@
+ package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		  /**************BEGIN************/
+		 boolean vis[][]=new boolean[n][m];
+        for(int i=0;i<n;i++){
+				for(int j=0;j<m;j++){
+					vis[i][j]=true;			//初始化标记数组，为true说明没被用过
+				}
+			}
+        int count=0;		//病毒数量
+			for(int i=0;i<n;i++){
+				for(int j=0;j<m;j++){
+					if(area[i][j]=='o'&&vis[i][j]){	//如果这个位置是病毒，且没用被用过
+						vis[i][j]=false;	//标记这个位置被用过
+						dfs(area,vis,i,j,n,m);	//从这个位置开始搜索
+						
+						count++;
+					}
+				}
+			}
+	      /***********END ***************/
+		return count;
+	 
+	 
+	}
+    public static void dfs(char a[][],boolean vis[][],int x,int y,int n,int m){
+		int t[][]={{-1,0},{0,-1},{0,1},{1,0}};
+		//上下左右四个方向
+		for(int i=0;i<4;i++){
+			int nx=x+t[i][0];		//遍历该位置的四个方向
+			int ny=y+t[i][1];
+			if(nx>=0&&nx<n&&ny>=0&&ny<m){		//当新的位置还在范围内时，不会越界
+				if(a[nx][ny]=='o'&&vis[nx][ny]){	
+					//如果还是病毒，则接着搜索该位置的四个方向，并标记此位置已经被用过
+					vis[nx][ny]=false;
+					dfs(a,vis,nx,ny,n,m);
+				}
+			}
+		}
+	}
+}

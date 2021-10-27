@@ -1,0 +1,56 @@
+package step2;
+
+public class Task {
+    	static int[][] hasv;
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int count=0;
+		hasv=new int[n][m];
+		for(int i=0;i<n;i++) {
+			for(int j=0;j<m;j++) {
+				if(area[i][j]=='o'&&hasv[i][j]==0) {
+					mark(n-1,m-1,i,j,area);
+					count++;
+				}
+			}
+		}
+		return count;
+		
+		/********* End *********/	
+	}
+    public static void mark(int row,int col,int i,int j,char[][] a) {
+		
+		if(i!=0) {
+			i--;
+			if(a[i][j]=='o'&&hasv[i][j]==0) {
+				hasv[i][j]=1;
+				mark(row,col,i,j,a);
+			}
+			i++;
+		}
+		if(i!=row) {
+			i++;
+			if(a[i][j]=='o'&&hasv[i][j]==0) {
+				hasv[i][j]=1;
+				mark(row,col,i,j,a);
+			}
+			i--;
+		}
+		if(j!=0) {
+			j--;
+			if(a[i][j]=='o'&&hasv[i][j]==0) {
+				hasv[i][j]=1;
+				mark(row,col,i,j,a);
+			}
+			j++;
+		}
+		if(j!=col) {
+			j++;
+			if(a[i][j]=='o'&&hasv[i][j]==0) {
+				hasv[i][j]=1;
+				mark(row,col,i,j,a);
+			}
+			j--;
+		}	
+	}
+}

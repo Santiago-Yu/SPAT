@@ -1,0 +1,33 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double s1 = Math.PI*r1*r1;
+         double s2 = Math.PI*r2*r2;
+         double s = 0;
+		  double l = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+		  if(r1+r2<=l)
+              s = s1+s2;
+         else if(l==Math.abs(r1-r2))
+             s = Math.max(s1,s2);
+         else if(l>=0&&l<Math.abs(r2-r1))
+             s = Math.max(s1,s2);
+         else if(l>Math.abs(r2-r1)&&l<r2+r1){
+		 		if(s1>s2)
+                {
+                    double temp = s1;
+                    s1 = s2;
+                    s2 = temp;
+                }
+             	double angle1 = Math.acos((r1 * r1 + l * l- r2 * r2) / (2 * l *r1));   //余弦定理
+    			double angle2 = Math.acos((r2 * r2 + l * l - r1 *r1) / (2 * l* r2));
+             double s3 = r1 * r1 * angle1 + r2* r2 *angle2 - Math.sin(angle1) *r1*l;
+    			s = s1+s2-s3;
+         }
+         return s;
+		  /********* End *********/
+	  }
+}

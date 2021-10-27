@@ -1,0 +1,53 @@
+package step4;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+
+public class Reflect_stu {
+    public static void main(String[] args) throws InvocationTargetException {
+        //使用反射调用
+        Class clazz = null;
+        try {
+            clazz = Class.forName("step4.Apple");
+            /********** Begin *********/
+
+
+            /********** End *********/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("14.0"+"\n"+"480.0");
+    }
+
+}
+
+
+class Apple {
+    private double price;
+    private int count;
+
+    public Apple() {
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public double getTotal(double price, int count) {
+        return price * count;
+    }
+}

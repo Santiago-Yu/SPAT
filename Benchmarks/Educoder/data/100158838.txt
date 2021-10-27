@@ -1,0 +1,33 @@
+package Q205;
+
+import java.util.*;
+
+public class Main {
+
+	public static int solution(int n,int[] a) {
+		int[][] num=new int[a.length+1][n+1];
+		for(int i=1;i<num.length;i++) {
+			for(int j=0;j<num[1].length;j++) {
+				if(a[i-1]<=j) {
+					
+					num[i][j]=num[i-1][j-a[i-1]]+a[i-1];
+				}
+				num[i][j]=Math.max(num[i-1][j], num[i][j]);
+			}
+		}
+		return num[a.length][n];
+	}
+	public static void main(String[] args) {
+		// write your code here
+		Scanner sc=new Scanner(System.in);
+		int s=Integer.parseInt(sc.nextLine());
+		String aString=sc.nextLine();
+		String[] ac=aString.split(" ");
+		int[] acc=new int[ac.length];
+		for(int i=0;i<ac.length;i++) {
+			acc[i]=Integer.parseInt(ac[i]);
+		}
+		System.out.print(solution(s, acc));
+	}
+
+}

@@ -1,0 +1,41 @@
+package step3;
+
+public class MyThread implements Runnable  {
+
+	
+	public static void main(String[] args) throws InterruptedException {
+		
+		MyThread th = new MyThread();
+		int num=5;
+		for(int i=0;i<num;i++){
+			new Thread(th,"线程A").start();
+            Thread.sleep(50);
+			new Thread(th,"线程B").start();
+            Thread.sleep(50);
+			new Thread(th,"线程C").start();
+			Thread.sleep(50);
+		}
+		
+		
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		Thread th = Thread.currentThread();
+		String str = th.getName();
+		String stra="线程A";
+		String strb="线程B";
+		//System.out.print(str);
+		if(str.equals(stra)){
+			System.out.print("E");
+		}
+		else if(str.equals(strb)){
+			System.out.print("D");
+		}
+		else{
+			System.out.print("U");
+		}
+	}
+
+}

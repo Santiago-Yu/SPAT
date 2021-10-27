@@ -1,0 +1,37 @@
+package step3;
+import java.util.*;
+
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+        ArrayList<Integer> num=new ArrayList<Integer>();
+        ArrayList<Integer> point=new ArrayList<Integer>();
+        int i=0;
+        int m,n;
+        int count=1;
+        for(int p=1;p<arr.length-1;p++)//寻找符合条件凸点
+        {
+            if(arr[p]<arr[p+1] && arr[p]<arr[p-1]) point.add(p);
+        }
+        if(point.isEmpty()) {return 0;}
+        else{
+            for(i=0;i<point.size();i++){
+                for(m=point.get(i);m<arr.length-1;m++){//凸点右部分
+                    if(arr[m+1]==arr[m] || arr[m+1]<arr[m]) {break;}
+                    else count++;
+                }
+                for(n=point.get(i);n>0;n--){//凸点左部分
+                    if(arr[n-1]==arr[n] || arr[n-1]<arr[n]) {break;}
+                    else count++;
+                }
+                num.add(count);
+                count=1;
+            }
+        }
+        int max=Collections.max(num);
+        return max;
+		/********* End *********/	
+	}
+}

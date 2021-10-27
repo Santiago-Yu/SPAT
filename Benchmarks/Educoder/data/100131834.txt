@@ -1,0 +1,38 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    public int level = 0;
+    
+	public void showDirStructure(File dir)	{
+		if (dir.isDirectory()) {
+            System.out.println(showSpaces(level) + "+--" + dir.getName());
+            level += 2;
+            for (File file : dir.listFiles()) {
+                showDirStructure(file);
+            }
+            level -= 2;
+        } else if (dir.isFile()) {
+            if ("jpg".equals(getFileExt(dir)) || "png".equals(getFileExt(dir))
+                    || "bmp".equals(getFileExt(dir))) {
+                System.out.println(showSpaces(level) + "--" + dir.getName());
+            }
+        }
+	}
+    
+    public String getFileExt(File file) {
+        return file.getName().substring(file.getName().lastIndexOf(".") + 1);
+    }
+
+    public String showSpaces(int count) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int counter = 0; counter < count; counter++) {
+            stringBuilder.append(" ");
+        }
+        return stringBuilder.toString();
+    }
+	/********** END **********/
+}

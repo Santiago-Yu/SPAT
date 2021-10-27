@@ -1,0 +1,43 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		if(isSorted(arr)==true) show(arr);
+		else{
+			while(isSorted(arr)==false){
+				for(int i=0;i<arr.length-1;i++){
+					if(arr[i]>arr[i+1]){
+						swap(arr,i,i+1);
+						show(arr);
+					}
+		        }
+				for(int j=arr.length-1;j>1;j--){
+					if(arr[j]<arr[j-1]) {
+						swap(arr,j,j-1);
+						show(arr);
+					}
+				}
+			}
+		}
+		/********* End *********/
+	}
+	public void swap(Integer[] arr,int i,int j){
+		Integer tmp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = tmp;
+	}
+	public boolean isSorted(Integer[] arr){
+		for(int i = 0;i<arr.length-1;i++) {
+            if(arr[i]>arr[i+1])return false;
+        }
+        return true;
+	}
+	public void show(Integer[] arr){
+		for (Integer integer : arr) {
+			System.out.print(integer+" ");
+		}
+		System.out.println();
+	}
+}

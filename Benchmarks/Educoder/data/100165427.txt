@@ -1,0 +1,32 @@
+package step2;
+import step1.Person;
+import step1.Date;
+public class Student extends Person{
+    private int reg_Num;
+	private Date reg_day=new Date();
+	public Student() {
+		super();
+	}
+	public Student (String name, String num, Date birthday, int reg_Num, Date reg_day){
+        super(name,num,birthday);
+        this.reg_Num = reg_Num;
+        this.reg_day = reg_day;
+    }
+	public Student (String name, String num, int year,int month,int day, int reg_Num, Date reg_day){
+        super(name,num,year,month,day);
+        this.reg_Num = reg_Num;
+        this.reg_day = reg_day;
+    }
+	public Student (String name, String num, int year,int month,int day, int reg_Num, int y, int m, int d){
+        super(name,num,year,month,day);
+        this.reg_Num = reg_Num;
+        reg_day.setDate(y,m,d);
+    }
+	public String toString(){
+		return super.toString()+"reg_num:"+reg_Num+"reg_day:"+reg_day.getYear()+"." + reg_day.getMonth()+"."+reg_day.getDay();
+	}
+    public Date getreg_day(){
+    	return this.reg_day;
+    }
+}
+

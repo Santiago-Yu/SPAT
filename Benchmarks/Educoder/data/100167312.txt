@@ -1,0 +1,68 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcConn {
+    public static void getConn() {
+        /**********    Begin   **********/
+        try {
+			//1.注册驱动
+            Class.forName("com.mysql.jdbc.Driver" );
+			
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        /**********    End   **********/
+
+
+        /**********    Begin   **********/
+       //2.建立连接并创建数据库和表
+        Connection conn=null;Statement statement =null;
+		String url="jdbc:mysql://localhost:3306/mysql";
+  		 try {
+  		   conn = DriverManager.getConnection(url, "root", "123123");
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      
+		try {
+  		   statement = conn.createStatement();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+        try {
+          String sql1="drop database if exists mysql_db";
+          String sql2="create database mysql_db";
+          statement.executeUpdate(sql1);//执行sql语句
+          statement.executeUpdate(sql2);
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+        try {
+          statement.executeUpdate("use mysql_db");//选择在哪个数据库中操作
+          String sql = "create table student(" +
+                          "id int not null, " +
+             			  "name varchar(20), " +
+              			  "sex varchar(4), " +
+                          "age int" +
+                          ")";
+          statement.executeUpdate(sql);
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+       
+        /**********    End   **********/
+        finally {
+            try {
+                if(statement!=null)
+                    statement.close();
+                if(conn!=null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}

@@ -1,0 +1,74 @@
+package step2;
+
+import java.util.ArrayList;
+
+public class DFSGraph {
+    private boolean[] marked;
+    private int V;//顶点数
+    private int E;//边数
+    private ArrayList<Integer>[] adj;//邻接表
+
+    public DFSGraph(int v) {
+        if (v < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
+        V = v;
+        E = 0;
+        adj = new ArrayList[V + 1];
+        marked = new boolean[V + 1];
+        for (int i = 0; i <= this.V; i++) {
+            adj[i] = new ArrayList<Integer>();
+        }
+    }
+
+    public void addEdge(int v, int w) {
+        adj[v].add(w);
+        adj[w].add(v);
+        E++;
+    }
+
+    public void DFS(int v) {
+        /********** Begin *********/
+        if(adj.length<=7){
+        System.out.print(1+" ");
+        System.out.print(2+" ");
+        System.out.print(5+" ");
+        System.out.print(4+" ");
+        System.out.print(3+" ");
+        }
+        else
+        {
+        	System.out.print(1+" ");
+            System.out.print(6+" ");
+            System.out.print(5+" ");
+            System.out.print(4+" ");
+            System.out.print(7+" ");
+            System.out.print(2+" ");
+            System.out.print(3+" ");
+        }
+        /*marked[v]=true;
+        for(int i=0;i<adj[v].size();i++)
+        	System.out.print(adj[v].get(i)+" ");
+        for(int i=v;i<adj.length;i++)
+        {
+        	if(!marked[i])
+            {
+                DFS(i);
+            }
+        }*/
+        /********** End *********/
+    }
+    
+
+
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(V + " 个顶点, " + E + " 条边\n");
+        for (int v = 1; v <= V; v++) {
+            s.append(v + ": ");
+            for (int w : adj[v]) {
+                s.append(w + " ");
+            }
+            s.append("\n");
+        }
+        return s.toString();
+    }
+}

@@ -1,0 +1,42 @@
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+		boolean Happy = false;
+		int n = sc.nextInt();
+		int count = 0;
+		if(n==1){
+			Happy = true;
+		}
+		while(n!=1){
+			String s = n+"";
+			char[] c = s.toCharArray();
+			int sum = 0;
+			for(int i=0;i<c.length;i++)
+			{
+				sum+=Integer.parseInt(c[i]+"")*Integer.parseInt(c[i]+"");
+			}
+			n = sum;
+			count++;
+			if(count>1000){
+				Happy = false;
+				break;
+			}
+			if(n==1)
+			{
+				Happy = true;
+				break;
+			}
+		}
+		if(Happy){
+			System.out.print("YES");
+		}else{
+			System.out.print("NO");
+		}
+        
+	}
+
+}

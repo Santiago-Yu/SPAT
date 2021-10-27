@@ -1,0 +1,62 @@
+    public static boolean copyFileCover(String srcFileName, String descFileName, boolean coverlay) {
+        File srcFile = new File(srcFileName);
+        if (!srcFile.exists()) {
+            System.out.println("锟斤拷锟斤拷锟侥硷拷失锟杰ｏ拷源锟侥硷拷" + srcFileName + "锟斤拷锟斤拷锟斤拷!");
+            return false;
+        } else if (!srcFile.isFile()) {
+            System.out.println("锟斤拷锟斤拷锟侥硷拷失锟杰ｏ拷" + srcFileName + "锟斤拷锟斤拷一锟斤拷锟侥硷拷!");
+            return false;
+        }
+        File descFile = new File(descFileName);
+        if (descFile.exists()) {
+            if (coverlay) {
+                System.out.println("目锟斤拷锟侥硷拷锟窖达拷锟节ｏ拷准锟斤拷删锟斤拷!");
+                if (!FileOperateUtils.delFile(descFileName)) {
+                    System.out.println("删锟斤拷目锟斤拷锟侥硷拷" + descFileName + "失锟斤拷!");
+                    return false;
+                }
+            } else {
+                System.out.println("锟斤拷锟斤拷锟侥硷拷失锟杰ｏ拷目锟斤拷锟侥硷拷" + descFileName + "锟窖达拷锟斤拷!");
+                return false;
+            }
+        } else {
+            if (!descFile.getParentFile().exists()) {
+                System.out.println("目锟斤拷锟侥硷拷锟斤拷锟节碉拷目录锟斤拷锟斤拷锟节ｏ拷锟斤拷锟斤拷目录!");
+                if (!descFile.getParentFile().mkdirs()) {
+                    System.out.println("锟斤拷锟斤拷目锟斤拷锟侥硷拷锟斤拷锟节碉拷目录失锟斤拷!");
+                    return false;
+                }
+            }
+        }
+        int readByte = 0;
+        InputStream ins = null;
+        OutputStream outs = null;
+        try {
+            ins = new FileInputStream(srcFile);
+            outs = new FileOutputStream(descFile);
+            byte[] buf = new byte[1024];
+            while ((readByte = ins.read(buf)) != -1) {
+                outs.write(buf, 0, readByte);
+            }
+            System.out.println("锟斤拷锟狡碉拷锟斤拷锟侥硷拷" + srcFileName + "锟斤拷" + descFileName + "锟缴癸拷!");
+            return true;
+        } catch (Exception e) {
+            System.out.println("锟斤拷锟斤拷锟侥硷拷失锟杰ｏ拷" + e.getMessage());
+            return false;
+        } finally {
+            if (outs != null) {
+                try {
+                    outs.close();
+                } catch (IOException oute) {
+                    oute.printStackTrace();
+                }
+            }
+            if (ins != null) {
+                try {
+                    ins.close();
+                } catch (IOException ine) {
+                    ine.printStackTrace();
+                }
+            }
+        }
+    }

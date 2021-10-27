@@ -1,0 +1,50 @@
+package step1;
+
+public class Test {
+	public static void main(String[] args) {
+		//创建Dog对象
+        Dog dog=new Dog();
+		//设置Dog对象的属性
+		dog.setName("五花肉");
+        dog.setColor("棕色");
+        dog.setType("阿拉斯加");
+		
+		//输出小狗的属性
+		System.out.println("名字：" + dog.getName()    + "，毛色：" + dog.getColor()   + "，品种：" + dog.getType() );
+		
+		//调用方法
+		dog.love();
+        dog.love2();
+	}
+}
+
+//在这里定义Dog类
+class Dog{
+	private String name;
+    private String color;
+    private String type;
+    public void setName(String name){
+     this.name=name;  
+    }
+    public String getName(){
+     return this.name;   
+    }
+     public void setColor(String color){
+     this.color=color;  
+    }
+    public String getColor(){
+     return this.color;   
+    }
+     public void setType(String type){
+     this.type=type;  
+    }
+    public String getType(){
+     return this.type;   
+    }
+    public void love(){
+     System.out.println("啃骨头");   
+    }
+    public void love2(){
+     System.out.println("叼着骨头跑");   
+    }
+}

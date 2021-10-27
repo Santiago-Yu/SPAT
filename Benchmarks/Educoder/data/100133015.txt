@@ -1,0 +1,61 @@
+package step3;
+
+import java.util.*;
+import java.text.*;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+		SimpleDateFormat format = new SimpleDateFormat("MM-dd");
+        
+        Date d = new Date();
+        
+        try{d = format.parse(date);}
+        catch(Exception e){}
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        
+        int month = cal.get(cal.MONTH) + 1;
+        int day = cal.get(cal.DAY_OF_MONTH);
+        
+        int[] fn = new int[1000];
+        for(int i = 1; i < fn.length; i++)
+        {
+        	fn[i] = (i * (i + 1)) / 2;
+        }
+        
+        if(month == 7)
+        {
+        	for(int i = 1; i < fn.length; i++)
+        	{
+                if(fn[i] == day)
+                {
+                	return true;
+                }
+        	}
+            return false;
+        }
+        else if(month == 8)
+        {
+        	for(int i = 1; i < fn.length; i++)
+        	{
+                if(fn[i] == day + 31)
+                {
+                	return true;
+                }
+        	}
+            return false;
+        }
+        else
+        {
+        	for(int i = 1; i < fn.length; i++)
+        	{
+                if(fn[i] == day + 62)
+                {
+                	return true;
+                }
+        	}
+            return false;
+        }
+	}
+}

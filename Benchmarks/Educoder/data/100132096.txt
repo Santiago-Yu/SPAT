@@ -1,0 +1,38 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		int[] days=new int[temperatures.length];
+        int maxIndex=getMaxIndex(temperatures);
+        
+        for(int i=0;i<temperatures.length;i++){
+            days[i]=getDays(i,maxIndex,temperatures);
+        }
+		return days;
+		/********** END **********/
+	}
+    public int getDays(int startIndex,int endIndex,Integer[] temperatures){
+        int days=0;
+        if(startIndex<endIndex){
+            for(int i=startIndex;i<endIndex+1;i++){
+            	if(temperatures[i]>temperatures[startIndex]){
+                    days=i-startIndex;
+                    break;
+                }
+            }
+        }
+        return days;
+    }
+    public int getMaxIndex(Integer[] temperatures){
+        int maxTemp=0;
+        int index=0;
+        for(int i=0;i<temperatures.length;i++){
+            if(temperatures[i]>=maxTemp){
+                maxTemp=temperatures[i];
+                index=i;
+            }
+        }
+        return index;
+    }
+}

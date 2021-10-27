@@ -1,0 +1,38 @@
+package Q201;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        		Scanner sc= new Scanner(System.in);
+		int n=sc.nextInt();
+		if(f(n)==1) {
+			System.out.print("YES");
+		}
+		else {
+			System.out.print("NO");
+		}
+	}
+    	public static int f(int n){
+		int s = 0;
+		while(n!=0) {
+			int m=0;
+	
+
+			m=n%10;
+			n=n/10;
+			s=s+m*m;
+		}
+		if(s>=10) {
+			return f(s);
+		}
+		else if(s==1){
+			return 1;
+		}
+		else {
+			return 0;
+		}
+		
+	}
+
+}

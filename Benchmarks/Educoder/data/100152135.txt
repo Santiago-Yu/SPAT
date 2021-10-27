@@ -1,0 +1,119 @@
+package step2;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Task {
+	private int MOD=1000000007;
+	private int n;
+	private int a[];
+	private int lowbit[];
+	private int lis[];
+	private int sa[];
+	private int ris[];
+	public void update(int k,int x) {//第k个
+		int i=k;
+		x=(x+MOD)%MOD;//MOD
+		while(k<=n) {
+			sa[k]=(sa[k]+x)%MOD;
+			//143473604
+			//506458526
+			BigInteger bx=new BigInteger(""+x);
+			BigInteger bi=new BigInteger(""+i);
+			int v=bx.multiply(bi).mod(new BigInteger(""+MOD)).intValue();
+			lis[k]=(lis[k]+v)%MOD;
+			ris[k]=((ris[k]+v)%MOD-x*2%MOD+MOD)%MOD;//
+			
+			k+=lowbit[k];
+		}
+	}
+	
+	public int []query(int k){
+		int sak=0;
+		int lisk=0;
+		int risk=0;
+		while(k>0) {
+			sak=(sak+sa[k])%MOD;
+			lisk=(lisk+lis[k])%MOD;
+			risk=(risk+ris[k])%MOD;
+			k-=lowbit[k];
+		}
+		return new int[] {sak,lisk,risk};
+	}
+	public void craete(List<Integer> data) {
+		n=data.size();
+		a=new int[n+1];
+		lowbit=new int[n+1];
+		lis=new int[n+1];
+		sa=new int[n+1];
+		ris=new int[n+1];
+		
+		for(int i=1;i<=n;++i) {
+			lowbit[i]=i&(-i);
+		}
+		
+		for(int i=1;i<=n;++i) {
+			a[i]=data.get(i-1); //0-1000
+		}
+		
+		for(int i=1;i<=n;++i) {
+			update(i,a[i]);//1000
+		}
+	}
+	public int getLeftCost(int l,int r) {//第几个
+		int s=0;
+		int []la=query(l-1);
+		int []ra=query(r);
+		
+		s=(s+(ra[1]-la[1]))%MOD;
+		BigInteger bx=new BigInteger(""+(ra[0]-la[0]));
+		BigInteger bi=new BigInteger(""+(l-1));
+		int v=bx.multiply(bi).mod(new BigInteger(""+MOD)).intValue();
+		s=(s-v+MOD)%MOD;
+		return s;
+	}
+	public int getRightCost(int l,int r) {//第几个
+		int s=0;
+		int []la=query(l-1);
+		int []ra=query(r);
+		
+		s=(s-(ra[2]-la[2])+MOD)%MOD;
+		
+		BigInteger bx=new BigInteger(""+(ra[0]-la[0]));
+		BigInteger bi=new BigInteger(""+(r-1));
+		int v=bx.multiply(bi).mod(new BigInteger(""+MOD)).intValue();
+		s=(s+v)%MOD;
+		return s;
+	}
+
+	public int solve(List<Integer> data, List<Operation> operations) {
+		/********* begin *********/
+		craete(data);
+		int ans=0;
+		int t=0;
+		for(Operation o:operations) {
+			if(o.op.equals("C")) {
+				//
+				update(o.x+1,o.y-a[o.x+1]);
+				a[o.x+1]=o.y;
+			}else if(o.op.equals("L")) {
+				t=getLeftCost(o.x+1,o.y+1);
+				ans=(ans+t)%MOD;
+				//System.out.println(t);
+			}else {
+				t=getRightCost(o.x+1,o.y+1);
+				ans=(ans+t)%MOD;
+				//System.out.println(t);
+			}
+		}
+		return ans;
+		/********* end *********/
+	}
+}
+
+class Operation {
+	String op;
+	int x;
+	int y;
+}

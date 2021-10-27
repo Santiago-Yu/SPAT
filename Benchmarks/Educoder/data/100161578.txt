@@ -1,0 +1,21 @@
+package Pid_107;
+import java.util.Scanner;
+public class Main {
+
+    public static long trailingZeros(long n) {
+        long count=0;
+        long temp=n/5;
+        while(temp!=0)
+        {
+        	count+=temp;
+        	temp=temp/5;
+        }
+        return count;
+    }
+    public static void main(String args[])
+    {
+    	Scanner in=new Scanner(System.in);
+    	long result=trailingZeros(in.nextLong());
+    	System.out.print(result);
+    }
+}

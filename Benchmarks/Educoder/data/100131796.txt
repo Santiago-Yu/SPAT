@@ -1,0 +1,32 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		System.out.println("+--"+file.getName());
+		shuwImgTree(file,"");
+	}
+	private static void shuwImgTree(File file, String string) {
+		File[] files = file.listFiles();
+		for(File f:files) {
+			boolean b = f.isDirectory();
+			if(!b) {
+				String exe;
+				if(f.getName().lastIndexOf(".")!=-1) {
+					exe = f.getName().substring(f.getName().lastIndexOf("."));
+					if(exe.equalsIgnoreCase(".png")||exe.equalsIgnoreCase(".jpg")||exe.equalsIgnoreCase(".bmp")) {
+						System.out.println("  "+string+"--"+f.getName());
+					}
+				}
+			}else {
+				System.out.println("  "+string+"+--"+f.getName());
+				shuwImgTree(f, "  "+string);
+			}
+		}
+	}
+
+	/********** END **********/
+}

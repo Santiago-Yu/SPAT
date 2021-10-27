@@ -1,0 +1,58 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+
+         long[][] myMax=new long[numbers+1][selectedNum+1];
+        long[][] myMin=new long[numbers+1][selectedNum+1];
+
+        for(int i=1;i<numbers+1;i++){
+            myMax[i][1]=abilities[i];
+            myMin[i][1]=abilities[i];
+        }
+
+        for(int j=2;j<selectedNum+1;j++){
+
+            for(int i=j;i<numbers+1;i++){
+
+                long queueOfMax=Integer.MIN_VALUE;
+                long queueOfMin=Integer.MAX_VALUE;
+
+                for(int left=Math.max(j-1,i-distance);left<i;left++){
+                    if(queueOfMax<Math.max(myMax[left][j-1]*abilities[i],
+                            myMin[left][j-1]*abilities[i]))
+                    {
+                        queueOfMax=Math.max(myMax[left][j-1]*abilities[i],
+                                myMin[left][j-1]*abilities[i]);
+                    }
+                    if(queueOfMin>Math.min(myMax[left][j-1]*abilities[i],
+                            myMin[left][j-1]*abilities[i]))
+                    {
+                        queueOfMin=Math.min(myMax[left][j-1]*abilities[i],
+                                myMin[left][j-1]*abilities[i]);
+                    }
+                }
+                myMax[i][j]=queueOfMax;
+                myMin[i][j]=queueOfMin;
+            }
+        }
+
+        long result=Integer.MIN_VALUE;
+        for(int i=selectedNum;i<numbers+1;i++)
+        {
+            if(result<myMax[i][selectedNum]){
+                result=myMax[i][selectedNum];
+            }
+        }
+        return result;
+
+    }
+
+
+
+
+	/********* End *********/
+}

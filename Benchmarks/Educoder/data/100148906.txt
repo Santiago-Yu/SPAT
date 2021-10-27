@@ -1,0 +1,57 @@
+package step1;
+
+public class Task {
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		int beginFlag=0;
+		int endFlag=arr.length-1;
+        int count=0;
+        for(int i=0;i<arr.length;i++){
+            for(int j=i+1;j<arr.length;j++){
+            	if(arr[i]>arr[j]){
+                	count++;
+                }
+            }
+        }
+        if(count!=0){
+        	RLsoft(arr,beginFlag,endFlag);
+        	
+        }else{
+        	for(int m=0;m<arr.length;m++) {
+				System.out.print(arr[m]+" ");
+			}
+    		System.out.println();
+        }
+       
+		/********* End *********/
+	}
+    	public static void RLsoft(Integer[] arr,int beginFlag,int endFlag){
+            for(int i=beginFlag;i<arr.length-1;i++){
+            	if (arr[i]>arr[i+1]) {    //交换位置
+					int temp1=arr[i];
+				 	arr[i]=arr[i+1];
+					arr[i+1]=temp1;
+                    for(int m=0;m<arr.length;m++) {
+						System.out.print(arr[m]+" ");
+					}
+            		System.out.println();
+				}
+                
+            }
+            endFlag--;
+            for(int j=endFlag;j>0;j--){
+            	if (arr[j]<arr[j-1]) {    //交换位置
+					int temp2=arr[j];
+				 	arr[j]=arr[j-1];
+					arr[j-1]=temp2;
+                    for(int m=0;m<arr.length;m++) {
+						System.out.print(arr[m]+" ");
+					}
+            		System.out.println();
+				}
+            }
+            beginFlag++;
+            if(beginFlag<endFlag)
+            	RLsoft(arr,beginFlag+1,endFlag-1);
+	}
+}

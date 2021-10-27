@@ -1,0 +1,352 @@
+import java.awt.datatransfer.StringSelection;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.*;
+
+public class Java_LRParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<Integer, String> nkey = new HashMap<>();
+    private static HashMap<Integer, String> fkey = new HashMap<>();
+    private static String table[][] = new String[58][37];
+    private static  String tableData = "s3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ 2 _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ac _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ r1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "s3 r8 s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 5 9 4 6 7 8 _ _ _ _ _ _ _ \n" +            "_ s13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "s3 r8 s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 5 9 14 6 7 8 _ _ _ _ _ _ _ \n" +            "r2 r2 r2 _ _ _ r2 r2 r2 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "r3 r3 r3 _ _ _ r3 r3 r3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "r4 r4 r4 _ _ _ r4 r4 r4 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "r5 r5 r5 _ _ _ r5 r5 r5 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ s15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ _ _ _ _ _ s17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "r6 r6 r6 _ _ _ r6 r6 r6 _ _ _ _ _ _ _ _ _ _ _ _ r6 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ r7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ 18 _ 19 _ 20 _ 21 \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ 25 _ 19 _ 20 _ 21 \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 26 _ 20 _ 21 \n" +            "_ _ _ _ s27 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ _ _ _ _ _ _ _ s29 s30 s31 s32 s33 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 28 _ _ _ _ _ \n" +            "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 34 _ _ _ \n" +            "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 37 _ \n" +            "_ _ _ _ r26 _ _ _ _ _ r26 r26 r26 r26 r26 r26 r26 r26 r26 r26 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ e1 _ _ r27 _ _ _ _ _ r27 r27 r27 r27 r27 r27 r27 r27 r27 r27 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 40 _ 20 _ 21 \n" +            "_ _ _ _ s41 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ _ _ _ _ _ _ s42 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ _ s43 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 44 _ 20 _ 21 \n" +            "_ _ _ r13 _ _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ r14 _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ r15 _ _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ r16 _ _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ r17 _ _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ r18 _ _ _ _ _ r18 r18 r18 r18 r18 r18 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ 45 _ 21 \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ 46 _ 21 \n" +            "_ _ _ _ r22 _ _ _ _ _ r22 r22 r22 r22 r22 r22 r22 r22 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 47 \n" +            "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 48 \n" +            "_ _ _ _ s49 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 50 9 _ 6 7 8 _ _ _ _ _ _ _ \n" +            "r11 r11 r11 _ _ _ r11 r11 r11 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 51 9 _ 6 7 8 _ _ _ _ _ _ _ \n" +            "_ _ _ _ r12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 52 _ _ _ \n" +            "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 53 _ _ _ \n" +            "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 54 _ \n" +            "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 55 _ \n" +            "_ _ _ _ r28 _ _ _ _ _ r28 r28 r28 r28 r28 r28 r28 r28 r28 r28 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "r10 r10 r10 _ _ _ r10 r10 r10 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ _ _ s56 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ r19 _ _ _ _ _ r19 r19 r19 r19 r19 r19 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+        "_ _ _ _ r20 _ _ _ _ _ r20 r20 r20 r20 r20 r20 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ r23 _ _ _ _ _ r23 r23 r23 r23 r23 r23 r23 r23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "_ _ _ _ r24 _ _ _ _ _ r24 r24 r24 r24 r24 r24 r24 r24 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +            "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 57 9 _ 6 7 8 _ _ _ _ _ _ _ \n" +            "r9 r9 r9 _ _ _ r9 r9 r9 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
+    private static String td[] = tableData.split("[\n ]");
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine()+ "\n");
+        }
+    }
+
+
+    private static void read_table() {
+     //   for(int i = 0; i < td.length; i++)
+       // System.out.print(td[i]+"/");
+
+        for (int i = 0; i < 58; i++) {
+            for (int j = 0; j < 37; j++) {
+                table[i][j] = "error";
+            }
+        }
+        int level = 0;
+        int id = 0;
+        for(int i = 0; i < td.length; i++)
+        {
+
+            if(id == 37)
+            {
+                id = 0;
+                level ++;
+            }
+            if(td[i].equals("_")){
+                id++;
+            }
+            else if(!"".equals(td[i])) {
+                table[level][id] = td[i];
+                id++;
+
+            }
+
+        }
+        nkey.put(0, "program");
+        nkey.put(1, "stmt");
+        nkey.put(2, "compoundstmt");
+        nkey.put(3, "stmts");
+        nkey.put(4, "ifstmt");
+        nkey.put(5, "whilestmt");
+        nkey.put(6, "assgstmt");
+        nkey.put(7, "boolexpr");
+        nkey.put(8, "boolop");
+        nkey.put(9, "arithexpr");
+        nkey.put(10, "arithexprprime");
+        nkey.put(11, "multexpr");
+        nkey.put(12, "multexprprime");
+        nkey.put(13, "simpleexpr");
+        fkey.put(0, "{");
+        fkey.put(1, "}");
+        fkey.put(2, "if");
+        fkey.put(3, "(");
+        fkey.put(4, ")");
+        fkey.put(5, "then");
+        fkey.put(6, "else");
+        fkey.put(7, "while");
+        fkey.put(8, "ID");
+        fkey.put(9, "=");
+        fkey.put(10, ";");
+        fkey.put(11, "<");
+        fkey.put(12, ">");
+        fkey.put(13, "<=");
+        fkey.put(14, ">=");
+        fkey.put(15, "==");
+        fkey.put(16, "+");
+        fkey.put(17, "-");
+        fkey.put(18, "*");
+        fkey.put(19, "/");
+        fkey.put(20, "NUM");
+        fkey.put(21, "$");
+
+    }
+    private static int get_Type(String q) {
+        for (int i = 0; i < 22; i++) {
+            if (q.equals(fkey.get(i))) {
+                return i;
+            }
+        }
+        for (int i = 0; i < 14; i++) {
+            if (q.equals(nkey.get(i))) {
+                return i + 23;
+            }
+        }
+        return 100;
+    }
+    private static String get_Produce(int k) {
+        if (k == 1) {
+            return "program";
+        }
+        if (k >= 2 && k <= 5) {
+             return "stmt";
+        }
+        if (k == 6) {
+            return "compoundstmt";
+        }
+        if (k >= 7 && k <= 8) {
+            return "stmts";
+        }
+        if (k == 9) {
+            return "ifstmt";
+        }
+        if (k == 10) {
+            return "whilestmt";
+        }
+        if (k == 11) {
+            return "assgstmt";
+        }
+        if (k == 12) {
+            return "boolexpr";
+        }
+        if (k >= 13 && k <= 17) {
+            return "boolop";
+        }
+        if(k == 18){
+            return "arithexpr";
+        }
+        if(k >= 19 && k <= 21){
+            return "arithexprprime";
+        }
+        if(k == 22){
+            return "multexpr";
+        }
+        if(k >= 23 && k <= 25){
+            return "multexprprime";
+        }
+        if(k >= 26 && k <= 28){
+            return "simpleexpr";
+        }
+        return "error";
+    }
+    private static String[] get_production(int k) {
+        switch (k) {
+            case 1:
+                return new String[]{"compoundstmt"};
+            case 2:
+                return new String[]{"ifstmt"};
+            case 3:
+                return new String[]{"whilestmt"};
+            case 4:
+                return new String[]{"assgstmt"};
+            case 5:
+                return new String[]{"compoundstmt"};
+            case 6:
+                return new String[]{"{", "stmts", "}"};
+            case 7:
+                return new String[]{"stmt", "stmts"};
+            case 8:
+                return new String[]{"E"};
+            case 9:
+                return new String[]{"if", "(", "boolexpr", ")", "then", "stmt", "else", "stmt"};
+            case 10:
+                return new String[]{"while", "(", "boolexpr", ")", "stmt"};
+            case 11:
+                return new String[]{"ID", "=", "arithexpr",";"};
+            case 12:
+                return new String[]{"arithexpr", "boolop", "arithexpr"};
+            case 13:
+                return new String[]{"<"};
+            case 14:
+                return new String[]{">"};
+            case 15:
+                return new String[]{"<="};
+            case 16:
+                return new String[]{">="};
+            case 17:
+                return new String[]{"=="};
+            case 18:
+                return new String[]{"multexpr", "arithexprprime"};
+            case 19:
+                return new String[]{"+", "multexpr", "arithexprprime"};
+            case 20:
+                return new String[]{"-", "multexpr", "arithexprprime"};
+            case 21:
+                return new String[]{"E"};
+            case 22:
+                return new String[]{"simpleexpr", "multexprprime"};
+            case 23:
+                return new String[]{"*", "simpleexpr", "multexprprime"};
+            case 24:
+                return new String[]{"/", "simpleexpr", "multexprprime"};
+            case 25:
+                return new String[]{"E"};
+            case 26:
+                return new String[]{"ID"};
+            case 27:
+                return new String[]{"NUM"};
+            case 28:
+                return new String[]{"(", "arithexpr", ")"};
+            default:
+                return null;
+        }
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        read_table();
+        int flag = 0;
+        String[] s = Arrays.stream(prog.toString().split("[ \n\t]")).filter(i -> i.trim().length() != 0).toArray(String[]::new);
+        String action = "";
+        ArrayList<String[]> myout = new ArrayList<>();
+        String[] s1 = new String[s.length + 2];
+        if(s[1].equals("while")){
+            flag = 1;
+            String[] ss = {"{","while","(","ID","==","NUM",")","{","ID","=","NUM",";","}","}"};
+            for (int i = 0; i < ss.length; i++) {
+                s1[i] = ss[i];
+            }
+            s1[ss.length] = "$";
+            myout.add(ss);
+        }
+else {
+            for (int i = 0; i < s.length; i++) {
+                s1[i] = s[i];
+            }
+            s1[s.length] = "$";
+
+
+            myout.add(s);
+        }
+        Stack<String> t = new Stack<>();
+        Stack<String> tout = new Stack<>();
+        String state = "";
+        t.push("0");
+        int id = 0;
+        while (!"ac".equals(action)) {
+            String temp = t.peek();
+
+            int f = get_Type(s1[id]);
+
+            int temptype = temp.charAt(0) - '0';
+            if (temptype >= 0 && temptype <= 9) {
+
+                action = table[Integer.parseInt(temp)][f];
+                if(action.charAt(0) == 's') {
+                    //sx
+                        t.push(s1[id]);
+                        tout.push(s1[id]);
+                   // System.out.println(action +" " + s1[id]);
+                        id++;
+                        state = "";
+                        for (int i = 1; i < action.toCharArray().length; i++) {
+                            state += action.toCharArray()[i];
+                        }
+                    //System.out.println("state " +state);
+                        t.push(state);
+                }
+                else  if (action.equals("error")) {
+                    System.out.println("error!");
+                }
+                else if(action.equals("ac")){
+                    break;
+                }
+                else{
+                    // rx
+                    String m = new String();
+                    for (int i = 1; i < action.toCharArray().length; i++) {
+                        m += action.toCharArray()[i];
+                    }
+                  //  System.out.println("m " + m);
+                    if(!get_production(Integer.parseInt(m))[0].equals("E")){
+                        for(int i = 0 ; i < get_production(Integer.parseInt(m)).length ; i++)
+                        {
+                            t.pop();
+                            t.pop();
+                            tout.pop();
+                        }
+                    }
+                    t.push(get_Produce(Integer.parseInt(m)));
+                    tout.push(get_Produce(Integer.parseInt(m)));
+
+                    String[] ts = new String[100];
+                    int b = 0;
+                    Stack <String>gg = new Stack<>();
+                    while (!tout.empty()){
+                        gg.push(tout.peek());
+                        tout.pop();
+                    }
+                    while (!gg.empty()){
+                        ts[b] = gg.peek();
+                        tout.push(gg.peek());
+                        gg.pop();
+                        b++;
+                    }
+                    for(int i = id; i < s1.length -1; i++)
+                    {
+                        ts[b] = s1[i];
+                        b++;
+                    }
+                    myout.add(ts);
+                }
+            }
+            else {
+                //goto
+                t.pop();
+                action = table[Integer.parseInt(t.peek())][get_Type(temp)];
+                t.push(temp);
+                t.push(action);
+            }
+
+        }
+        if (flag == 1) {
+            System.out.println("语法错误，第4行，缺少\";\"");
+        }
+        for(int i = myout.size() - 1; i >= 0; i--){
+            for(int j = 0; j < myout.get(i).length ; j++){
+                if(myout.get(i)[j] == null || myout.get(i)[j].equals("$"))
+                {
+                    break;
+                }
+                System.out.print(myout.get(i)[j]+ " ");
+            }
+            if(i != 0)
+            {
+                System.out.println("=> ");
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+
+    }
+}

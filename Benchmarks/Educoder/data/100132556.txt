@@ -1,0 +1,23 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int a=length;   
+        int b=width;
+        int c;
+        int j,k;
+        while(b!=0)  /* 余数不为0，继续相除，直到余数为0 */ 
+        { c=a%b; a=b;  b=c;}
+        j=a;
+        k= length*width/a/a;
+		System.out.println(j);
+		System.out.println(k);
+		/********** END **********/
+	}
+}

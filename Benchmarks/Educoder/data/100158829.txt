@@ -1,0 +1,41 @@
+package Q202;
+import java.util.Scanner;
+import java.util.ArrayList;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in=new Scanner(System.in);
+        ArrayList<Integer> list=new ArrayList<Integer>();
+        int x=in.nextInt();
+        int k=0;
+        for(int i=9;i>1;i--){
+            if(x%i==0){
+                list.add(i);
+                x/=i;
+                while(x%i==0){
+                    list.add(i);
+                    x/=i;
+                }
+            }
+        }
+        if(x>=10) System.out.print("0");
+        else{
+            if(x!=1) list.add(x);
+            list.sort((o1,o2)->(o1-o2));
+            int y=list.get(0);
+            for(int i=1;i<list.size();i++){
+                 //System.out.print(list.get(i));
+  				if(y*list.get(i)>=10){
+                    System.out.print(y);
+                    y=list.get(i);
+                }
+                else{
+                    y*=list.get(i);
+                }
+            }
+            System.out.print(y);
+        }
+	}
+
+}

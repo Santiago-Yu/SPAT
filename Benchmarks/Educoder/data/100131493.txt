@@ -1,0 +1,36 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public static void showDirStructure(File file)	{
+		
+			String[] s1  = file.toString().split("/");
+			String k1 = "";
+			for(int i = 1; i<s1.length-2;i++) {
+				k1+="  ";
+			}
+			System.out.println(k1+"+--"+s1[s1.length-1]);
+			File[] files = file.listFiles();
+			for(File file1:files) {
+				if(file1.isDirectory()) {
+					
+					showDirStructure(file1);
+				} else {
+					String[] s2  = file1.toString().split("/");
+					
+					System.out.println(k1+"  "+"--"+s2[s2.length-1]);	
+					}
+				}
+			}
+		
+		public static void main(String[] args) {
+			File file = new File(" src/step2/dir ");
+			showDirStructure(file);
+	}
+
+
+	/********** END **********/
+}

@@ -1,0 +1,30 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        long[] res = new long[1];
+        for(int i = 0; i < abilities.length; i++){
+            g22Dfs(abilities, selectedNum, distance, i, 1, 0, res);
+        }
+        return res[0];
+    }
+    private static void g22Dfs(int[] abilities,  int selectedNum, int dis, int curIdx, long curMulti, int curSelected, long[] max){
+        if(selectedNum == curSelected) {
+            max[0] = Math.max(max[0], curMulti);
+            return;
+        }
+        if(abilities.length <= curIdx){
+            return;
+        }
+        curMulti = abilities[curIdx] * curMulti;
+        int last = curIdx + dis ;
+        for(int i = curIdx + 1; i <= last && i <= abilities.length; i++){
+            g22Dfs(abilities, selectedNum, dis, i, curMulti, curSelected + 1, max);
+        }
+    }
+
+	/********* End *********/
+}

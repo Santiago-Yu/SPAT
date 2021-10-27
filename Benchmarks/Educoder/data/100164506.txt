@@ -1,0 +1,35 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+  public static void main(String[] agrs){
+     double a,b,c; //方程的三个系数
+     double x1, x2;
+    /**********begin******/
+      
+	  Scanner scanner = new Scanner(System.in);
+   	  a = scanner.nextDouble();
+      b = scanner.nextDouble();
+      c = scanner.nextDouble();
+      if(a == 0){
+          System.out.println("无实根");
+      } else
+      if((b*b - 4*a*c)<0) {
+          System.out.println("无实根");
+      } else
+      if((b*b - 4*a*c)>=0) {
+          x1 = ((-1*b)+Math.sqrt(b*b - 4*a*c))/(2*a);
+          x2 = ((-1*b)-Math.sqrt(b*b - 4*a*c))/(2*a);
+          System.out.print("X1=");
+          System.out.printf("%4.2f",x1);
+          System.out.println();
+          System.out.print("X2=");
+          System.out.printf("%4.2f",x2);
+      }
+
+  
+  
+  
+    /**********end*****/
+  }
+  
+}

@@ -1,0 +1,29 @@
+package step1;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+import java.util.Arrays;
+public class StudentDemo{
+
+	//使用String.split()方法分割
+	public List<String> splitPartition(String str){
+		List<String> list=new ArrayList<String>();
+	   list.add(str);
+       String[] StrArray=str.split("\\|");
+//"\\s"表示空格
+       list = Arrays.asList(StrArray);//也可以来" "来进行拆分  String[] StrArray=Str.split(" ")
+		return list;
+	}
+
+	//使用StringTokenizer类进行分割
+	public List<String> tokenPartition(String str){
+		List<String> list=new ArrayList<String>();
+		   list.add(str);
+ 
+       String[] StrArray=str.split("\\?");
+//"\\s"表示空格
+       list = Arrays.asList(StrArray);
+		return list;
+	}
+
+}

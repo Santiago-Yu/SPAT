@@ -1,0 +1,27 @@
+package step3;
+
+
+     
+    class MyThread extends Thread  {
+         public static void main(String[] args) {
+           // System.out.println(Thread.currentThread().getName()+"主线程运行开始!");
+            MyThread mTh1=new MyThread("EDU");
+           // MyThread mTh2=new MyThread("");
+            mTh1.start();
+           // mTh2.start();
+            //System.out.println(Thread.currentThread().getName()+ "主线程运行结束!");
+        }
+        private String name;
+        public MyThread(String name) {
+            this.name = name;
+        }
+        public void run() {
+            for (int i = 0; i < 5; i++) {
+                System.out.print(name);
+                if(i  == 10){
+                    this.yield();
+                }
+            }
+        }
+    }
+  

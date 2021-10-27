@@ -1,0 +1,237 @@
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.Map.Entry;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+public class Task
+{
+
+    public static void main(String[] args) throws IOException
+    {
+        List<User> userlist = getUserTagsFromCsv("src/step1/user_tag.csv");
+        Map<Integer, List<Tag>> tagMap = getTagFromCsv("src/step1/tag_cooccurrence.csv");
+        List<String> data = new ArrayList<>();
+        for(User user : userlist)// 一层：遍历每一个user
+        {
+            HashMap<Tag, Double> tagCount = new HashMap<>();
+            for(Tag tag : user.getTags())// 二层：遍历每个user的的每一个tag
+            {
+                for(int i = 1; i < tagMap.size(); i++)// 三层：遍历tagMap中的每一组同现标签
+                {
+                    List<Tag> temp = tagMap.get(i);
+                    for(Tag tagg : temp)// 四层：遍历每一组同现标签中的每一个tag
+                    {
+                        if(tagg.getName().equals(tag.getName()))// 看是否与当前user的当前tag匹配
+                        { // 若匹配，把该组所有加入tagCount并计数
+                            for(Tag taggg : temp)
+                            {
+                                boolean flag = false;
+                                for(Tag tagggg : tagCount.keySet())
+                                {
+                                    if(tagggg.getName().equals(taggg.getName()))
+                                    {
+                                        flag = true;
+                                        tagCount.put(tagggg, tagCount.get(tagggg) + tag.getWeight());
+                                        break;
+                                    }
+                                }
+                                if(!flag)
+                                    tagCount.put(taggg, tag.getWeight());
+                            }
+                            break;// 若该标签匹配，则该组后面不会再有能与tag匹配的，跳出到第三层，遍历下一组同现标签
+                        }
+                    }
+                }
+            }
+
+            data.add(get(tagCount, user));
+        }
+        writeCsvFile("src/step1/user_recommand.csv", data);
+    }
+
+    public static String get(Map<Tag, Double> tagCount, User user)
+    {
+        ArrayList<Entry<Tag, Double>> ar = new ArrayList<>(tagCount.entrySet());
+        StringBuffer bf = new StringBuffer();
+        int count = 0;
+        double max;
+        Tag maxTag;
+        Entry<Tag, Double> maxEntry;
+        while(count < 25)
+        {
+            max = -1.0;
+            maxTag = null;
+            maxEntry = null;
+            for(Entry<Tag, Double> entry : ar)
+            {
+                if(entry.getValue() > max)
+                {
+                    max = entry.getValue();
+                    maxTag = entry.getKey();
+                    maxEntry = entry;
+                }
+            }
+            ar.remove(maxEntry);
+            if(!user.getTags().contains(maxTag))
+            {
+                bf.append(maxTag.getName() + ",");
+                count++;
+            }
+        }
+        bf.deleteCharAt(bf.length() - 1);
+        return bf.toString();
+    }
+
+    public static List<User> getUserTagsFromCsv(String path) throws IOException
+    {
+        List<User> userList = new ArrayList<>();
+        try
+        {
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)), Charset.forName("UTF-8"));
+            boolean readHeaders = csvReader.readHeaders();
+            while(csvReader.readRecord())
+            {
+                String id = csvReader.get(0); // 读id
+                String tagName = csvReader.get(1); // 标签名
+                String weight = csvReader.get(2); // 对应权重
+                String[] tagItems = tagName.split(",");
+                String[] weightItems = weight.split(",");
+                List<Tag> tags = new ArrayList<>();
+                User user = new User();
+                user.setTagStr(tagName);
+                user.setUserId(Integer.valueOf(id));
+                for(int j = 0; j < tagItems.length; j++)
+                {
+                    Tag tag = new Tag();
+                    tag.setName(tagItems[j]);
+                    tag.setWeight(Double.valueOf(weightItems[j].replace("[", "").replace("]", "")));
+                    tags.add(tag);
+                }
+                user.setTags(tags);
+                userList.add(user);
+            }
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    public static Map<Integer, List<Tag>> getTagFromCsv(String path) throws IOException
+    {
+        Map<Integer, List<Tag>> tagMap = new HashMap<>();
+        try
+        {
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)), Charset.forName("UTF-8"));
+            boolean readHeaders = csvReader.readHeaders();
+            while(csvReader.readRecord())
+            {
+                String id = csvReader.get(0); // 读id
+                String tagName = csvReader.get(1); // 标签名
+                String[] tagItems = tagName.split(",");
+                List<Tag> tags = new ArrayList<>();
+                for(int j = 0; j < tagItems.length; j++)
+                {
+                    Tag tag = new Tag();
+                    tag.setName(tagItems[j]);
+                    tags.add(tag);
+                }
+                tagMap.put(Integer.parseInt(id), tags);
+            }
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        return tagMap;
+    }
+
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException
+    {
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        String[] headers = { "id", "recommand_tags" };
+        csvWriter.writeRecord(headers);
+        int id = 1;
+        for(String tag : data)
+        {
+            String[] content = { id++ + "", tag };
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+class Tag
+{
+    private String name; // 标签名
+    private double weight; // 权重值
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public double getWeight()
+    {
+        return weight;
+    }
+
+    public void setWeight(double weight)
+    {
+        this.weight = weight;
+    }
+}
+
+// 用户
+class User
+{
+    private int userId;
+    private List<Tag> tags;
+    private String tagStr;
+
+    public int getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(int userId)
+    {
+        this.userId = userId;
+    }
+
+    public List<Tag> getTags()
+    {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags)
+    {
+        this.tags = tags;
+    }
+
+    public String getTagStr()
+    {
+        return tagStr;
+    }
+
+    public void setTagStr(String tagStr)
+    {
+        this.tagStr = tagStr;
+    }
+}

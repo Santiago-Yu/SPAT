@@ -1,0 +1,32 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread myThread=new MyThread(num);
+		myThread.run();
+	}
+}
+
+
+class MyThread     {
+    int n;
+    int m=0;
+    public MyThread(int n) {
+        this.n = n;
+    }
+    public void run(){
+    	System.out.println("子线程计算结果为："+fib(n));
+    }
+      int fib(int n){
+		  if(n<3)
+			  return 1;
+		  else
+			  return fib(n-1)+fib(n-2);
+	  }
+}
+ 

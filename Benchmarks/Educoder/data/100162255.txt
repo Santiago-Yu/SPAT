@@ -1,0 +1,87 @@
+package task04;
+
+import java.util.Scanner;
+
+/*
+ * 说明：根据提示，补充完整 begin 和 end 之间的代码。
+ *     （其他代码可以不用改）
+ */
+
+/**************** begin *****************/
+// 在此定义学生类名
+
+/**************** end *****************/
+
+	/**************** begin *****************/
+	class Student
+	{
+		String name=null;
+		String age="0";
+
+	public Student(){}
+	public Student(String name){
+		this.name=name;
+	}
+	public Student(String name,String age)
+	{
+		this.name=name;
+		this.age=age;
+	}
+	 // 将姓名name和年龄age属性定义为私有的
+
+	/**************** end *****************/
+
+
+	/**************** begin *****************/
+	/*
+	 * 定义三个重载的构造方法，
+	 * 无参的构造方法：方法体为空；
+	 * 接收一个String类型参数的构造方法：方法体中用参数为姓名赋值；
+	 * 接收String类型和int类型两个参数的构造方法：方法体中用参数为姓名和年龄赋值；
+	 */
+
+	/**************** end *****************/
+	
+	void speak() {
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+
+public class Task04{
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+
+		/**************** begin *****************/
+		 Student s=new Student();
+		 s.speak();// 使用无参的构造方法创建一个Student对象，并调用speak()方法
+
+		/**************** end *****************/
+		
+
+		/**************** begin *****************/
+		String name;
+		String age;
+		name=scan.nextLine();
+		Student t=new Student(name);
+		t.speak();
+		/*
+		 * 使用一个参数的构造方法创建一个Student对象，参数值为运行时接收从键盘输入，
+		 * 然后调用speak()方法
+		 */
+
+		/**************** end *****************/
+
+
+		/**************** begin *****************/
+		name=scan.nextLine();
+	 age=scan.nextLine();
+		Student u=new Student(name,age);
+		u.speak();
+		/*
+		 * 使用两个参数的构造方法创建一个Student对象，参数值为运行时接收从键盘输入，
+		 * 然后调用speak()方法
+		 */
+
+		/**************** end *****************/
+	}
+}

@@ -1,0 +1,59 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+    int k = 0;
+    
+	public void showDirStructure(File file)	{
+	/*	FileFilter filter = file -> {
+      		if (file.isFile()) {
+        	String fileName = file.getName().toLowerCase();
+        	if (fileName.endsWith(".jpg")||fileName.endsWith(".png")||fileName.endsWith(".bmp")) {
+          	return true;
+                else
+                    return false;
+        	}
+      			}
+     		 	return true;
+    		};
+		File[] list = new dir.listFiles(filter);	*/
+		
+        
+        
+		if(file.isDirectory())
+        {
+
+            for(int i=0;i<k;i++)
+      		  {
+        		System.out.print("  ");
+       			 }
+            k++;
+            System.out.println("+--"+file.getName());
+        	File[] files = file.listFiles();
+        	for(File file1:files)
+        	{
+        		showDirStructure(file1);
+       	 	}
+            k--;
+        }
+        else if(file.getName().toLowerCase().endsWith(".jpg")||file.getName().toLowerCase().endsWith(".png")||file.getName().toLowerCase().endsWith(".bmp"))
+        {
+            for(int i=0;i<k;i++)
+        {
+        	System.out.print("  ");
+        }
+            System.out.println("--"+file.getName());
+        }
+
+
+
+
+	}
+	
+
+	/********** End **********/
+}

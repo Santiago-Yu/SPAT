@@ -1,0 +1,50 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		int tempArr[]=new int[arr[0].length];
+    	for(int i=0;i<tempArr.length;i++){
+    		tempArr[i]=0;
+    	}
+		for(int i=0;i<arr.length;i++){
+			//首先将一维数组中的数据进行降序排序
+			for(int x=0;x<arr[i].length;x++){
+	            for(int y=x+1;y<arr[i].length;y++){
+	                if(arr[i][x]<arr[i][y]){
+						int temp=arr[i][x];
+						arr[i][x]=arr[i][y];
+						arr[i][y]=temp;
+	                }
+	            }
+	        }
+		}
+		for(int i=0;i<arr.length;i++){
+			for(int j=0;j<arr[i].length;j++){
+				tempArr[i]+=arr[i][j];
+			}
+		}
+		
+		//然后以一维数组整体的和作为一个单位来进行降序排序。
+		for(int i=0;i<tempArr.length;i++){
+			for(int j=0;j<tempArr.length-i-1;j++){
+				if(tempArr[j]>tempArr[j+1]){
+					int temp=tempArr[j];
+					tempArr[j]=tempArr[j+1];
+					tempArr[j+1]=temp;
+					
+					int tempArrT[]=arr[j];
+					arr[j]=arr[j+1];
+					arr[j+1]=tempArrT;
+				}
+			}
+			System.out.println(Arrays.toString(arr[tempArr.length-i-1]));
+		}
+    }
+    
+    /********** END **********/
+}
+	

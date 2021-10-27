@@ -1,0 +1,28 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+  public static void main(String[] agrs){
+     double a,b,c; //方程的三个系数
+    /**********begin******/
+      Scanner scanner = new Scanner(System.in);
+      a = scanner.nextDouble();
+      b = scanner.nextDouble();
+      c = scanner.nextDouble();
+	  if (b * b < 4 * a * c) {
+  		System.out.println("方程无实根");
+      }
+      else if(a == 0) {
+          double temp = 0.0;
+          temp = b*b-4*a*c;
+          System.out.printf("唯一根 X=%.2f", c / b * (-1.0));
+      }
+      else {
+          double temp = 0.0;
+          temp = b*b-4*a*c;
+          System.out.printf("X1=%.2f\n", (-1 * b + Math.sqrt(temp))/(2 * a));
+          System.out.printf("X2=%.2f", (-1 * b - Math.sqrt(temp))/ (2 * a));
+      }
+    /**********end*****/
+  }
+  	
+}

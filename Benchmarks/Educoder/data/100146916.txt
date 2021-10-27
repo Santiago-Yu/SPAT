@@ -1,0 +1,43 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    int   sn = 0;
+	int []temp=new int[10000];
+        int []a=new int[3];
+	int i,j;
+	for( i = 0; i < 10000; i++){
+		temp[i] = 0;
+	}
+	for( i = 0; i < 9997; i++){
+		j = nums[i];
+		temp[j-1] = j;
+	}
+	for(  i = 0, sn = 0; i < 10000; i++){
+		if( temp[i] == 0 ){
+			a[sn] = i+1;
+			sn++;
+			if( sn >= 3 )break;
+		}
+	}
+	
+	int n;
+	for( i = 1, n = a[0]%11; i < sn; i++){
+		j = a[i];
+		while(j>0){
+			j = j/10;
+			n *= 10;
+		}
+		n += a[i];
+	}
+		
+	return (n )%11;
+
+	
+	}
+
+	/********* End *********/
+}

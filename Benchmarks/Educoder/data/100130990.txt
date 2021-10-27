@@ -1,0 +1,21 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		int res=0;
+		for(int i=num1;i<=num2;i++){
+			res+=getBitSum(i);
+		}
+		return res;
+	}
+	public int getBitSum(int num1){
+		int res=0;
+		while(num1!=0){
+			res+=num1%10;
+			num1/=10;
+		}
+		return res;
+	}
+}

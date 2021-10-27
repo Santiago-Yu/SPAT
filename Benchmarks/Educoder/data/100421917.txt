@@ -1,0 +1,54 @@
+    public static boolean copyDirectoryCover(String srcDirName, String descDirName, boolean coverlay) {
+        File srcDir = new File(srcDirName);
+        if (!srcDir.exists()) {
+            System.out.println("澶嶅埗鐩綍澶辫触锛屾簮鐩綍" + srcDirName + "涓嶅瓨鍦�!");
+            return false;
+        } else if (!srcDir.isDirectory()) {
+            System.out.println("澶嶅埗鐩綍澶辫触锛�" + srcDirName + "涓嶆槸涓�涓洰褰�!");
+            return false;
+        }
+        if (!descDirName.endsWith(File.separator)) {
+            descDirName = descDirName + File.separator;
+        }
+        File descDir = new File(descDirName);
+        if (descDir.exists()) {
+            if (coverlay) {
+                System.out.println("鐩爣鐩綍宸插瓨鍦紝鍑嗗鍒犻櫎!");
+                if (!FileOperateUtils.delFile(descDirName)) {
+                    System.out.println("鍒犻櫎鐩綍" + descDirName + "澶辫触!");
+                    return false;
+                }
+            } else {
+                System.out.println("鐩爣鐩綍澶嶅埗澶辫触锛岀洰鏍囩洰褰�" + descDirName + "宸插瓨鍦�!");
+                return false;
+            }
+        } else {
+            System.out.println("鐩爣鐩綍涓嶅瓨鍦紝鍑嗗鍒涘缓!");
+            if (!descDir.mkdirs()) {
+                System.out.println("鍒涘缓鐩爣鐩綍澶辫触!");
+                return false;
+            }
+        }
+        boolean flag = true;
+        File[] files = srcDir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                flag = FileOperateUtils.copyFile(files[i].getAbsolutePath(), descDirName + files[i].getName());
+                if (!flag) {
+                    break;
+                }
+            }
+            if (files[i].isDirectory()) {
+                flag = FileOperateUtils.copyDirectory(files[i].getAbsolutePath(), descDirName + files[i].getName());
+                if (!flag) {
+                    break;
+                }
+            }
+        }
+        if (!flag) {
+            System.out.println("澶嶅埗鐩綍" + srcDirName + "鍒�" + descDirName + "澶辫触!");
+            return false;
+        }
+        System.out.println("澶嶅埗鐩綍" + srcDirName + "鍒�" + descDirName + "鎴愬姛!");
+        return true;
+    }

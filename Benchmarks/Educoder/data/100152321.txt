@@ -1,0 +1,28 @@
+package step1;
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class TestJava11_2 {
+	public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        DecimalFormat df=new DecimalFormat("0.00");
+        System.out.println("请输入西瓜重量：");
+        double a=sc.nextInt();
+        double b;
+        System.out.println("请输入顾客所付钱数：");
+        double c=sc.nextInt();
+        if(a>20){
+         	b=0.85*a;   
+        }else if(a>15&&a<=20){
+         	b=0.9*a;   
+        }else if(a>10&&a<=15){
+         	b=0.95*a;   
+        }else if(a>5&&a<=10){
+            b=1*a;
+        }else{
+            b=1.05*a;
+        }
+        System.out.printf("西瓜应付钱数："+("%.2f"),b);
+        System.out.println("\n应找钱数："+df.format(c-b));
+	}
+
+}

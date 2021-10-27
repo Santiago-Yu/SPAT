@@ -1,0 +1,41 @@
+package task4;
+import java.util.Scanner;
+
+public class Box {
+    double width;
+    double height;
+    double depth;
+    
+    int boxType;
+    
+    public Box(){
+        
+    }
+    public Box(int boxType) {
+        this.boxType = boxType;
+        
+        
+        
+        
+      
+        // your code
+    }
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+    
+    public double volume() {
+        switch(boxType){
+            case 1 : return depth*height*width;
+            case 2 : return depth*height*width*3.14;
+            
+        }
+        return 0;
+        
+    }
+}

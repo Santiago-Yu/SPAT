@@ -1,0 +1,97 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int temp=0;
+		if(year % 4==0){
+        	if(year % 100==0){
+            	if(year % 4==0)
+                    temp=1;
+            }
+            temp=1;
+        }
+		switch(month){
+            case 1:
+            System.out.print(day);
+            break;
+                
+            case 2:
+            System.out.print(31+day);
+            break;
+                
+            case 3:
+            if(temp==1)    
+            	System.out.print(31+29+day);
+            else
+                System.out.print(31+28+day);
+            break;
+                
+            case 4:
+            if(temp==1)    
+            	System.out.print(31+29+31+day);
+            else
+                System.out.print(31+28+31+day);
+            break;
+                
+            case 5:
+            if(temp==1)    
+            	System.out.print(31+29+31+30+day);
+            else
+                System.out.print(31+28+31+30+day);
+            break;
+                
+            case 6:
+            if(temp==1)    
+            	System.out.print(31+29+31+30+31+day);
+            else
+                System.out.print(31+28+31+30+31+day);
+            break;
+                
+            case 7:
+            if(temp==1)    
+            	System.out.print(31+29+31+30+31+30+day);
+            else
+                System.out.print(31+28+31+30+31+30+day);
+            break;
+                
+            case 8:
+            if(temp==1)    
+            	System.out.print(31+29+31+30+31+30+31+day);
+            else
+                System.out.print(31+28+31+30+31+30+31+day);
+            break;
+                
+            case 9:
+            if(temp==1)    
+            	System.out.print(31+29+31+30+31+30+31+31+day);
+            else
+                System.out.print(31+28+31+30+31+30+31+31+day);
+            break;
+                
+            case 10:
+             if(temp==1)    
+            	System.out.print(31+29+31+30+31+30+31+31+30+day);
+            else
+                System.out.print(31+28+31+30+31+30+31+31+30+day);
+            break;
+                
+            case 11:
+            if(temp==1)    
+            	System.out.print(31+29+31+30+31+30+31+31+30+31+day);
+            else
+                System.out.print(31+28+31+30+31+30+31+31+30+31+day);
+            break; 
+                
+            case 12:
+            if(temp==1)    
+            	System.out.print(31+29+31+30+31+30+31+31+30+31+30+day);
+            else
+                System.out.print(31+28+31+30+31+30+31+31+30+31+30+day);
+            break;
+                  	
+        }
+
+		/********** End *********/
+	}
+}

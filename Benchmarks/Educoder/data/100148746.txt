@@ -1,0 +1,48 @@
+package step1;
+
+import java.util.Arrays;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		int leftIndex=0,rightIndex=arr.length-1;
+		boolean isSorted=true;//处理原本已经排序的数组
+		while(leftIndex<rightIndex) {
+			//从左到右
+			for(int i=leftIndex;i<rightIndex;i++) {
+				if(arr[i]>arr[i+1]) {
+					swap(arr,i,i+1);
+					println(arr);
+					isSorted=false;
+				}
+			}
+			if(isSorted) {
+				println(arr);
+				break;
+			}
+			rightIndex--;
+			//从右边到左
+			for(int i=rightIndex;i>leftIndex;i--) {
+				if(arr[i]<arr[i-1]) {
+					swap(arr, i, i-1);
+					println(arr);
+				}
+			}
+			leftIndex++;
+		}
+    }
+    
+    private void println(Integer[] a) {
+		for(int i=0;i<a.length;i++) {
+			System.out.print(a[i]+" ");
+		}
+		System.out.println();
+	}
+
+	private void swap(Integer[] a, int i, int j) {
+		int temp=a[i];
+		a[i]=a[j];
+		a[j]=temp;
+	}
+}

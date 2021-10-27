@@ -1,0 +1,22 @@
+package step5;
+
+import java.util.Scanner;
+
+
+public class Task {
+	
+	public int getDepth(TreeNode tree){
+		/********** BEGIN **********/
+     if(tree==null)
+			return 0;
+		else
+		{//根节点存在
+			int dLeft = getDepth(tree.left);
+			int dRight = getDepth(tree.right);
+			return dLeft>dRight?dLeft+1:dRight+1;
+		}
+		/********** END **********/
+		
+	}
+	
+}

@@ -1,0 +1,85 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public static  boolean csh = true;
+	public static int a=0;
+	public static int chen(File file) {
+	  
+		int count=0;
+		int a=file.getAbsolutePath().length();
+		for(int i=0;i<a;i++) {
+			if(file.getAbsolutePath().charAt(i)=='/'){
+				count+=1;
+			}
+		}
+		
+	
+		return count;
+	}
+	public static void init(File file) {
+		if(file.exists()&&file.isDirectory()) {
+			System.out.print("+--");
+			System.out.println(file.getName());
+		
+		}
+		else {
+			System.out.print("--");
+			System.out.println(file.getName());
+		}
+	}
+	public static void blank(int b) {
+		for(int i=0;i<b;i++) {
+			System.out.print("  ");
+		}
+	}
+	public static String ewith(File file) {
+		String a=file.getName();
+		String[] split=a.split("\\.");
+		
+		a=split[split.length-1];
+		return a;
+	}
+	
+	
+	public static void  showDirStructure(File file) {
+		if(csh==true) {
+			 a=chen(file);
+			 init(file);
+			csh=false;
+			}
+		if(file.exists()) {
+			
+			File[] files=file.listFiles();
+			
+			if(files!=null&&files.length>0) {
+				for(int i=0;i<files.length;i++) {
+					if(files[i].exists()&&files[i].isDirectory()) {
+						int b=chen(files[i]);
+						int c=b-a;
+						blank(c);
+						System.out.print("+--");
+						System.out.println(files[i].getName());
+						showDirStructure(files[i]);
+					}
+					else {
+						String string=ewith(files[i]);
+						if(string.equals("jpg")||string.equals("png")||string.equals("bmp")) {
+							int b=chen(files[i]);
+							int c=b-a;
+							blank(c);
+							System.out.print("--");
+							System.out.println(files[i].getName());
+						}
+					}
+				}
+			}
+			
+		}
+	}
+
+	/********** END **********/
+}

@@ -1,0 +1,51 @@
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) {
+	Scanner sc=new Scanner(System.in);
+	String[] nums=null;
+	nums=sc.nextLine().split(" ");
+	int a[]=new int[nums.length];
+	for(int i=0; i<a.length;i++){
+		a[i]=Integer.valueOf(nums[i]);
+	}
+int w=0;
+int s=0;
+int e=0;
+if(a[0]!=5){
+	System.out.print("false");
+}
+else{
+	w=1;
+	for(int i=1;i<a.length;i++){
+		
+		if(a[i]==5){
+			w++;
+		}
+		if(a[i]==10){
+			w--;
+			s++;
+		}
+		if(a[i]==20){
+			if(s==0){
+				w=w-3;
+				e++;
+			}
+			else{
+				w--;
+				s--;
+				e++;
+			}
+		}
+		if(w<0||s<0||e<0){
+			System.out.print("false");
+			break;
+		}
+	}
+	if(w>=0&&s>=0&&e>=0){
+		System.out.print("true");
+	}
+}
+
+}
+}

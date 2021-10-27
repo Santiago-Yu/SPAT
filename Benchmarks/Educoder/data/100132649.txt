@@ -1,0 +1,24 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        int m=length;
+        int n=width;
+		int maxEdge=0;
+		for (int i = n; i >0; i--) {
+			if ((m%i|n%i)==0) {
+				maxEdge=i;
+				break;
+			}
+		}
+		System.out.println(maxEdge);
+		System.out.println(m*n/maxEdge/maxEdge);
+		/********** END **********/
+	}
+}

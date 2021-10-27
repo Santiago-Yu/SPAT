@@ -1,0 +1,70 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Main {
+	 /**
+     * 5元个数
+     */
+    public static int FIVE_COUNT = 0;
+
+    /**
+     * 10元个数
+     */
+    public static int TEN_COUNT = 0;
+    /**
+     * 20元个数
+     */
+    public static int TWENTY_COUNT = 0;
+
+    /**
+     * 用于静态判断， 输入金额是否等于一下数字 可随时增加
+     */
+    public static Map<Integer, Integer> keys = new HashMap<Integer, Integer>() {{
+        put(0, 0);
+        put(5, 5);
+        put(10, 10);
+        put(20, 20);
+    }};
+
+    /**
+     * 该程序输入限于5 10 20
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        String line = input.nextLine();
+        String[] arr = line.split("\\s+");
+        for (String a : arr) {
+            int money = Integer.valueOf(a);
+            if (!keys.containsKey(money)) {
+                continue;
+            }
+            if (money == 5) {
+                ++FIVE_COUNT;
+            } else if (money == 10) {
+                if (FIVE_COUNT > 0) {
+                    --FIVE_COUNT;
+                    ++TEN_COUNT;
+                } else {
+                    System.out.print(false);
+                    return;
+                }
+            } else if (money == 20) {
+                if (TEN_COUNT > 0 && FIVE_COUNT > 0) {
+                    --TEN_COUNT;
+                    --FIVE_COUNT;
+                    ++TWENTY_COUNT;
+                } else if (FIVE_COUNT > 2) {
+                    FIVE_COUNT = FIVE_COUNT - 3;
+                    ++TWENTY_COUNT;
+                } else {
+                    System.out.print(false);
+                    return;
+                }
+            }
+        }
+        System.out.print(true);
+    }
+}

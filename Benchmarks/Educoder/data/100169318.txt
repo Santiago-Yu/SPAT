@@ -1,0 +1,68 @@
+package step1;
+import java.util.List;
+public class Task {
+
+   public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+    	
+        StringBuilder sb=new StringBuilder(s);   
+        for(Operation op:ops){
+        	//System.out.println(sb.toString());
+        	//System.out.println(p);
+            if(op.t.equals("L")){
+                if(sb.length()==0){
+                    p=0;
+                    continue;
+                }
+                p=(p-=op.l)<0?0:p;
+            }
+            else if(op.t.equals("B")){
+                int tmp=p;
+                tmp=(tmp-=op.l)<0?0:tmp;
+                if(p==0)
+                continue;
+               // if(p>sb.length())
+                sb=sb.delete(tmp,p);
+                p=tmp;
+            }
+            else if(op.t.equals("D")){
+                if(p>=sb.length()){
+                    continue;
+                }
+                    int x=(p+op.l)>=(sb.length())?(sb.length()):(p+op.l);
+                    sb.delete(p,x);
+                
+            }
+             else if(op.t.equals("I")){
+            	if(p>=sb.length()){
+                    sb.append(op.s);
+                    p+=op.s.length();
+                
+                    continue;
+                }
+	
+                 sb.insert(p,op.s);
+                 p+=op.s.length();
+                
+            }
+            else if(op.t.equals("R")){
+                
+                if(sb.length()==0){
+                    p=0;
+                    continue;
+                }
+                p=(p+=op.l)<sb.length()?p:(sb.length());
+            
+        }
+        }
+       // System.out.println(p);
+        return sb.toString();	
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

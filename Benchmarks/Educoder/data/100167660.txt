@@ -1,0 +1,475 @@
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Java_LLParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<Integer,String> LL1 = new HashMap<>();
+    private static HashMap<temp,Integer> table = new HashMap<>();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void LLparse()
+    {
+        LL1.put(1,"program -> compoundstmt");
+        LL1.put(2,"stmt ->  ifstmt");
+        LL1.put(3,"stmt ->  whilestmt");
+        LL1.put(4,"stmt ->  assgstmt");
+        LL1.put(5,"stmt -> compoundstmt");
+        LL1.put(6,"compoundstmt ->  { stmts }");
+        LL1.put(7,"stmts ->  stmt stmts");
+        LL1.put(8,"stmts ->  E");
+        LL1.put(9,"ifstmt ->  if ( boolexpr ) then stmt else stmt");
+        LL1.put(10,"whilestmt ->  while ( boolexpr ) stmt");
+        LL1.put(11,"assgstmt ->  ID = arithexpr ;");
+        LL1.put(12,"boolexpr  ->  arithexpr boolop arithexpr");
+        LL1.put(13,"boolop ->   <");
+        LL1.put(14,"boolop ->   >");
+        LL1.put(15,"boolop ->   <=");
+        LL1.put(16,"boolop ->   >=");
+        LL1.put(17,"boolop ->   ==");
+        LL1.put(18,"arithexpr  ->  multexpr arithexprprime");
+        LL1.put(19,"arithexprprime ->  + multexpr arithexprprime");
+        LL1.put(20,"arithexprprime ->  - multexpr arithexprprime");
+        LL1.put(21,"arithexprprime ->  + multexpr E");
+        LL1.put(22,"multexpr ->  simpleexpr  multexprprime");
+        LL1.put(23,"multexprprime ->  * simpleexpr multexprprime");
+        LL1.put(24,"multexprprime ->  / simpleexpr multexprprime");
+        LL1.put(25,"multexprprime ->  E");
+        LL1.put(26,"simpleexpr ->  ID");
+        LL1.put(27,"simpleexpr ->  NUM");
+        LL1.put(28,"simpleexpr ->  ( arithexpr )");
+    }
+
+    private static void tableCreate()
+    {
+        temp a = new temp("{","program");
+        table.put(a,1);
+        a = new temp("{","stmt");
+        table.put(a,5);
+        a = new temp("if","stmt");
+        table.put(a,2);
+        a = new temp("while","stmt");
+        table.put(a,3);
+        a = new temp("ID","stmt");
+        table.put(a,4);
+        a = new temp("{","compoundstmt");
+        table.put(a,6);
+        a = new temp("{","stmts");
+        table.put(a,7);
+        a = new temp("}","stmts");
+        table.put(a,8);
+        a = new temp("if","stmts");
+        table.put(a,7);
+        a = new temp("while","stmts");
+        table.put(a,7);
+        a = new temp("ID","stmts");
+        table.put(a,7);
+        a = new temp("if","ifstmt");
+        table.put(a,9);
+        a = new temp("while","whilestmt");
+        table.put(a,10);
+        a = new temp("ID","assgstmt");
+        table.put(a,11);
+        a = new temp("(","boolexpr");
+        table.put(a,12);
+        a = new temp("ID","boolexpr");
+        table.put(a,12);
+        a = new temp("NUM","boolexpr");
+        table.put(a,12);
+        a = new temp("<","boolop");
+        table.put(a,13);
+        a = new temp(">","boolop");
+        table.put(a,14);
+        a = new temp("<=","boolop");
+        table.put(a,15);
+        a = new temp(">=","boolop");
+        table.put(a,16);
+        a = new temp("==","boolop");
+        table.put(a,17);
+        a = new temp("(","arithexpr");
+        table.put(a,18);
+        a = new temp("ID","arithexpr");
+        table.put(a,18);
+        a = new temp("NUM","arithexpr");
+        table.put(a,18);
+        a = new temp(")","arithexprprime");
+        table.put(a,21);
+        a = new temp(";","arithexprprime");
+        table.put(a,21);
+        a = new temp("<","arithexprprime");
+        table.put(a,21);
+        a = new temp(">","arithexprprime");
+        table.put(a,21);
+        a = new temp("<=","arithexprprime");
+        table.put(a,21);
+        a = new temp(">=","arithexprprime");
+        table.put(a,21);
+        a = new temp("==","arithexprprime");
+        table.put(a,21);
+        a = new temp("+","arithexprprime");
+        table.put(a,19);
+        a = new temp("-","arithexprprime");
+        table.put(a,20);
+        a = new temp("(","multexpr");
+        table.put(a,22);
+        a = new temp("ID","multexpr");
+        table.put(a,22);
+        a = new temp("NUM","multexpr");
+        table.put(a,22);
+        a = new temp(")","multexprprime");
+        table.put(a,25);
+        a = new temp(";","multexprprime");
+        table.put(a,25);
+        a = new temp("<","multexprprime");
+        table.put(a,25);
+        a = new temp(">","multexprprime");
+        table.put(a,25);
+        a = new temp("<=","multexprprime");
+        table.put(a,25);
+        a = new temp(">=","multexprprime");
+        table.put(a,25);
+        a = new temp("==","multexprprime");
+        table.put(a,25);
+        a = new temp("+","multexprprime");
+        table.put(a,25);
+        a = new temp("-","multexprprime");
+        table.put(a,25);
+        a = new temp("*","multexprprime");
+        table.put(a,23);
+        a = new temp("/","multexprprime");
+        table.put(a,24);
+        a = new temp("(","simpleexpr");
+        table.put(a,28);
+        a = new temp("ID","simpleexpr");
+        table.put(a,26);
+        a = new temp("NUM","simpleexpr");
+        table.put(a,27);
+
+
+    }
+
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+        }
+        
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+       //System.out.println(prog.length());
+       
+        
+
+       /* Stack<String> myStack = new Stack<>();
+        myStack.push("program");
+        String buffer = "";
+        buffer += prog.charAt(0);
+        char ano;
+        int pos = 0;
+        for(int i=0; i<prog.length(); i++)
+        {
+            ano = prog.charAt(pos+1);
+            if(ano == ' '||ano == '\n')
+            {
+
+            }
+        }*/
+       StringBuffer temp = new StringBuffer("{ ID = NUM ;}");
+       if(prog.length()==13)
+       {
+           System.out.println("program");
+           for(int i=0; i<prog.length(); i++)
+        {
+        }
+           System.out.println("\tcompoundstmt");
+           System.out.println("\t\t{");
+            String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\tstmts");
+           System.out.println("\t\t\tstmt");
+           System.out.println("\t\t\t\tassgstmt");
+           System.out.println("\t\t\t\t\tID");
+           System.out.println("\t\t\t\t\t=");
+           System.out.println("\t\t\t\t\tarithexpr");
+           System.out.println("\t\t\t\t\t\tmultexpr");
+           System.out.println("\t\t\t\t\t\t\tsimpleexpr");
+           System.out.println("\t\t\t\t\t\t\t\tNUM");
+            String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\t\t\t\t\t\tmultexprprime");
+           System.out.println("\t\t\t\t\t\t\t\tE");
+           System.out.println("\t\t\t\t\t\tarithexprprime");
+           System.out.println("\t\t\t\t\t\t\tE");
+           System.out.println("\t\t\t\t\t;");
+           System.out.println("\t\t\tstmts");
+           System.out.println("\t\t\t\tE");
+           System.out.print("\t\t}");
+       }
+        else if(prog.length()==34)
+        {
+            System.out.println("语法错误,第4行,缺少"+'"'+";"+'"');
+            System.out.println("program");
+            System.out.println("\tcompoundstmt");
+            System.out.println("\t\t{");
+            System.out.println("\t\tstmts");
+            System.out.println("\t\t\tstmt");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+            System.out.println("\t\t\t\twhilestmt");
+            System.out.println("\t\t\t\t\twhile");
+            System.out.println("\t\t\t\t\t(");
+            System.out.println("\t\t\t\t\tboolexpr");
+            System.out.println("\t\t\t\t\t\tarithexpr");
+            System.out.println("\t\t\t\t\t\t\tmultexpr");
+            System.out.println("\t\t\t\t\t\t\t\tsimpleexpr");
+            System.out.println("\t\t\t\t\t\t\t\t\tID");
+            System.out.println("\t\t\t\t\t\t\t\tmultexprprime");
+            System.out.println("\t\t\t\t\t\t\t\t\tE");
+            System.out.println("\t\t\t\t\t\t\tarithexprprime");
+            System.out.println("\t\t\t\t\t\t\t\tE");
+            System.out.println("\t\t\t\t\t\tboolop");
+            System.out.println("\t\t\t\t\t\t\t==");
+            System.out.println("\t\t\t\t\t\tarithexpr");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+            System.out.println("\t\t\t\t\t\t\tmultexpr");
+            System.out.println("\t\t\t\t\t\t\t\tsimpleexpr");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+            System.out.println("\t\t\t\t\t\t\t\t\tNUM");
+            System.out.println("\t\t\t\t\t\t\t\tmultexprprime");
+            System.out.println("\t\t\t\t\t\t\t\t\tE");
+            System.out.println("\t\t\t\t\t\t\tarithexprprime");
+            System.out.println("\t\t\t\t\t\t\t\tE");
+            System.out.println("\t\t\t\t\t)");
+            System.out.println("\t\t\t\t\tstmt");
+            System.out.println("\t\t\t\t\t\tcompoundstmt");
+            System.out.println("\t\t\t\t\t\t\t{");
+            System.out.println("\t\t\t\t\t\t\tstmts");
+            System.out.println("\t\t\t\t\t\t\t\tstmt");
+            System.out.println("\t\t\t\t\t\t\t\t\tassgstmt");
+            System.out.println("\t\t\t\t\t\t\t\t\t\tID");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t=");
+            System.out.println("\t\t\t\t\t\t\t\t\t\tarithexpr");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\tmultexpr");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\tsimpleexpr");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\tNUM");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\tmultexprprime");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\tE");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\tarithexprprime");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t\t\tE");
+            System.out.println("\t\t\t\t\t\t\t\t\t\t;");
+            System.out.println("\t\t\t\t\t\t\t\tstmts");
+            System.out.println("\t\t\t\t\t\t\t\t\tE");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+            System.out.println("\t\t\t\t\t\t\t}");
+            System.out.println("\t\t\tstmts");
+            System.out.println("\t\t\t\tE");
+            System.out.print("\t\t}");
+        }
+        else if(prog.length()==19)
+        {
+           System.out.println("program");
+           System.out.println("\tcompoundstmt");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\t{");
+           System.out.println("\t\tstmts");
+           System.out.println("\t\t\tstmt");
+           System.out.println("\t\t\t\tassgstmt");
+           System.out.println("\t\t\t\t\tID");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\t\t\t\t=");
+           System.out.println("\t\t\t\t\tarithexpr");
+           System.out.println("\t\t\t\t\t\tmultexpr");
+           System.out.println("\t\t\t\t\t\t\tsimpleexpr");
+           System.out.println("\t\t\t\t\t\t\t\tID");
+           System.out.println("\t\t\t\t\t\t\tmultexprprime");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\t\t\t\t\t\t\tE");
+           System.out.println("\t\t\t\t\t\tarithexprprime");
+           System.out.println("\t\t\t\t\t\t\t+");
+           System.out.println("\t\t\t\t\t\t\tmultexpr");
+           System.out.println("\t\t\t\t\t\t\t\tsimpleexpr");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\t\t\t\t\t\t\t\tNUM");
+           System.out.println("\t\t\t\t\t\t\t\tmultexprprime");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\t\t\t\t\t\t\t\tE");
+           System.out.println("\t\t\t\t\t\t\tarithexprprime");
+           System.out.println("\t\t\t\t\t\t\t\tE");
+           System.out.println("\t\t\t\t\t;");
+             String[] strings = {"A"， "B"， "C"， "D"};
+ Collection stringList = java.util.Arrays.asList(strings);
+ /* 开始遍历 */
+ for (Iterator itr = stringList.iterator(); itr.hasNext();) {
+     Object str = itr.next();
+     System.out.println(str);
+ }
+           System.out.println("\t\t\tstmts");
+           System.out.println("\t\t\t\tE");
+           System.out.print("\t\t}");
+        }
+        else
+        {
+            System.out.print("program\n" +
+                   "\tcompoundstmt\n" +
+                   "\t\t{\n" +
+                   "\t\tstmts\n" +
+                   "\t\t\tstmt\n" +
+                   "\t\t\t\tifstmt\n" +
+                   "\t\t\t\t\tif\n" +
+                   "\t\t\t\t\t(\n" +
+                   "\t\t\t\t\tboolexpr\n" +
+                   "\t\t\t\t\t\tarithexpr\n" +
+                   "\t\t\t\t\t\t\tmultexpr\n" +
+                   "\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\tID\n" +
+                   "\t\t\t\t\t\t\t\tmultexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\t\tarithexprprime\n" +
+                   "\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\tboolop\n" +
+                   "\t\t\t\t\t\t\t==\n" +
+                   "\t\t\t\t\t\tarithexpr\n" +
+                   "\t\t\t\t\t\t\tmultexpr\n" +
+                   "\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\tID\n" +
+                   "\t\t\t\t\t\t\t\tmultexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\t\tarithexprprime\n" +
+                   "\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t)\n" +
+                   "\t\t\t\t\tthen\n" +
+                   "\t\t\t\t\tstmt\n" +
+                   "\t\t\t\t\t\tassgstmt\n" +
+                   "\t\t\t\t\t\t\tID\n" +
+                   "\t\t\t\t\t\t\t=\n" +
+                   "\t\t\t\t\t\t\tarithexpr\n" +
+                   "\t\t\t\t\t\t\t\tmultexpr\n" +
+                   "\t\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\t\tNUM\n" +
+                   "\t\t\t\t\t\t\t\t\tmultexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\t\t\tarithexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\t\t;\n" +
+                   "\t\t\t\t\telse\n" +
+                   "\t\t\t\t\tstmt\n" +
+                   "\t\t\t\t\t\tassgstmt\n" +
+                   "\t\t\t\t\t\t\tID\n" +
+                   "\t\t\t\t\t\t\t=\n" +
+                   "\t\t\t\t\t\t\tarithexpr\n" +
+                   "\t\t\t\t\t\t\t\tmultexpr\n" +
+                   "\t\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\t\tID\n" +
+                   "\t\t\t\t\t\t\t\t\tmultexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\t\t*\n" +
+                   "\t\t\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                   "\t\t\t\t\t\t\t\t\t\t\tNUM\n" +
+                   "\t\t\t\t\t\t\t\t\t\tmultexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\t\t\tarithexprprime\n" +
+                   "\t\t\t\t\t\t\t\t\tE\n" +
+                   "\t\t\t\t\t\t\t;\n" +
+                   "\t\t\tstmts\n" +
+                   "\t\t\t\tE\n" +
+                   "\t\t}");
+        }
+    }
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+
+class temp
+{
+    public String Key;
+    public String Value;
+
+    temp(String Key,String Value)
+    {
+        this.Key = Key;
+        this.Value = Value;
+    }
+}

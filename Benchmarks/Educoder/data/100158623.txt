@@ -1,0 +1,51 @@
+#include <iostream>
+#include<stdio.h>
+#include<string.h>
+using namespace std;
+int maxn = 1e5+5;
+int main()
+{
+    char a[maxn],b[maxn];
+    
+  //  while(1){
+    	scanf("%s",a);
+    	getchar();
+    	scanf("%s",b);
+    	int h=0;
+		int l=0;
+		int lena,lenb;
+	    lena = strlen(a);
+	    lenb = strlen(b);
+	    //printf("%d %d\n",lena,lenb);
+	    for(int i=0;i<lena;i++){
+	    	for(int j=0;j<lenb;j++){
+	    		if(a[i]==b[j]){
+	    			int k=i,m=j;
+	    			while(a[k]==b[m]){
+	    				k++;
+	    				m++;
+						h++;
+	    				if(m>=lenb) break;
+	    				if(k>=lena) break;
+	    				
+	    			}
+	    			
+	    			if(h>=l){
+	    			l=h;
+				//	printf("%d \n",l);
+	    			} 
+	    			h=0;
+	    		}
+	    	}
+	    	if(l==lena||l==lenb) break;
+	    }
+	    
+	    printf("%d",l);
+//	}
+    return 0;
+}
+/*
+ABCD
+CBCE	
+
+*/

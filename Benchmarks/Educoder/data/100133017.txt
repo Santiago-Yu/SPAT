@@ -1,0 +1,42 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+		
+		 int []a= new int[1000];
+        int k=0;
+       	int p=0;
+        while(k+1+p<1000){
+            k=k+1+p;
+        	a[k]=1;
+            p++;
+        }
+
+        
+		int day=0;
+		String []arr= date.split("-");
+       // String []brr = endTime.split("-");
+		int m = Integer.parseInt(arr[0]);
+        int d = Integer.parseInt(arr[1]);
+        //int em = Integer.parseInt(brr[0]);
+       // int ed = Integer.parseInt(brr[1]);
+       // int num=0;
+        if(m==7) day=d;
+        else if(m==8) day=31+d;
+        else if(m==9) day=62+d;
+       // else{
+        	//day=31-sd+1+ed;
+       // }
+        
+		//for(int j=sd;j<=day+sd;j++){
+         	if(a[day]==1) {
+             	   //System.out.println("tr")
+                return true;
+            }
+        else return false;
+                //num++;   
+       // }
+
+	}
+}

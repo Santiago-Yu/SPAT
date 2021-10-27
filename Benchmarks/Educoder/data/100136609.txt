@@ -1,0 +1,205 @@
+package case3;
+
+import java.util.Scanner;
+
+public class Task3 {
+			public static void main(String[] args) {
+			Scanner sc = new Scanner(System.in);
+			String pppName = sc.next();
+			int pppAge = sc.nextInt();
+			String bpName = sc.next();
+			int bpAge = sc.nextInt();
+			String ppcName = sc.next();
+			int ppcAge = sc.nextInt();
+			String bcName = sc.next();
+			int bcAge = sc.nextInt();
+		
+			/********* begin *********/
+	        PingPangPlayer ppp=new PingPangPlayer(pppName,pppAge);
+	        System.out.println(pppName+"---"+pppAge);
+	        ppp.sleep();
+	        ppp.eat();
+	        ppp.study();
+	        ppp.speak();
+			/********* end *********/
+			System.out.println("----------------");
+			
+			/********* begin *********/
+	         BasketballPlayer bp=new  BasketballPlayer(bpName,bpAge);
+	        System.out.println(bpName+"---"+bpAge);
+	        bp.sleep();
+	        bp.eat();
+	        bp.study();
+			/********* end *********/
+			System.out.println("----------------");
+		
+			/********* begin *********/
+	        PingPangCoach ppc=new PingPangCoach(ppcName,ppcAge);
+	        System.out.println(ppcName+"---"+ppcAge);
+	        ppc.sleep();
+	        ppc.eat();
+	        ppc.study();
+	        ppc.speak();
+			/********* end *********/
+			System.out.println("----------------");
+
+			/********* begin *********/
+	        BasketballCoach bc=new BasketballCoach(bcName,bcAge);
+	        System.out.println(bcName+"---"+bcAge);
+	        bc.sleep();
+	        bc.eat();
+	        bc.teach();
+			/********* end *********/
+			System.out.println("----------------");
+		}
+	}
+	interface SpeakEnglish {
+		/********* begin *********/
+	     void speak();
+		/********* end *********/
+	}
+
+	abstract class Person {
+		/********* begin *********/
+	    private String name;
+	    private int age;
+	    public Person(String name, int age)
+	    {
+	        this.name=name;
+	        this.age=age;
+	    }
+	    public String getname(){
+	         return name;    
+	    }
+	    public int getage(){
+	    return age;
+	    }
+	    public void sleep()
+	    {
+	    System.out.println("人都是要睡觉的");
+	    }
+	    abstract void eat();
+	    /********* end *********/
+	}
+
+	
+	abstract class Player extends Person {
+		/********* begin *********/
+	     public Player(String name,int age)
+	     {
+	     super(name,age);
+	     }
+	    abstract void study();
+		/********* end *********/
+	}
+	
+	abstract class Coach extends Person {
+		
+		/********* begin *********/
+	   public Coach(String name,int age)
+	     {
+	        super(name,age);
+	     }
+	    public void Person(String name, int age) {
+		}
+	     abstract void teach();
+		/********* end *********/
+		
+		
+	}
+
+	
+	class PingPangPlayer extends Player implements SpeakEnglish {
+		/********* begin *********/
+	public PingPangPlayer(String name,int age)
+	{
+	    super(name,age);
+	}
+	    public void eat()
+	    {
+	        System.out.println("乒乓球运动员吃大白菜，喝小米粥");
+	    }
+	    public void study(){
+	    System.out.println("乒乓球运动员学习如何发球和接球");
+	    }
+	    public void speak()
+	    {
+	        System.out.println("乒乓球运动员说英语");
+	    }
+		/********* end *********/
+	}
+
+	
+	/*class PingPangPlayer extends Player {
+		/********* begin *********/
+	    /*public PingPangPlayer(String name,int age)
+	    {
+	        super(name,age);
+	    }
+	   public void eat()
+	    {
+	        System.out.println("乒乓球运动员吃牛肉，喝牛奶");
+	    }
+	    public void study(){
+	    System.out.println("乒乓球运动员学习如何发球和接球");
+	    }
+		/********* end *********/
+	//}*/
+
+	class PingPangCoach extends Coach implements SpeakEnglish {
+		/********* begin *********/
+	public  PingPangCoach(String name,int age)
+	{
+	    super(name,age);
+	}
+	    public void eat()
+	    {
+	        System.out.println("乒乓球教练吃小白菜，喝大米粥");
+	    }
+	    public void study(){
+	    System.out.println("乒乓球教练教如何发球和接球");
+	    }
+	    public void speak()
+	    {
+	        System.out.println("乒乓球教练说英语");
+	    }
+		void teach() {
+		}
+		/********* end *********/
+		
+	}
+
+	class BasketballPlayer extends Player {
+		/********* begin *********/
+	    public BasketballPlayer(String name,int age)
+	    {
+	        super(name,age);
+	    }
+	   public void eat()
+	    {
+	        System.out.println("篮球运动员吃牛肉，喝牛奶");
+	    }
+	    public void study(){
+	    System.out.println("篮球运动员学习如何运球和投篮");
+	    }
+		/********* end *********/
+	}
+
+	class BasketballCoach extends Coach {
+		/********* begin *********/
+	 public BasketballCoach(String name,int age)
+	    {
+	        super(name,age);
+	    }
+	   public void eat()
+	    {
+	        System.out.println("篮球教练吃羊肉，喝羊奶");
+	    }
+	    public void teach(){
+	    System.out.println("篮球教练教如何运球和投篮");
+	    }
+	
+		/********* end *********/
+		
+	}
+

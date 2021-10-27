@@ -1,0 +1,68 @@
+package step1;
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class TestJava11_2 {
+	public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in 
+
+);
+        DecimalFormat df = new DecimalFormat("#.00");
+        double Z,c,d;
+        int x,y;
+        System.out.println("请输入西瓜重量：");
+        x=sc.nextInt();
+        System.out.println("请输入顾客所付钱数：");
+        y=sc.nextInt();
+        Z=1.00f;
+        
+        if (x>20){
+            Z=0.85f;
+            c=Z*x;
+            d=y-Z*x;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(df.format(c));
+            System.out.print("应找钱数："); 
+            System.out.println(df.format(d));
+        }
+        if (x>15 && x<=20){
+        	Z=0.90f;
+            c=Z*x;
+            d=y-Z*x;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(df.format(c));
+            System.out.print("应找钱数：");
+            System.out.println(df.format(d));
+        }
+        if (x>10 && x<=15){
+        	Z=0.95f;
+            c=Z*x;
+            d=y-Z*x;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(df.format(c));
+            System.out.print("应找钱数：");
+            System.out.println(df.format(d));
+        }
+        if (x>5 && x<=10){
+        	Z=1.00f;
+            c=Z*x;
+            d=y-Z*x;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(df.format(c));
+            System.out.print("应找钱数：");
+            System.out.println(df.format(d));
+        }
+        if (x<=5){
+        	Z=1.05f;
+            c=Z*x;
+            d=y-Z*x;
+            System.out.print("西瓜应付钱数：");
+            System.out.println(df.format(c));
+            System.out.print("应找钱数：");
+            System.out.println(df.format(d));
+        }
+		/******Begin******/
+		
+		/******End******/	
+	}
+
+}

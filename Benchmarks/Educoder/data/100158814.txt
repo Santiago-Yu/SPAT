@@ -1,0 +1,44 @@
+package Q201;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner in = new Scanner(System.in);
+		int x = in.nextInt();
+		int count = 0;
+		try{
+			while(x != 1){
+				int y = x;
+				String str = ""+x;
+				int len = str.length();
+				x = 0;
+				for(int i = 0;i < len;i++){
+					int temp = (y/pow(10,i))%10;
+					x = x+temp*temp;
+				}
+				count++;
+				if(count >= 100){
+					System.out.print("NO");
+					break;
+				}
+			}
+			if(count < 100)
+			System.out.print("YES");
+		}catch(Exception e){
+			System.out.print("NO");
+		}
+	  in.close();
+	}
+	public static int pow(int a,int b){
+		if(b == 0)
+			return 1;
+		else{
+			int s = a;
+			for(int i = 1;i < b;i++)
+				s = s*a;
+			return s;
+		}
+	}
+
+}

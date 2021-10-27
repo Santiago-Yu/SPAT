@@ -1,0 +1,85 @@
+package step4;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.io.*;
+public class Test {
+	public static void main(String[] args) throws IOException {
+		Task task = new Task();
+
+		task.task();
+
+		//校验
+		File inputFile = new File("src/step4/input/input.txt");
+		File outFile = new File("src/step4/output/output.txt");
+        FileReader fr = new FileReader("src/step4/input/input.txt"); //定义FileReader读取文件
+        int len = 0;    //每次读取的字符数量
+        char[] cbuf = new char[1024];    //每次读取数据的缓冲区
+		FileWriter fw = new FileWriter("src/step4/output/output.txt"); //定义FileWriter写文件
+		while((len = fr.read(cbuf)) != -1){
+    	fw.write(cbuf,0,len);
+		}
+		fw.close();    //释放资源 刷新缓冲区
+		fr.close();
+		String inputStr = getFileSha1(inputFile);
+		String outputStr = getFileSha1(outFile);
+		if(inputStr.equals(outputStr)){
+			System.out.println("文本文件复制成功");
+		}else{
+			System.out.println("文本文件复制错误，请检查代码");
+		}
+		
+		File imgInputFile = new File("src/step4/input/input.jpg");
+		File imgOutFile = new File("src/step4/output/output.jpg");
+        FileInputStream fs = new FileInputStream("src/step4/input/input.jpg"); //定义文件输入流读取文件信息
+		FileOutputStream fos = new FileOutputStream("src/step4/output/output.jpg");//定义文件输出流写文件
+		len = 0;        //每次读取数据的长度
+		byte[] bys = new byte[1024];    //数据缓冲区
+		while( (len = fs.read(bys)) != -1){
+    	fos.write(bys, 0, len);
+		}
+		//释放资源  刷新缓冲区
+		fs.close();
+		fos.close();
+		String imgInputStr = getFileSha1(imgInputFile);
+		String imgOutputStr = getFileSha1(imgOutFile);
+		if(imgInputStr.equals(imgOutputStr)){
+			System.out.println("图片文件复制成功");
+		}else{
+			System.out.println("图片文件复制错误，请检查代码");
+		}
+	}
+
+	public static String getFileSha1(File file) {
+		if (!file.isFile()) {
+			return null;
+		}
+		MessageDigest digest = null;
+		FileInputStream in = null;
+		byte buffer[] = new byte[8192];
+		int len;
+		try {
+			digest = MessageDigest.getInstance("SHA-1");
+			in = new FileInputStream(file);
+			while ((len = in.read(buffer)) != -1) {
+				digest.update(buffer, 0, len);
+			}
+			BigInteger bigInt = new BigInteger(1, digest.digest());
+			return bigInt.toString(16);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				in.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

@@ -1,0 +1,233 @@
+	public void upload(){
+		try{
+			HttpClient client = establishConnection();
+			
+			if(client == null){
+				return;
+			}
+			
+			Vector<File> successFiles = new Vector<File>(10);
+			String startDB = "";
+			String endDB = "";
+			
+			//僼傽僀儖偺傾僢僾儘乕僪
+			setLog("傾僢僾儘乕僪奐巒");
+			for(int i = 0; i < logFiles_.length; i++){
+				if(!isRunning_){
+					//傾僢僾儘乕僪傪拞巭偟偰愗抐
+					releaseConnection(client);
+					
+					break;
+				}
+				
+				if(logFiles_[i].exists()){
+					//僼傽僀儖宍幃偺僠僃僢僋偲僐儊儞僩偺庢摼
+					FileInputStream fis = new FileInputStream(logFiles_[i]);
+                    InputStreamReader isr = new InputStreamReader(fis);
+                    BufferedReader br = new BufferedReader(isr);
+                    
+                    String comment = "";
+                    String line = null;
+                    if((line = br.readLine()) != null){
+                    	if(line.startsWith("#LockyStumbler Log")){
+    						//LockyStumbler Log偵偼2峴栚偵敿妏100暥帤偺僐儊儞僩偑偁傞
+    						if((line = br.readLine()) != null){
+    							if(line.startsWith("#")){
+    								comment = line.substring(1);
+    								
+    								//僐儊儞僩峴偺屻傠偵偁傞敿妏僗儁乕僗傪彍嫀
+    								while(comment.endsWith(" ")){
+										comment = comment.substring(0, comment.length() - 1);
+									}
+    							}
+    						}
+    					}
+                    }
+                    
+                    fis.close();
+                    isr.close();
+                    br.close();
+                    
+                    //POST儊僜僢僪偺嶌惉
+					PostMethod uploadMethod = new PostMethod("/member/result.html");
+					
+					uploadMethod.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
+					Part[] parts = { new StringPart("from", "logbrowser"), new StringPart("comment", comment), new FilePart("fileName", logFiles_[i], "text/plain", null) };
+					uploadMethod.setRequestEntity(new MultipartRequestEntity(parts, uploadMethod.getParams()));
+					
+					
+					client.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+					
+					//POST僨乕僞偺憲怣
+					int statusCode = client.executeMethod(uploadMethod);
+					
+					if(statusCode == HttpStatus.SC_OK){
+    					//僨乕僞儀乕僗偵搊榐偝傟偨巒揰偲廔揰傪庢摼偡傞
+    					String response = uploadMethod.getResponseBodyAsString();
+    					
+    					String start = response.substring(0, response.indexOf("\t"));
+    					String end = response.substring(response.indexOf("\t") + 1);
+    					
+    					//巒揰偺弶婜抣愝掕
+    					if(startDB.equals("")){
+    						startDB = start;
+    					}
+    					
+    					//廔揰偺弶婜抣愝掕
+    					if(endDB.equals("")){
+    						endDB = end;
+    					}
+    					
+    					//廔揰偺峏怴
+    					if(Integer.parseInt(endDB) < Integer.parseInt(end)){
+    						endDB = end;
+    					}
+    					
+    					//憲怣惉岟僼傽僀儖偵捛壛
+    					successFiles.add(logFiles_[i]);
+    					
+    					//廔椆張棟偑奐巒偝傟偰偄傞応崌偼弌椡偟側偄
+    					if(isRunning_){
+    						setLog(logFiles_[i].getName() + "\t[ SUCCESS ]");
+    					}
+					}
+					
+					uploadMethod.releaseConnection();
+					
+					setProgress(i + 1);
+				}
+			}
+			if(isRunning_){
+				setLog("傾僢僾儘乕僪廔椆");
+			}
+			
+			
+			
+			//傾僢僾儘乕僪偺寢壥傪昞帵
+			String view = readParameter(UPLOAD_RESULT);
+			if(!isRunning_){
+				//廔椆張棟拞偼寢壥傪昞帵偟側偄
+			}
+			else if(view.equals("MAP")){
+				//怴婯敪尒傾僋僙僗億僀儞僩傪儅僢僾偵昞帵偡傞
+				MessageDigest md5 = MessageDigest.getInstance("MD5");
+            	md5.update(accountName_.getBytes());
+            	byte[] digest = md5.digest();
+            	
+            	//僟僀僕僃僗僩傪暥帤楍偵曄姺
+            	String userNameDigest = "";
+            	for(int i = 0; i < digest.length; i++){
+            		int d = digest[i];
+            		if(d < 0){
+            			//byte宆偱偼128~255偑晧偵側偭偰偄傞偺偱曗惓
+            			d += 256;
+            		}
+            		if(d < 16){
+            			//2寘偵挷愡
+            			userNameDigest += "0";
+            		}
+            		
+            		//僟僀僕僃僗僩抣偺1僶僀僩傪16恑悢2寘偱昞帵
+            		userNameDigest += Integer.toString(d, 16);
+            	}
+            	
+            	//巒揰偲廔揰傪惓忢偵庢摼偱偒側偐偭偨応崌
+            	if(startDB.equals("")){
+            		startDB = "0";
+            	}
+            	if(endDB.equals("")){
+            		endDB = "0";
+            	}
+            	
+            	//怴婯敪尒悢偑楇偺応崌偼昞帵偟側偄
+            	if(startDB.equals("0")&&endDB.equals("0")){
+            		setLog("怴婯敪尒悢丗 0");
+            	}
+            	else{
+            		ProcessBuilder process = new ProcessBuilder(readParameter(WEB_BROWSER), "http://" + readParameter(WEB_HOST) + "/service/logviewer.html?user=" + userNameDigest + "&start=" + startDB + "&end=" + endDB);
+                	process.start();
+            	}
+			}
+			else if(view.equals("TEXT")){
+				if(startDB.equals("")||endDB.equals("")){
+            		//忣曬偵晄旛偁傞応崌偼昞帵偟側偄
+					setLog("庴怣忣曬偑寚偗偰偄傞偨傔昞帵偱偒傑偣傫");
+            	}
+				else{
+					int newCount = Integer.parseInt(endDB) - Integer.parseInt(startDB);
+    				setLog("怴婯敪尒悢丗 " + String.valueOf(newCount));
+				}
+			}
+			
+			
+			//傾僢僾儘乕僪偟偨僼傽僀儖偺僼儔僌傪曄峏
+			for(int i = 0; i < successFiles.size(); i++){
+				try{
+					RandomAccessFile file = new RandomAccessFile(successFiles.get(i), "rw");
+					
+					//儘僌僼傽僀儖忣曬傪庢摼
+					String line;
+					String seekString = "";
+					while((line = file.readLine()) != null){
+						if(line.startsWith("#LockyStumbler Log")){
+							
+							//儘僌僼傽僀儖偺僶乕僕儑儞傪妋擣
+							int version = Integer.parseInt(line.substring("#LockyStumbler Log Version ".length()));
+							if(version < 2){
+								return;
+							}
+							
+							
+							//2峴栚傑偱偺暥帤楍傪婰榐
+							//seekString += line + "\r\n" + file.readLine() + "\r\n";
+							file.readLine();
+							long pos = file.getFilePointer();
+							
+							//3峴栚偺晅壛忣曬傪庢摼
+							line = file.readLine();
+							String[] token = line.substring(1).split("[|]");
+							for(int j = 0; j < token.length; j++){
+								if(token[j].startsWith("UPLOAD=")){
+									//僼傽僀儖偺傾僢僾儘乕僪僼儔僌傪峏怴
+									//file.seek((seekString + "|UPLOAD=").length());
+									file.seek(pos + "|UPLOAD=".length());
+									file.write("T".getBytes());
+								}
+								else{
+									//seekString += "|" + token[j];
+									pos += ("|" + token[j]).length();
+								}
+							}
+						}
+					}
+					
+					file.close();
+				}
+				catch(FileNotFoundException exception){
+					exception.printStackTrace();
+				}
+				catch(IOException exception){
+					exception.printStackTrace();
+				}
+			}
+			
+			//傾僢僾儘乕僪拞抐
+			if(!isRunning_){
+				//廔椆張棟懸婡儖乕僾偺夝彍
+				isRunning_ = true;
+				return;
+			}
+			
+			//傾僢僾儘乕僪惓忢廔椆
+			isRunning_ = false;
+			enableClose();
+			releaseConnection(client);
+		}
+		catch(IOException exception){
+			exception.printStackTrace();
+		}
+		catch(NoSuchAlgorithmException exception){
+			exception.printStackTrace();
+			setLog("JRE偺僶乕僕儑儞偑屆偄偨傔昞帵偱偒傑偣傫偱偟偨");
+		}
+	}

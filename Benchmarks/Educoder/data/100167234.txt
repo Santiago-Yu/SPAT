@@ -1,0 +1,55 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcConn {
+    public static void getConn() {
+        /**********    Begin   **********/
+        try {
+			//1.注册驱动
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        /**********    End   **********/
+
+		Connection conn = null;
+        Statement statement = null;
+        /**********    Begin   **********/
+        
+        //2.建立连接并创建数据库和表
+                
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "123123");
+        	statement = conn.createStatement();
+  			String sql1="drop database if exists mysql_db";
+  			String sql2="create database mysql_db";
+  			statement.executeUpdate(sql1);//执行sql语句
+  			statement.executeUpdate(sql2);
+		}catch (SQLException e) {
+  				e.printStackTrace();
+			}
+
+		try {
+  statement.executeUpdate("use mysql_db");//选择在哪个数据库中操作
+  String sql = "CREATE TABLE `student` (`id`  int NOT NULL ,`name`  varchar(20) NULL ,`sex`  varchar(4) NULL ,`age`  int NULL );";
+  statement.executeUpdate(sql);
+} catch (SQLException e) {
+  e.printStackTrace();
+}
+        
+
+        /**********    End   **********/
+        finally {
+            try {
+                if(statement!=null)
+                    statement.close();
+                if(conn!=null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}

@@ -1,0 +1,37 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		//System.out.println((double)3/2);
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int flage;
+		if(n % 2 == 0) {
+			//输出偶数和
+			flage = 2;
+			print(n , flage);
+		}else {
+			//输出基数和
+			flage = 1;
+            print(n,flage);
+		}
+		
+		
+	}
+
+	private static void print(int n, int flage) {
+		double sum = 0;
+		int numerater = 3;
+		if(flage == 1){
+			numerater = 4;
+        }
+		for(int i = flage; i <=  n ; i += 2) {
+			sum += ((double)numerater / i);
+		}
+		System.out.println(sum);
+		
+	}
+}

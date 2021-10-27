@@ -1,0 +1,34 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: 63194
+  Date: 2018/9/14
+  Time: 19:14
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+<!--------- Begin --------->
+
+PrintWriter out = resp.getWriter();
+        HttpSession session = req.getSession();
+
+        String trueCaptcha = (String) session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
+        String inputCaptcha = req.getParameter("captcha");
+        if (trueCaptcha.toLowerCase().equals(inputCaptcha.toLowerCase())) {
+            out.write("验证码输入正确");
+        } else {
+            out.write("验证码输入错误");
+        }
+
+
+
+
+
+
+<!--------- End --------->
+</body>
+</html>

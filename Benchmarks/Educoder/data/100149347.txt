@@ -1,0 +1,56 @@
+package step4;
+
+public class Task {
+    public static int sentenceIndex = 0;
+	public void love(int n){
+		/********* Begin *********/
+	 
+        if (n==1){
+		for(double y = (double) 1.300;y>-1.101;y -= 0.060)  {  
+	        for(double x = (double) 1.200;x>-1.200;x -= 0.025){  
+	              double a = x*x+y*y-1;  
+	              if((a*a*a-x*x*y*y*y)>=0.00000000000)  {    
+	                     System.out.print("$");  
+	              }  
+	              else  
+	                     System.out.print(" ");  
+	        }  
+	        System.out.println(); 
+		}
+        }
+        if(n==2){
+            String s = "I love you!";
+	        String[] array = s.split("");
+	        //int i = 0;
+
+	        for(double y = (double) 1.300;y>-1.100;y -= 0.060)  {
+	            for(double x = (double) 1.100;x>-1.100;x -= 0.025){
+	                    if((Math.pow(x, 2) + Math.pow(5.0*y/4.0-Math.sqrt(Math.abs(x)),2))>=1)  {
+	                        System.out.print(" ");
+	                    }
+	                    else
+
+	                        System.out.print(getStringIndex(array));
+	                }
+	            System.out.println();
+	            sentenceIndex = 0;
+	        }
+	    }
+        }
+	    public static char getStringIndex(String[] sentence){
+	        while(true) {
+	            if (sentenceIndex >= sentence.length) {
+	                sentenceIndex = 0;
+	            }
+	            char c = sentence[sentenceIndex++].charAt(0);
+	                return c;
+	            }
+       
+   
+           
+	
+		
+		/********* End *********/	
+	}
+
+}

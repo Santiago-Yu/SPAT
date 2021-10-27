@@ -1,0 +1,30 @@
+
+package step3;
+
+import java.util.Scanner;
+
+public class HelloWorld {
+        public static void main(String[] args){
+            Scanner input=new Scanner(System.in);
+		    String fileName=input.nextLine();
+            String email=input.nextLine();
+            HelloWorld h=new HelloWorld();
+            h.judge(fileName,email);
+        }
+    	public void judge(String fileName,String email){
+            int i;
+		    int javalen=fileName.length();
+            int javaloc=fileName.indexOf(".java");
+            if((javalen-javaloc)%5==0&&javalen>5&&javaloc!=-1){
+                System.out.println("Java文件名正确");
+            }else{System.out.println("Java文件名无效");}
+            int maillen=email.length();
+            int mailloc=email.indexOf("@");
+            int pointloc=email.indexOf(".");
+            String Demail=email.substring(mailloc+1);
+            int Dmailloc=Demail.indexOf("@");
+            if(mailloc<pointloc&&Dmailloc==-1&&mailloc!=-1){
+                System.out.println("邮箱名正确");
+             }else{System.out.println("邮箱名无效");}
+        }
+}

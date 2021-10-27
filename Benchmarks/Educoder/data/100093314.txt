@@ -1,0 +1,49 @@
+package step4;
+
+public class DayJudge {
+
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        // 请在此提供实现代码
+        String a=new String();
+       if(year%4==0&&year%100!=0||year%400==0)
+       {
+           switch(month)
+           {
+               case 1:a=year+"年的第"+day+"天";break;
+               case 2:a=year+"年的第"+(day+31)+"天";break;
+               case 3:a=year+"年的第"+(day+60)+"天";break;
+               case 4:a=year+"年的第"+(day+91)+"天";break;
+               case 5:a=year+"年的第"+(day+121)+"天";break;
+               case 6:a=year+"年的第"+(day+152)+"天";break;
+               case 7:a=year+"年的第"+(day+182)+"天";break;
+               case 8:a=year+"年的第"+(day+213)+"天";break;
+               case 9:a=year+"年的第"+(day+244)+"天";break;
+               case 10:a=year+"年的第"+(day+274)+"天";break;
+               case 11:a=year+"年的第"+(day+305)+"天";break;
+               case 12:a=year+"年的第"+(day+335)+"天";break;
+               default:a="月份错误";break;
+           }
+       }
+        else
+        {
+            switch(month)
+           {
+               case 1:a=year+"年的第"+day+"天";break;
+               case 2:a=year+"年的第"+(day+31)+"天";break;
+               case 3:a=year+"年的第"+(day+59)+"天";break;
+               case 4:a=year+"年的第"+(day+90)+"天";break;
+               case 5:a=year+"年的第"+(day+120)+"天";break;
+               case 6:a=year+"年的第"+(day+151)+"天";break;
+               case 7:a=year+"年的第"+(day+181)+"天";break;
+               case 8:a=year+"年的第"+(day+212)+"天";break;
+               case 9:a=year+"年的第"+(day+243)+"天";break;
+               case 10:a=year+"年的第"+(day+273)+"天";break;
+               case 11:a=year+"年的第"+(day+304)+"天";break;
+               case 12:a=year+"年的第"+(day+334)+"天";break;
+               default:a="月份错误";break;
+           }
+        }
+        return a;
+	}
+}

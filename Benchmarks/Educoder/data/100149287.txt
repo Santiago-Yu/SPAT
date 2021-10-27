@@ -1,0 +1,51 @@
+package step4;
+import java.lang.Math;
+public class Task {
+    
+    public static char character(int count) {
+		switch(count) {
+		case 0: return 'I';
+		case 2: return 'l';
+		case 3: return 'o';
+		case 4: return 'v';
+		case 5: return 'e';
+		case 7: return 'y';
+		case 8: return 'o';
+		case 9: return 'u';
+		case 10:return '!';
+		}
+		return ' ';
+	}
+    
+	public void love(int n){
+		/********* Begin *********/
+	if (n == 1) {
+			for (double y = 1.3; y >= -1.1; y -= 0.06) {
+				for (double x = -1.2; x <= 1.2; x += 0.025) {
+					if(Math.pow(Math.pow(x, 2)+Math.pow(y, 2)-1, 3) - Math.pow(x, 2)*Math.pow(y, 3) <= 0) {
+						System.out.print(" ");
+					} else System.out.print("$");
+				}
+				System.out.println();
+			}	
+			for (double i = -1.2; i <= 1.2; i += 0.025){
+            	System.out.print("$");
+            }
+        	System.out.println();
+		} else if (n == 2) {
+			int count = 0;
+			for (double y = 1.3; y >= -1.1; y-= 0.06) {
+				for (double x = -1.1; x <= 1.1; x += 0.025) {
+					if (Math.pow(x, 2) + Math.pow(5*y/4 - Math.sqrt(Math.abs(x)), 2) < 1) {
+						System.out.print(character(count));
+						count = (count+1) % 11;
+					} else System.out.print(" ");
+				}
+				count = 0;
+				System.out.println();
+			}
+		}
+		
+		/********* End *********/	
+	}
+}

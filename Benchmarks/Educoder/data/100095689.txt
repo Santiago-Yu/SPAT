@@ -1,0 +1,53 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int sum=0;
+        int[]m={31,28,31,30,31,30,31,31,30,31,30,31};
+        if(year%4==0&&year%100!=0){
+             m[1]=29;
+        } 
+        switch(month){
+            case 1:
+            System.out.print(day);
+            break;
+            case 2:
+            System.out.print(day+m[0]);
+            break;
+            case 3:
+            System.out.print(day+m[1]+m[0]);
+            break;
+            case 4:
+            System.out.print(day+m[2]+m[1]+m[0]);
+            break;
+            case 5:
+            System.out.print(day+m[3]+m[2]+m[1]+m[0]);
+            break;
+            case 6:
+            System.out.print(day+m[4]+m[3]+m[2]+m[1]+m[0]);
+            break;
+            case 7:
+            System.out.print(day+m[5]+m[4]+m[3]+m[2]+m[1]+m[0]);
+            break;
+            case 8:
+            System.out.print(day+m[6]+m[5]+m[4]+m[3]+m[2]+m[1]+m[0]);
+            break;
+            case 9:
+            System.out.print(day+m[7]+m[6]+m[5]+m[4]+m[3]+m[2]+m[1]+m[0]);
+            break;
+            case 10:
+            System.out.print(day+m[8]+m[7]+m[6]+m[5]+m[4]+m[3]+m[2]+m[1]+m[0]);
+            break;
+            case 11:
+            System.out.print(day+m[9]+m[8]+m[7]+m[6]+m[5]+m[4]+m[3]+m[2]+m[1]+m[0]);
+            break;
+            case 12:
+            System.out.print(day+m[10]+m[9]+m[8]+m[7]+m[6]+m[5]+m[4]+m[3]+m[2]+m[1]+m[0]);
+            break;
+        }
+        //System.out.print(sum);
+
+		/********** End *********/
+	}
+}

@@ -1,0 +1,75 @@
+package case2;
+
+import java.util.Scanner;
+
+public class Task2 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String cName = sc.next();
+		String cSex = sc.next();
+		int cAge = sc.nextInt();
+		String eName = sc.next();
+		String eSex = sc.next();
+		int eAge = sc.nextInt();
+      Person person1=new Chinese(cName,cSex,cAge);
+        showEat(person1);
+         Person person2=new English(eName,eSex,eAge);
+        showEat(person2);
+Chinese c=(Chinese)person1;
+        c.shadowBoxing();
+        English e=(English)person2;
+        e.horseRiding();
+    }
+	public static void showEat(Person x){
+		x.eat();
+		}
+
+}
+
+abstract class Person {
+	/********* begin *********/
+	protected String name;
+	protected String sex;
+	protected int age;
+
+	public Person(String name, String sex, int age) {
+		this.name = name;
+		this.sex = sex;
+		this.age = age;
+	}
+
+	abstract void eat();
+	/********* end *********/
+}
+
+class Chinese extends Person {
+	/********* begin *********/
+	public Chinese(String name, String sex, int age) {
+		super(name, sex, age);
+	}
+
+	void eat() {
+		System.out.println("姓名：" + name + "，性别：" + sex + "，年龄：" + age + "，我是中国人，我喜欢吃饭！");
+	}
+
+	void shadowBoxing() {
+		System.out.println(name + "在练习太极拳！");
+	}
+	/********* end *********/
+}
+
+class English extends Person {
+	/********* begin *********/
+	public English(String name, String sex, int age) {
+		super(name, sex, age);
+	}
+
+	void eat() {
+		System.out.println("姓名：" + name + "，性别：" + sex + "，年龄：" + age + "，我是英国人，我喜欢吃三明治！");
+	}
+
+	void horseRiding() {
+		System.out.println(name + "在练习骑马！");
+	}
+
+}

@@ -1,0 +1,62 @@
+package step2;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class MarkStatistics {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] class1Grade = new int[5];
+        int[] class2Grade = new int[5];
+        int[] gradeCount = new int[class1Grade.length + class2Grade.length];
+        int m=0;
+        int n=0;
+        int j=0;
+        for(int a=0;a<class1Grade.length;a++){
+            class1Grade[a] = scanner.nextInt();
+        }
+        for(int b=0;b<class2Grade.length;b++){
+            class2Grade[b] = scanner.nextInt();
+        }
+        Arrays.sort(class1Grade);
+        Arrays.sort(class2Grade);
+        int num1=class1Grade.length;
+        int num2=class2Grade.length;
+        /********** Begin *********/
+		while(m!=num1&&n!=num2){
+            if(class1Grade[m]>class2Grade[n]){
+                gradeCount[j] = class2Grade[n];
+                n++;
+                j++;
+            }else
+            if(class1Grade[m]<class2Grade[n]){
+                 gradeCount[j] = class1Grade[m];
+                 m++;
+                 j++;
+            }else
+           // if(class1Grade[m]==class2Grade[n])
+            {
+                 gradeCount[j] = class2Grade[m];
+                 m++;
+                 n++;
+                 j++;
+            }
+        }
+   
+        if(m==num1){
+            for(int k=n;k<num2;k++)
+                gradeCount[num1+k]=class2Grade[k]; 
+        }
+        if(n==num2){
+            for(int g=m;g<num1;g++)
+                gradeCount[num2+g]=class1Grade[g]; 
+        }
+        /********** End *********/
+        for (int i = 0; i < gradeCount.length; i++) {
+            System.out.print(gradeCount[i]);
+            if (i != gradeCount.length - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

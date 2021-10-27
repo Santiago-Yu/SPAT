@@ -1,0 +1,26 @@
+package step1;
+import java.text.DecimalFormat;
+
+public class Yard {
+	int length = 0;
+    int width = 0;
+	DecimalFormat d1 = new DecimalFormat("#.0");
+	//int preimeter = d1.nextInt();
+	//int acreage = d1.nextInt();
+	
+	public Yard(int length, int width) {
+    	this.length = length;
+        this.width = width;
+    }
+    public String getPerimeter(){
+        
+    	//int preimeter = this.length * 2 + this.width * 2;
+        return d1.format(this.length * 2 + this.width * 2);
+    }
+	public String getAcreage(){
+    	 //int acreage = this.length * this.width;
+         return d1.format(this.length * this.width);
+    }
+
+	
+}	

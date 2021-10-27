@@ -1,0 +1,44 @@
+package step1;
+import java.util.Scanner;
+import java.util.Comparator;
+import java.util.LinkedList;
+public class Triangle {
+	public static void main(String[] args) {
+		double number1, number2, number3;
+		Scanner scan1 = new Scanner(System.in);
+		double a = scan1.nextDouble();
+		double b = scan1.nextDouble();
+		double c = scan1.nextDouble();
+		/****** Begin ******/
+		System.out.print(fun1(a, b, c));
+
+		/****** End ******/
+	}
+
+	@SuppressWarnings("unchecked")
+	public static String fun1(double a, double b, double c) {
+		LinkedList<Double> list = new LinkedList<Double>();
+		list.add(a);
+		list.add(b);
+		list.add(c);
+		list.sort(new Comparator() {
+			@Override
+			public int compare(Object o1, Object o2) {
+				// TODO Auto-generated method stub
+
+				if ((double) o1 > (double) o2) {
+					return 1;
+				}
+				return 0;
+			}
+
+		});
+        if( list.get(0)+list.get(1)>list.get(2)) {
+        	return "Yes";
+        }
+        else {
+        	return "No";
+        }
+
+	}
+}

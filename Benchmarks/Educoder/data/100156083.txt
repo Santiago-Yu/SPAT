@@ -1,0 +1,27 @@
+package step1;
+//编写一个方法，统计1990年至2018年之间闰年的个数
+public class TestJava23_5 {
+
+	public static void main(String[] args) {
+		int num;
+		//此处调用NumOfLeap方法，输出1990年至2018年之间闰年的个数
+		num=TestJava23_5.NumOfLeap();
+        System.out.println("1990~2018年之间闰年的个数是："+num);
+		
+		
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为NumOfLeap，实现统计1990至2018年之间闰年的个数的功能
+	public static int NumOfLeap(){
+        int a,b=0;
+        for(a=1990;a<=2018;a++){
+            if(a%400==0&&a%100!=0||a%4==0){
+				b++;
+            }
+        }
+        return b;
+    }
+	
+	
+	/*******End*********/
+}

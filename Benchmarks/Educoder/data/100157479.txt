@@ -1,0 +1,17 @@
+package step2;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+public class StudentDemo{
+	public Map<String, Integer> getMap(String str){
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		
+        String[] StrArray=str.split("[\\s\\.\\,]");
+        for(String str1:StrArray){
+         map.put(str1,str.indexOf(str1));
+        }
+
+		return map;
+	}
+
+}

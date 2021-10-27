@@ -1,0 +1,191 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class Java_LexAnalysis
+{
+    private static StringBuilder prog = new StringBuilder();
+    private static ArrayList<Integer> lineLength = new ArrayList<Integer>();
+    private static HashMap<String, Integer> keyMap = new HashMap<String, Integer>();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            String s = sc.nextLine().trim();
+            prog.append(s);
+            if (lineLength.isEmpty()) {
+                lineLength.add(s.length());
+            }
+            else {
+                lineLength.add(s.length()+lineLength.get(lineLength.size()-1));
+            }
+        }
+        sc.close();
+    }
+
+
+    // add your method here!!
+    private static void read_c_keys() {
+        String str = null;
+        try {
+            FileReader fr = new FileReader("./c_keys.txt");
+            BufferedReader br = new BufferedReader(fr);
+            while (null != (str = br.readLine())) {
+                String[] s = str.split("\\s+", 2);
+                keyMap.put(s[0], Integer.parseInt(s[1]));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        keyMap.remove("/*注释*/");
+        keyMap.put("/*", 79);
+        keyMap.put("*/", 79);
+        keyMap.put("//", 79);
+//        for (String key : keyMap.keySet()) {
+//            System.out.println(key+ "   " + keyMap.get(key));
+//        }
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_c_keys();
+        read_prog();
+//        System.out.print(prog);
+//        for (int i=0; i<lineLength.size(); i++) {
+//            System.out.println(lineLength.get(i));
+//        }
+        int index = 0, cnt = 1;
+        StringBuilder token;
+        while (index <= prog.length()-1) {
+//            System.out.println(index + "   " + prog.length());
+            token = new StringBuilder("");
+            if (Character.isLetter(prog.charAt(index)) || prog.charAt(index)=='_') {
+                //标识符或类似标识符的关键字
+                token.append(prog.charAt(index++));
+                while (index <= prog.length()-1 && prog.charAt(index)!=' ' && (Character.isLetter(prog.charAt(index)) || Character.isDigit(prog.charAt(index)) || prog.charAt(index)=='_')) {
+                    token.append(prog.charAt(index++));
+                }
+//                System.out.println(token.toString());
+                if (keyMap.containsKey(token.toString())) {
+                    System.out.print(cnt+": <"+token.toString()+","+keyMap.get(token.toString())+">\n");
+                    cnt++;
+                }
+                else {
+                    System.out.print(cnt+": <"+token.toString()+",81>\n");
+                    cnt++;
+                }
+            }
+            else if (Character.isDigit(prog.charAt(index))) {
+                //数字
+                token.append(prog.charAt(index++));
+                int cnt1 = 0;    //计算数字中.的个数，最多只能出现1次
+                int cnt2 = 0;    //计算数字中e的个数，最多只能出现1次
+                while (index <= prog.length()-1 && prog.charAt(index)!=' ' && (Character.isDigit(prog.charAt(index)) || (cnt1==0 && prog.charAt(index)=='.') || (cnt1==0 && cnt2==0 && prog.charAt(index)=='e'))) {
+                    if (prog.charAt(index)=='.') cnt1++;
+                    else if (prog.charAt(index)=='e') cnt2++;
+                    token.append(prog.charAt(index++));
+                }
+                if (index<=prog.length()-2 && Character.isLetter(prog.charAt(index+1))) {
+                    token.append(prog.charAt(index++));
+                }
+//                System.out.println(token.toString());
+                System.out.print(cnt+": <"+token.toString()+",80>\n");
+                cnt++;
+            }
+            else if (index <= prog.length()-2 && prog.substring(index, index+2).equals("//")) {
+                //注释1
+                int i = 0;
+                while (lineLength.get(i) < index) i++;
+                int end = lineLength.get(i);
+                System.out.print(cnt+": <"+prog.substring(index, end)+",79>");
+                cnt++;
+                index = end;
+                if (index <= prog.length()-1) System.out.print("\n");
+            }
+            else if (index <= prog.length()-2 && prog.substring(index, index+2).equals("/*")) {
+                //注释2
+                int end = index+2;
+                while (end <= prog.length()-2 && !prog.substring(end, end+2).equals("*/")) {
+                    end++;
+                }
+                System.out.print(cnt+": <"+prog.substring(index, end+2)+",79>");
+                cnt++;
+                index = end+2;
+                if (index <= prog.length()-1) System.out.print("\n");
+            }
+//            else if (index <= prog.length()-2 && prog.charAt(index)=='%' && (Character.isLetter(prog.charAt(index+1)) || Character.isDigit(prog.charAt(index+1)) || prog.charAt(index+1)=='.' || prog.charAt(index+1)=='-')) {
+//                int end =index+1;
+//                while (end <= prog.length()-2 && Character.isLetter(prog.charAt(end)) || Character.isDigit(prog.charAt(end)) || prog.charAt(end+1)=='.' || prog.charAt(end+1)=='-') {
+//                    end++;
+//                }
+//                System.out.print(cnt+": <"+prog.substring(index, end)+",81>");
+//                cnt++;
+//                index = end;
+//                if (index <= prog.length()-1) System.out.print("\n");
+//            }
+            else if (prog.charAt(index) == '"' && index-1 >= 0 && prog.substring(index-1, index).equals("(")) {
+                //printf引号中间的是标识符
+                int end = index+1;
+                while (prog.charAt(end) != '"') end++;
+                System.out.print(cnt+": <"+prog.substring(index, index+1)+","+keyMap.get(prog.substring(index, index+1))+">\n");
+                cnt++;
+                index += 1;
+                System.out.print(cnt+": <"+prog.substring(index, end)+",81>\n");
+                cnt++;
+                System.out.print(cnt+": <"+prog.substring(end, end+1)+","+keyMap.get(prog.substring(end, end+1))+">\n");
+                cnt++;
+                index = end+1;
+            }
+            else {
+                //从长到短匹配关键字
+                if (index+3 <= prog.length() && keyMap.containsKey(prog.substring(index, index+3))) {
+                    System.out.print(cnt+": <"+prog.substring(index, index+3)+","+keyMap.get(prog.substring(index, index+3))+">");
+                    cnt++;
+                    index += 3;
+                    if (index <= prog.length()-1) System.out.print("\n");
+                }
+                else if (index+2 <= prog.length() && keyMap.containsKey(prog.substring(index, index+2))) {
+                    System.out.print(cnt+": <"+prog.substring(index, index+2)+","+keyMap.get(prog.substring(index, index+2))+">");
+                    cnt++;
+                    index += 2;
+                    if (index <= prog.length()-1) System.out.print("\n");
+                }
+                else if (index+1 <= prog.length() && keyMap.containsKey(prog.substring(index, index+1))) {
+                    System.out.print(cnt+": <"+prog.substring(index, index+1)+","+keyMap.get(prog.substring(index, index+1))+">");
+                    cnt++;
+                    index += 1;
+                    if (index <= prog.length()-1) System.out.print("\n");
+                }
+                else {
+                    index++;
+                }
+            }
+            while (index <= prog.length()-1 && prog.charAt(index) == ' ') {
+                index++;
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

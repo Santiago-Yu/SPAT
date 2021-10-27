@@ -1,0 +1,32 @@
+package step2;
+
+public class Station extends Thread{
+	public static int PS=20;
+	Object bo = "aa";
+	public void run() {
+		while(PS>0) {
+			synchronized(bo) {
+				if(PS>0) {
+		System.out.println("卖出了第"+this.PS+"张票");
+		this.PS--;
+				}
+				else{
+					System.out.println("票卖完了");
+				}
+			}
+			try {
+				Thread.sleep(1000);
+			}catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	public static void main(String[] args) {
+		Station st1 = new Station();
+		Station st2 = new Station();
+		Station st3 = new Station();
+		st1.start();
+		st2.start();
+		st3.start();
+	}
+}

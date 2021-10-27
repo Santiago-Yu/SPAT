@@ -1,0 +1,48 @@
+package step2;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		/********** BEGIN **********/
+		List<Integer> list1=new ArrayList<Integer>();
+		List<Integer> list2=new ArrayList<Integer>();
+		for(int i=1;i<=length;i++) {
+			if(length%i==0) {
+				list1.add(i);
+			}
+		}
+		for(int i=1;i<=width;i++) {
+			if(width%i==0) {
+				list2.add(i);
+			}
+		}
+		int w=0;
+		int ans=0;
+		for(Integer x:list1) {
+			for(Integer y:list2) {
+				if(x.intValue()==y.intValue()) {
+					if(w<x) {
+						w=x;
+						ans=(length/w)*(width/w);
+					}
+				}
+			}
+		}
+		System.out.println(w);
+		System.out.println(ans);
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

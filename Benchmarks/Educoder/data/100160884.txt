@@ -1,0 +1,63 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File(filePath);
+        Document root_document =  Jsoup.parse(input,"UTF-8","http:");
+       
+		return root_document;
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+        Elements pinyin_filter_elements = doc.getElementsByClass("pinyin_filter_detail layoutfix");//访问网址检查发现所有数据存在该标签中
+		Element pinyin_filter = pinyin_filter_elements.first();
+        Elements hotelsLinks = pinyin_filter.getElementsByTag("dd");
+        List<HotelCity> cities = new ArrayList<HotelCity>();
+        for (int i = 0; i < hotelsLinks.size(); i++) {
+            //当前dd
+            Element head_hotelsLink = hotelsLinks.get(i);
+            //当前dd下的所有孩子也就是a标签
+            Elements links = head_hotelsLink.children();
+            for (Element link : links) {
+                HotelCity city = new HotelCity();
+                String url = link.attr("href");
+                String[] items = url.split("/");
+                String temp = items[items.length-1];
+                StringBuffer sb1= new StringBuffer();
+                StringBuffer sb2= new StringBuffer();
+                for(int j=0;j<temp.length();j++){
+                	if(temp.charAt(j)>='0'&&temp.charAt(j)<='9'){
+                    	sb2.append(temp.charAt(j));
+                    }else{
+                    	sb1.append(temp.charAt(j));
+                    }
+                }
+                city.setCityId(sb2.toString());
+                city.setHeadPinyin("A");
+                city.setPinyin(sb1.toString());
+                city.setCityName(link.html());
+                cities.add(city);
+            }
+         
+        }
+		return cities;
+		/**********   End   **********/
+	}
+}

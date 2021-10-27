@@ -1,0 +1,38 @@
+package step3;
+
+import java.io.File;
+import java.util.*;
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+        System.out.println("+--"+file.getName());
+        showdir(file," ");
+	}
+    public void showdir(File file,String s){
+        File[] t=file.listFiles();
+        List<File> files = Arrays.asList(t);
+        s+=" ";
+        Collections.sort(files, new Comparator< File>() {   
+       @Override   
+            public int compare(File o1, File o2) {	
+                	
+                return o1.getName().compareTo(o2.getName());   
+            }  
+        });
+
+        for(int i=0;i<files.size();i++){
+            if(!files.get(i).isDirectory()){
+                if((files.get(i).getName()).trim().toLowerCase().endsWith(".jpg")||(files.get(i).getName()).trim().toLowerCase().endsWith(".png")||(files.get(i).getName()).trim().toLowerCase().endsWith(".bmp"))
+                    System.out.println(s+"--"+files.get(i).getName());
+            }
+            else{
+                System.out.println(s+"+--"+files.get(i).getName());
+                showdir(files.get(i),s+" ");
+            }
+        }
+    }
+	
+
+	/********** END **********/
+}

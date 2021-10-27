@@ -1,0 +1,75 @@
+package jdbc;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class jdbcInsert {
+    public static void insert(){
+		/**********   Begin  **********/
+        try {
+            //加载驱动
+			Class.forName("com.mysql.jdbc.Driver" );
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+
+
+
+		Connection conn = null;
+		PreparedStatement statement = null;
+		/**********   Begin  **********/
+        //连接并插入数据
+        			
+        String sql0 = "use mysql_db";
+        String sql1 = "insert into student value(1,'张三','男',19)";
+        String sql2 = "insert into student value(2,'李四','女',18)";
+        String sql3 = "insert into student value(3,'王五','男',20)";
+		try{
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql_db", "root", "123123");
+			/*statement = conn.prepareStatement("insert into student(id,name,sex,age) values(?,?,?,?)");
+            statement.setInt(1,1);
+            statement.setString(2, "张三");
+            statement.setString(3, "男");
+            statement.setInt(4, 19);
+            statement.executeUpdate();*/
+            statement = conn.prepareStatement(sql0);//(id,name,sex,age)(?,?,?,?)
+			statement.executeUpdate();
+            statement = conn.prepareStatement(sql1);
+            statement.executeUpdate();
+            statement = conn.prepareStatement(sql2);
+            statement.executeUpdate();
+            statement = conn.prepareStatement(sql3);
+            statement.executeUpdate();
+			PreparedStatement statement1 = conn.prepareStatement("select * from student");
+			ResultSet resultSet = statement1.executeQuery();//将执行结果给ResultSet
+			while (resultSet.next()) {//循环判断表中是否还有数据
+   				 //int id = resultSet.getInt(1);//通过列的索引查询
+  				 //String name = resultSet.getString("name");//通过列名查询
+                System.out.print(resultSet.getInt("id")+" ");
+                System.out.print(resultSet.getString("name")+" ");
+                System.out.print(resultSet.getString("sex")+" ");
+                System.out.print(resultSet.getInt("age"));
+                System.out.println();
+			}
+
+		
+		
+		} catch (SQLException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+		finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

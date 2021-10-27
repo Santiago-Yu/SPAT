@@ -1,0 +1,35 @@
+package step3;
+import java.util.Scanner;
+/*假定一个一维整型数组里存放了如下整数：
+        98  -45  67  23  -1  12  9
+使用冒泡排序法对该数组进行由小到大的顺序排序，并将排序之后的数组元素依次输出
+*/
+public class MaoPao {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		int[] num=new int[7];
+		int k,i,h;
+		for(k=1;k<=num.length;k++) {
+			System.out.println("请输入第"+k+"个数：");
+			num[k-1]=sc.nextInt();
+		}
+		System.out.println("冒泡排序前的数组：");
+		for(i=0;i<num.length;i++) {
+			System.out.print(num[i]+"\t");
+		}System.out.println();
+		int l=num.length;
+		System.out.println("冒泡排序后的数组：");
+		for(int n=1;n<l;n++) {
+			for(int m=l-1;m>=n;m--) {
+				if(num[m]<num[m-1]) {
+					h=num[m];
+					num[m]=num[m-1];
+					num[m-1]=h;
+				}
+			}
+		}
+		for(i=0;i<num.length;i++) {
+			System.out.print(num[i]+"\t");
+		}System.out.println();	
+	}
+}

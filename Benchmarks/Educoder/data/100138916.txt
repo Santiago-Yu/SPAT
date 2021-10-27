@@ -1,0 +1,45 @@
+package step2;
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) 
+	{
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread s=new MyThread(num);
+		new Thread(new MyThread(num)).start();					
+		
+	}
+}
+
+class MyThread implements Runnable
+{
+	int a=0;
+	int b=1;
+	int c=0;
+	int num;
+	public MyThread(int num)
+	{
+		this.num=num;
+	}
+	public void run()
+	{
+		getnum(num);
+	}
+	public void getnum(int num)
+	{
+		if(num==1)
+		{
+			System.out.println("子线程计算结果为：1");
+			System.exit(0);
+		}
+		for(int i=1;i<num;i++)
+		{
+			c=a+b;
+			a=b;
+			b=c;
+		}
+		System.out.println("子线程计算结果为："+c);
+	}
+}

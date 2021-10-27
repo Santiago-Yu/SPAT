@@ -1,0 +1,46 @@
+package step2;
+
+
+public class FindZhiShu {
+
+    public boolean judge(int i){
+        int flag=1;
+        for(int j=3;j<i;j=j+2)
+        {
+            if(i%j==0)
+            {
+                flag=0;
+                break;
+            }
+        }
+        if(flag==1)
+        return true;
+        else
+        return false;
+    }
+
+	public static void main(String[] args) {
+		   /*
+		     打印输出质数的时候务必按照如下格式：System.out.print(质数+" ")；
+		     使用print进行打印同时被打印输出的质数后加上一个空格，
+		     以便于与平台提供的结果格式保持一致！
+            */
+            System.out.print(2+" ");
+		   /**********begin**********/
+           FindZhiShu num=new FindZhiShu();
+            for(int i=3;i<=1000;i=i+2)
+            {
+                if(i==3)
+                {
+                    System.out.print(3+" ");
+                }
+                else
+                {
+                    if(num.judge(i)==true)
+                    System.out.print(i+" ");
+                }
+            }
+
+           /**********end**********/	
+	}
+}

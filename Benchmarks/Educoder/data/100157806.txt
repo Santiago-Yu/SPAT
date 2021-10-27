@@ -1,0 +1,32 @@
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int stack [] = new int [20];
+        for(int q=0;q<=40;q++){
+            for(int w=0;w<stack.length;w++)
+                stack[w]=0;//将栈清零
+            int sum=0;
+            for(int j=0;n>0;j++){
+                stack[j]=n%10;
+                n/=10;
+            }
+            for(int i = 0;i<stack.length;i++){//将x每个数位的平方和赋值给x
+            	sum+=stack[i]*stack[i];
+            }
+            if(sum==1){
+        		System.out.print("YES");
+                break;
+        	}
+            n = sum;
+            if(q==40){
+            	System.out.print("NO");
+            }
+        }
+	}
+
+}

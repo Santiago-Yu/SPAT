@@ -1,0 +1,41 @@
+package step1;
+import java.util.*;
+public class Task {
+	public static void sortArray(int[] number, String sort){
+		/********** BEGIN **********/
+        int N=number.length;
+		int preIndex,current;
+        for(int i=0;i<N;i++) {
+        	preIndex=i-1;
+        	current=number[i];
+        	while(preIndex>=0&&number[preIndex]>current) {
+        		number[preIndex+1]=number[preIndex];
+        		preIndex--;
+        	}
+        	number[preIndex+1]=current;
+        }
+        if(sort.contains("asc")){
+            for(int i=0;i<N;i++){
+                System.out.println(number[i]);
+            }
+        }
+        else if(sort.contains("desc")){
+            for(int i=N-1;i>=0;i--){
+                System.out.println(number[i]);
+            }
+        }
+
+		/********** END **********/
+	}
+    public static void main(String[] args) {
+        Scanner scan=new Scanner(System.in);
+        Scanner scans=new Scanner(System.in);
+        int n=scan.nextInt();
+        int [] arr=new int[n];
+        for(int i=0;i<n;i++) {
+        	arr[i]=scan.nextInt();
+        }
+        String sorts=scans.nextLine();
+        sortArray(arr,sorts);
+    }
+}

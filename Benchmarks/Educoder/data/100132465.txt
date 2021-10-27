@@ -1,0 +1,48 @@
+package step2;
+ 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+ 
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+		if(length % width == 0) {
+			int j = 0 ;
+			j = length / width;
+			System.out.println(j);
+			System.out.println( (length*width) / (j*j));
+		}else {
+			int chang = 1;
+			List len = count(length);
+			List wid = count(width);
+			out:for(int i = len.size()-1 ; i >= 0 ; i--) {
+				for(int j = 0 ; j < wid.size() ; j++) {
+					if(len.get(i) == wid.get(j)) {
+						chang = (int) len.get(i);
+						break out;
+					}
+				}
+			}
+			System.out.println(chang);
+			System.out.println( (length*width) / (chang*chang));
+		}
+		
+	}
+	public static List<Integer> count(int n) {
+		List<Integer> num = new ArrayList<Integer>();
+		int k = 0;
+		for(int i = 1 ; i <= n ; i ++) {
+			if(n%i == 0) {
+				num.add(i);
+			}
+		}
+		return num;
+		
+	}
+}
+        /********** END **********/

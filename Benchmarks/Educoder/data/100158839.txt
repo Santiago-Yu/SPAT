@@ -1,0 +1,31 @@
+package Q205;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner sc = new Scanner(System.in);
+		int m = sc.nextInt();
+		sc.nextLine();
+		String num[] = null;
+		num = sc.nextLine().split(" ");
+		int nums[] = new int[num.length];
+		int i;
+		for(i=0;i<num.length;i++)
+		{
+			nums[i] = Integer.parseInt(num[i]);
+		}
+		int nItem = nums.length;
+        int buff[] = new int[m+1];
+        for (i = 0; i <= m; i++)
+            buff[i] = 0;
+        for (int j = 0; j < nItem; j++)
+        {
+            for (i = m; i >= nums[j]; i--)
+            {
+                buff[i] =Math.max(buff[i], buff[i-nums[j]]+nums[j]);
+            }
+        }
+	      System.out.print(buff[m]);
+	}
+}

@@ -1,0 +1,35 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+		try {
+			str = reader.readLine();
+			int letter=0;
+	        int space=0;
+	        int number=0;
+	        int other=0;
+			for (int i = 0; i < str.length(); i++) {
+        		char c = str.charAt(i);
+        		if (c >= '0' && (int) c <= '9') {
+            		number++;
+        		} else if ((c >= 'a' && c <= 'z')||(c >= 'A' && c <= 'Z')) {
+            		letter++;
+        		} else if (c == ' ') {
+            		space++;
+        		} else{
+            		other++;
+        		}
+    		}
+			System.out.print("letter="+letter+","+"space="+space+","+"number="+number+","+"other="+other);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+    }
+}
+

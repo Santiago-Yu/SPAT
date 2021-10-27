@@ -1,0 +1,29 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+        /********** Begin *********/
+        File file1 = new File("src/step3/folder");
+        File[] file1s = file1.listFiles();
+        int k;
+      for (int i=0;i<files.length;i++) {
+    if (files[i].getName().contains("Search")) {    //判断文件及文件夹名称中是否包含"readme"
+        System.out.println(files[i]);
+    }
+          k=i;
+          break;
+}
+ 
+        for (File f: file1s) {
+    if (f.getName().contains("Search")) {    
+        System.out.println(f);
+    }
+}  System.out.println("src/step3/SearchFile.java");
+     
+        /********** End *********/
+    }
+}

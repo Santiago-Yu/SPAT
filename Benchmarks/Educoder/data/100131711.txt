@@ -1,0 +1,36 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+        show(file,0);
+	}
+    
+    public void show(File file,int n) {
+		String str="";
+		for(int i=0;i<n;i++) {
+			str+="  ";
+		}
+		System.out.println(str+"+--" + file.getName());
+        if (file.isDirectory()) {
+        	n++;
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                	show(new File(files[i].getAbsolutePath()),n);
+                } else {
+                    System.out.println(str+"  --" + files[i].getName());
+                }
+            }
+        } else {
+            System.out.println("文件：" + file.getName());
+        }
+	}
+	
+
+
+	/********** END **********/
+}

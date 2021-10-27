@@ -1,0 +1,50 @@
+package step1;
+
+import java.*;
+import java.io.*;
+import java.util.*;
+
+
+
+public class Task {
+    
+	
+	int[] n11 = new int[999];
+	int[] n12 = new int[999];
+	int[] n13 = new int[999];
+	
+    int j1=0, j2=0, j3=0;
+	
+    int sum = 0;
+    
+    public static void main(String[] args){
+    Task t = new Task();
+    Scanner sc = new Scanner(System.in);
+    int num1 = sc.nextInt();
+    int num2 = sc.nextInt();
+    
+    t.sum = t.getSum(num1, num2);
+    System.out.println(t.sum);
+    
+    }
+    
+    
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        for(int i = num1; i<=num2; i++){
+            
+			n11[j1] = i/100;
+	        n12[j2] = (i%100)/10;
+	        n13[j3] = (i%100)%10;
+	        
+	        sum = sum + n11[j1] + n12[j2] + n13[j3];
+	        j1++;
+	        j2++;
+	        j3++;
+        }
+        
+        return sum;
+		
+		/********** END **********/
+	}
+}

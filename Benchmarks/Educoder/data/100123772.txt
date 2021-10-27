@@ -1,0 +1,32 @@
+package step1;
+public class MaxMin{
+	public static void main(String[] args){
+    	double[] arr = new double[100];
+        int s=0;				//定义 统计大于50的整数个数 变量
+        double max=0,min=100;	//定义 最大值 最小值 变量
+        for(int i=0;i<100;i++){
+        double d=100*Math.random();//获取随机数
+	    arr[i] = d;
+        /********* Begin *********/   
+  		if(i>max)
+         {
+            max = i;//判断是不是比最大值大
+         }
+         else if(i<min)//如果比最大值大，就不用再判断是不是比最小值小了
+         {
+            min = i;
+         }
+         if(i>50)//判断是不是大于50
+         {
+            ++s;
+         }        
+        /********* end *********/
+        }
+        judgeRadom.cpm(arr,max,min,s);	//这个方法会判断你的计算是否正确
+    }
+}
+            
+            
+           
+        /********* end *********/
+        

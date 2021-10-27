@@ -1,0 +1,43 @@
+package step1;
+import java.util.*;
+
+public class Task {
+
+	public void sortArray(int[] arr, String sort){
+		/********** BEGIN **********/
+		 for(int i = 0 ;i<arr.length-1;i++){
+            int k = i;
+            for(int j = k + 1; j < arr.length; j++){// 选最小的记录
+                if(arr[j] < arr[k]){
+                    k = j;
+                }
+            }
+
+            if(i != k){
+                int temp = arr[i];
+                arr[i] = arr[k];
+                arr[k] = temp;
+            }
+
+        }
+        if(sort.equals("asc"))
+        {
+            for(int i = 0;i<arr.length ; i++)
+            {
+                System.out.println(arr[i]);
+            }
+        }
+        else
+        {
+            for(int j = arr.length-1 ;j>=0 ; j--)
+            {
+                System.out.println(arr[j]);
+            }
+        }
+		
+
+
+		
+		/********** END **********/
+	}
+}

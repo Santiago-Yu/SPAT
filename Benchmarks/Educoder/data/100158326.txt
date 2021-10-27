@@ -1,0 +1,43 @@
+package step3;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+public class Reflect_stu {
+    public static String toString(Object obj) {
+        Class cl = obj.getClass();
+        String r = "";
+        r += "[";
+        Field[] fields = cl.getDeclaredFields();
+        AccessibleObject.setAccessible(fields, true);
+        for (Field f : fields) {
+            if (!Modifier.isStatic(f.getModifiers())) {
+                if (!r.endsWith("[")) r += ",";
+                r += f.getName() + "=";
+                try {
+                    Class t = f.getType();
+                    Object val = f.get(obj);
+                    if (t.isPrimitive()) r += val;
+                    else r += toString(val);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        r += "]";
+        return r;
+    }
+    public static void main(String[] args) {
+        Person person = new Person(88, 19, 175);
+        System.out.println(toString(person));
+    }
+}
+class Person {
+    public Integer weight;
+    private Integer age;
+    private Double height;
+    public Person(Integer weight, Integer age, double height) {
+        this.weight = weight;
+        this.age = age;
+        this.height = height;
+    }
+}

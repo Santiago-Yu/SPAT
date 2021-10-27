@@ -1,0 +1,33 @@
+class n11130567 {
+	public static boolean copyFile(File sourceFile, File destFile) throws IOException {
+		long flag = 0;
+		if (!(!destFile.exists()))
+			;
+		else
+			destFile.createNewFile();
+		FileChannel source = null;
+		FileChannel destination = null;
+		try {
+			source = new FileInputStream(sourceFile).getChannel();
+			destination = new FileOutputStream(destFile).getChannel();
+			flag = destination.transferFrom(source, 0, source.size());
+		} catch (Exception e) {
+			Logger.getLogger(FileUtils.class.getPackage().getName()).log(Level.WARNING, "ERROR: Problem copying file",
+					e);
+		} finally {
+			if (!(source != null))
+				;
+			else
+				source.close();
+			if (!(destination != null))
+				;
+			else
+				destination.close();
+		}
+		if (!(flag == 0))
+			return true;
+		else
+			return false;
+	}
+
+}

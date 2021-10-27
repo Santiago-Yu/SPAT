@@ -1,0 +1,40 @@
+package step3;
+
+public class Task {
+     
+     private int directX[]= {0,0,-1,1};
+     private int directY[]= {1,-1,0,0};
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 int ans=0;
+	 int a=ferry.length;
+	 if(a==0) {
+		 return 0;
+	 }
+	 int b=ferry[0].length;
+	 for(int i=0;i<a;i++) {
+		 for(int j=0;j<b;j++) {
+			 if(dfs(ferry,i,j,a,b)) {
+				 ans++;
+			 }
+		 }
+	 }
+	 return ans;
+	 
+        
+     /***********END ***************/
+	 }
+	 private boolean dfs(char[][] ferry,int x,int y,int a,int b) {
+		 if(x<0||x>=a||y<0||y>=b) {
+			 return false;
+		 }
+		 if(ferry[x][y]=='+') {
+			 ferry[x][y]='o';
+			 for(int i=0;i<4;i++) {
+				 dfs(ferry,x+directX[i],y+directY[i],a,b);
+			 }
+			 return true;
+		 }
+		 return false;
+	 }
+}

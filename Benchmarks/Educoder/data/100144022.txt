@@ -1,0 +1,30 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file) {
+		int deep = 1;
+        System.out.println("+--" +file.getName());
+		getFile(file, deep);
+	}
+
+	public void getFile(File file, int deep) { // 文件深度方便输出空格
+		File[] files = file.listFiles();
+		for (File temp : files) { // foreach循环遍历文件
+			for (int i = 0; i < deep; i++) { // 输出空格
+				System.out.print("  ");
+			}
+
+			if (temp.isDirectory()) { // 如果是文件夹需要递归
+				System.out.println("+--" + temp.getName());
+				getFile(temp, deep + 1); // 递归文件深度+1
+			} else { // 文件直接输出
+				System.out.println("--" + temp.getName());
+			}
+		}
+	}
+	/********** End **********/
+}

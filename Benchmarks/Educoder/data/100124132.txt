@@ -1,0 +1,16 @@
+package step2;
+public class Fibonacci {
+	public static void main(String[] args) {
+		int sum=0;
+		int[] fib = new int[25];
+		fib[0]=1;
+		fib[1]=1;
+		for(int i=0;i+2<25;i++) {
+			fib[i+2]=fib[i]+fib[i+1];
+		}
+		for(int i=0;i<20;i++) {
+			sum+=fib[i];
+		}
+		System.out.print("前20个元素的和为"+sum);
+	}
+}

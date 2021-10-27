@@ -1,0 +1,48 @@
+package step2;
+
+import java.util.Scanner;
+//1、2、3、5、8、13、21、34
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread.num = num;
+		MyThread th = new MyThread();
+		th.run();
+		
+		
+		
+	}
+}
+
+class MyThread  implements Runnable {
+	static int num;
+	static int ans=0;
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		int a=1,b=1;
+		if(num==0){
+			System.out.println("子线程计算结果为：0");
+		}
+		else if(num==1){
+			System.out.println("子线程计算结果为："+a);
+		}else if(num==2){
+			System.out.println("子线程计算结果为："+b);
+		}
+		else {
+			for(int i=1;i<num-1;i++){
+				if(i%2==1){
+					a=a+b;
+					ans=a;
+				}
+				else if(i%2==0){
+					b=a+b;
+					ans=b;
+				}
+			}
+			System.out.println("子线程计算结果为："+ans);
+		}
+	}
+}

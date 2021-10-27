@@ -1,0 +1,36 @@
+package step3;
+
+public class Task {
+	void rotate(int a[][])
+    {
+        int N=a.length;
+        //转置
+        for (int i = 0; i < N; ++i)
+        {
+            for (int j = 0; j < i; ++j)
+            {
+                int temp = 0;
+                //沿主对角线对称位置上的元素进行交换
+                temp = a[i][j];
+                a[i][j] = a[j][i];
+                a[j][i] = temp;
+            }
+        }
+        //逆序：对一维数组而言，将每一行第i个元素与第N-i-1个元素进行交换
+        for (int i = 0; i < N; ++i)
+        {
+            for (int j = N - 1; j >= N / 2; --j) //注意j循环的条件为 j>=N/2
+            {
+                int temp = 0;
+                temp = a[i][j];   //第i行末元素
+                a[i][j] = a[i][N - j - 1];
+                a[i][N - j - 1] = temp;
+            }
+        }
+
+    } 
+
+}
+
+
+

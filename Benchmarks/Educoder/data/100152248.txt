@@ -1,0 +1,29 @@
+package step1;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+/**
+ * Created by liqiankun on 2018/11/10 0010
+ * Description：
+ */
+public class ElevatorTest {
+    /**
+     *请在下面的Begin/End内写一个测试函数来验证Elevator中的各方法的编写是否正确编写是否正确
+     */
+    /***********************Begin**************************/
+    
+    @Test
+    public void testCreateElevator() {
+    	Elevator elevator = new Elevator(10, 1);
+        elevator.moveUP();
+        assertEquals(elevator.getCurFloor(), 2);
+        elevator.moveUP();
+        assertEquals(elevator.getCurFloor(), 3);
+        elevator.moveUP();
+        assertNotEquals(elevator.getCurFloor(), 3);
+        assertEquals(elevator.getCurFloor(), 4);
+    }
+
+
+    /************************End***************************/
+}

@@ -1,0 +1,20 @@
+package step1;
+
+public class Task {
+	public String inversion(String str){
+		/********* Begin *********/
+		char c = ' ';
+		int l = str.length();
+		char [] arr = str.toCharArray();
+		for(int i = 0, j = l-1;i<j;i++,j--) {
+			c= arr[i];
+			arr[i]=  arr[j];
+			arr[j] = c;
+			
+		}
+		str = new String(arr);
+		
+		/********* End *********/
+		return str;
+	}
+}

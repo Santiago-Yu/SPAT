@@ -1,0 +1,51 @@
+package step2;
+import java.awt.Point;
+import java.util.LinkedList;
+import java.util.Queue;
+public class Task {
+public int virusArea(int n, int m, char[][] area) {
+		/********* Begin *********/
+		int sum = 0;
+		Boolean ite = true;
+ 
+		outer: while (ite) {
+			int dx = 0, dy = 0, gx = 0, gy = 0;
+			outer1: for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					if (area[i][j] == 'o') {
+						gx = i;
+						gy = j;
+						break outer1;
+					}
+					if (i == n - 1 && j == m - 1) {
+						ite = false;
+						break outer;
+					}
+				}
+			}
+ 
+			area[gx][gy] = 'x';
+			Queue<Point> q = new LinkedList<Point>();
+			int[] tx = { -1, 1, 0, 0 };
+			int[] ty = { 0, 0, 1, -1 };
+			q.offer(new Point(gx, gy));
+ 
+			while (q.size() > 0) {
+				Point p = q.poll();
+				for (int i = 0; i < 4; i++) {
+					int x = p.x + tx[i];
+					int y = p.y + ty[i]; // p为当前位置；
+					if (x >= 0 && x < n && y >= 0 && y < m && area[x][y] == 'o') {
+						area[x][y] = 'x';
+						q.offer(new Point(x, y));
+					}
+				}
+			}
+ 
+			sum++;
+		}
+		return sum;
+ 
+		/********* End *********/
+	}
+}

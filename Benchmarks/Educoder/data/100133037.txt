@@ -1,0 +1,25 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+		int array[]=new int[]{701,703,706,710,715,721,728,805,814,824,904,916,929};
+		String str2="";
+if(date != null && !"".equals(date)){
+for(int i=0;i<date.length();i++){
+if(date.charAt(i)>=48 && date.charAt(i)<=57){
+str2+=date.charAt(i);
+}
+}
+}
+        int a=Integer.parseInt(str2);
+        if(a<100){
+         a = (a/10)*100 + a%10;   
+        }
+        for(int i = 0;i < 13;i++){
+         if(a == array[i])
+             return true;
+        }
+        return false;
+	}
+}

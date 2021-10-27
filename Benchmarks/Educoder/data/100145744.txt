@@ -1,0 +1,83 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+        String str = releaseDate;
+		String arry[] = str.split("-");
+		int nian=Integer.parseInt(arry[0]); 
+		int yue=Integer.parseInt(arry[1]); 
+		int ri=Integer.parseInt(arry[2]); 
+		while(day+ri>30) {
+			switch(yue) {
+			case 1:case 3:case 5:case 7:case 8:case 10:case 12:{
+				day = day -(31-ri);
+				ri = 0;
+				yue++;
+				if(yue==13) {
+					yue = 1;
+					nian++;
+				}
+				}
+			break;
+			
+			case 2:{
+				if(nian % 4 == 0 && nian % 100 != 0 || nian % 400 == 0)
+					day = day - (29-ri);
+				else
+					day = day - (28-ri);
+				ri = 0;
+				yue++;
+//				if(yue>12) {
+//					yue = 1;
+//					nian++;
+//				}
+			}
+			break;
+			default:{
+				day = day - (30-ri);
+				ri = 0;
+				yue++;
+//				if(yue>12) {
+//					yue = 1;
+//					nian++;
+//				}
+			}
+				
+			}
+			}
+		ri = day+ri;
+		String str2 = "",str3 = "";
+		if(yue<10) {
+			 str2 = "0" + yue;
+		}else {
+			str2 = ""+yue;
+		}
+
+		if(ri<10)
+			{
+			str3 = "0" + ri;
+			}else {
+				str3 = ""+ri;
+			}
+		
+		
+			String str1 = nian+"-"+str2+"-"+str3;
+			return str1;
+					
+		
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

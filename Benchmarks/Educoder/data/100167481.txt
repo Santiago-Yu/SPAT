@@ -1,0 +1,50 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcTransaction {
+
+    public static void transaction(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver" );
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        /**********  Begin   **********/
+        //连接数据库并开启事务
+String url = "jdbc:mysql://localhost:3306/mysql_db";
+    try {
+        conn = DriverManager.getConnection (url,"root","123123" );
+        conn.setAutoCommit(false);//关闭自动提交开启事务
+        ps = conn.prepareStatement("insert into student(id,name,sex,age) values(4,'赵六','女',21)");
+        ps.executeUpdate();
+        conn.commit();//提交事务
+        ps = conn.prepareStatement("delete from student where id=2");
+        ps.executeUpdate();
+        ps = conn.prepareStatement("insert in student(id,name,sex,age) values(5,'钱七','男',18)");
+        ps.executeUpdate();
+        conn.commit();//提交事务
+    } catch (SQLException e) {
+        try {
+            //事务回滚
+            conn.rollback();
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+    }
+        /**********  End   **********/
+        finally {
+            try {
+                if(ps!=null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+}

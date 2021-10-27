@@ -1,0 +1,25 @@
+package task3;
+
+import java.util.*;
+
+public class Task3 {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		int num=sc.nextInt();
+		if(isNumber(num)){
+			System.out.println(num +"是水仙花数");
+		}else{
+			System.out.println(num+"不是水仙花数");
+		}
+	}
+	public static boolean isNumber(int s){
+		int a=s%10;
+		int b=(s/10)%10;
+		int c=s/100;
+		if(s==(a*a*a)+(b*b*b)+(c*c*c)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+}

@@ -1,0 +1,57 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+   	public void showDirStructure(File file)	{
+    	int index = 0;
+        String fileName = file.getName();
+        if(!file.isDirectory()){
+            if( fileName.substring(fileName.indexOf('.')).equals(".jpg") ||
+              	fileName.substring(fileName.indexOf('.')).equals(".png") ||
+              	fileName.substring(fileName.indexOf('.')).equals(".bmp") ){
+            	System.out.println("--"+file.getName());
+            }
+        }else{
+        	System.out.println("+--"+file.getName());
+        	File[] files = file.listFiles();
+            for(int i=0; i<files.length; i++){
+            	showDirStructure(files[i], index+1);
+                //System.out.println(index);
+            }
+        }
+    }
+    
+    public void showDirStructure(File file, int index){
+    	for(int i=0; i<index; i++){
+        	System.out.print("  ");
+        }
+        String fileName = file.getName();
+        if(!file.isDirectory()){
+            if( fileName.substring(fileName.indexOf('.')).equals(".jpg") ||
+              	fileName.substring(fileName.indexOf('.')).equals(".png") ||
+              	fileName.substring(fileName.indexOf('.')).equals(".bmp") ){
+            	System.out.println("--"+file.getName());
+            }
+        }else{
+        	System.out.println("+--"+file.getName());
+        	File[] files = file.listFiles();
+            for(int i=0; i<files.length; i++){
+                fileName = files[i].getName();
+                if( files[i].isDirectory() ||
+                    fileName.substring(fileName.indexOf('.')).equals(".jpg") ||
+              		fileName.substring(fileName.indexOf('.')).equals(".png") ||
+              		fileName.substring(fileName.indexOf('.')).equals(".bmp") ){
+            		showDirStructure(files[i], index+1);
+                    
+            	}
+            	
+            }
+        }
+    	
+    }
+	
+	/********** END **********/
+}

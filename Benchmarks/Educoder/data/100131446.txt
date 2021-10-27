@@ -1,0 +1,35 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	private void showAnother(File file,int blankSpace) {
+			File []listFiles = file.listFiles();
+			for(File child : listFiles) {
+				if(child.isDirectory()) {
+					for(int i=0; i< blankSpace; i++)
+						System.out.print(" ");
+					System.out.println("+--" + child.getName());
+					showAnother(child,blankSpace+2);
+				} else {
+					for(int i=1; i<= blankSpace; i++)
+						System.out.print(" ");
+					System.out.println("--" + child.getName());
+				}
+			}			
+		}
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		
+System.out.println("+--" + file.getName());
+			showAnother(file,2);
+
+
+
+
+	}
+	
+
+
+	/********** END **********/
+}

@@ -1,0 +1,69 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+    public Long getBestTeam(int numbers, int[] abilities, 
+    		int selectedNum, int distance){
+    	//因为乘积结果最大值为:
+        //Math.pow(50,10)=Math.pow(5,10)*Math.pow(10,10),所以数组类型采用long
+        long[][] max=new long[numbers+1][selectedNum+1];//max[i][j]:i为组成j个人的最后一个人
+        long[][] min=new long[numbers+1][selectedNum+1];//min[i][j]:i为组成j个人的最后一个人
+
+        //显然max[i][0],min[i][0]=0,所以第1列不用初始化
+        //同理,第1行不用初始化.
+        //但是第2列需要初始化
+        for(int i=1;i<numbers+1;i++){
+            max[i][1]=abilities[i];
+            min[i][1]=abilities[i];
+        }
+        //dp过程:
+        for(int j=2;j<selectedNum+1;j++){
+            for(int i=j;i<numbers+1;i++){
+                long max0=Integer.MIN_VALUE;//记录下面for循环中出现的最大值,然后赋值给max[i][j]
+                long min0=Integer.MAX_VALUE;//记录下面for循环出现的最小值,然后赋值给min[i][j]
+
+               //求解,当j,i值确定时,最大的分割点
+
+                for(int left=Math.max(j-1,i-distance);left<i;left++){
+
+                    if(max0<Math.max(max[left][j-1]*abilities[i],min[left][j-1]*abilities[i])){
+
+                        max0=Math.max(max[left][j-1]*abilities[i],min[left][j-1]*abilities[i]);
+
+                    }
+
+                    if(min0>Math.min(max[left][j-1]*abilities[i],min[left][j-1]*abilities[i])){
+
+                        min0=Math.min(max[left][j-1]*abilities[i],min[left][j-1]*abilities[i]);
+
+                    }
+
+                }
+
+                max[i][j]=max0;
+
+                min[i][j]=min0;
+
+            }
+
+        }
+
+        //根据对max[i][j]的定义:第i个人作为选择的j个人的最后一个人,所以此时需要对max第k+1列进行遍历,找出最大值
+
+        long result=Integer.MIN_VALUE;
+
+        for(int i=selectedNum;i<numbers+1;i++){ //显然,第k+1列,从第k+1行开始,值才不为0;所以i从k开始.
+
+            if(result<max[i][selectedNum])
+
+                result=max[i][selectedNum];
+
+        }
+        
+        return result;
+
+    }
+
+	/********* End *********/
+}

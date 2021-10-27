@@ -1,0 +1,33 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		
+		
+        int tR=0,tC=0;//左上角坐标
+        int dR=matrix.length - 1;
+        int dC=matrix.length - 1;//右下角坐标
+        while(tR<dR){
+        rotateEdge(matrix,tR++,tC++,dR--,dC--);
+        }
+	}
+        void rotateEdge(int[][] matrix,int tR,int tC,int dR,int dC){
+            int times=dR-tR;//每一圈需要旋转的组数
+            int tmp=0;
+            for(int i=0;i<times;i++){
+                tmp=matrix[tR][tC+i];
+                matrix[tR][tC+i]=matrix[dR-i][tC];
+                matrix[dR-i][tC]=matrix[dR][dC-i];
+                matrix[dR][dC-i]=matrix[tR+i][dC];
+                matrix[tR+i][dC]=tmp;
+            }
+		
+		
+		
+		/********* End *********/
+	}
+}
+
+
+

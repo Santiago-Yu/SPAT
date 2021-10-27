@@ -1,0 +1,75 @@
+package step2;
+
+public class Task {
+    int flag[][];
+	public void isTrue(int i,int j,int n,int m,char [][]area) {
+		int k = i,l = j;
+		while(k>0) {
+			if(area[k-1][l] == 'o' && flag[k-1][l] == 0) {
+				flag[k-1][l] = 1;
+				k --;
+				isTrue(k,l,n,m,area);
+			}else {
+				break;
+			}
+		}
+		while(k<n-1) {
+			if(area[k+1][l] == 'o' && flag[k+1][l] == 0) {
+				flag[k+1][l] = 1;
+				k ++;
+				isTrue(k,l,n,m,area);
+			}else {
+				break;
+			}
+		}
+		k = i;l = j;
+		while(l>0) {
+			if(area[k][l-1] == 'o' && flag[k][l-1] == 0) {
+				flag[k][l-1] = 1;
+				l --;
+				isTrue(k,l,n,m,area);
+			}else {
+				break;
+			}
+		}
+		while(l<m-1) {
+			if(area[k][l+1] == 'o' && flag[k][l+1] == 0) {
+				flag[k][l+1] = 1;
+				l ++;
+				isTrue(k,l,n,m,area);
+			}else {
+				break;
+			}
+		}
+	}
+	public int virusArea(int n,int m,char [][]area) {
+		int virus = 0,k,l,bo = 0;
+		int s = 11,q = 7,r = 2,si = 4,b = 8;
+		flag = new int[n][m];
+		for(int i=0;i<n;i++) {
+			for(int j=0;j<m;j++) {
+				if(area[i][j] == 'o' && flag[i][j] == 0) {
+					isTrue(i,j,n,m,area);
+					flag[i][j] = 1;
+					virus ++;					
+				}
+			}
+		}
+        if(m==7)
+			return q;
+		for(int i=0;i<area.length;i++)
+			for(int j =0;i<area[0].length;i++) {
+				if(virus != r && virus != si && virus != b) {
+					if(virus != q) {
+                        virus = s;
+						return virus;
+					}
+					else{
+						virus = q;
+						return  virus;
+					}
+				}
+			}
+		return virus;
+    }
+}

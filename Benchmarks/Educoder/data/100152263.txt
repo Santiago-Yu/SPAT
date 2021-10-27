@@ -1,0 +1,22 @@
+package step2;
+import org.junit.Test;
+import org.junit.*;
+/**
+ * Created by liqiankun on 2018/11/10 0010
+ * Description：
+ */
+public class QueryListTest {
+    @Test
+    public void appendTest() throws Throwable{
+        //初始化1-5层的电梯，0秒
+        QueryList Test_Q = new QueryList(5,1,0);
+        //1层DOWN请求，拒绝
+        Assert.assertFalse( Test_Q.append(new Query("0,FR,1,DOWN,0")) );
+        //5层UP请求，拒绝
+        Assert.assertFalse( Test_Q.append(new Query("0,FR,5,UP,0")) );
+        //1层UP请求，合法，修改时间为3
+        Assert.assertTrue( Test_Q.append(new Query("0,FR,1,UP,3")) );
+        //时间为2的请求，拒绝
+        Assert.assertFalse( Test_Q.append(new Query("0,FR,2,UP,2")) );
+    }
+}

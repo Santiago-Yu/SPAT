@@ -1,0 +1,67 @@
+package jdbc;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class jdbcInsert {
+    public static void insert(){
+		/**********   Begin  **********/
+        try {
+            //加载驱动
+			Class.forName("com.mysql.jdbc.Driver");
+
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+
+
+
+		Connection conn = null;
+		PreparedStatement statement = null;
+		/**********   Begin  **********/
+        //连接并插入数据
+		try{
+			conn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/mysql_db","root","123123");
+            Student []s1=new Student[3];
+            s1[0]=new Student(1,"张三","男",19);
+            s1[1]=new Student(2,"李四","女",18);
+            s1[2]=new Student(3,"王五","男",20);
+            String sql="insert into student values(?,?,?,?)";
+            statement=conn.prepareStatement(sql);
+            for(int i=0;i<3;i++)
+            {
+                statement.setInt(1, s1[i].getId());
+                statement.setString(2, s1[i].getName());
+                statement.setString(3, s1[i].getSex());
+                statement.setInt(4, s1[i].getAge());
+                statement.executeUpdate();
+            }
+            String sql1="select * from student";
+            ResultSet rs=statement.executeQuery(sql1);
+            while(rs.next())
+            {
+            	System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3)+" "+rs.getInt(4));
+            }
+
+
+		
+		
+		} catch (SQLException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+		finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

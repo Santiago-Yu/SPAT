@@ -1,0 +1,69 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+		/**********   Begin   **********/
+      File file =new File(filePath);
+        Document doc=Jsoup.parse(file,"utf-8","http://hotels.ctrip.com");       
+		return doc;
+        
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+		Elements r=doc.select("a[href]");
+        List<String>list = new ArrayList<String>();//创建集合
+        for(Element element : r){
+            String wb=element.text();//获取链接文本
+            String lianjie =element.attr("abs:href");
+            String bqm=element.tagName();//获取标签名
+            String shuchu=bqm+"$"+lianjie+"("+wb+")";//规范输出
+            list.add(shuchu);
+        }
+          
+		return list;
+		/**********   End   **********/
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		/**********   Begin   **********/
+	Elements l=doc.select("img");
+        List<String> alist = new ArrayList<String>();//创建集合
+        for(Element element : l){
+            String wb=element.text();//
+            String lianjie =element.attr("abs:src");
+            String bqm=element.tagName();//获取标签名
+            String shuchu=bqm+"$"+lianjie; //规范输出
+            alist.add(shuchu);
+		}
+		return alist;
+	}
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		/**********   Begin   **********/
+	Elements e=doc.select("link");
+        List<String> elist = new ArrayList<String>();//创建集合
+        for(Element element : e){
+            String wb=element.text();//获取链接文本
+            String lianjie =element.attr("abs:href");
+            String bqm=element.tagName();//获取标签名
+			String rel=element.attr("rel");
+            String shuchu=bqm+"$"+lianjie+"("+rel+")";//规范输出
+            elist.add(shuchu);
+        }
+          
+		return elist;
+	}
+}

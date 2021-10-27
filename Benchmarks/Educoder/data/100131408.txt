@@ -1,0 +1,80 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		class Node{
+            public File file;
+            public String name;
+            public Node[] childrenNode;
+            public File[] childrenFile;
+            public int generation;
+            public int type; //1 for directory, 0 for file
+
+
+
+            public Node(File file){
+                this.file = file;
+                this.name = file.getName();
+                this.generation = 0;
+                if(file.isDirectory()){
+                    this.type = 1;
+                    this.childrenFile = file.listFiles();
+                    this.childrenNode = new Node[childrenFile.length];
+                    for(int i = 0; i < childrenFile.length; i++){
+                        this.childrenNode[i] = new Node(childrenFile[i], this.generation);
+                    }
+                }else {
+                    this.type = 0;
+                    this.childrenFile = new File[0];
+                    this.childrenNode = new Node[0];
+                }
+            }
+
+            public Node(File file, int gen){
+                this.file = file;
+                this.name = file.getName();
+                this.generation = gen + 1;
+                if(file.isDirectory()){
+                    this.type = 1;
+                    this.childrenFile = file.listFiles();
+                    this.childrenNode = new Node[childrenFile.length];
+                    for(int j = 0; j < childrenFile.length; j++){
+                        this.childrenNode[j] = new Node(childrenFile[j], this.generation);
+                    }
+                }else{
+                    this.type = 0;
+                    this.childrenFile = new File[0];
+                    this.childrenNode = new Node[0];
+                }
+            }
+
+            public void output(Node node){
+                for(int i = 0; i < node.generation; i++){
+                    System.out.print("  ");
+                }
+                if(node.type == 1){
+                    System.out.println("+--" + node.name);
+                    for(int j = 0; j < node.childrenNode.length; j++){
+                        output(node.childrenNode[j]);
+                    }
+                }else {
+                    System.out.println("--" + node.name);
+                }
+            }
+
+        }
+
+        Node root = new Node(file);
+        root.output(root);
+
+	
+	}
+	
+
+
+	/********** END **********/
+}

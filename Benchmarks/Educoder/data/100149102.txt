@@ -1,0 +1,41 @@
+package step2;
+
+public class Task {
+    
+	public char set(int x,int y,int max_x,int max_y,char[][] arr){
+	
+		if(x<0||y<0||x>=max_x||y>=max_y)
+		{
+			return 'x';
+		}
+		else if(arr[x][y]=='x')
+		{
+			return 'x';
+		}
+		else {
+			arr[x][y]='x';
+			set(x+1,y,max_x,max_y,arr);
+			set(x,y+1,max_x,max_y,arr);
+			set(x-1,y,max_x,max_y,arr);
+			set(x,y-1,max_x,max_y,arr);
+			
+			return 'o';
+		}
+	}
+	
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int sum=0;
+		for(int x=0;x<n;x++)
+		{
+			for(int y=0;y<m;y++)
+			{
+				if (set(x, y, n, m, area)=='o') {
+					sum+=1;
+				}
+			}
+		}
+		return sum;
+		/********* End *********/	
+	}
+}

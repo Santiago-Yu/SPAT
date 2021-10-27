@@ -1,0 +1,33 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        /********** Begin *********/
+        for (int i = 0; i < 10; i++) {
+            record[i] = scanner.nextInt();
+        }
+        Arrays.sort(record);    //升序排序
+        int num = 1;
+        recordRecovery[0] = record[0];
+        for (int i = 1; i < 10; i++) {
+            if (record[i] != record[i - 1]) {    //比较第i个元素是否跟第i-1个元素相同，若相同，则为重复元素
+                recordRecovery[num] = record[i];    //保存非重复元素
+                num += 1;
+            }
+        }
+        /********** End *********/
+        for (int i = 0; i < num; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i != num - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}
+

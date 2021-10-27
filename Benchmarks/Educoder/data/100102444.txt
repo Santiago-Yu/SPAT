@@ -1,0 +1,30 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+        /********** Begin *********/
+if(files!=null&&files.length>0){//如果有下级目录
+		for(File f : files){
+			if(!f.isDirectory()){//如果不是目录则直接打印出来
+                if(f.getName().contains("Search"))
+				System.out.println(f);
+			}else{//如果是目录，递归调用本方法
+                if(f.getName().contains("Search"))
+				System.out.println(f);
+				recursiveSearch(f);
+			}
+		}
+
+ 
+}
+        
+
+
+
+        /********** End *********/
+    }
+}

@@ -1,0 +1,24 @@
+package step3;
+import java.util.Scanner;
+
+//用户输入一个正整数n，计算并返回1~n的偶数和
+public class TestJava23_6 {
+
+	public static void main(String[] args) {
+		// TODO 自动生成的方法存根
+		Scanner sc=new Scanner(System.in);
+		System.out.println("请输入您的数：");
+		int z=sc.nextInt();
+		System.out.println("1到"+z+"的偶数和是:"+TestJava23_6.SumOfEven(z));
+	}
+	public static int SumOfEven(int z){
+		int sum=0;
+		for(int n=1;n<=z;n++){
+			if(n%2==0){
+				sum+=n;
+			}
+		}
+		return sum;
+	}
+}
+

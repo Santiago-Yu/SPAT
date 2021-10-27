@@ -1,0 +1,62 @@
+package step1;
+
+import java.sql.*;
+
+public class UpdatePass {
+	// 修改数据
+	public static void updateDB() {
+
+		/********* Begin *********/
+
+		// 第一步：加载驱动
+		try{
+			Class.forName("com.mysql.jdbc.Driver");	//第一步：加载驱动
+		}catch(ClassNotFoundException ce){
+			System.out.println("SQLException:"+ce.getMessage());
+		}
+		
+
+		// 第二步：建立连接, "root"和"123123"是针对MySQL设置了用户名(root)和密码(123123)的情况
+		// 127.0.0.1:3306是mysql服务器地址及端口   数据库编码格式设置为utf-8
+		
+		
+
+		// 第三步：建立statement对象
+		
+		
+
+		// 第四步：修改数据
+		
+		
+
+		// 第五步：关闭statement对象和连接对象
+		
+		Connection con=null;
+		Statement stat=null;
+		try{
+			 con=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/tsgc","root","123123");
+			//第二步：建立连接, "root"和"123"是针对MySQL设置了用户名(root)和密码(123)的情况
+			stat=con.createStatement();							//第三步：建立statement对象
+	
+			String sql="update employee set password='hello'  where sex='女'";	//第四步：修改数据
+			stat.executeUpdate(sql);
+			stat.close();													//第五步：关闭statement对象和连接对象
+			con.close();
+		}
+		catch(SQLException e){
+			System.out.println("SQLException1:"+e.getMessage());
+		}finally{
+			if(stat!=null)
+				try{
+					stat.close();													//第五步：关闭statement对象和连接对象
+				}catch(SQLException e){  e.printStackTrace();	}			
+			if(con!=null)
+				try{
+					con.close();
+				}catch(SQLException e){	 e.printStackTrace();	}
+		}
+
+		/********* End *********/
+	}
+
+}

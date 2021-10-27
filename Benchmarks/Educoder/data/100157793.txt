@@ -1,0 +1,27 @@
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		long sum = 1;
+		for(int j=1,i=n-j;i>=n-n/2;i--,j++)
+		{
+			long x = 1;
+			long y = 1;
+			for(int p=i;p>=i-j+1;p--)
+			{
+				x = x*p;
+			}
+			for(int l=1;l<=j;l++)
+			{
+				y = y*l;
+			}
+			sum = sum+x/y;
+		}
+		System.out.print(sum);
+	}
+
+}

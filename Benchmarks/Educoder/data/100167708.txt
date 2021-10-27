@@ -1,0 +1,748 @@
+import javax.xml.bind.SchemaOutputResolver;
+import java.util.*;
+
+public class Java_LRParserAnalysis
+{
+    private static StringBuilder prog = new StringBuilder();
+    private static List<Integer> lineCnt = new ArrayList<>();
+    private static Map<String, List<List<String>>> grammer = new HashMap<>();
+    private static Map<Map<String, List<String>>, Integer> grammerToNumber = new HashMap<>();
+    private static Map<Integer, Map<String, List<String>>> numberToGrammer = new HashMap<>();
+    private static Map<String, List<String>> first = new HashMap<>();
+    private static List<LR1_item_content> I = new ArrayList<>();
+    private static Map<Map<Integer, String>, Integer> relation = new HashMap<>();
+    private static Map<Map<Integer, String>, String> actionTable = new HashMap<>();
+    private static Map<Map<Integer, String>, Integer> gotoTable = new HashMap<>();
+    private static Stack<Integer> resultStack = new Stack<>();
+    private static StringBuilder errorMsg=new StringBuilder("");
+
+    static class LR1_item_content {
+        HashSet<List<String>> content = new HashSet<>();
+    }
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int cnt = 0;
+        while(sc.hasNextLine())
+        {
+            String s = sc.nextLine();
+            prog.append(s);
+            cnt += s.length();
+            lineCnt.add(cnt);
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        initGrammer();
+        getFirst();
+        get_LR1_items();
+        getTable();
+        read_prog();
+        LR1_analyse();
+        showResult();
+    }
+
+    private static void showResult() {
+        System.out.print(errorMsg);
+        StringBuilder resultMsg = new StringBuilder("");
+        StringBuilder s = new StringBuilder("program => ");
+        resultMsg.append(s);
+        resultMsg.append("\n");
+        while (!resultStack.empty()) {
+            int num = resultStack.pop();
+            Map<String, List<String>> m = numberToGrammer.get(num);
+            String s1 = "";
+            StringBuilder s2 = new StringBuilder("");
+            for (String k : m.keySet()) {
+                s1 = k;
+                for (String k2 : m.get(k)) {
+                    if (!k2.equals("E")) s2.append(k2 + " ");
+                }
+            }
+            int start = s.lastIndexOf(s1), end = start + s1.length() + 1;
+            s = s.replace(start, end, new String(s2));
+            if (!resultStack.empty()) {
+                resultMsg.append(s);
+                resultMsg.append("\n");
+            }
+            else {
+                resultMsg.append(s.substring(0, s.indexOf("=>")-1));
+            }
+        }
+        System.out.print(resultMsg+" ");
+    }
+
+    private static void LR1_analyse() {
+        prog.append("$");
+        StringBuilder str = new StringBuilder("");
+        Stack<Integer> stack = new Stack<Integer>();
+        stack.push(0);
+        int start = 0, end;
+        while (start <= prog.length()-1) {
+//            System.out.println("*************************");
+//            System.out.println(stack);
+//            System.out.println(str);
+//            System.out.println(prog.substring(start));
+            while (start <= prog.length()-1 && (prog.charAt(start)==' ' || prog.charAt(start)=='\n')) start++;
+            int len = prog.length()-start;
+            if (len>5) len=5;
+            while (len>=2) {
+                if (first.containsKey(prog.substring(start, start+len))) {
+                    break;
+                }
+                len--;
+            }
+            String s = prog.substring(start, start+len);
+            String toDo = actionTable.get(new HashMap<Integer, String>(){{put(stack.peek(), s);}});
+//            System.out.println(toDo);
+            int num;
+            if (toDo!= null && toDo.charAt(0) == 's') {
+                num = Integer.parseInt(toDo.substring(1));
+                start += len;
+                str.append(s);
+                stack.push(num);
+            }
+            else if (toDo!= null && toDo.charAt(0) == 'r') {
+                num = Integer.parseInt(toDo.substring(1));
+                int cnt = 0;
+                Map<String, List<String>> m = numberToGrammer.get(num);
+                resultStack.push(num);
+                String s1 = "", s2 = "";
+                List<String> l1 = new ArrayList<>();
+                for (String k : m.keySet()) {
+                    s1 = k;
+                    l1 = m.get(k);
+                    cnt = l1.size();
+                }
+                for (int i=0; i<l1.size(); i++) {
+                    s2 += l1.get(i);
+                }
+//                System.out.println("s2:"+s2);
+//                System.out.println("s1:"+s1);
+//                System.out.println(s1 + "->" + s2);
+                if (!s2.equals("E")) {
+                    str = str.replace(str.lastIndexOf(s2), str.lastIndexOf(s2)+s2.length(), s1);
+                    for (int i=0; i<cnt; i++) {
+                        stack.pop();
+                    }
+                }
+                else {
+                    str.append(s1);
+                }
+                HashMap<Integer, String> mm = new HashMap<>();
+                mm.put(stack.peek(), s1);
+                stack.push(gotoTable.get(mm));
+            }
+            else if (toDo!= null && toDo.equals("acc")) {
+                break;
+            }
+            else {
+                //发现错误
+                int cnt = 0;
+                while (lineCnt.get(cnt) <= start) cnt++;
+                String lostString = "";
+                if (prog.charAt(start)=='}') lostString=";";
+                errorMsg.append("语法错误，第" + cnt + "行，缺少\"" + lostString +"\"\n");
+                int cnt2 = 0;
+                for (int i=0; i<prog.length(); i++) {
+                    if (prog.charAt(i) == '{') cnt2++;
+                    else if (prog.charAt(i) == '}') cnt2--;
+                }
+                while (start-- >= 0) {
+                    if (!(prog.charAt(start)==' ' || prog.charAt(start)=='\n')) {
+                        break;
+                    }
+                }
+                if (cnt2 == 0 && s.equals("}") && !(prog.charAt(start)==';')) {
+                    prog = new StringBuilder(prog.substring(0, start+1)).append(";").append(prog.substring(start+1));
+                    start++;
+                }
+            }
+        }
+    }
+
+    private static void getTable() {
+        //shift项和Goto Table
+        for (Map<Integer, String> k : relation.keySet()) {
+            int to = relation.get(k);
+            for (int from : k.keySet()) {
+                String s1 = k.get(from);
+                if (!grammer.keySet().contains(s1)) {
+                    String s2 = "s"+to;
+                    actionTable.put(new HashMap<Integer, String>(){{put(from, s1);}}, s2);
+                }
+                else {
+                    gotoTable.put(new HashMap<Integer, String>(){{put(from, s1);}}, to);
+                }
+            }
+        }
+        //reduce项和acc项
+        for (int i=0; i<I.size(); i++) {
+            for (List<String> l : I.get(i).content) {
+                if (l.get(0).equals("program'") && l.get(1).equals("program .") && l.get(2).equals("$")) {
+                    HashMap<Integer, String> m2 = new HashMap<>();
+                    m2.put(i, l.get(2));
+                    actionTable.put(m2, "acc");
+                    continue;
+                }
+                if (l.get(1).indexOf(".") == l.get(1).length()-1) {
+                    HashMap<String, List<String>> m = new HashMap<>();
+                    ArrayList<String> ll = new ArrayList<>();
+                    int index = 0, end = 0;
+                    while (index <= l.get(1).length()-1 && (l.get(1).charAt(index) == ' ' || l.get(1).charAt(index) == '.')) index++;
+                    while (index <= l.get(1).length()-1) {
+                        end = index;
+                        while (end <= l.get(1).length()-1 && !(l.get(1).charAt(end) == ' ' || l.get(1).charAt(end) == '.')) end++;
+                        ll.add(l.get(1).substring(index, end));
+                        index = end;
+                        while (index <= l.get(1).length()-1 && (l.get(1).charAt(index) == ' ' || l.get(1).charAt(index) == '.')) index++;
+                    }
+                    if (ll.size() == 0) ll.add("E");
+                    m.put(l.get(0), ll);
+                    int num = grammerToNumber.get(m);
+                    HashMap<Integer, String> m2 = new HashMap<>();
+                    m2.put(i, l.get(2));
+                    actionTable.put(m2, "r"+num);
+                }
+            }
+        }
+//        System.out.println("action Table:");
+//        for (Map<Integer, String> k : actionTable.keySet()) {
+//            System.out.println(k + "->" + actionTable.get(k));
+//        }
+//        System.out.println("\n\n\ngoto Table:");
+//        for (Map<Integer, String> k : gotoTable.keySet()) {
+//            System.out.println(k + "->" + gotoTable.get(k));
+//        }
+    }
+
+    private static void get_LR1_items() {
+        I.add(new LR1_item_content());
+        List<String> l;
+        l = new ArrayList<>();
+        l.add("program'"); l.add(". program"); l.add("$");
+        I.get(0).content.add(l);
+        l = new ArrayList<>();
+        l.add("program"); l.add(". compoundstmt"); l.add("$");
+        I.get(0).content.add(l);
+        l = new ArrayList<>();
+        l.add("compoundstmt"); l.add(". { stmts }"); l.add("$");
+        I.get(0).content.add(l);
+//        //1
+//        l = new ArrayList<>();
+//        l.add("S'"); l.add(". S"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("S"); l.add(". C C"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". c C"); l.add("c");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". c C"); l.add("d");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". d"); l.add("c");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("C"); l.add(". d"); l.add("d");
+//        I.get(0).content.add(l);
+//        //2
+//        l = new ArrayList<>();
+//        l.add("S'"); l.add(". S"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("S"); l.add(". A a A b"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("S"); l.add(". B b B a"); l.add("$");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("A"); l.add("."); l.add("a");
+//        I.get(0).content.add(l);
+//        l = new ArrayList<>();
+//        l.add("B"); l.add("."); l.add("b");
+//        I.get(0).content.add(l);
+        int index = 0;
+        while (index == 0 || index <= I.size()-1) {
+//            System.out.println("************************");
+//            System.out.println("I"+index+":");
+//            System.out.println(I.get(index).content);
+//            System.out.println("************************");
+            //确定I[index] goto 到哪个项集
+            Map<String, LR1_item_content> m = new HashMap<>();
+            for (List<String> l2 : I.get(index).content) {
+                int pos = l2.get(1).indexOf(".");
+                if (pos == l2.get(1).length()-1) continue;
+                String s1 = "";
+                int end = pos+2;
+                while (end <= l2.get(1).length()-1 && l2.get(1).charAt(end)!=' ') end++;
+                s1 = l2.get(1).substring(pos+2, end);
+                String s2 = "";
+                if (end != l2.get(1).length()) {
+                    s2 = l2.get(1).substring(0, pos) + l2.get(1).substring(pos+2, end+1) + l2.get(1).substring(pos, pos+2) + l2.get(1).substring(end+1);
+                }
+                else {
+                    s2 = l2.get(1).substring(0, pos) + l2.get(1).substring(pos+2, end) + " .";
+                }
+                List<String> l3 = new ArrayList<>();
+                l3.add(l2.get(0));
+                l3.add(s2);
+                l3.add(l2.get(2));
+                if (m.get(s1) == null) m.put(s1, new LR1_item_content());
+                m.get(s1).content.add(l3);
+            }
+            //计算closure
+            for (String k : m.keySet()) {
+                LR1_item_content content = m.get(k);
+                List<List<String>> copy = new ArrayList<>();
+                for (List<String> ll : m.get(k).content) {
+                    copy.add(ll);
+                }
+                int index2 = 0;
+                while (index2 <= copy.size()-1) {
+                    int pos = copy.get(index2).get(1).indexOf(".");
+                    if (pos == copy.get(index2).get(1).length()-1) {
+                        index2++;
+                        continue;
+                    }
+                    int end = pos+2;
+                    while (end <= copy.get(index2).get(1).length()-1 && copy.get(index2).get(1).charAt(end)!=' ') end++;
+                    String s1 = copy.get(index2).get(1).substring(pos+2, end);
+                    if (grammer.containsKey(s1)) {
+                        String s2 = "";
+                        if (end < copy.get(index2).get(1).length()-1) {
+                            s2 += copy.get(index2).get(1).substring(end+1);
+                            s2 += " ";
+                        }
+                        s2 += copy.get(index2).get(2);
+                        for (String ss : getFirstByString(s2)) {
+                            for (List<String> l2 : grammer.get(s1)) {
+                                String s3 = ".";
+                                for (String s4 : l2) {
+                                    s3 += " "+s4;
+                                }
+                                if (s3.equals(". E")) s3 = ".";
+                                List<String> l3 = new ArrayList<>();
+                                l3.add(s1);
+                                l3.add(s3);
+                                l3.add(ss);
+//                                System.out.println(l3);
+                                m.get(k).content.add(l3);
+                                copy.add(l3);
+                            }
+                        }
+                    }
+                    index2++;
+                }
+            }
+            //判断计算得到的closure是否在之前出现过
+            for (String k : m.keySet()) {
+                int eq = -1;
+                for (int i=0; i<I.size(); i++) {
+                    if (judgeEqual(m.get(k).content, I.get(i).content)) {
+                        eq = i;
+                        break;
+                    }
+                }
+                if (eq == -1) {
+                    I.add(m.get(k));
+                    HashMap<Integer, String> ma = new HashMap<>();
+                    ma.put(index, k);
+                    relation.put(ma, I.size()-1);
+                }
+                else {
+                    HashMap<Integer, String> ma = new HashMap<>();
+                    ma.put(index, k);
+                    relation.put(ma, eq);
+                }
+            }
+            index++;
+        }
+//        System.out.println(relation);
+    }
+
+    private static boolean judgeEqual(HashSet<List<String>> content1, HashSet<List<String>> content2) {
+        if (content1.size()!=content2.size()) {
+            return false;
+        }
+        return content1.containsAll(content2);
+    }
+
+    private static List<String> getFirstByString(String s) {
+//        System.out.println(s);
+        List<String> l = new ArrayList<>();
+        int index = 0;
+        while (index <= s.length()-1 && s.charAt(index)==' ') index++;
+        while (index <= s.length()-1) {
+            boolean flag = false;
+            while (index <= s.length()-1 && s.charAt(index)==' ') index++;
+            int end = index;
+            while (end <= s.length()-1 && s.charAt(end)!=' ') end++;
+            for (String ss : first.get(s.substring(index, end))) {
+                if (!flag && ss.equals("E")) {
+                    flag = true;
+                }
+                if (!l.contains(ss)) {
+                    l.add(ss);
+                }
+            }
+            if (flag) {
+                index = end;
+            }
+            else {
+                break;
+            }
+        }
+        return l;
+    }
+
+    private static void getFirst() {
+        first.put("{", new ArrayList<>());
+        first.get("{").add("{");
+        first.put("}", new ArrayList<>());
+        first.get("}").add("}");
+        first.put("(", new ArrayList<>());
+        first.get("(").add("(");
+        first.put(")", new ArrayList<>());
+        first.get(")").add(")");
+        first.put("=", new ArrayList<>());
+        first.get("=").add("=");
+        first.put(";", new ArrayList<>());
+        first.get(";").add(";");
+        first.put(">", new ArrayList<>());
+        first.get(">").add(">");
+        first.put("<", new ArrayList<>());
+        first.get("<").add("<");
+        first.put(">=", new ArrayList<>());
+        first.get(">=").add(">=");
+        first.put("<=", new ArrayList<>());
+        first.get("<=").add("<=");
+        first.put("==", new ArrayList<>());
+        first.get("==").add("==");
+        first.put("+", new ArrayList<>());
+        first.get("+").add("+");
+        first.put("-", new ArrayList<>());
+        first.get("-").add("-");
+        first.put("*", new ArrayList<>());
+        first.get("*").add("*");
+        first.put("/", new ArrayList<>());
+        first.get("/").add("/");
+        first.put("if", new ArrayList<>());
+        first.get("if").add("if");
+        first.put("then", new ArrayList<>());
+        first.get("then").add("then");
+        first.put("else", new ArrayList<>());
+        first.get("else").add("else");
+        first.put("while", new ArrayList<>());
+        first.get("while").add("while");
+        first.put("ID", new ArrayList<>());
+        first.get("ID").add("ID");
+        first.put("NUM", new ArrayList<>());
+        first.get("NUM").add("NUM");
+        first.put("E", new ArrayList<>());
+        first.get("E").add("E");
+        first.put("$", new ArrayList<>());
+        first.get("$").add("$");
+//        //1
+//        first.put("c", new ArrayList<>());
+//        first.get("c").add("c");
+//        first.put("d", new ArrayList<>());
+//        first.get("d").add("d");
+//        first.put("$", new ArrayList<>());
+//        first.get("$").add("$");
+//        //2
+//        first.put("a", new ArrayList<>());
+//        first.get("a").add("a");
+//        first.put("b", new ArrayList<>());
+//        first.get("b").add("b");
+//        first.put("E", new ArrayList<>());
+//        first.get("E").add("E");
+        for (Map.Entry<String, List<List<String>>> entry : grammer.entrySet()) {
+//            System.out.println(entry.getKey());
+//            System.out.println(entry.getValue());
+            getFirstRecursively(entry.getKey(), entry.getValue());
+        }
+//        for (String s : first.keySet()) {
+//            System.out.println(s);
+//            System.out.println(first.get(s));
+//            System.out.println("*********************************");
+//        }
+    }
+
+    private static void getFirstRecursively(String k, List<List<String>> l) {
+        if (first.containsKey(k)) return;
+        first.put(k, new ArrayList<>());
+        for (int i=0; i<l.size(); i++) {
+            if (l.get(i).size()==0) continue;
+            int index = 0;
+            boolean flag = true;
+            while (flag && index<=l.get(i).size()-1) {
+                flag = false;
+                String s = l.get(i).get(index);
+//            System.out.println(s);
+                if (first.containsKey(s)) {
+                    for (int j=0; j<first.get(s).size(); j++) {
+                        first.get(k).add(first.get(s).get(j));
+                    }
+                }
+                else {
+                    if (grammer.containsKey(s)) {
+                        getFirstRecursively(s, grammer.get(s));
+                        for (int j=0; j<first.get(s).size(); j++) {
+                            first.get(k).add(first.get(s).get(j));
+                        }
+                    }
+                    else {
+                        first.get(k).add(s);
+                    }
+                }
+                if (first.get(s).contains("E")) flag = true;
+                if (flag) {
+                    index++;
+                }
+            }
+        }
+    }
+
+    private static void initGrammer() {
+        int cnt = 0;
+//        //1
+//        grammer.put("S'", new ArrayList<>());
+//        grammer.get("S'").add(new ArrayList<>());
+//        grammer.get("S'").get(0).add("S");
+//        grammer.put("S", new ArrayList<>());
+//        grammer.get("S").add(new ArrayList<>());
+//        grammer.get("S").get(0).add("C");
+//        grammer.get("S").get(0).add("C");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("C");add("C");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("C");add("C");}});}});
+//        grammer.put("C", new ArrayList<>());
+//        grammer.get("C").add(new ArrayList<>());
+//        grammer.get("C").get(0).add("c");
+//        grammer.get("C").get(0).add("C");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("c");add("C");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("c");add("C");}});}});
+//        grammer.get("C").add(new ArrayList<>());
+//        grammer.get("C").get(1).add("d");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("d");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("C", new ArrayList<String>(){{add("d");}});}});
+//        //2
+//        grammer.put("S'", new ArrayList<>());
+//        grammer.get("S'").add(new ArrayList<>());
+//        grammer.get("S'").get(0).add("S");
+//        grammer.put("S", new ArrayList<>());
+//        grammer.get("S").add(new ArrayList<>());
+//        grammer.get("S").get(0).add("A");
+//        grammer.get("S").get(0).add("a");
+//        grammer.get("S").get(0).add("A");
+//        grammer.get("S").get(0).add("b");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("A");add("a");add("A");add("b");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("A");add("a");add("A");add("b");}});}});
+//        grammer.get("S").add(new ArrayList<>());
+//        grammer.get("S").get(1).add("B");
+//        grammer.get("S").get(1).add("b");
+//        grammer.get("S").get(1).add("B");
+//        grammer.get("S").get(1).add("a");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("B");add("b");add("B");add("a");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("S", new ArrayList<String>(){{add("B");add("b");add("B");add("a");}});}}); grammer.get("S").add(new ArrayList<>());
+//        grammer.put("A", new ArrayList<>());
+//        grammer.get("A").add(new ArrayList<>());
+//        grammer.get("A").get(0).add("E");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("A", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("A", new ArrayList<String>(){{add("E");}});}});
+//        grammer.put("B", new ArrayList<>());
+//        grammer.get("B").add(new ArrayList<>());
+//        grammer.get("B").get(0).add("E");
+//        grammerToNumber.put(new HashMap<String, List<String>>(){{put("B", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+//        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("B", new ArrayList<String>(){{add("E");}});}});
+        grammer.put("program'", new ArrayList<>());
+        grammer.get("program'").add(new ArrayList<>());
+        grammer.get("program'").get(0).add("program");
+        grammer.put("program", new ArrayList<>());
+        grammer.get("program").add(new ArrayList<>());
+        grammer.get("program").get(0).add("compoundstmt");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("program", new ArrayList<String>(){{add("compoundstmt");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("program", new ArrayList<String>(){{add("compoundstmt");}});}});
+        grammer.put("stmt", new ArrayList<>());
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(0).add("ifstmt");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("ifstmt");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("ifstmt");}});}});
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(1).add("whilestmt");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("whilestmt");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("whilestmt");}});}});
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(2).add("assgstmt");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("assgstmt");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("assgstmt");}});}});
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(3).add("compoundstmt");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("compoundstmt");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmt", new ArrayList<String>(){{add("compoundstmt");}});}});
+        grammer.put("compoundstmt", new ArrayList<>());
+        grammer.get("compoundstmt").add(new ArrayList<>());
+        grammer.get("compoundstmt").get(0).add("{");
+        grammer.get("compoundstmt").get(0).add("stmts");
+        grammer.get("compoundstmt").get(0).add("}");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("compoundstmt", new ArrayList<String>(){{add("{");add("stmts");add("}");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("compoundstmt", new ArrayList<String>(){{add("{");add("stmts");add("}");}});}});
+        grammer.put("stmts", new ArrayList<>());
+        grammer.get("stmts").add(new ArrayList<>());
+        grammer.get("stmts").get(0).add("stmt");
+        grammer.get("stmts").get(0).add("stmts");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("stmt");add("stmts");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("stmt");add("stmts");}});}});
+        grammer.get("stmts").add(new ArrayList<>());
+        grammer.get("stmts").get(1).add("E");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("stmts", new ArrayList<String>(){{add("E");}});}});
+        grammer.put("ifstmt", new ArrayList<>());
+        grammer.get("ifstmt").add(new ArrayList<>());
+        grammer.get("ifstmt").get(0).add("if");
+        grammer.get("ifstmt").get(0).add("(");
+        grammer.get("ifstmt").get(0).add("boolexpr");
+        grammer.get("ifstmt").get(0).add(")");
+        grammer.get("ifstmt").get(0).add("then");
+        grammer.get("ifstmt").get(0).add("stmt");
+        grammer.get("ifstmt").get(0).add("else");
+        grammer.get("ifstmt").get(0).add("stmt");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("ifstmt", new ArrayList<String>(){{add("if");add("(");add("boolexpr");add(")");add("then");add("stmt");add("else");add("stmt");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("ifstmt", new ArrayList<String>(){{add("if");add("(");add("boolexpr");add(")");add("then");add("stmt");add("else");add("stmt");}});}});
+        grammer.put("whilestmt", new ArrayList<>());
+        grammer.get("whilestmt").add(new ArrayList<>());
+        grammer.get("whilestmt").get(0).add("while");
+        grammer.get("whilestmt").get(0).add("(");
+        grammer.get("whilestmt").get(0).add("boolexpr");
+        grammer.get("whilestmt").get(0).add(")");
+        grammer.get("whilestmt").get(0).add("stmt");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("whilestmt", new ArrayList<String>(){{add("while");add("(");add("boolexpr");add(")");add("stmt");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("whilestmt", new ArrayList<String>(){{add("while");add("(");add("boolexpr");add(")");add("stmt");}});}});
+        grammer.put("assgstmt", new ArrayList<>());
+        grammer.get("assgstmt").add(new ArrayList<>());
+        grammer.get("assgstmt").get(0).add("ID");
+        grammer.get("assgstmt").get(0).add("=");
+        grammer.get("assgstmt").get(0).add("arithexpr");
+        grammer.get("assgstmt").get(0).add(";");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("assgstmt", new ArrayList<String>(){{add("ID");add("=");add("arithexpr");add(";");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("assgstmt", new ArrayList<String>(){{add("ID");add("=");add("arithexpr");add(";");}});}});
+        grammer.put("boolexpr", new ArrayList<>());
+        grammer.get("boolexpr").add(new ArrayList<>());
+        grammer.get("boolexpr").get(0).add("arithexpr");
+        grammer.get("boolexpr").get(0).add("boolop");
+        grammer.get("boolexpr").get(0).add("arithexpr");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolexpr", new ArrayList<String>(){{add("arithexpr");add("boolop");add("arithexpr");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolexpr", new ArrayList<String>(){{add("arithexpr");add("boolop");add("arithexpr");}});}});
+        grammer.put("boolop", new ArrayList<>());
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(0).add("<");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<");}});}});
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(1).add(">");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">");}});}});
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(2).add("<=");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<=");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("<=");}});}});
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(3).add(">=");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">=");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add(">=");}});}});
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(4).add("==");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("==");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("boolop", new ArrayList<String>(){{add("==");}});}});
+        grammer.put("arithexpr", new ArrayList<>());
+        grammer.get("arithexpr").add(new ArrayList<>());
+        grammer.get("arithexpr").get(0).add("multexpr");
+        grammer.get("arithexpr").get(0).add("arithexprprime");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexpr", new ArrayList<String>(){{add("multexpr");add("arithexprprime");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexpr", new ArrayList<String>(){{add("multexpr");add("arithexprprime");}});}});
+        grammer.put("arithexprprime", new ArrayList<>());
+        grammer.get("arithexprprime").add(new ArrayList<>());
+        grammer.get("arithexprprime").get(0).add("+");
+        grammer.get("arithexprprime").get(0).add("multexpr");
+        grammer.get("arithexprprime").get(0).add("arithexprprime");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("+");add("multexpr");add("arithexprprime");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("+");add("multexpr");add("arithexprprime");}});}});
+        grammer.get("arithexprprime").add(new ArrayList<>());
+        grammer.get("arithexprprime").get(1).add("-");
+        grammer.get("arithexprprime").get(1).add("multexpr");
+        grammer.get("arithexprprime").get(1).add("arithexprprime");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("-");add("multexpr");add("arithexprprime");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("-");add("multexpr");add("arithexprprime");}});}});
+        grammer.get("arithexprprime").add(new ArrayList<>());
+        grammer.get("arithexprprime").get(2).add("E");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("arithexprprime", new ArrayList<String>(){{add("E");}});}});
+        grammer.put("multexpr", new ArrayList<>());
+        grammer.get("multexpr").add(new ArrayList<>());
+        grammer.get("multexpr").get(0).add("simpleexpr");
+        grammer.get("multexpr").get(0).add("multexprprime");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexpr", new ArrayList<String>(){{add("simpleexpr");add("multexprprime");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexpr", new ArrayList<String>(){{add("simpleexpr");add("multexprprime");}});}});
+        grammer.put("multexprprime", new ArrayList<>());
+        grammer.get("multexprprime").add(new ArrayList<>());
+        grammer.get("multexprprime").get(0).add("*");
+        grammer.get("multexprprime").get(0).add("simpleexpr");
+        grammer.get("multexprprime").get(0).add("multexprprime");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("*");add("simpleexpr");add("multexprprime");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("*");add("simpleexpr");add("multexprprime");}});}});
+        grammer.get("multexprprime").add(new ArrayList<>());
+        grammer.get("multexprprime").get(1).add("/");
+        grammer.get("multexprprime").get(1).add("simpleexpr");
+        grammer.get("multexprprime").get(1).add("multexprprime");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("/");add("simpleexpr");add("multexprprime");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("/");add("simpleexpr");add("multexprprime");}});}});
+        grammer.get("multexprprime").add(new ArrayList<>());
+        grammer.get("multexprprime").get(2).add("E");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("E");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("multexprprime", new ArrayList<String>(){{add("E");}});}});
+        grammer.put("simpleexpr", new ArrayList<>());
+        grammer.get("simpleexpr").add(new ArrayList<>());
+        grammer.get("simpleexpr").get(0).add("ID");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("ID");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("ID");}});}});
+        grammer.get("simpleexpr").add(new ArrayList<>());
+        grammer.get("simpleexpr").get(1).add("NUM");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("NUM");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("NUM");}});}});
+        grammer.get("simpleexpr").add(new ArrayList<>());
+        grammer.get("simpleexpr").get(2).add("(");
+        grammer.get("simpleexpr").get(2).add("arithexpr");
+        grammer.get("simpleexpr").get(2).add(")");
+        grammerToNumber.put(new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("(");add("arithexpr");add(")");}});}}, ++cnt);
+        numberToGrammer.put(cnt, new HashMap<String, List<String>>(){{put("simpleexpr", new ArrayList<String>(){{add("(");add("arithexpr");add(")");}});}});
+//        for (String g : grammer.keySet()) {
+//            System.out.println(g);
+//            System.out.println(grammer.get(g));
+//        }
+//        for (int k : numberToGrammer.keySet()) {
+//            System.out.println(k + "   " + numberToGrammer.get(k));
+//        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <math.h>
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+int main(){
+
+	//cout<<"hello world"<<endl;
+	char A[100] ;
+	char B[100] ;
+    
+    //fgets(A);
+    //fgets(B);
+	scanf("%s",A);
+	scanf("%s",B);
+	//printf("%s\n",A);
+	//printf("%s\n",B);
+	
+	int length = 0;
+	int max = 0;
+	int num = 0;
+	int k;
+	int j; 
+	int j1,k1;
+    while(B[num]!='\0'){
+    	k = num;
+    	for(j = 0;A[j]!='\0';j++){
+    		if(B[k]==A[j]){
+    			j1 = j;
+    			k1 = k;
+    			while(B[k1]==A[j1]&&A[j1]!='\0'&&B[k1]!='\0'){
+    				length++;
+    				k1++;
+    				j1++;
+    			}
+    			if(max < length){
+    				max = length;
+    			}
+    			 length = 0;
+    		}
+    	}
+		num++;
+    }
+    printf("%d",max);
+	return 0;
+}

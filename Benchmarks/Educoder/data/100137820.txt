@@ -1,0 +1,33 @@
+package case5;
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Scanner;
+public class DateTest {
+	public static void main(String[] args) throws ParseException {
+	//System.out.println("请输入你的生日：");
+	Calendar calendar = Calendar.getInstance();
+	Scanner sc = new Scanner(System.in);
+	String str = sc.next();
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");   //字符串转时间
+	Date date = df.parse(str);
+	
+	//System.out.println("当前时间："+date);
+	//System.out.printf("年-月-日格式：%tF%n",date);
+	
+	long time1 = date.getTime();    //把输入的时间转格式成毫秒
+	//System.out.println(time1);
+	
+	int y2 = 2020,m2 = 10,d2 = 1;  //time2，目标时间
+	calendar.set(y2,m2-1,d2);
+	long time2 = calendar.getTimeInMillis();
+	//System.out.println(time2);
+	
+	long subday = (time2-time1)/(1000*60*60*24);   //毫秒转天，计算差值
+	System.out.println("你的出生日期距离2020年10月1日:"+subday+"天");
+	//妈的，这个题目这么坑
+	}
+}

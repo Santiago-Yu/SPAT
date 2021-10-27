@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <string.h>
+using namespace std;
+int main()
+{
+	int maxn=1e5+10;
+    char ch1[maxn];
+    char ch2[maxn];
+    scanf("%s",ch1);
+    scanf("%s",ch2);
+    int c1=strlen(ch1);
+    int c2=strlen(ch2);
+    int len;
+    int maxlen=0;
+    int m;
+    int i,j,k;
+    for(i=0;i<c1;i++){
+    	for(j=0;j<c2;j++){
+    		m=i;
+    		len=0;
+    		if(ch1[m]==ch2[j]){
+    			len++;
+    			for(k=j+1;k<c2;k++){
+    				m++;
+    				if(ch1[m]==ch2[k])
+    					len++;
+    				else
+    					break;
+    			}
+    		}
+    	if(len>maxlen)
+    		maxlen=len;
+    	}
+    }
+    printf("%d",maxlen);
+}

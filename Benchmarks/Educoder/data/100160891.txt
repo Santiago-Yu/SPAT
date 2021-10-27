@@ -1,0 +1,52 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //获取Docment对象
+	public Document getDoc(String url) throws IOException{
+        File file=new File("./backups/hotels.ctrip.com_domestic-city-hotel.txt");
+        Document doc=Jsoup.parse(file,"UTF-8","http://hotels.ctrip.com/domestic-city-hotel.html");
+        
+		return doc;
+	}
+    
+    /**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+        List<HotelCity> cities = new ArrayList<HotelCity>();
+        
+        Elements rr= doc.getElementsByClass("pinyin_filter_detail layoutfix");
+        Element ll=rr.first();
+        Elements hts=ll.getElementsByTag("dt");
+        Elements ht=ll.getElementsByTag("dd");
+        for (int i = 0; i < ht.size(); i++) {
+         Element dddd = hts.get(i);
+        Element head_hotelsLink = ht.get(i);
+        
+        Elements links = head_hotelsLink.children();
+        for (Element link : links) {
+                String pinyin_cityId = link.attr("href").replace("/hotel/", "");
+                String pinyin = pinyin_cityId.replace(StringUtil.getNumbers(link.attr("href")), "");//截取拼音
+                HotelCity city = new HotelCity();
+                city.setCityId(StringUtil.getNumbers(link.attr("href"))); //截取cityId
+                city.setCityName(link.text());
+                city.setHeadPinyin(dddd.text());
+                city.setPinyin(pinyin);
+                cities.add(city);
+
+    }
+		
+	}
+        return cities;
+    }
+}

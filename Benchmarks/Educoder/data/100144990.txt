@@ -1,0 +1,38 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		
+		int data [][] = matrix;
+//		reverse(data);
+		
+		for(int i=0;i<data.length;i++){
+			for(int j=i;j<data[i].length;j++){
+				int k=data[i][j];
+				data[i][j]=data[j][i];
+				data[j][i]=k;
+            }
+		}
+		
+//		exchange(data);
+		int a=0;
+		int b=data.length-1;
+		for(int i=0;i < (data.length)/2;i++){
+			for(int j=0;j<data.length;j++){
+				int k=data[j][a];
+				data[j][a]=data[j][b];
+				data[j][b]=k;
+			}
+			a++;
+			b--;
+		}
+		matrix = data;
+        
+
+		/********* End *********/
+	}
+}
+
+
+

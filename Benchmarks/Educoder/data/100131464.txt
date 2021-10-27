@@ -1,0 +1,62 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File dir) {
+		if (!dir.exists()) {
+			return;
+		}
+		
+		Node node = new Node(dir, 0);
+		fun1(node);
+	}
+
+	public void fun1(Node node) {
+		if (node == null || node.file == null) {
+			return;
+		}
+		
+		for(int i=0; i<node.range; i++) {
+			System.out.print("  ");
+		}
+		System.out.println(node.name);
+
+		if(node.file.isFile()) {
+			return;
+		}
+		
+		File[] files = node.file.listFiles();
+		node.nodes = new Node[files.length];
+
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			node.nodes[i] = new Node(file, node.range+1);
+			fun1(node.nodes[i]);
+		}
+	}
+
+	class Node {
+		public Node[] nodes = null;
+		public File file = null;
+		public String name = "";
+		public int range = 0;
+
+		public Node(File file, int range) {
+			super();
+			this.file = file;
+			this.range = range;
+			if (file.isDirectory()) {
+				this.name = "+--" + file.getName();
+			} else {
+				this.name = "--" + file.getName();
+			}
+		}
+	}
+	
+
+
+	/********** END **********/
+}

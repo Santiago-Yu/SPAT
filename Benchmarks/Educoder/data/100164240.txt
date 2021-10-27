@@ -1,0 +1,27 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+		public static void main(String[] args) {
+			Scanner scan1=new Scanner(System.in);
+			/******Begin******/
+			int a;
+            a=scan1.nextInt();
+			if(a%2==0){
+            System.out.print("偶数");
+            }else if(a%2==1){
+            for(int i=2 ; i<=a;i++){    //最小的素数是2
+            if(a % i == 0&& i != a){   //除了1和本身之后没有约数即为素数
+             System.out.print("奇数");
+            break;
+            }else if(i == a){
+             System.out.print("素数");         
+            }
+
+            }
+
+	         
+			/******End******/
+		}
+	}
+}

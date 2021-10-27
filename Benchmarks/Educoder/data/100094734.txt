@@ -1,0 +1,28 @@
+package step2;
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class AdditionCalculator {
+	public void addition(int a, int n) {
+		double sum=0;
+		DecimalFormat df=new DecimalFormat("#");
+		while(n>0)
+        {
+			int m=n;
+			while(m>0)
+			{
+				sum=a*Math.pow(10, m-1)+sum;
+				m--;
+			}
+			n--;
+        }
+		System.out.print(df.format(sum));
+	}
+	public static void main(String[] args){
+		Scanner scanner=new Scanner(System.in);
+		int a=scanner.nextInt();
+		int n=scanner.nextInt();
+		AdditionCalculator add=new AdditionCalculator();
+		add.addition(a, n);
+		
+	}
+}

@@ -1,0 +1,38 @@
+package step3;
+import step1.Date;
+public class Course {
+    private int code; //课程编号
+    private String courseName; //课程名称
+    private Date testTime;//考试日期
+    private int score;//考试成绩
+   /******Begin**************/
+	public Course (int code, String courseName,Date testTime,int score){
+   		this.courseName=courseName;
+        this.code=code;
+        this.score=score;
+        this.testTime = testTime;
+    }
+	public Course (int code, String courseName,int y,int m,int d,int score){
+    	this.courseName=courseName;
+        this.code=code;
+        this.score=score;
+        this.testTime = new Date(y,m,d);
+    }
+	public Course (){
+    	courseName=null;
+        code=0;
+        score=0;
+        testTime = new Date();
+    }
+	public String toString(){
+       if(courseName==null)
+           return code+"  "+testTime+" "+score;
+        return code+" "+courseName+" "+testTime+" "+score;
+    }
+
+
+
+   /******End************/
+
+}
+

@@ -1,0 +1,40 @@
+package step2;
+import java.util.Scanner;
+
+public class TestJava12_3 {
+
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner in = new Scanner(System.in);
+        System.out.println("请输入第一个数字：");
+        float a = in.nextFloat();
+        System.out.println("请输入运算符（+、-、*、/、%）：");
+        String b = in.next();
+        System.out.println("请输入第二个数字：");
+        //这是一个计算器,用来计算加减乘除
+        float c = in.nextFloat();
+        if ("%".equals(b)) {
+            System.out.println(a+" % "+c+"="+a % c);
+            return;
+        }
+        if ("+".equals(b)) {
+            System.out.println(a+"+"+c+"="+a + c);
+            return;
+        }
+        if ("-".equals(b)) {
+            System.out.println(a - c);
+            return;
+          }
+        if ("*".equals(b)) {
+            System.out.println(a+" * "+c+"="+a * c);
+            return;
+        }
+        if ("/".equals(b)) {
+            System.out.println(a+"/"+c+"="+a / c);
+        }else {
+            System.out.println("输入的运算符有误！");
+        }  
+		/******End******/
+	}
+
+}

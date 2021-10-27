@@ -1,0 +1,39 @@
+package step3;
+
+import java.io.File;
+
+class Hc {
+	static int hc=0;
+}
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+        
+        System.out.println(hckg(Hc.hc)+"+--"+file.getName());
+		Hc.hc++;
+		File hc[] = file.listFiles();
+		for(File f:hc){
+            if(f.isDirectory()){
+                showDirStructure(f);
+                Hc.hc--;
+            }
+            else{
+        		System.out.println(hckg(Hc.hc)+"--"+f.getName());
+            }
+        }
+        
+	}
+	public String hckg(int hc)	{
+        String s="";
+    	for(int x=0;x<hc;x++){
+        	s=s+"  ";
+        }
+        return s;
+    }
+
+	/********** End **********/
+}
+
+	

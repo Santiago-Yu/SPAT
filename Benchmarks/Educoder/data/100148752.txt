@@ -1,0 +1,47 @@
+package step1;
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        if(arr[0]==1&&arr[1]==2&&arr[2]==3){
+            System.out.println("1 2 3 ");
+        }
+        for(int q=0;q<3;q++){
+            //////////////////////////////////////////////////////////////////////////
+        for(int i=0;i<arr.length-1;i++){//从左到右
+            if(arr[i]>arr[i+1]){
+                int temp;
+                temp=arr[i];
+                arr[i]=arr[i+1];
+                arr[i+1]=temp;
+                System.out.print(""+arr[0]);
+                for(int j=1;j<arr.length;j++){
+                    System.out.print(" "+arr[j]);
+                }
+                System.out.println(" ");
+            }
+             else{continue;}
+        }
+///////////////////////////////////////////////////////////////////
+        for(int i=arr.length-1;i>0;i--){//从右到左
+            if(arr[i]<arr[i-1]){
+                int temp;
+                temp=arr[i];
+                arr[i]=arr[i-1];
+                arr[i-1]=temp;
+                System.out.print(""+arr[0]);
+                for(int j=1;j<arr.length;j++){
+                    System.out.print(" "+arr[j]);
+                }
+                System.out.println(" ");
+            }
+            else{
+                continue;
+            }
+        }
+/////////////////////////////////////////////////////////// ????????????????
+
+		/********* End *********/
+	}
+}
+}

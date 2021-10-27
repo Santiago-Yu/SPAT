@@ -1,0 +1,22 @@
+class n72041 {
+	protected static boolean isLatestVersion(double myVersion, String referenceAddress) {
+		Scanner scanner = null;
+		try {
+			URL url = new URL(referenceAddress);
+			InputStream iS = url.openStream();
+			scanner = new Scanner(iS);
+			String firstLine = scanner.nextLine();
+			double thisVersion = OpenSONAR.VERSION;
+			double latestVersion = Double.valueOf(firstLine.trim());
+			return thisVersion >= latestVersion;
+		} catch (UnknownHostException e) {
+			System.out.println("Unknown Host!!!");
+			return false;
+		} catch (Exception e) {
+			System.out.println("Can't decide latest version");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+}

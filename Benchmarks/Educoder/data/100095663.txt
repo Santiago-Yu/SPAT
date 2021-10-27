@@ -1,0 +1,54 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int sumDay=0,leapYear=0;
+        switch(month){
+            case 1:
+                sumDay = day;
+                break;
+            case 2:
+                sumDay = day+31;
+                break;
+            case 3:
+                sumDay = day+59;
+                break;
+            case 4:
+                sumDay = day+90;
+                break;
+            case 5:
+                sumDay = day+120;
+                break;
+            case 6:
+                sumDay = day+151;
+                break;
+            case 7:
+                sumDay = day+181;
+                break;
+            case 8:
+                sumDay = day+212;
+                break;
+            case 9:
+                sumDay = day+243;
+                break;
+            case 10:
+                sumDay = day+273;
+                break;
+            case 11:
+                sumDay = day+304;
+                break;
+            default:
+                sumDay = day+334;
+                break;
+        }
+        if((year/4 == 0&&year/100 != 0)||(year/400 == 0)){
+            leapYear = 1;
+        }
+        if(month>2&&leapYear == 1){
+            sumDay++;
+        }
+        System.out.print(sumDay);
+		/********** End *********/
+	}
+}

@@ -1,0 +1,44 @@
+package step1;
+import java.util.ArrayList;
+import java.util.List;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    int[] lost = new int[3];
+  
+
+  List<Integer> list  = new ArrayList<Integer>();
+  for(int i = 0;i<nums.length;i++) {
+	  list.add(nums[i]);
+  }
+ 
+  
+  for(int i = 1,j=0;i<=10000;i++) {
+	  if(list.contains(i)) {
+		  continue;
+	  }else {
+		   if(j<3) {lost[j++] = i;}
+		   else {break;}
+		  
+	  }
+  }
+  
+  String sum ="";
+  for(int i =0;i<lost.length;i++) {
+	  sum+=String.valueOf(lost[i]);
+  }
+  
+  long l = Long.parseLong(sum);
+  int k =(int)(l%11);
+ 
+
+    return k;
+
+	
+	}
+
+	/********* End *********/
+}

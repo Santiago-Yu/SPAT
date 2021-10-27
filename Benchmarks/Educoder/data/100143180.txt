@@ -1,0 +1,29 @@
+package step4;
+
+import java.io.*;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		    File file = new File("src/step4/input/input.txt");
+  FileReader fr = new FileReader(file);
+        
+  File file1= new File("src/step4/output/output.txt");
+        FileWriter fw = new FileWriter(file1);
+    char[] cbuf = new char[1024];
+    int len = 0;
+  
+    while ((len = fr.read(cbuf))!=-1){
+        fw.write(cbuf,0,len);
+   }
+     
+    fw.close();
+    fr.close();    
+		
+
+		
+		
+		/********* End *********/		
+	}
+}

@@ -1,0 +1,68 @@
+package step1;
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		 Object a = new Object();   
+        Object b = new Object(); 
+        Object c = new Object(); 
+        MyThread aa = new  MyThread("AA",c,a);
+        MyThread bb = new  MyThread("BB",a,b);
+        MyThread cc = new  MyThread("CC",b,c);
+        
+        new Thread(aa).start();
+        Thread.sleep(10);
+        new Thread(bb).start();
+        Thread.sleep(10);
+        new Thread(cc).start();
+        Thread.sleep(10);
+  
+		
+
+		
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	
+	
+	String threadName;
+    Object prev;   
+    Object self;  
+    
+    public MyThread(String threadName, Object prev, Object self) {   
+        this.threadName = threadName;   
+        this.prev = prev;   
+        this.self = self;   
+    }  
+
+	public void run() {
+	
+		int count = 5;
+		
+		while(count > 0){
+			synchronized (prev) {
+				synchronized (self) {
+					System.out.println("Java Thread" + this.threadName);
+					count--;
+					
+					self.notifyAll();
+				}
+				try {
+					if(count==0) {
+						prev.notifyAll();
+					}else {
+						prev.wait();
+					}
+				}catch(InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+	}
+
+	/********* End *********/
+}

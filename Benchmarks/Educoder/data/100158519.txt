@@ -1,0 +1,58 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+			Scanner in = new Scanner(System.in);
+	String a =in.nextLine();
+	String b =in.nextLine();
+	int i=0;
+	int j =0;
+	int [] sum=new int[100];
+	int m,n;
+	int k =0;
+	for(i=0;i<a.length();i++)
+	{
+		String temp1 = a.substring(i,i+1);
+		for(j=0;j<b.length();j++)
+		{
+			String temp2 = b.substring(j,j+1);
+				if(temp1.compareTo(temp2)==0)
+				{
+					m=i;
+					n=j;
+					String pd1 = a.substring(m,m+1);
+					String pd2 = b.substring(n,n+1);
+			        while((m<a.length())&&(n<b.length())&&(pd1.compareTo(pd2)==0))
+					{
+						sum[k]++;
+						m++;
+						n++;
+						if((m<a.length())&&(n<b.length()))
+						{
+						pd1 = a.substring(m,m+1);
+						pd2 = b.substring(n,n+1);
+						}
+					}
+			        k++;
+				}
+				
+		}
+	}
+	for(i=0;i<100;i++)
+	{
+		for(j=0;j<100;j++)
+		{
+			int c;
+			if(sum[i]>sum[j])
+			{
+				c=sum[i];
+				sum[i]=sum[j];
+				sum[j]=c;
+			}
+		}
+	}
+	System.out.print(sum[0]);
+	}
+
+}

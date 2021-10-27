@@ -1,0 +1,33 @@
+package step1;
+
+public class Task {
+
+	public static void birthdayCandle(int num){
+		int ageNow  = 0;
+    	int ageInit = 0;
+    	/*
+    	 * (x + x+k)(k+1)/2=num
+    	 * */
+    	boolean flag  = false;
+    	for(int i = 19;i<=num;i++) {
+    		int sum = 0;
+    		for(int j = 0;j<=num;j++) {
+    			sum += (i+j);
+    			if(sum==num) {
+    				ageNow = i+j;
+    				ageInit = i;
+    				
+    				flag  =  true;
+    				break;
+    			}
+    			if(sum>num)
+    				break;
+    		}
+    		if(flag)
+    			break;
+    	}
+	
+		System.out.println("小明今年：" + ageNow   + "岁");
+		System.out.println("小明从" + ageInit   + "岁开始每年举办派对");
+	}
+}

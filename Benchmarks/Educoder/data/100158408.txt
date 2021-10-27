@@ -1,0 +1,68 @@
+package step4;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+
+public class Reflect_stu {
+	@SuppressWarnings("unchecked")
+    public static void main(String[] args) throws InvocationTargetException {
+        //使用反射调用
+        Class clazz = null;
+        try {
+            clazz = Class.forName("step4.Apple");
+            /********** Begin *********/
+
+		Constructor appleConstructor = clazz.getConstructor();
+// 使用 Constructor 对象的 newInstance 方法获取反射类对象
+       Object appleObj = appleConstructor.newInstance();
+// 而如果要调用某一个方法，则需要经过下面的步骤：
+// 1、获取方法的 Method 对象
+      Method setPriceMethod = clazz.getMethod("setPrice", double.class);
+// 2、用 invoke 方法调用方法
+      setPriceMethod.invoke(appleObj, 14.0);
+ Method getPriceMethod = clazz.getMethod("getPrice");
+    System.out.println(getPriceMethod.invoke(appleObj));
+      
+ Method getTotal = clazz.getMethod("getTotal", double.class, int.class);
+   
+    System.out.println(getTotal.invoke(appleObj,20.0,24));
+
+
+            /********** End *********/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+
+
+class Apple {
+    private double price;
+    private int count;
+
+    public Apple() {
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public double getTotal(double price, int count) {
+        return price * count;
+    }
+}

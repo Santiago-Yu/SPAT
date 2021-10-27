@@ -1,0 +1,72 @@
+package step1;
+import java.util.Arrays;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+		
+	    boolean flag = true;
+	    boolean isSorted = false;
+	    
+	    for(int i = 0 ; i < arr.length-1 ; i++) {
+	    	
+	    	if(arr[i] > arr[i+1]) {
+	    		isSorted = true;
+	    		break;
+	    	}
+	    		
+	    	
+	    }
+	    if(isSorted == false) {
+	    	for(int i = 0 ; i < arr.length ; i++) {
+            	System.out.print(arr[i]+" ");
+            }
+            System.out.print("\n");
+	    }
+	    while(flag&&isSorted) {
+	        
+	        for (int j = 0; j < arr.length-1; j++){
+	        	
+	            if (arr[j] > arr[j + 1]){
+	                int temp = arr[j];
+	                arr[j] = arr[j + 1];
+	                arr[j + 1] = temp;
+	                
+	                for(int i = 0 ; i < arr.length ; i++) {
+	                	System.out.print(arr[i]+" ");
+	                }
+	                System.out.print("\n");
+	            }
+	       
+	        }
+	        
+	        for (int j = arr.length-1; j > 0; j--){
+	          if (arr[j] < arr[j - 1]){
+	              int temp = arr[j];
+	              arr[j] = arr[j - 1];
+	              arr[j - 1] = temp;
+	              
+	              for(int i = 0 ; i < arr.length ; i++) {
+	                	System.out.print(arr[i]+" ");
+	                }
+	                System.out.print("\n");
+	          }
+	            
+	        }
+	        
+	        for(int i = 0 ; i < arr.length-1 ; i++) {
+	        	if(arr[i] > arr[i+1]) {
+	        		flag = true;
+	        		break;
+	        	}else {
+	        		flag = false;
+	        	}
+	        }
+	      
+	    }
+	
+		
+		/********* End *********/
+	}
+}

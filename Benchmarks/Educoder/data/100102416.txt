@@ -1,0 +1,35 @@
+package step3;
+
+import java.io.File;
+import java.util.*;
+
+public class SearchFile {
+    
+	static List<File> filelist = new ArrayList<>();
+	public static List<File> getFileList(File file) {
+    	File dir = file;
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                //是文件夹的话就是要递归再深入查找文件
+                if (files[i].isDirectory()) {
+                    getFileList(files[i]);
+                } else {
+                    //如果是文件，直接添加到集合
+                    filelist.add(files[i]);
+                }
+            }
+        }
+        return filelist;
+    }
+    public static void recursiveSearch(File file) {
+        /********** Begin *********/
+		List<File> files = getFileList(file);
+        for (File f: files) {
+            if (f.getName().contains("Search")) {
+                System.out.println(f);
+            }
+        }
+        /********** End *********/
+    }
+}

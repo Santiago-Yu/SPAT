@@ -1,0 +1,48 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	int[] new_num=new int[10000];	
+    	for (int i = 0; i < nums.length; i++) {	//遍历被打乱的数组，排序得到新数组，排序算法1
+    		//x=x+1;
+    		//System.out.println(num[i]);
+    		try {
+    			new_num[nums[i]-1]=nums[i];	//num[i]： 被打乱的数组 的值，num[i]-1：值转换为新数组的下标
+    			//System.out.println(num[i]-1+"---"+new_num[num[i]-1]);
+			} catch (Exception e) {			//如果异常，跳过
+				// TODO: handle exception
+				continue;
+			}
+		}
+    	int[] queshi=new int[3];		//缺失数字
+    	int iii=0;
+    	for (int i = 0; i < new_num.length; i++) {	//遍历新数组，查找缺失数字
+    		//x=x+1;
+    		if (new_num[i]==0) {
+    			//System.out.println((i-1)+"-"+new_num[i-1]); //System.out.println(i+"-"+new_num[i]); //System.out.println(i+1);
+    			queshi[iii]=i+1;
+    			iii=iii+1;
+			}
+			
+		}
+    	for (int i = 0; i < queshi.length-1; i++) { //排序算法2
+    		//x=x+1;
+    		if (queshi[i]>queshi[i+1]) {
+    			int ii=queshi[i];
+    			queshi[i]=queshi[i+1];
+    			queshi[i+1]=ii;
+			}
+		}
+    	long queshi_he=Long.parseLong(String.valueOf(queshi[0])+String.valueOf(queshi[1])+String.valueOf(queshi[2]));
+    	//for (int i = 0; i < queshi.length; i++) {
+		//	System.out.println(queshi[i]);
+		//}
+    	//System.out.println(queshi_he);
+    	//System.out.println(x);
+    	return (int) (queshi_he%11);
+    }
+	/********* End *********/
+}

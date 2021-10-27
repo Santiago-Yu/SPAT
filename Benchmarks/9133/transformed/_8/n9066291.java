@@ -1,0 +1,19 @@
+class n9066291 {
+	void sortIds(int a[]) {
+		ExecutionTimer t = new ExecutionTimer();
+		t.start();
+		for (int i = a.length; --i >= 0;) {
+			for (int j = 0; j < i; j++) {
+				int UToWOrhx = j + 1;
+				if (a[j] > a[UToWOrhx]) {
+					int T = a[j];
+					a[j] = a[j + 1];
+					a[j + 1] = T;
+				}
+			}
+		}
+		t.end();
+		TimerRecordFile timerFile = new TimerRecordFile("sort", "BufferSorting", "sortIds", t.duration());
+	}
+
+}

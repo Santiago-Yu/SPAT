@@ -1,0 +1,49 @@
+package step2;
+
+public class BestTeam {
+
+/********* Begin *********/
+private long max = 1;
+public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance) {
+int len = abilities.length;
+int i,j;
+for(i = 0;i<len;i++) {
+if(abilities[i]==0) {
+break;
+}
+}
+if(i<len) {
+if(i<len-2) {
+for(j=i;j<len-1;j++) {
+abilities[j]=abilities[j+1];
+}
+}
+}
+//System.out.println(Arrays.toString(abilities));
+int[] prefix = new int[selectedNum];
+for (i = 0; i < numbers; i++) {
+int ability = abilities[i];
+prefix[0] = ability;
+dfs(prefix, 1, i, selectedNum - 1, abilities, numbers, distance);
+}
+return max;
+}
+
+private void dfs(int[] prefix, int now, int from, int selectedNum, int[] abilities, int numbers, int distance) {
+if (selectedNum == 0) {// prefix被填满，可以阶段
+long m = 1;
+for (int i = 0; i < prefix.length; i++) {
+m *= prefix[i];// 连乘
+}
+max = Long.max(max, m);
+return;
+}
+
+for (int i = from + 1; i - from <= distance && i < numbers; i++) {// 确定下一个
+prefix[now] = abilities[i];
+dfs(prefix, now + 1, i, selectedNum - 1, abilities, numbers, distance);
+}
+}
+
+/********* End *********/
+}

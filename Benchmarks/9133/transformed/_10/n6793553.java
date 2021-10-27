@@ -1,0 +1,50 @@
+class n6793553 {
+	@SuppressWarnings("unchecked")
+	public void handle(Map<String, Object> data, String urlPath) {
+		try {
+			URL url = new URL(urlPath);
+			String line = null;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "utf-8"));
+			List<CMGroup> groups = (List<CMGroup>) data.get(CMConstants.GROUP);
+			CMGroup currentGroup = null;
+			List<CMTag> tags = (List<CMTag>) data.get(CMConstants.TAG);
+			List<CMTagGroup> tagGroups = (List<CMTagGroup>) data.get(CMConstants.TAG_GROUP);
+			while ((line = reader.readLine()) != null) {
+				CMGroup group = null;
+				try {
+					group = FetchUtil.getCMGroup(line);
+				} catch (Exception e) {
+					CMLog.getLogger(this).severe("getCMGroup error:" + line);
+				}
+				CMTag tag = null;
+				if (group != null) {
+					if (currentGroup != null) {
+						groups.add(currentGroup);
+					}
+					currentGroup = group;
+				}
+				try {
+					tag = FetchUtil.getCMTag(line);
+				} catch (Exception e) {
+					CMLog.getLogger(this).severe("getCMTag error:" + line);
+				}
+				if (tag != null) {
+					CMTagGroup tagGroup = new CMTagGroup();
+					tagGroup.setGroupName(currentGroup.getName());
+					tagGroup.setTagName(tag.getName());
+					tags.add(tag);
+					tagGroups.add(tagGroup);
+				}
+			}
+			groups.add(currentGroup);
+			reader.close();
+		} catch (MalformedURLException e) {
+			CMLog.getLogger(this).severe("GTagHandler error:" + e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			CMLog.getLogger(this).severe("GTagHandler error:" + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+}

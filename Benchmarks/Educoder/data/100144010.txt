@@ -1,0 +1,94 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+		
+        
+       // File dir=new File(file);
+        System.out.println("+--"+file.getName());
+       
+        
+        File files[]=file.listFiles();
+        
+        for (File filea:files)
+        {
+            boolean isDir=filea.isDirectory();
+        if(isDir==true)
+        {
+            
+            System.out.println("  +--"+filea.getName());
+             
+            
+            File files1[]=filea.listFiles();
+            
+            for(File filea1:files1)
+             {
+               boolean isDir1=filea1.isDirectory();
+               if(isDir1==true)
+               {
+               System.out.println("    +--"+filea1.getName());
+                   
+                   
+                   File files2[]=filea1.listFiles();
+            
+            for(File filea2:files2)
+             {
+               boolean isDir2=filea2.isDirectory();
+               if(isDir2==true)
+               {
+               System.out.println("      +--"+filea2.getName());
+                   
+                   File files3[]=filea2.listFiles();
+            
+            for(File filea3:files3)
+             {
+               boolean isDir3=filea3.isDirectory();
+               if(isDir3==true)
+               {
+               System.out.println("        +--"+filea3.getName());
+                  
+                   File files4[]=filea3.listFiles();
+            
+            for(File filea4:files4)
+             {
+               boolean isDir4=filea4.isDirectory();
+               if(isDir4==true)
+               {
+               System.out.println("          +--"+filea4.getName());
+                   
+                  
+               }
+                else System.out.println("          --"+filea4.getName());
+             }
+                  
+               }
+                else System.out.println("        --"+filea3.getName());
+             }
+                  
+               }
+                else System.out.println("      --"+filea2.getName());
+             }
+                   
+               }
+                else System.out.println("    --"+filea1.getName());
+             }
+             
+             
+        }  
+        }
+        
+      
+
+
+
+
+	}
+	
+
+
+	/********** End **********/
+}

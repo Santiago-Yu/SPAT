@@ -1,0 +1,25 @@
+package Pid_106;
+
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		String nextLine = scanner.nextLine();
+		System.out.print(replaceSpace(new StringBuffer(nextLine)));
+
+	}
+
+	public static String replaceSpace(StringBuffer str) {
+		int index = str.indexOf(" ");
+		while (index != -1) {
+			str.replace(index, index + 1, "%10");
+			index = str.indexOf(" ", index);
+		}
+		String result = str.toString();
+		return result;
+
+	}
+
+}

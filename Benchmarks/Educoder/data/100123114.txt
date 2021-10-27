@@ -1,0 +1,61 @@
+package step4;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class HelloWorld {
+	
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		//动态创建数组
+		int[] arr = new int[sc.nextInt()];
+		for(int i = 0 ; i< arr.length ; i++){
+			arr[i] = sc.nextInt();
+		}
+		/********** Begin **********/
+		for (int i = 0; i < arr.length-1; i++) {
+            if(arr[0] < arr[i+1]){    
+               int temp = arr[0];
+               arr[0] = arr[i+1];
+               arr[i+1] = temp;
+             }
+        }
+        for (int i = 1; i < arr.length-1; i++) {
+            if(arr[1] < arr[i+1]){    
+               int temp = arr[1];
+               arr[1] = arr[i+1];
+               arr[i+1] = temp;
+             }
+        }
+        for (int i = 2; i < arr.length-1; i++) {
+            if(arr[2] < arr[i+1]){    
+               int temp = arr[2];
+               arr[2] = arr[i+1];
+               arr[i+1] = temp;
+             }
+        }
+		for (int i = 3; i < arr.length-1; i++) {
+            if(arr[3] < arr[i+1]){    
+               int temp = arr[3];
+               arr[3] = arr[i+1];
+               arr[i+1] = temp;
+             }
+        }
+        for (int i = 4; i < arr.length-1; i++) {
+            if(arr[4] < arr[i+1]){    
+               int temp = arr[4];
+               arr[4] = arr[i+1];
+               arr[i+1] = temp;
+             }
+        }
+        System.out.println(Arrays.toString(arr));
+		
+		
+		
+		
+		
+		
+		/********** End **********/
+	}
+}

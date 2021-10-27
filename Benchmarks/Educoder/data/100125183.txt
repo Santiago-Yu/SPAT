@@ -1,0 +1,34 @@
+package step2;
+
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+public class InterRectangle{
+	private double width;
+	private double length;
+	public void count1(int width[],int length[],int total){
+		 double sum1 = 0;
+		 double sum2 = 0;
+		 for(int i=0;i<total;i++){
+		 sum1 +=width[i] * length[i];
+		 sum2 +=width[i]*2 + length[i]*2;				
+		 }
+		 System.out.printf("土地总面积为:%.1f平米\n",sum1);
+		 System.out.printf("土地总周长为:%.1f米\n",sum2);		
+		 }
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		double total=scanner.nextDouble();
+		int [] length = new int[100];
+		int [] width = new int[100];
+	//	System.out.println(total);
+		for(int i=0;i<(int)total;i++){
+		//	System.out.println(i);
+			length[i] = scanner.nextInt();
+			width[i] = scanner.nextInt();	
+		}
+		scanner.close();
+		InterRectangle s = new InterRectangle();
+		System.out.printf("总共有%.1f块土地\n",total);
+		s.count1(length,width,(int)total);
+		}
+}

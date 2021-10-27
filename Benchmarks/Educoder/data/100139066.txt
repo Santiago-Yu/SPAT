@@ -1,0 +1,40 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread t=new MyThread("fbi",num);
+		t.start();
+		try {
+            t.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("子线程计算结果为："+MyThread.res);
+	}
+}
+
+
+class MyThread extends Thread {
+    private String name;
+    private int num;
+    public static int res=1;
+    MyThread(String n,int m){
+        name=n;
+        num=m;
+    }
+    public void run(){
+        int r1=1;
+        if(num<=2) res=1;
+        else{
+            for(int i=3;i<=num;i++){
+                res=res+r1;
+                r1=res-r1;
+            }
+        }
+    }
+}

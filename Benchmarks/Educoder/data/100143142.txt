@@ -1,0 +1,63 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		File filein= new File("src/step4/input//input.txt");
+        File fileout= new File("src/step4/output/output.txt");
+        File fileoutPrent =fileout.getParentFile();
+        if(!fileoutPrent.exists())
+        {
+            fileoutPrent.mkdirs();
+        }
+        fileout.createNewFile();
+        
+        FileInputStream fileRD=new FileInputStream(filein);
+        FileOutputStream fileWT=new FileOutputStream(fileout);
+        byte buf[] =new byte[1024];
+        int readlen;
+        while((readlen=fileRD.read(buf))!=-1)
+        {
+            fileWT.write(buf,0,readlen);
+        }
+        fileRD.close();
+        fileWT.close();
+        
+        
+        File filein2= new File("src/step4/input/input.jpg");
+        File fileout2= new File("src/step4/output/output.jpg");
+        File fileoutPrent2 =fileout.getParentFile();
+        if(!fileoutPrent2.exists())
+        {
+            fileoutPrent2.mkdirs();
+        }
+        fileout2.createNewFile();
+        
+        FileInputStream fileRD2=new FileInputStream(filein);
+        FileOutputStream fileWT2=new FileOutputStream(fileout);
+        byte buf2[] =new byte[1024];
+        int readlen2;
+        while((readlen2=fileRD2.read(buf2))!=-1)
+        {
+            fileWT2.write(buf2,0,readlen2);
+        }
+        fileRD2.close();
+        fileWT2.close();
+        
+		
+		
+		
+		
+		
+		/********* End *********/		
+	}
+}

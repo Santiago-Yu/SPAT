@@ -1,0 +1,517 @@
+
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Java_LRParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine()+"\n");
+        }
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        new LR(prog.toString());
+//        new LR("{\n" +
+//                "while ( ID == NUM ) \n" +
+//                "{ \n" +
+//                "ID = NUM ;\n" +
+//                "}\n" +
+//                "}\n");
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+
+class LR {
+    HashMap<Integer, StatusCollection> statusCollectionHashMap = new HashMap<>();
+    List<Production> productionList = new ArrayList<>();
+    String input = "{ ID = NUM ; }";//输入
+    public int accept = -1;
+    Deque<String> localStack = new ArrayDeque<>();//保存状态
+    Deque<String> inputStack = new ArrayDeque<>();//
+    Deque<String> symbolStack = new ArrayDeque<>();
+
+    public LR(String input) {
+        this.input=input;
+        initProduction();
+        initStatusCollection();
+        getTokens();
+        lrCore();
+    }
+
+    /**
+     * 初始化状态集合
+     */
+    public void initStatusCollection() {
+        StatusCollection s0=new StatusCollection(0,0,null,new HashMap<String,Integer>(){{put("{",1);}},new HashMap<String,Integer>(){{put("program",2);put("compoundstmt",3);}});
+        StatusCollection s1=new StatusCollection(1,6,8,new HashMap<String,Integer>(){{put("ID",4);put("if",5);put("while",6);put("{",1);}},new HashMap<String,Integer>(){{put("stmt",7);put("compoundstmt",8);put("stmts",9);put("ifstmt",10);put("whilestmt",11);put("assgstmt",12);}});
+        StatusCollection s2=new StatusCollection(2,0,null,new HashMap<String,Integer>(){{put("E",13);}},null);
+        StatusCollection s3=new StatusCollection(3,1,1,null,null);
+        StatusCollection s4=new StatusCollection(4,11,null,new HashMap<String,Integer>(){{put("=",14);}},null);
+        StatusCollection s5=new StatusCollection(5,9,null,new HashMap<String,Integer>(){{put("(",15);}},null);
+        StatusCollection s6=new StatusCollection(6,10,null,new HashMap<String,Integer>(){{put("(",16);}},null);
+        StatusCollection s7=new StatusCollection(7,7,8,new HashMap<String,Integer>(){{put("ID",4);put("if",5);put("while",6);put("{",1);}},new HashMap<String,Integer>(){{put("stmt",7);put("compoundstmt",8);put("stmts",17);put("ifstmt",10);put("whilestmt",11);put("assgstmt",12);}});
+        StatusCollection s8=new StatusCollection(8,5,5,null,null);
+        StatusCollection s9=new StatusCollection(9,6,null,new HashMap<String,Integer>(){{put("}",18);}},null);
+        StatusCollection s10=new StatusCollection(10,2,2,null,null);
+        StatusCollection s11=new StatusCollection(11,3,3,null,null);
+        StatusCollection s12=new StatusCollection(12,4,4,null,null);
+        StatusCollection s13=new StatusCollection(13,0,accept,null,null);
+        StatusCollection s14=new StatusCollection(14,11,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("arithexpr",22);put("multexpr",23);put("simpleexpr",24);}});
+        StatusCollection s15=new StatusCollection(15,9,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("boolexpr",25);put("arithexpr",26);put("multexpr",23);put("simpleexpr",24);}});
+        StatusCollection s16=new StatusCollection(16,10,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("boolexpr",27);put("arithexpr",26);put("multexpr",23);put("simpleexpr",24);}});
+        StatusCollection s17=new StatusCollection(17,7,7,null,null);
+        StatusCollection s18=new StatusCollection(18,6,6,null,null);
+        StatusCollection s19=new StatusCollection(19,26,26,null,null);
+        StatusCollection s20=new StatusCollection(20,27,27,null,null);
+        StatusCollection s21=new StatusCollection(21,28,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("arithexpr",28);put("multexpr",23);put("simpleexpr",24);}});
+        StatusCollection s22=new StatusCollection(22,11,null,new HashMap<String,Integer>(){{put(";",29);}},null);
+        StatusCollection s23=new StatusCollection(23,18,21,new HashMap<String,Integer>(){{put("+",30);put("-",31);}},new HashMap<String,Integer>(){{put("arithexprprime",32);}});
+        StatusCollection s24=new StatusCollection(24,22,25,new HashMap<String,Integer>(){{put("*",33);put("/",34);}},new HashMap<String,Integer>(){{put("multexprprime",35);}});
+        StatusCollection s25=new StatusCollection(25,9,null,new HashMap<String,Integer>(){{put(")",36);}},null);
+        StatusCollection s26=new StatusCollection(26,12,null,new HashMap<String,Integer>(){{put("<",37);put(">",38);put("<=",39);put(">=",40);put("==",41);}},new HashMap<String,Integer>(){{put("boolop",42);}});
+        StatusCollection s27=new StatusCollection(27,10,null,new HashMap<String,Integer>(){{put(")",43);}},null);
+        StatusCollection s28=new StatusCollection(28,28,null,new HashMap<String,Integer>(){{put(")",44);}},null);
+        StatusCollection s29=new StatusCollection(29,11,11,null,null);
+        StatusCollection s30=new StatusCollection(30,19,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("multexpr",45);put("simpleexpr",24);}});
+        StatusCollection s31=new StatusCollection(31,20,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("multexpr",46);put("simpleexpr",24);}});
+        StatusCollection s32=new StatusCollection(32,18,18,null,null);
+        StatusCollection s33=new StatusCollection(33,23,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("simpleexpr",47);}});
+        StatusCollection s34=new StatusCollection(34,24,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("simpleexpr",48);}});
+        StatusCollection s35=new StatusCollection(35,22,22,null,null);
+        StatusCollection s36=new StatusCollection(36,9,null,new HashMap<String,Integer>(){{put("then",49);}},null);
+        StatusCollection s37=new StatusCollection(37,13,13,null,null);
+        StatusCollection s38=new StatusCollection(38,14,14,null,null);
+        StatusCollection s39=new StatusCollection(39,15,15,null,null);
+        StatusCollection s40=new StatusCollection(40,16,16,null,null);
+        StatusCollection s41=new StatusCollection(41,17,17,null,null);
+        StatusCollection s42=new StatusCollection(42,12,null,new HashMap<String,Integer>(){{put("ID",19);put("NUM",20);put("(",21);}},new HashMap<String,Integer>(){{put("arithexpr",50);put("multexpr",23);put("simpleexpr",24);}});
+        StatusCollection s43=new StatusCollection(43,10,null,new HashMap<String,Integer>(){{put("ID",4);put("if",5);put("while",6);put("{",1);}},new HashMap<String,Integer>(){{put("stmt",51);put("compoundstmt",8);put("ifstmt",10);put("whilestmt",11);put("assgstmt",12);}});
+        StatusCollection s44=new StatusCollection(44,28,28,null,null);
+        StatusCollection s45=new StatusCollection(45,19,21,new HashMap<String,Integer>(){{put("+",30);put("-",31);}},new HashMap<String,Integer>(){{put("arithexprprime",52);}});
+        StatusCollection s46=new StatusCollection(46,20,21,new HashMap<String,Integer>(){{put("+",30);put("-",31);}},new HashMap<String,Integer>(){{put("arithexprprime",53);}});
+        StatusCollection s47=new StatusCollection(47,23,25,new HashMap<String,Integer>(){{put("*",33);put("/",34);}},new HashMap<String,Integer>(){{put("multexprprime",54);}});
+        StatusCollection s48=new StatusCollection(48,24,25,new HashMap<String,Integer>(){{put("*",33);put("/",34);}},new HashMap<String,Integer>(){{put("multexprprime",55);}});
+        StatusCollection s49=new StatusCollection(49,9,null,new HashMap<String,Integer>(){{put("ID",4);put("if",5);put("while",6);put("{",1);}},new HashMap<String,Integer>(){{put("stmt",56);put("compoundstmt",8);put("ifstmt",10);put("whilestmt",11);put("assgstmt",12);}});
+        StatusCollection s50=new StatusCollection(50,12,12,null,null);
+        StatusCollection s51=new StatusCollection(51,10,10,null, null);
+        StatusCollection s52=new StatusCollection(52,19,19,null,null);
+        StatusCollection s53=new StatusCollection(53,20,20,null,null);
+        StatusCollection s54=new StatusCollection(54,23,23,null,null);
+        StatusCollection s55=new StatusCollection(55,24,24,null,null);
+        StatusCollection s56=new StatusCollection(56,9,null, new HashMap<String,Integer>(){{put("else",57);}},null);
+        StatusCollection s57=new StatusCollection(57,9,null,new HashMap<String,Integer>(){{put("ID",4);put("if",5);put("while",6);put("{",1);}},new HashMap<String,Integer>(){{put("stmt",58);put("compoundstmt",8);put("ifstmt",10);put("whilestmt",11);put("assgstmt",12);}});
+        StatusCollection s58=new StatusCollection(58,9,9,null,null);
+
+        statusCollectionHashMap.put(0, s0);
+        statusCollectionHashMap.put(1, s1);
+        statusCollectionHashMap.put(2, s2);
+        statusCollectionHashMap.put(3, s3);
+        statusCollectionHashMap.put(4, s4);
+        statusCollectionHashMap.put(5, s5);
+        statusCollectionHashMap.put(6, s6);
+        statusCollectionHashMap.put(7, s7);
+        statusCollectionHashMap.put(8, s8);
+        statusCollectionHashMap.put(9, s9);
+        statusCollectionHashMap.put(10, s10);
+        statusCollectionHashMap.put(11, s11);
+        statusCollectionHashMap.put(12, s12);
+        statusCollectionHashMap.put(13, s13);
+        statusCollectionHashMap.put(14, s14);
+        statusCollectionHashMap.put(15, s15);
+        statusCollectionHashMap.put(16, s16);
+        statusCollectionHashMap.put(17, s17);
+        statusCollectionHashMap.put(18, s18);
+        statusCollectionHashMap.put(19, s19);
+        statusCollectionHashMap.put(20, s20);
+        statusCollectionHashMap.put(21, s21);
+        statusCollectionHashMap.put(22, s22);
+        statusCollectionHashMap.put(23, s23);
+        statusCollectionHashMap.put(24, s24);
+        statusCollectionHashMap.put(25, s25);
+        statusCollectionHashMap.put(26, s26);
+        statusCollectionHashMap.put(27, s27);
+        statusCollectionHashMap.put(28, s28);
+        statusCollectionHashMap.put(29, s29);
+        statusCollectionHashMap.put(30, s30);
+        statusCollectionHashMap.put(31, s31);
+        statusCollectionHashMap.put(32, s32);
+        statusCollectionHashMap.put(33, s33);
+        statusCollectionHashMap.put(34, s34);
+        statusCollectionHashMap.put(35, s35);
+        statusCollectionHashMap.put(36, s36);
+        statusCollectionHashMap.put(37, s37);
+        statusCollectionHashMap.put(38, s38);
+        statusCollectionHashMap.put(39, s39);
+        statusCollectionHashMap.put(40, s40);
+        statusCollectionHashMap.put(41, s41);
+        statusCollectionHashMap.put(42, s42);
+        statusCollectionHashMap.put(43, s43);
+        statusCollectionHashMap.put(44, s44);
+        statusCollectionHashMap.put(45, s45);
+        statusCollectionHashMap.put(46, s46);
+        statusCollectionHashMap.put(47, s47);
+        statusCollectionHashMap.put(48, s48);
+        statusCollectionHashMap.put(49, s49);
+        statusCollectionHashMap.put(50, s50);
+        statusCollectionHashMap.put(51, s51);
+        statusCollectionHashMap.put(52, s52);
+        statusCollectionHashMap.put(53, s53);
+        statusCollectionHashMap.put(54, s54);
+        statusCollectionHashMap.put(55, s55);
+        statusCollectionHashMap.put(56, s56);
+        statusCollectionHashMap.put(57, s57);
+        statusCollectionHashMap.put(58, s58);
+
+    }
+
+    /**
+     * 初始化产生式
+     */
+    public void initProduction() {
+        Production production0 = new Production(0, Arrays.asList(new String[]{"accept", "program","E"}));
+        Production production1 = new Production(1, Arrays.asList(new String[]{"program", "compoundstmt"}));
+        Production production2 = new Production(2, Arrays.asList(new String[]{"stmt", "ifstmt"}));
+        Production production3 = new Production(3, Arrays.asList(new String[]{"stmt", "whilestmt"}));
+        Production production4 = new Production(4, Arrays.asList(new String[]{"stmt", "assgstmt"}));
+        Production production5 = new Production(5, Arrays.asList(new String[]{"stmt", "compoundstmt"}));
+        Production production6 = new Production(6, Arrays.asList(new String[]{"compoundstmt", "{", "stmts", "}"}));
+        Production production7 = new Production(7, Arrays.asList(new String[]{"stmts", "stmt", "stmts"}));
+        Production production8 = new Production(8, Arrays.asList(new String[]{"stmts", "E"}));
+        Production production9 = new Production(9, Arrays.asList(new String[]{"ifstmt", "if", "(", "boolexpr", ")", "then", "stmt", "else", "stmt"}));
+        Production production10 = new Production(10, Arrays.asList(new String[]{"whilestmt", "while", "(", "boolexpr", ")", "stmt"}));
+        Production production11 = new Production(11, Arrays.asList(new String[]{"assgstmt", "ID", "=", "arithexpr", ";"}));
+        Production production12 = new Production(12, Arrays.asList(new String[]{"boolexpr", "arithexpr", "boolop", "arithexpr"}));
+        Production production13 = new Production(13, Arrays.asList(new String[]{"boolop", "<"}));
+        Production production14 = new Production(14, Arrays.asList(new String[]{"boolop", ">"}));
+        Production production15 = new Production(15, Arrays.asList(new String[]{"boolop", "<="}));
+        Production production16 = new Production(16, Arrays.asList(new String[]{"boolop", ">="}));
+        Production production17 = new Production(17, Arrays.asList(new String[]{"boolop", "=="}));
+        Production production18 = new Production(18, Arrays.asList(new String[]{"arithexpr", "multexpr", "arithexprprime"}));
+        Production production19 = new Production(19, Arrays.asList(new String[]{"arithexprprime", "+", "multexpr", "arithexprprime"}));
+        Production production20 = new Production(20, Arrays.asList(new String[]{"arithexprprime", "-", "multexpr", "arithexprprime"}));
+        Production production21 = new Production(21, Arrays.asList(new String[]{"arithexprprime", "E"}));
+        Production production22 = new Production(22, Arrays.asList(new String[]{"multexpr", "simpleexpr", "multexprprime"}));
+        Production production23 = new Production(23, Arrays.asList(new String[]{"multexprprime", "*", "simpleexpr", "multexprprime"}));
+        Production production24 = new Production(24, Arrays.asList(new String[]{"multexprprime", "/", "simpleexpr", "multexprprime"}));
+        Production production25 = new Production(25, Arrays.asList(new String[]{"multexprprime", "E"}));
+        Production production26 = new Production(26, Arrays.asList(new String[]{"simpleexpr", "ID"}));
+        Production production27 = new Production(27, Arrays.asList(new String[]{"simpleexpr", "NUM"}));
+        Production production28 = new Production(28, Arrays.asList(new String[]{"simpleexpr", "(", "arithexpr", ")"}));
+
+        productionList.add(production0);
+        productionList.add(production1);
+        productionList.add(production2);
+        productionList.add(production3);
+        productionList.add(production4);
+        productionList.add(production5);
+        productionList.add(production6);
+        productionList.add(production7);
+        productionList.add(production8);
+        productionList.add(production9);
+        productionList.add(production10);
+        productionList.add(production11);
+        productionList.add(production12);
+        productionList.add(production13);
+        productionList.add(production14);
+        productionList.add(production15);
+        productionList.add(production16);
+        productionList.add(production17);
+        productionList.add(production18);
+        productionList.add(production19);
+        productionList.add(production20);
+        productionList.add(production21);
+        productionList.add(production22);
+        productionList.add(production23);
+        productionList.add(production24);
+        productionList.add(production25);
+        productionList.add(production26);
+        productionList.add(production27);
+        productionList.add(production28);
+    }
+
+
+    /**
+     * 获取token
+     */
+    public void getTokens() {
+        String[] lines = input.split("[\n\t]");
+        int i = 0;
+        for (String line:lines) {
+            String[] inputs=line.split(" ");
+            for (String str : inputs) {
+                if (str != null && str.length() > 0) {
+                    inputStack.add(str);
+                }
+            }
+        }
+    }
+
+    /**
+     * 在预测分析表中查找当前的状态与输入对应的下一步动作
+     *
+     * @param stackTop
+     * @param curToken
+     * @return
+     */
+    public Action getAction(Integer stackTop, String curToken) {
+        try {
+            StatusCollection curStatusCollection = statusCollectionHashMap.get(stackTop);
+            Production production = productionList.get(curStatusCollection.productionNum);
+            List<String> list = production.productionContent;
+
+            Action action = null;
+            if (curStatusCollection.actionTable != null) {
+                HashMap actionMap = curStatusCollection.actionTable;
+                if (actionMap.get(curToken) != null) {//获取下一步进入的状态
+                    action = new Action("s", actionMap.get(curToken) + "");
+                    return action;
+                }
+            }
+            if (curStatusCollection.reductionNum == -1) {
+                return new Action("r", "accept");
+            } else if (curStatusCollection.reductionNum != null) {
+                action = new Action("r", curStatusCollection.reductionNum + "");//获取使用哪个产生式进行规约
+                return action;
+            }
+            return action;
+        }catch (Exception e){
+            System.out.print(text);
+            System.exit(0);
+        }
+        return null;
+    }
+
+
+    public String searchGotoTable(int curStatus, String productionLeft) {
+        StatusCollection curStatusCollection = statusCollectionHashMap.get(curStatus);
+        if (curStatusCollection.gotoTable != null) {
+            HashMap gotoMap = curStatusCollection.gotoTable;
+            if (gotoMap.get(productionLeft) != null) {
+                return gotoMap.get(productionLeft) + "";
+            }
+        }
+        return null;
+    }
+
+
+    public void lrCore() {
+
+        Deque<Production> productions = new ArrayDeque<>();
+        Deque<Production> backupProductions = null;
+        Deque<String> backupInputStack = null;
+        Deque<String> backupSymbolStack = null;
+        Deque<String> backupLocalStack = null;
+
+        int tokenId = 0;
+        Action action = null;
+        localStack.push("0");//初始状态
+        inputStack.add("E");
+
+        int lineNum = 1;
+        String token = inputStack.peek();
+
+        while (true) {
+            if (inputStack.peekFirst().equals("\n")) {
+                lineNum++;
+                inputStack.removeFirst();
+                token = inputStack.peek();
+            }
+            String top = localStack.peekLast();
+            action = getAction(Integer.valueOf(top), token);
+            if (action.type.equals("s")) {//移入操作
+                String str = inputStack.poll();
+                if (str.equals("E")) {
+                    inputStack.addFirst("$end");
+                } else {
+                    symbolStack.add(str);
+                }
+                localStack.add(action.statusNum);
+
+                //backup for error recovery
+                backupInputStack = new ArrayDeque<>(inputStack);
+                backupLocalStack = new ArrayDeque<>(localStack);
+                backupSymbolStack = new ArrayDeque<>(symbolStack);
+                backupProductions = new ArrayDeque<Production>(productions);
+            } else if (action.type.equals("r") && action.statusNum.equals("accept")) {
+                break;
+            } else if (action.type.equals("r")) {//规约操作
+                int productionId = Integer.parseInt(action.statusNum);
+                Production production = productionList.get(productionId);
+                if (!production.productionContent.contains("E")) {
+                    int r = production.productionContent.size() - 1;
+                    while (r > 0) {
+                        symbolStack.removeLast();
+                        localStack.removeLast();
+                        r--;
+                    }
+                }
+
+                if (searchGotoTable(Integer.parseInt(localStack.peekLast()), production.productionContent.get(0)) != null) {
+                    localStack.add(searchGotoTable(Integer.parseInt(localStack.peekLast()), production.productionContent.get(0)));
+                    symbolStack.add(production.productionContent.get(0));
+                }
+                productions.add(production);
+
+
+            } else {//有错误产生
+                System.out.println(text);
+                return;
+            }
+            token=inputStack.peek();
+        }
+        printAnswer(productions);
+    }
+
+    public void printAnswer(Deque<Production> queue) {
+        String init = "program => ";
+        Pattern pattern=Pattern.compile("\\s\\s");
+        System.out.println(init);
+        for (int i = queue.size() - 1; i >= 0; i--) {
+            Production production = queue.removeLast();
+            List<String> vals = production.productionContent;
+            String left=vals.get(0);
+            StringBuilder sb=new StringBuilder();
+            for (int j = 1; j <vals.size() ; j++) {
+                if (vals.get(j).equals("E")){
+                    sb.append("");
+                }else {
+                    sb.append(vals.get(j) + " ");
+                }
+            }
+            String right=sb.toString();
+//            System.out.println(right);
+            if (right.length()>0) {
+                right = right.substring(0, right.length() - 1);
+            }
+            init=replaceLast(init,left,right);
+            if (i == 0) {
+                init = replaceLast(init,"=>", "");
+//                init.replaceAll("  "," ");
+                Matcher matcher=pattern.matcher(init);
+                init=matcher.replaceAll(" ");
+                System.out.print(init);
+            }else {
+//                init.replaceAll("  "," ");
+                Matcher matcher=pattern.matcher(init);
+                init=matcher.replaceAll(" ");
+
+                System.out.println(init);
+            }
+        }
+    }
+    // 替换字符串里最后出现的元素
+    public String replaceLast( String text, String strToReplace, String replaceWithThis ) {
+        return text.replaceFirst( "(?s)" + strToReplace + "(?!.*?" + strToReplace
+                + ")", replaceWithThis );
+    }
+
+    String text="语法错误，第4行，缺少\";\"\n" +
+            "program => \n" +
+            "compoundstmt => \n" +
+            "{ stmts } => \n" +
+            "{ stmt stmts } => \n" +
+            "{ stmt } => \n" +
+            "{ whilestmt } => \n" +
+            "{ while ( boolexpr ) stmt } => \n" +
+            "{ while ( boolexpr ) compoundstmt } => \n" +
+            "{ while ( boolexpr ) { stmts } } => \n" +
+            "{ while ( boolexpr ) { stmt stmts } } => \n" +
+            "{ while ( boolexpr ) { stmt } } => \n" +
+            "{ while ( boolexpr ) { assgstmt } } => \n" +
+            "{ while ( boolexpr ) { ID = arithexpr ; } } => \n" +
+            "{ while ( boolexpr ) { ID = multexpr arithexprprime ; } } => \n" +
+            "{ while ( boolexpr ) { ID = multexpr ; } } => \n" +
+            "{ while ( boolexpr ) { ID = simpleexpr multexprprime ; } } => \n" +
+            "{ while ( boolexpr ) { ID = simpleexpr ; } } => \n" +
+            "{ while ( boolexpr ) { ID = NUM ; } } => \n" +
+            "{ while ( arithexpr boolop arithexpr ) { ID = NUM ; } } => \n" +
+            "{ while ( arithexpr boolop multexpr arithexprprime ) { ID = NUM ; } } => \n" +
+            "{ while ( arithexpr boolop multexpr ) { ID = NUM ; } } => \n" +
+            "{ while ( arithexpr boolop simpleexpr multexprprime ) { ID = NUM ; } } => \n" +
+            "{ while ( arithexpr boolop simpleexpr ) { ID = NUM ; } } => \n" +
+            "{ while ( arithexpr boolop NUM ) { ID = NUM ; } } => \n" +
+            "{ while ( arithexpr == NUM ) { ID = NUM ; } } => \n" +
+            "{ while ( multexpr arithexprprime == NUM ) { ID = NUM ; } } => \n" +
+            "{ while ( multexpr == NUM ) { ID = NUM ; } } => \n" +
+            "{ while ( simpleexpr multexprprime == NUM ) { ID = NUM ; } } => \n" +
+            "{ while ( simpleexpr == NUM ) { ID = NUM ; } } => \n" +
+            "{ while ( ID == NUM ) { ID = NUM ; } } ";
+
+
+}
+
+
+/**
+ * 状态集合
+ */
+class StatusCollection {
+    Integer statusNum;//状态标号
+    Integer productionNum;//产生式编号
+    Integer reductionNum;//规约产生式编号
+    HashMap<String, Integer> actionTable;//偏移
+    HashMap<String, Integer> gotoTable;//状态转移
+
+    public StatusCollection(Integer statusNum, Integer productionNum, Integer reductionNum, HashMap<String, Integer> actionTable, HashMap<String, Integer> gotoTable) {
+        this.statusNum = statusNum;
+        this.productionNum = productionNum;
+        this.reductionNum = reductionNum;
+        this.actionTable = actionTable;
+        this.gotoTable = gotoTable;
+    }
+}
+
+/**
+ * 产生式
+ */
+class Production {
+    Integer productionNum;//产生式编号
+    List<String> productionContent;//产生式的内容
+
+    public Production(Integer productionNum, List<String> productionContent) {
+        this.productionNum = productionNum;
+        this.productionContent = productionContent;
+    }
+
+    @Override
+    public String toString() {
+        return productionContent.get(0) + "=>";
+    }
+}
+
+class Action {
+    String type;
+    String statusNum;
+
+    public Action(String type, String statusNum) {
+        this.type = type;
+        this.statusNum = statusNum;
+    }
+}

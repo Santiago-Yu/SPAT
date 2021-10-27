@@ -1,0 +1,36 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int start = 0,end;
+		end=0;
+		if(num1<=num2){
+			start=num1;
+		}else if(num1>num2){
+			start=num2;
+		}
+		
+		int d=num1-num2;
+		int c=Math.abs(d)+1;
+		int e=start;
+		for(d=1;d<=c;d++){
+			int a,b;
+			for(;start>=10;){
+				a=(int) Math.floor(start/10);
+				b=start-a*10;
+				end=end+b;
+				start=a;
+			}
+			end=end+start;
+			e=e+1;
+			start=e;
+		}
+		
+		return end;
+		
+		/********** END **********/
+	}
+}

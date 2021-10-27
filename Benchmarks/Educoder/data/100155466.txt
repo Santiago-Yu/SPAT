@@ -1,0 +1,41 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    int boxType;
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public Box(int boxType)
+    {
+        this.boxType = boxType;
+        
+    }
+
+    public double volume() 
+    {
+        //TODO your code
+        double volumn = 0;
+        if(boxType ==2)
+        {
+     	volumn = width*width*height*3.14;
+        }else if(boxType==1)
+        {
+		 volumn = width*height*depth;
+        }
+     	return volumn;
+    }
+
+}

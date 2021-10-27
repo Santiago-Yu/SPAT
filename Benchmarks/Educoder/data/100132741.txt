@@ -1,0 +1,60 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+		 int count = 0;
+		
+         if(ferry.length == 0)
+             return 0;
+         else
+             if(ferry.length != 1){
+                 for(int i=0;i<ferry.length;i++){
+                    for(int j=0;j<ferry[1].length-1;j++) {
+                        if(ferry[i][j] == '+' && ferry[i][j+1] == '+'){
+                            ferry[i][j]='o';
+                            ferry[i][j+1]='o';
+                            count +=1;
+                            while((j != ferry[1].length-2)&&(ferry[i][j+2]!='o')){
+                                ferry[i][j+2] = 'o';
+                                j++;
+                            } 
+
+                        }
+                    }
+                }
+
+                 for(int m=0;m<ferry[1].length;m++){
+                    for(int n=0;n<ferry.length;n++){
+                        if(ferry[n][m] == '+'){
+                            //ferry[n][m] = 'o';
+                            count += 1;
+                            while((n != ferry.length-1)&&(ferry[n+1][m]!='o')){
+                                //ferry[n+1][m] = 'o';
+                                n++;
+                            }
+                            
+                           //n -=1;
+                        }
+                    }
+
+                 } 
+             }
+         else{
+             for(int n=0;n<ferry[0].length;n++){               
+                    if(ferry[0][n] == '+'){
+                        //ferry[n][m] = 'o';
+                        count += 1;
+                        while((n != ferry[0].length-1)&&(ferry[0][n+1]!='o')){
+                            //ferry[0][n+1] = 'o';
+                            n++;
+                        }
+                        
+                    }
+
+             } }
+        return count; 
+      /***********END ***************/
+	 }
+}

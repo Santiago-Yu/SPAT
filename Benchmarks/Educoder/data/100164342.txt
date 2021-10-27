@@ -1,0 +1,58 @@
+package step4;
+import java.util.Scanner;
+public class Josephus {
+
+   public static void main(String args[]){
+	   /**
+		* 数组解决约瑟夫环问题
+		* @param total   总人数（如41）
+		* @param number  要报的数（如3）
+		* Josecount()算法，显示最后一个的编号
+		*/
+		   int total,number;
+		   Scanner scan=new Scanner(System.in);
+		   total=scan.nextInt();  //输入参与游戏的总人数
+		   number=scan.nextInt(); //输入要报的数字
+	       Josecount(total,number);
+
+   }
+    
+	public static void Josecount(int personNumber ,int number) { //显示最后那个人的原始编号
+		    //显示最后那个人的原始编号
+        	int k=0;//最后一人编号
+        	int[] array = new int[personNumber]; //建立数组，存放所有人的原始编号，从1开始.....personNumber最后一人
+        	for (int i = 0; i < personNumber; i++) {
+            	array[i] = i+1;
+        	}
+	 
+	        /*************begin***************/
+         int num = 1;
+ int counter = personNumber;
+        while (counter > 1) {  
+            for (int j = 0; j < array.length; j++) {  
+                if (array[j] != 0) {// 如果数组元素不为0，则从1开始赋值  
+                    array[j] = num;  
+                    if (num % number == 0) {// 如果赋给数组元素的数能够整除3，则把此数组元素置0，计数器减1（即踢掉一个人）  
+                        array[j] = 0;  
+                        counter = counter - 1;  
+                        if (counter == 1) {// 如果最后只剩下一个人，跳出循环  
+                            break;  
+                        }  
+                    }  
+                    num = num + 1;  
+                }  
+            }  
+        }  
+        for (k = 0; k < personNumber; k++) {  
+            if (array[k] != 0) {  
+                System.out.print("最后一个人编号：" + (k + 1));  
+            }  
+        }  
+  
+    }  
+
+
+
+	        /*************end***************/
+	
+}

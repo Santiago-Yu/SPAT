@@ -1,0 +1,93 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+        String a[] =releaseDate.split("-");
+		int y=Integer.valueOf(a[0]);//年
+		int m=Integer.valueOf(a[1]);//月
+		int d=Integer.valueOf(a[2]);//日
+		int tem=0;//当前月总天数
+		int addm=0;//增加的月数
+		int mid=0;//判断是否第一次不跨月
+		while(day>=0){
+			if(m+addm>12){
+				y=y+1;
+				m=m-12;
+			}
+		switch(m+addm){
+		case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+        	tem = 31;
+            break;
+        case 4:
+        case 6:
+        case 9:
+        case 11:
+        	tem = 30;
+            break;
+        case 2:
+            if (y % 4 == 0 && y % 100 != 0 || y % 400 == 0) {
+            	tem = 29;
+            } else {
+            	tem = 28;
+            }
+            break;
+		}
+		//判断是否不跨月
+		if(addm==0){
+			mid=tem-d;
+		}else mid=tem;
+		//
+		if(day<=mid){
+			if(addm==0){
+			    d=d+day;
+			}
+			else{
+				d=day;
+			}
+			break;
+		}else{
+			if(addm==0){
+			    day=day-(tem-d);
+			}
+			else{
+				day=day-tem;
+			}
+			addm=addm+1;
+		}
+		
+		}
+		m=addm+m;
+		
+		String str="";
+		String str1="";
+		String str2="";
+		if(m<10){str1="0"+String.valueOf(m);}
+		else str1=String.valueOf(m);
+		if(d<10){str2="0"+String.valueOf(d);}
+		else str2=String.valueOf(d);
+		str=str+String.valueOf(y)+"-"+str1+"-"+str2;
+		return str;
+		
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

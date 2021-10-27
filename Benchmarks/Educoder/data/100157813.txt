@@ -1,0 +1,38 @@
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+        
+        Scanner sc=new Scanner(System.in);
+		int x=sc.nextInt();
+		if(digui(x)==true){
+			System.out.print("YES");
+		}
+		if(digui(x)==false){
+			System.out.print("NO");
+		}
+	}
+        
+    	static boolean digui(int x){
+		int s=0;
+		int n;
+		while(x!=0){
+			n=x%10;
+			x=x/10;
+			s=s+n*n;
+		}
+		if(s==1){
+			return true;
+		}
+            else if(s<10&&s>=0){
+            return false;
+            }
+		else{
+			return digui(s);
+		}
+        }
+
+	}
+
+

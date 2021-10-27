@@ -1,0 +1,37 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int sum = 0;
+		for(int i = num1;i<=num2;i++){
+            if(100<=i){
+                sum += Three(i);
+            }
+            else if(10<=i){
+                sum += Two(i);
+            }
+            else sum += i;
+            
+        }
+		return sum;
+		
+		/********** END **********/
+	}
+    
+    private int Three(int num){
+     int bai =  num/100;
+     int shi = (num - bai*100)/10;
+     int ge  =  num - bai*100 - shi*10;
+     return bai + shi +ge;
+    }
+    
+    private int Two(int num){
+     int shi =  num/10;
+     int ge = num - shi*10;
+ 
+     return shi +ge;
+    }
+}

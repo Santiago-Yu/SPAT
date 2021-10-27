@@ -1,0 +1,44 @@
+package task07;
+
+/*
+ * 说明：根据 TODO 提示，补充完整对应功能代码。
+ *     （其他代码可以不用改）
+ */
+
+public class Task07 {
+	static {
+		System.out.println("静态代码块");
+	}
+	
+	{
+		System.out.println("构造代码块");
+	}
+	
+	public Task07() {
+		System.out.println("构造方法");
+	}
+	
+	void localBlock() {
+		{
+			System.out.println("局部代码块");
+		}
+	}
+	
+	public static void main(String[] args) {
+		System.out.println("---------");
+		// TODO 在此定义一个测试类的对象
+		Task07 b=new Task07();
+		
+		System.out.println("---------");
+		// TODO 在此再定义一个测试类的对象
+		Task07 a=new Task07();
+		
+		System.out.println("---------");
+		// TODO 在此使用第一个对象调用localBlock方法
+		b.localBlock();
+		
+		System.out.println("---------");
+		// TODO 在此使用第二个对象调用localBlock方法
+		a.localBlock();
+	}
+}

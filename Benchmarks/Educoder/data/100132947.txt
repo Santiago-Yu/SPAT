@@ -1,0 +1,112 @@
+package step2;
+
+import java.text.*;
+import java.util.*;
+
+public class Task {
+	
+	public int getDaysNum(String startTime,String endTime){
+		SimpleDateFormat format = new SimpleDateFormat("MM-dd");
+        
+        Date sdate = new Date();
+        Date edate = new Date();
+        
+        try{sdate = format.parse(startTime);}
+        catch(Exception e){}
+        Calendar ca1 = Calendar.getInstance();
+        ca1.setTime(sdate);
+        
+        try{edate = format.parse(endTime);}
+        catch(Exception e){}
+        Calendar ca2 = Calendar.getInstance();
+        ca2.setTime(edate);
+        
+        int sm = ca1.get(ca1.MONTH) + 1;
+        int sd = ca1.get(ca1.DAY_OF_MONTH);
+        int em = ca2.get(ca2.MONTH) + 1;
+        int ed = ca2.get(ca2.DAY_OF_MONTH);
+        
+        int[] fn = new int[100];
+        for(int i = 1; i < fn.length; i++)
+        {
+        	fn[i] = (i * (i + 1)) / 2;
+        }
+        
+        int ex = 0;
+        int sx = 0;
+        
+        if(sm == 7 && em == 7)
+        {
+            for(int i = 1; i < fn.length; i++)
+        	{
+        		if(fn[i] == sd)
+                {
+                	sx = i;
+                    break;
+                }
+                if(fn[i] < sd && fn[i + 1] > sd)
+                {
+                	sx = i;
+                    break;
+                }
+        	}
+            for(int i = 1; i < fn.length; i++)
+        	{
+        		if(fn[i] == ed)
+                {
+                	ex = i;
+                    break;
+                }
+                if(fn[i] < ed && fn[i + 1] > ed)
+                {
+                	ex = i;
+                    break;
+                }
+        	}
+            if(sd == 1)
+            {return (ex - sx+1);}
+            else
+            {return (ex-sx);}
+        }
+        else if(sm == 7 && em == 8)
+        {
+        	for(int i = 1; i < fn.length; i++)
+        	{
+        		if(fn[i] >= sd)
+                {
+                	sx = i;
+                    break;
+                }
+        	}
+            for(int i = 1; i < fn.length; i++)
+        	{
+        		if(fn[i] >= ed + 31)
+                {
+                	ex = i;
+                    break;
+                }
+        	}
+            return ex - sx;
+        }
+        else
+        {
+        	for(int i = 1; i < fn.length; i++)
+        	{
+        		if(fn[i] >= sd + 31)
+                {
+                	sx = i;
+                    break;
+                }
+        	}
+            for(int i = 1; i < fn.length; i++)
+        	{
+        		if(fn[i] >= ed + 31)
+                {
+                	ex = i;
+                    break;
+                }
+        	}
+            return ex - sx;
+        }
+	}
+}

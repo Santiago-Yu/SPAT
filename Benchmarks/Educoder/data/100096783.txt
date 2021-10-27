@@ -1,0 +1,27 @@
+package step1;
+public class MyThread extends Thread {
+    //成员变量name
+	private String name;
+    public static void main(String []agrs)
+    {
+    	MyThread m1 = new MyThread("A");
+    	m1.start();
+		MyThread m2 = new MyThread("B");
+		m2.start();
+    }
+    //初始化成员变量name的值
+    public MyThread(String name) {
+        /********** Begin *********/
+		this.name=name;
+
+        /********** End *********/
+    }
+    public void run() {
+        /********** Begin *********/
+    	System.out.println("运行:"+name);
+    	
+
+
+        /********** End *********/
+    }  
+}

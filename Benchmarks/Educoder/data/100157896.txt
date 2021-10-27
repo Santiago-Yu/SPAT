@@ -1,0 +1,26 @@
+package step;
+public class Sort{
+		/**
+	 	 *@param arr 待排序数组
+	 	 */
+    	public void insertSort(int[] arr) {
+        	/********* Begin *********/
+            int n=arr.length;
+            int i,j;
+			for(i=1;i<n;i++)
+            {
+            	int t=arr[i];
+                j=i-1;
+                while((j>=0)&&t<arr[j])
+                {
+                	arr[j+1]=arr[j];
+                    j--;
+                }
+                arr[j+1]=t;
+                for(int s=0;s<arr.length;s++)
+                	System.out.print(arr[s]+" ");
+                System.out.println();
+            }
+			/********* End *********/
+   	 }
+}

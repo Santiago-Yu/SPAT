@@ -1,0 +1,32 @@
+package Step1;
+
+public class UnicodeDemo {
+     public String Encoding(String s) {
+        //将读入的字符串变量转换为字符数组
+         String tmp;
+         int b;
+         StringBuffer sb =new StringBuffer();
+         for(int a=0;a<s.length();a++){
+             char c=s.charAt(a);
+             sb.append("\\u");
+             b=(c>>>8);//取出高8位
+             tmp = Integer.toHexString(b);
+             if(tmp.length()==1)
+                 sb.append("0");
+             sb.append(tmp);
+             b=(c&0xFF);//取出低8位
+             tmp = Integer.toHexString(b);
+             if(tmp.length()==1)
+                 sb.append("0");
+             sb.append(tmp);
+         }
+         
+    
+
+         //将字符数组的每一项都转换为16进制整型字符串，不足4位的要补0
+         
+         //输出转换后的Unicode编码
+        System.out.println(sb.toString());
+         return s;
+     }
+}

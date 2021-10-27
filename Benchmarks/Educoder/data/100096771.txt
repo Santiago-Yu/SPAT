@@ -1,0 +1,25 @@
+package step1;
+import java.util.Scanner;
+public class MyThread extends Thread {
+	private String name;
+    public MyThread(String name) {
+        /********** Begin *********/
+    	this.name=name;
+    	
+
+        /********** End *********/
+    }
+    public void run() {
+        /********** Begin *********/
+    	System.out.println("运行:"+name);
+    	
+
+        /********** End *********/
+    }
+    public static void main(String[] args) {
+    	Scanner scanner=new Scanner(System.in);
+    	String name=scanner.nextLine();
+    	MyThread mythread=new MyThread(name);
+    	mythread.run();
+    }
+}

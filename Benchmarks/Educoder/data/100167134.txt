@@ -1,0 +1,571 @@
+
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+public class Java_LexAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+
+    public static boolean isLetter(char in){
+        return Pattern.matches("\\w",in + "");
+    }
+
+    public static boolean isNum(char in){
+        return Pattern.matches("\\d",in + "");
+    }
+
+    public static int getIdFromKey(String key){
+        int num = 0;
+        switch (key){
+            case "auto":
+                num = 1;
+                break;
+            case "break":
+                num = 2;
+                break;
+            case "case":
+                num = 3;
+                break;
+            case "char":
+                num = 4;
+                break;
+            case "const":
+                num = 5;
+                break;
+            case "continue":
+                num = 6;
+                break;
+            case "default":
+                num = 7;
+                break;
+            case "do":
+                num = 8;
+                break;
+            case "double":
+                num = 9;
+                break;
+            case "else":
+                num = 10;
+                break;
+            case "enum":
+                num = 11;
+                break;
+            case "extern":
+                num = 12;
+                break;
+            case "float":
+                num = 13;
+                break;
+            case "for":
+                num = 14;
+                break;
+            case "goto":
+                num = 15;
+                break;
+            case "if":
+                num = 16;
+                break;
+            case "int":
+                num = 17;
+                break;
+            case "long":
+                num = 18;
+                break;
+            case "register":
+                num = 19;
+                break;
+            case "return":
+                num = 20;
+                break;
+            case "short":
+                num = 21;
+                break;
+            case "signed":
+                num = 22;
+                break;
+            case "sizeof":
+                num = 23;
+                break;
+            case "static":
+                num = 24;
+                break;
+            case "struct":
+                num = 25;
+                break;
+            case "switch":
+                num = 26;
+                break;
+            case "typeof":
+                num = 27;
+                break;
+            case "union":
+                num = 28;
+                break;
+            case "unsigned":
+                num = 29;
+                break;
+            case "void":
+                num = 30;
+                break;
+            case "volatile":
+                num = 31;
+                break;
+            case "while":
+                num = 32;
+                break;
+            default:
+                num = 0;
+        }
+        return num;
+    }
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int count = 1;
+        while(sc.hasNextLine())
+        {
+            String oriStr = sc.nextLine();
+            char[] readyStr = oriStr.toCharArray();
+            int i = 0;
+            while (i < readyStr.length){
+                char cur = readyStr[i];
+                switch (cur){
+                    case ' ':
+                    case '\t':
+                        i++;
+                        break;
+                    case ',':
+                        i++;
+                        prog.append(count + ": <" + cur + ",48>\n");
+                        count++;
+                        break;
+                    case '.':
+                        i++;
+                        prog.append(count + ": <" + cur + ",49>\n");
+                        count++;
+                        break;
+                    case ':':
+                        i++;
+                        prog.append(count + ": <" + cur + ",52>\n");
+                        count++;
+                        break;
+                    case ';':
+                        i++;
+                        prog.append(count + ": <" + cur + ",53>\n");
+                        count++;
+                        break;
+                    case '?':
+                        i++;
+                        prog.append(count + ": <" + cur + ",54>\n");
+                        count++;
+                        break;
+                    case '~':
+                        i++;
+                        prog.append(count + ": <" + cur + ",64>\n");
+                        count++;
+                        break;
+                    case '{':
+                        i++;
+                        prog.append(count + ": <" + cur + ",59>\n");
+                        count++;
+                        break;
+                    case '}':
+                        i++;
+                        prog.append(count + ": <" + cur + ",63>\n");
+                        count++;
+                        break;
+                    case '[':
+                        i++;
+                        prog.append(count + ": <" + cur + ",55>\n");
+                        count++;
+                        break;
+                    case ']':
+                        i++;
+                        prog.append(count + ": <" + cur + ",56>\n");
+                        count++;
+                        break;
+                    case '(':
+                        i++;
+                        prog.append(count + ": <" + cur + ",44>\n");
+                        count++;
+                        break;
+                    case ')':
+                        i++;
+                        prog.append(count + ": <" + cur + ",45>\n");
+                        count++;
+                        break;
+                    case '-':
+                        if(i+1 < readyStr.length){
+                            switch (readyStr[i+1]){
+                                case '-':
+                                    i += 2;
+                                    prog.append(count + ": <--,34>\n");
+                                    count++;
+                                    break;
+                                case '=':
+                                    i += 2;
+                                    prog.append(count + ": <-=,35>\n");
+                                    count++;
+                                    break;
+                                case '>':
+                                    i += 2;
+                                    prog.append(count + ": <->,36>\n");
+                                    count++;
+                                    break;
+                                default:
+                                    i += 1;
+                                    prog.append(count + ": <-,33>\n");
+                                    count++;
+                            }
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <-,33>\n");
+                            count++;
+                        }
+                        break;
+                    case '!':
+                        if(i+1 < readyStr.length && readyStr[i+1] == '='){
+                            i += 2;
+                            prog.append(count + ": <!=,38>\n");
+                            count++;
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <!,37>\n");
+                            count++;
+                        }
+                        break;
+                    case '%':
+                        if(i+1 < readyStr.length && readyStr[i+1] == '='){
+                            i += 2;
+                            prog.append(count + ": <%=,40>\n");
+                            count++;
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <%,39>\n");
+                            count++;
+                        }
+                        break;
+                    case '&':
+                        if(i+1 < readyStr.length){
+                            switch (readyStr[i+1]){
+                                case '&':
+                                    i += 2;
+                                    prog.append(count + ": <&&,42>\n");
+                                    count++;
+                                    break;
+                                case '=':
+                                    i += 2;
+                                    prog.append(count + ": <&=,43>\n");
+                                    count++;
+                                    break;
+                                default:
+                                    i += 1;
+                                    prog.append(count + ": <&,41>\n");
+                                    count++;
+                            }
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <&,41>\n");
+                            count++;
+                        }
+                        break;
+                    case '*':
+                        if(i+1 < readyStr.length && readyStr[i+1] == '='){
+                            i += 2;
+                            prog.append(count + ": <*=,47>\n");
+                            count++;
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <*,46>\n");
+                            count++;
+                        }
+                        break;
+                    case '^':
+                        if(i+1 < readyStr.length && readyStr[i+1] == '='){
+                            i += 2;
+                            prog.append(count + ": <^=,58>\n");
+                            count++;
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <^,57>\n");
+                            count++;
+                        }
+                        break;
+                    case '|':
+                        if(i+1 < readyStr.length){
+                            switch (readyStr[i+1]){
+                                case '|':
+                                    i += 2;
+                                    prog.append(count + ": <||,61>\n");
+                                    count++;
+                                    break;
+                                case '=':
+                                    i += 2;
+                                    prog.append(count + ": <|=,62>\n");
+                                    count++;
+                                    break;
+                                default:
+                                    i += 1;
+                                    prog.append(count + ": <|,60>\n");
+                                    count++;
+                            }
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <|,60>\n");
+                            count++;
+                        }
+                        break;
+                    case '+':
+                        if(i+1 < readyStr.length){
+                            switch (readyStr[i+1]){
+                                case '+':
+                                    i += 2;
+                                    prog.append(count + ": <++,66>\n");
+                                    count++;
+                                    break;
+                                case '=':
+                                    i += 2;
+                                    prog.append(count + ": <+=,67>\n");
+                                    count++;
+                                    break;
+                                default:
+                                    i += 1;
+                                    prog.append(count + ": <+,65>\n");
+                                    count++;
+                            }
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <+,65>\n");
+                            count++;
+                        }
+                        break;
+                    case '<':
+                        if(i+1 < readyStr.length){
+                            switch (readyStr[i+1]){
+                                case '<':
+                                    if(i+2 < readyStr.length && readyStr[i+2] == '='){
+                                        i += 3;
+                                        prog.append(count + ": <<<=,70>\n");
+                                        count++;
+                                    }else{
+                                        i += 2;
+                                        prog.append(count + ": <<<,69>\n");
+                                        count++;
+                                    }
+                                    break;
+                                case '=':
+                                    i += 2;
+                                    prog.append(count + ": <<=,71>\n");
+                                    count++;
+                                    break;
+                                default:
+                                    i += 1;
+                                    prog.append(count + ": <<,68>\n");
+                                    count++;
+                            }
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <<,68>\n");
+                            count++;
+                        }
+                        break;
+                    case '=':
+                        if(i+1 < readyStr.length && readyStr[i+1] == '='){
+                            i += 2;
+                            prog.append(count + ": <==,73>\n");
+                            count++;
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <=,72>\n");
+                            count++;
+                        }
+                        break;
+                    case '>':
+                        if(i+1 < readyStr.length){
+                            switch (readyStr[i+1]){
+                                case '>':
+                                    if(i+2 < readyStr.length && readyStr[i+2] == '='){
+                                        i += 3;
+                                        prog.append(count + ": <>>=,77>\n");
+                                        count++;
+                                    }else{
+                                        i += 2;
+                                        prog.append(count + ": <>>,76>\n");
+                                        count++;
+                                    }
+                                    break;
+                                case '=':
+                                    i += 2;
+                                    prog.append(count + ": <>=,75>\n");
+                                    count++;
+                                    break;
+                                default:
+                                    i += 1;
+                                    prog.append(count + ": <>,74>\n");
+                                    count++;
+                            }
+                        }else{
+                            i += 1;
+                            prog.append(count + ": <>,74>\n");
+                            count++;
+                        }
+                        break;
+                    case '"':
+                        i += 1;
+                        prog.append(count + ": <\",78>\n");
+                        count++;
+                        StringBuffer str = new StringBuffer();
+                        while ( i < readyStr.length){
+                            if(readyStr[i] != '"'){
+                                str.append(readyStr[i++]);
+                            }else{
+                                String actStr = str.toString();
+                                if(!actStr.isEmpty()){
+                                    prog.append(count + ": <"+ actStr + ",81>\n");
+                                    count++;
+                                }
+                                i++;
+                                prog.append(count + ": <\",78>\n");
+                                count++;
+                                break;
+                            }
+                        }
+                        break;
+                    case '/':
+                        if(i+1 < readyStr.length){
+                            switch (readyStr[i+1]){
+                                case '=':
+                                    i += 2;
+                                    prog.append(count + ": </=,51>\n");
+                                    count++;
+                                    break;
+                                case '/':
+                                    prog.append(count + ": <"+ oriStr.substring(i) +",79>\n");
+                                    count++;
+                                    i = readyStr.length;
+                                    break;
+                                case '*':
+                                    int oriI = i;
+                                    i += 2;
+                                    while (i < readyStr.length){
+                                        if(readyStr[i] == '*'){
+                                            if(i+1 < readyStr.length && readyStr[i+1] == '/') {
+                                                i += 2;
+                                                break;
+                                            }else{
+                                                i++;
+                                            }
+                                        }else{
+                                            i++;
+                                        }
+                                    }
+                                    prog.append(count + ": <"+ oriStr.substring(oriI,i) +",79>\n");
+                                    count++;
+                                    break;
+                                default:
+                                    i += 1;
+                                    prog.append(count + ": </,50>\n");
+                                    count++;
+                            }
+                        }else{
+                            i += 1;
+                            prog.append(count + ": </,50>\n");
+                            count++;
+                        }
+                        break;
+                    default:
+                        if(isNum(readyStr[i])){
+                            int oriI = i++;
+                            while (i < readyStr.length){
+                                if(readyStr[i] == '.'){
+                                    i++;
+                                    while (i < readyStr.length){
+                                        if(readyStr[i] == 'e' || readyStr[i] == 'E'){
+                                            i++;
+                                            while (i < readyStr.length){
+                                                if(isNum(readyStr[i])){
+                                                    i++;
+                                                }else{
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        }else if(isNum(readyStr[i])){
+                                            i++;
+                                        }else{
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }else if(readyStr[i] == 'e' || readyStr[i] == 'E'){
+                                    i++;
+                                    while (i < readyStr.length){
+                                        if(isNum(readyStr[i])){
+                                            i++;
+                                        }else{
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }else if(isNum(readyStr[i])){
+                                    i++;
+                                }else{
+                                    break;
+                                }
+                            }
+                            prog.append(count + ": <"+ oriStr.substring(oriI,i) +",80>\n");
+                            count++;
+                        }else if(isLetter(readyStr[i])){
+                            int oriI = i++;
+                            while (i < readyStr.length){
+                                if(isLetter(readyStr[i])){
+                                    i++;
+                                }else {
+                                    break;
+                                }
+                            }
+                            String key = oriStr.substring(oriI,i);
+                            int id = getIdFromKey(key);
+                            if(id != 0){
+                                prog.append(count + ": <"+ key +","+ id +">\n");
+                                count++;
+                            }else{
+                                prog.append(count + ": <"+ key +",81>\n");
+                                count++;
+                            }
+                        }else{
+                            i++;
+                        }
+                }
+
+            }
+
+        }
+        prog.deleteCharAt(prog.lastIndexOf("\n"));
+    }
+
+
+    // add your method here!!
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        System.out.print(prog);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

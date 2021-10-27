@@ -1,0 +1,33 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+ public void showDirStructure(File file)    {
+        System.out.println("+--" + file.getName());
+        showTree(file," ");
+    }
+public static void showTree(File file ,String string)
+{
+ File [] files=file.listFiles();
+    string +=" ";
+    for(int i =0;i<files.length;i++)
+    {
+     if(!files[i].isDirectory())
+     {
+      System.out.println(string+"--"+files[i].getName());   
+     }else{
+      System.out.println(string+"+--"+files[i].getName());
+         showTree(files[i],string+" ");
+     }
+    }
+    
+}
+
+	
+
+
+	/********** END **********/
+}

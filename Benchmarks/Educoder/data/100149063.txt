@@ -1,0 +1,64 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+    
+		int ln = arr.length;
+	
+		int c[] = new int[1000];//存放局部极小值的下标
+		int	j = 0;
+		//寻找若干个局部最小值,其中i为局部最小值的下标;
+		for (int i = 0; i < ln; i++)
+		{
+			if ((i!= 0)&&(i!=ln-1))
+			{
+	        	
+				if ((arr[i]<arr[i-1])&&(arr[i]<arr[i + 1]))//逻辑运算符与&& //按位运算符 &
+				{
+					c[j++] = i;
+				}
+	            
+			}
+		}
+		
+		
+		int max = 0;
+		int max1;
+		int m;
+		int n;
+		if (j>=1)//判断是否存在山谷
+		{
+			//判断每一个山谷的长度
+			//定义max为数组长度
+			for (int k = 0; k < j; k++)
+			{
+				int f = c[k];
+				m = f;// 从f开始而不是从f-1开始，防止出现f=1的情况
+				n = f;	
+				while (arr[m]<arr[m-1])
+				{
+					m--;			
+					if (m<=0)//防止超下边界,必须是小于等于，小于号变成-1后会继续运行；
+					break;
+				}
+				while (arr[n]<arr[n + 1])
+				{
+					n++;
+					if (n >= ln-1)//防止超上边界，必须是大于等于，否则超边界后会继续运行；
+						break;
+				}	
+				max1 = n + 1- m;
+				
+				if (max1>max)
+				{
+					max = max1;
+				}
+			}
+		}
+        return max;
+		
+		/********* End *********/	
+	}
+}

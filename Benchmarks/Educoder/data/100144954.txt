@@ -1,0 +1,37 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = i; j < matrix[i].length; j++) {
+				int k = matrix[i][j];
+				matrix[i][j] = matrix[j][i];
+				matrix[j][i] = k;
+			}
+		}
+		swapCol(matrix);
+		
+
+		
+		
+		
+		/********* End *********/
+	}
+    private void swapCol(int[][] matrix) {
+		int tmp = 0;
+		for (int i = 0; i < matrix.length; i++) {
+			int start = 0;
+			int end = matrix[i].length - 1;
+			while (start < end) {
+				tmp = matrix[i][start];
+				matrix[i][start++] = matrix[i][end];
+				matrix[i][end] = tmp;
+				end--;
+			}
+		}
+	}
+}
+
+
+

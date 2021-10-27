@@ -1,0 +1,42 @@
+package step2;
+
+import java.util.Scanner;
+
+import static java.lang.Integer.max;
+import static java.lang.Integer.min;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+    int m = max(length, width);
+    int n = min(length, width);
+    if (m == n) {
+      System.out.println(n);
+      System.out.println(1);
+      return;
+    }
+    if (m % n == 0) {
+      System.out.println(n);
+      System.out.println(m / n);
+    } else {
+      int maxLen = 0;
+      int count = 0;
+      //枚举正方形的边长
+      for (int k = n; k > 0; k--) {
+        if (m % k == 0 && n % k == 0) {
+          maxLen = max(maxLen, k);
+          if (maxLen == k) {
+            count = (m / k) * (n / k);
+          }
+        }
+      }
+      System.out.println(maxLen);
+      System.out.println(count);
+    }
+
+    /********** END **********/
+	}
+}

@@ -1,0 +1,159 @@
+package step4;
+
+public class Task {
+	
+	public static String getDate(String releaseDate,int day){
+    /********* Begin *********/
+
+    String Da[]=new String[3];
+    Da=releaseDate.split("-");
+    int year=Integer.valueOf(Da[0]).intValue();
+    int month=Integer.valueOf(Da[1]).intValue();
+    int mday=Integer.valueOf(Da[2]).intValue();
+    while(day>0)
+    {
+    if(ju(year))
+    {
+      if (month==2)
+      {
+        if(day>29-mday)
+        {
+          ++month;
+          day=day-(29-mday);
+          mday=0;
+        }
+        else
+        {
+          mday=mday+day;
+          day=0;
+        }
+      }
+      else if(month==3||month==1||month==5||month==7||month==8||month==10)
+      {
+        if (day>31-mday)
+        {
+          ++month;
+          day=day-(31-mday);
+          mday=0;
+        }
+        else
+        {
+          mday=mday+day;
+          day=0;
+        }
+      }
+      else if(month==12)
+      {
+        if (day>31-mday)
+        {
+          ++year;
+          month=1;
+          day=day-(31-mday);
+          mday=0;
+        }
+        else
+        {
+          mday=mday+day;
+          day=0;
+        }
+      }
+      else {
+      if (day>30-mday)
+      {
+        ++month;
+        day=day-(30-mday);
+        mday=0;
+      }
+      else
+      {
+        mday=mday+day;
+        day=0;
+      }}
+    }
+    else
+      {
+        if (month==2)
+        {
+          if(day>28-mday)
+          {
+            ++month;
+            day=day-(28-mday);
+            mday=0;
+          }
+          else
+          {
+            mday=mday+day;
+            day=0;
+          }
+        }
+        else if(month==3||month==1||month==5||month==7||month==8||month==10)
+        {
+          if (day>31-mday)
+          {
+            ++month;
+            day=day-(31-mday);
+            mday=0;
+          }
+          else
+          {
+            mday=mday+day;
+            day=0;
+          }
+        }
+        else if(month==12)
+        {
+          if (day>31-mday)
+          {
+            ++year;
+            month=1;
+            day=day-(31-mday);
+            mday=0;
+          }
+          else
+          {
+            mday=mday+day;
+            day=0;
+          }
+        }
+        else
+        {
+          if (day>30-mday)
+          {
+            ++month;
+            day=day-(30-mday);
+            mday=0;
+          }
+          else
+          {
+            mday=mday+day;
+            day=0;
+          }
+        }
+      }}
+      String result=new String();
+    result+=year;
+    result+="-";
+    if(month<10)
+      result+="0";
+    result+=month;
+    result+="-";
+    if(mday<10)
+      result+="0";
+    result+=mday;
+    return result;
+
+
+    /********* End *********/
+  }
+    public static boolean ju(int year)
+  {
+    if (year%100==0)
+    {if (year%400==0)
+        return true;}
+    else if (year%4==0)
+        return true;
+    return false;
+  }
+	
+	
+}

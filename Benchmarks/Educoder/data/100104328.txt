@@ -1,0 +1,39 @@
+package step3;
+import java.util.Scanner;
+public class GcdAndGcm {
+	public static void main(String[] args) {
+		/********** Begin *********/
+		//键盘输入数据
+        Scanner sc=new Scanner(System.in);
+        int a=sc.nextInt();
+        int b=sc.nextInt();
+        int c=a*b;
+        int gongyue=0,gongbei=0;
+        if(a<b){
+            a=a+b;
+            b=a-b;
+            a=a-b;
+        }
+        if(a%b==0){
+        gongyue=b;
+        }
+        while(a%b>0){
+        a=a%b;
+        if(a<b){
+        a=a+b;
+            b=a-b;
+            a=a-b;
+        }
+        
+        if(a%b==0){
+         gongyue=b;   
+        }
+            }
+        gongbei=c/gongyue;
+        System.out.println("最大公约数："+gongyue);
+        System.out.println("最小公倍数："+gongbei);
+		//do—while循环，辗转相除法
+		//关掉输入流
+        /********** End *********/
+		}
+}

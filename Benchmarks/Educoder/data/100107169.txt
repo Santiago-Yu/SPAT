@@ -1,0 +1,73 @@
+package step1;
+
+/**
+ * Created by sykus on 2018/1/15.
+ */
+public class MyCircleLinkedList {
+    private Node head;//头结点, 不存数据
+    private Node tail;//尾结点, 指向链表的最后一个节点
+    private int size;
+
+    public MyCircleLinkedList() {
+        head = new Node(Integer.MIN_VALUE, null);
+        head.next = head;
+        tail = head;
+        size = 0;
+    }
+
+    /**
+     * 添加到链表尾部
+     
+     * @param item
+     */
+    public void add(int item) {
+        /********** Begin *********/	
+        Node node=new Node(item,null);
+        node.next=tail.next;
+        tail.next=node;
+        tail=node;
+        ++size;
+
+        /********** End *********/
+    }
+
+    /**
+     * 遍历链表并输出元素
+     */
+    public void output() {
+        /********** Begin *********/
+/*在循环链表中，链表的尾结点不是指向null。因此要输出链表元素时，其终止条件
+    就不再是像非循环链表那样判断p==null或p.next==null，
+    而是判别它们是否等于某一指定结点，如头结点head。*/
+    
+        /********** Begin *********/
+        Node l=head;
+        while(l.next!=head)
+        {
+            l=l.next;
+            System.out.println(l.item);
+        }
+
+
+        /********** End *********/
+    }
+
+    public boolean isEmpty() {
+        return head.next == head;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    //结点内部类
+    private static class Node {
+        int item;
+        Node next;
+
+        Node(int item, Node next) {
+            this.item = item;
+            this.next = next;
+        }
+    }
+}

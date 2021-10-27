@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int dp[101];
+int main()
+{
+    int k,b;
+    cin>>k;
+    memset(dp,0,sizeof(dp));
+    dp[2]=1;dp[3]=2;
+    for(int i=4;i<=k;i++) {
+        dp[i]=0;
+        for(int j=1;j<=i-1;j++) {
+            int a=dp[i-j]*j;
+            if(a>=dp[i]) {
+                dp[i]=a;
+                //printf("%d\t",dp[i]);
+            }
+        }
+    }
+    dp[k]=dp[k]*3/2;
+    cout<<dp[k];
+    return 0;
+}

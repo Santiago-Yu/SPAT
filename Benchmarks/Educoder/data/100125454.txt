@@ -1,0 +1,53 @@
+package step2;
+
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+
+public class InterRectangle {
+	private double width;
+	private double length;
+	/*********请在此编写构造函数及求周长和面积的方法*********/
+	public InterRectangle(){
+    	this.width=1;
+        this.length=1;
+    }
+    public void setdata(double wid,double len){
+    	this.width=wid;
+        this.length=len;
+    }
+    public double getper(){
+    	double per;
+        per=(this.width+this.length)*2;
+        return per;
+    }
+    public double getarea(){
+    	double area;
+        area=this.width*this.length;
+        return area;
+    }
+
+	/*********end**********/
+	public static void main(String[] args) {
+ 		Scanner scanner = new Scanner(System.in);
+		double total=scanner.nextDouble();//获取土地数目
+		/*********begin*********/
+        //请获取到每块土地的长和宽，并输出土地块数，总面积和总周长
+		double wid,len,area=0,per=0;
+        for(double i=total;i>0;i--){
+            InterRectangle a = new InterRectangle();
+            wid=scanner.nextDouble();
+            len=scanner.nextDouble();
+            a.setdata(wid,len);
+            area=area+a.getarea();
+            per=per+a.getper();
+
+        }
+       
+        System.out.println("总共有"+total+"块土地");
+        System.out.println("土地总面积为:"+area+"平米");
+        System.out.println("土地总周长为:"+per+"米");
+       
+		/*********end*********/
+	}
+
+}

@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        /********** Begin *********/
+		String data = scanner.next();
+        String name = scanner.next();
+        System.out.println(data.indexOf(name)); 
+        String lastStr = data.substring(data.indexOf(name)+2);//各位哦给李四复位后发我肥沃李四放我访问后李樊红伟四分嚄嚄嚄范围李四佛为红包蓝色配个好玩李四
+        int cutCount = data.indexOf(name)+2;//被截取的字符串数量  4
+       	//System.out.println(lastStr);
+       /*System.out.println(newStr); 
+        System.out.println(newStr.indexOf(name)+data.indexOf(name)+2); */
+		for(int i=0;i<4;i++){
+            String newStr=lastStr;//截取后的字符串
+            int out = cutCount+i;
+            System.out.println(newStr.indexOf(name)+out); 
+            cutCount=cutCount+newStr.indexOf(name);
+            
+            //System.out.println("第"+i+"次:"+out);
+            
+            lastStr=newStr.substring(newStr.indexOf(name)+1);
+            //System.out.println("上一次字符串:"+lastStr);
+        }
+
+        /********** End *********/
+    }
+}

@@ -1,0 +1,310 @@
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+public class Java_LexAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<String, Integer> map = new HashMap<>(85);
+    //
+    private static final String c_keys = "auto    1\nbreak    2\ncase    3\nchar    4\nconst    5\ncontinue    6\ndefault    7\ndo    8\ndouble    9\nelse    10\nenum    11\nextern    12\nfloat    13\nfor    14\ngoto    15\nif    16\nint    17\nlong    18\nregister    19\nreturn    20\nshort    21\nsigned    22\nsizeof    23\nstatic    24\nstruct    25\nswitch    26\ntypedef    27\nunion    28\nunsigned    29\nvoid    30\nvolatile    31\nwhile    32\n-    33\n--    34\n-=    35\n->    36\n!    37\n!=    38\n%    39\n%=    40\n&    41\n&&    42\n&=    43\n(    44\n)    45\n*    46\n*=    47\n,    48\n.    49\n/    50\n/=    51\n:    52\n;    53\n?    54\n[    55\n]    56\n^    57\n^=    58\n{    59\n|    60\n||    61\n|=    62\n}    63\n~    64\n+    65\n++    66\n+=    67\n<    68\n<<    69\n<<=    70\n<=    71\n=    72\n==    73\n>    74\n>=    75\n>>    76\n>>=    77\n\"    78\n/*注释*/    79\n常数    80\n标识符    81";
+
+    private static ArrayList<String> words = new ArrayList<>(200);
+    private static ArrayList<Integer> type = new ArrayList<>(200);
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append('\n');
+        }
+    }
+
+
+    // add your method here!!
+
+    private static void read_key() {
+//        try {
+//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("c_keys.txt")));
+//            String line = null;
+//            while ( (line = bufferedReader.readLine()) != null) {
+//                String []set = line.split("\\s+");
+//                String key = set[0];
+//                int value = Integer.parseInt(set[1]);
+//                map.put(key, value);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+//        long t1 = System.nanoTime();
+        String []lines = c_keys.split("\n");
+//        long t2 = System.nanoTime();
+        Pattern pattern = Pattern.compile("\\s+");
+        for(int i=0; i<lines.length; i++) {
+            String line = lines[i];
+            String []set = pattern.split(line);
+            String key = set[0];
+            int value = Integer.parseInt(set[1]);
+            map.put(key, value);
+        }
+//        long t3 = System.nanoTime();
+//        System.out.println("分行：" + (t2-t1));
+//        System.out.println("分词：" + (t3-t2));
+    }
+
+    private static void split() {
+        int i = 0;
+        while (i<prog.length()) {
+            char c = prog.charAt(i);
+            if(c == ' ' ||  c == '\n' || c == '\t') {
+                i++;
+                continue;
+            }
+            StringBuilder word = new StringBuilder("");
+            if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')) {
+                    word.append(c);
+                    i++;
+                    c = prog.charAt(i);
+                }
+                words.add(word.toString());
+                type.add(1);
+                continue;
+            } else if(c >= '0' && c <= '9') {
+                while (c >= '0' && c <= '9') {
+                    word.append(c);
+                    i++;
+                    c = prog.charAt(i);
+                }
+                words.add(word.toString());
+                type.add(2);
+                continue;
+            } else switch (c) {
+                case '-':
+                case '&':
+                case '|':
+                case '+':
+                    word.append(c);
+                    if(prog.charAt(i+1) == c || prog.charAt(i+1) == '=') {
+                        i++;
+                        c = prog.charAt(i);
+                        word.append(c);
+                        words.add(word.toString());
+                        type.add(0);
+                        i++;
+                        continue;
+                    } else if(c=='-' && prog.charAt(i+1)=='>') {
+                        i++;
+                        c = prog.charAt(i);
+                        word.append(c);
+                        words.add(word.toString());
+                        type.add(0);
+                        i++;
+                        continue;
+                    } else {
+                        words.add(word.toString());
+                        type.add(0);
+                        i++;
+                        continue;
+                    }
+                case '!':
+                case '*':
+                case '^':
+                case '=':
+                    word.append(c);
+                    i++;
+                    c = prog.charAt(i);
+                    if(c == '=') {
+                        word.append(c);
+                        i++;
+                    }
+                    words.add(word.toString());
+                    type.add(0);
+                    continue;
+                case '%':
+                    word.append(c);
+                    i++;
+                    c = prog.charAt(i);
+                    if(c == '=') {
+                        word.append(c);
+                        words.add(word.toString());
+                        type.add(0);
+                        i++;
+                        continue;
+                    } else if(c >= 'a' && c <= 'z') {
+                        word.append(c);
+                        words.add(word.toString());
+                        type.add(1);
+                        i++;
+                        continue;
+                    } else {
+                        words.add(word.toString());
+                        type.add(0);
+                        continue;
+                    }
+                case '(':
+                case ')':
+                case ',':
+                case '.':
+                case ':':
+                case ';':
+                case '?':
+                case '[':
+                case ']':
+                case '{':
+                case '}':
+                case '~':
+                    word.append(c);
+                    words.add(word.toString());
+                    type.add(0);
+                    i++;
+                    continue;
+                case '/':
+                    word.append(c);
+                    i++;
+                    c = prog.charAt(i);
+                    if(c == '=') {
+                        word.append(c);
+                        i++;
+                        words.add(word.toString());
+                        type.add(0);
+                        continue;
+                    } else if(c == '/') {
+                        while (c != '\n') {
+                            word.append(c);
+                            i++;
+                            c = prog.charAt(i);
+                        }
+                        words.add(word.toString());
+                        type.add(3);
+                        continue;
+                    } else if(c == '*') {
+                        word.append(c);
+                        i++;
+                        c = prog.charAt(i);
+                        while (c!='*' || prog.charAt(i+1)!='/') {
+                            word.append(c);
+                            i++;
+                            c = prog.charAt(i);
+                        }
+                        word.append("*/");
+                        i = i + 2;
+                        words.add(word.toString());
+                        type.add(3);
+                        continue;
+                    } else {
+                        words.add(word.toString());
+                        type.add(0);
+                        continue;
+                    }
+                case '<':
+                case '>':
+                    word.append(c);
+                    i++;
+                    if(prog.charAt(i) == c) {
+                        word.append(prog.charAt(i));
+                        i++;
+                        c = prog.charAt(i);
+                        if(c == '=') {
+                            word.append(c);
+                            i++;
+                        }
+                    } else if(prog.charAt(i) == '=') {
+                        word.append(prog.charAt(i));
+                        i++;
+                    }
+                    words.add(word.toString());
+                    type.add(0);
+                    continue;
+                case '\"':
+                    word.append(c);
+                    i++;
+                    words.add(word.toString());
+                    type.add(0);
+                    c = prog.charAt(i);
+                    word = new StringBuilder("");
+                    while (c != '"') {
+                        word.append(c);
+                        i++;
+                        c = prog.charAt(i);
+                    }
+                    words.add(word.toString());
+                    type.add(1);
+                    words.add("\"");
+                    type.add(0);
+                    i++;
+                    continue;
+            }
+        }
+    }
+
+    private static void print() {
+        StringBuilder builder = new StringBuilder("");
+        for(int i=0; i<words.size(); i++) {
+            String word = words.get(i);
+            if(map.containsKey(word)) {
+                builder.append(i+1)
+                        .append(": <")
+                        .append(word)
+                        .append(",")
+                        .append(map.get(word))
+                        .append(">");
+            } else if(type.get(i) == 1) {
+                builder.append(i+1)
+                        .append(": <")
+                        .append(word)
+                        .append(",81>");
+            } else if(type.get(i) == 2) {
+                builder.append(i+1)
+                        .append(": <")
+                        .append(word)
+                        .append(",80>");
+            } else if(type.get(i) == 3) {
+                builder.append(i+1)
+                        .append(": <")
+                        .append(word)
+                        .append(",79>");
+            }
+            if(i != words.size()-1) {
+                builder.append("\n");
+            }
+        }
+        System.out.print(builder);
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+//        long t1 = System.nanoTime();
+        read_key();
+//        long t2 = System.nanoTime();
+        split();
+//        long t3 = System.nanoTime();
+        print();
+//        long t4 = System.nanoTime();
+//        System.out.println(t2-t1);
+//        System.out.println(t3-t2);
+//        System.out.println(t4-t3);
+//        System.out.println(t4-t1);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

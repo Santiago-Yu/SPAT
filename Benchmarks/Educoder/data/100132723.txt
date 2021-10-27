@@ -1,0 +1,60 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+         int i,j;
+         int count=0,k;
+         for(i=0;i<ferry.length;i++){
+             for(j=0;j<ferry[i].length;j++){
+                 if(ferry[i][j]=='+'){
+                     if(j<ferry[i].length-1&&ferry[i][j+1]=='+'){
+                         k=j;
+                         while(k<ferry[i].length&&ferry[i][k]=='+'){
+                             ferry[i][k]='o';
+                             k++;
+                         }
+                     }
+                     else if(j==ferry[i].length-1){
+                         if(i<ferry.length-1&&ferry[i+1][j]=='+'){
+                         k=i;
+                         while(k<ferry.length&&ferry[k][j]=='+'){
+                             ferry[k][j]='o';
+                             k++;
+                        	 }
+                     	}
+                         else if(i==ferry.length-1){
+                             ferry[i][j]='o';
+                         }
+                     }
+                      else if(i<ferry.length-1&&ferry[i+1][j]=='+'){
+                         k=i;
+                         while(k<ferry.length&&ferry[k][j]=='+'){
+                             ferry[k][j]='o';
+                             k++;
+                         }
+                     }
+                     else if(i==ferry.length-1){
+                         if(j<ferry[i].length-1&&ferry[i][j+1]=='+'){
+                         k=j;
+                         while(k<ferry[i].length&&ferry[i][k]=='+'){
+                             ferry[i][k]='o';
+                             k++;
+                         }
+                       }
+                         else if(j==ferry[i].length-1){
+                             ferry[i][j]='o';
+                         } 
+                     }
+                     ferry[i][j]='o';
+                    count++; 
+                 }
+                 else if(ferry[i][j]=='o')continue;
+             }
+         }
+         return count;
+         
+      /***********END ***************/
+	 }
+}

@@ -1,0 +1,28 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+int main(){
+	char a[10000];
+	char b[10000];
+	int h=0;
+	cin >> a;
+	cin >> b;
+	int a1= strlen(a),b1=strlen(b);
+	for(int i=0;i<a1;i++){
+		for(int j=0;j<b1;j++){
+			if(a[i]==b[j]){
+				int h1=1;
+				int i1=i+1,j1=j+1;
+				while(a[i1]==b[j1]&&i1<a1&&j1<b1){
+					h1++;
+					i1++;
+					j1++;
+				}
+				if(h1>h) h = h1;
+			}
+		}
+	}
+	cout << h;
+}//abcdfsadabc
+//ddfassdabc

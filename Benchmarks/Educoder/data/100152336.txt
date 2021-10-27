@@ -1,0 +1,21 @@
+package step1;
+import java.util.Scanner;
+
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		Scanner imput=new Scanner(System.in);
+        int a,b;
+		double c = 0;
+        System.out.println("请输入西瓜重量：");
+        a=imput.nextInt();
+        System.out.println("请输入顾客所付钱数：");
+        b=imput.nextInt();
+        if(a>20){ c=a*0.85;}
+        if(a<=20){c=a*0.9;}
+        if(a<=15&&a>10){c=a*0.95;}
+        if(a>5&&a<=10){c=a*1;}
+        if(a<=5){c=a*1.05;}
+        System.out.println("西瓜应付钱数："+c+"0");
+        System.out.println("应找钱数："+(b-c)+"0");
+	}
+}

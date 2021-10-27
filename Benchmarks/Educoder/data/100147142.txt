@@ -1,0 +1,63 @@
+package step2;
+import java.util.Arrays;
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+
+         long b = 1;
+        if(numbers == 1)
+        {
+             b = abilities[0];
+             return b;
+        }
+        else if(numbers <= selectedNum + 3*distance)
+        {
+            Arrays.sort(abilities);
+            
+            for(int i = abilities.length-1; i > abilities.length - selectedNum - 1; --i)
+                b *= abilities[i];
+        }
+        
+        long[][] maxnum = new long[selectedNum+1][abilities.length];
+        int[][] dui = new int[selectedNum+1][abilities.length];
+        for(int i = 0; i < abilities.length; i++)
+        {
+            dui[0][i] = i+1;
+            maxnum[0][i] = abilities[i];
+        }
+        long a = 0;
+        for(int i = 1; i < selectedNum; i++)
+        {
+            for(int j = 0; j < abilities.length; j++)
+            {
+                int k = j - distance;
+                int end = j + distance;
+                if(k < 0)
+                    k = 0;
+                if(end >= abilities.length)
+                    end = abilities.length-1;
+                for(; k <= end; ++k)
+                {
+                    boolean judge = true;
+                    for(int z = 0; z < i; z++)
+                        if(j+1 == dui[z][k])
+                            judge = false;
+                    if(!judge)
+                        continue;
+                    if(maxnum[i][k] < maxnum[i-1][k]*abilities[j])
+                    {
+                        dui[i][k] = j+1;
+                        maxnum[i][k] = maxnum[i-1][k]*abilities[j];
+                        if(a < maxnum[i][k])
+                            a = maxnum[i][k];
+                    }
+                }
+            }
+        }
+        return a;
+    }
+
+	/********* End *********/
+}

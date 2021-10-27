@@ -1,0 +1,84 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        int self = 0;
+		int k[] = new int[n*m];
+		int z=0;
+		for(int i=0;i<n;i++) {	
+			for(int j=0;j<m;j++) {
+				
+				if(area[i][j]=='o') {
+					k[z] = i*m+j+1;
+					z++;
+				}
+		
+			}
+		}
+		
+		for( int i = 0; i < z; i ++) {		
+			if(k[i] != 0 && !isHave(k,i, k[i], n, m)) {
+		
+				self++;
+			}
+			
+		}
+		
+		return self;
+
+		/********* End *********/	
+	}
+    
+    static boolean isHave(int[] k, int i, int z1, int n, int m) {
+		k[i] = 0;
+		int z2=z1+1;
+		int z3=z1+m;
+		int z4=z1-1;
+        int z5=z1-m;
+		boolean flag1 = false;
+		boolean flag2 = false;
+		boolean flag3 = false;
+        boolean flag4 = false;
+		if( z1%m!=0 && z2==k[i+1] ){ //有下一个
+			flag1 = true; 
+			//System.out.println(z1+"flag1true");
+		}
+		int j = 0;
+		for( j = i+1; j <= i+m; j ++) {  //后面第m个
+			if(z3==k[j]) {
+				flag2 = true;
+				//System.out.println(z3+"flag2true");
+				break;
+				
+			}
+		}
+		if(i >= 1 && z4%m!=0 && z4==k[i-1]){
+			flag3=true;
+			//System.out.println(z4+"flag3true");
+		}
+        //前m个
+		int t = 0;
+		for( t = i-1; t>=0 && t >= t-m; t--) {
+			if(z5==k[t]) {
+				flag4=true;
+				break;
+			}
+		}
+		if( flag1 ) {
+			isHave(k, i+1, z2, n, m);	
+		}
+		if(flag2) {
+			isHave(k, j, z3, n , m);
+		}
+		if(flag3) {
+			isHave(k, i-1, z4, n, m);
+		}
+        if(flag4) {
+			isHave(k, t, z5, n, m);
+		}
+		return false;
+	}
+
+}

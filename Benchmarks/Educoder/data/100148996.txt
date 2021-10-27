@@ -1,0 +1,70 @@
+package step3;
+import java.util.*;
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+boolean mark=false;								//是够存在凹谷
+		Map<Integer,Integer> m = new HashMap();
+		Integer []minpoint = new Integer[arr.length-2];	//记录凹点
+		
+		int j=0,maxlength=0;
+		for(int i=1;i<arr.length-1;i++)
+		{
+			if(arr[i-1]>arr[i] && arr[i+1]>arr[i])	
+			{
+				mark=true;
+				minpoint[j++]=i;
+			}
+		}
+		
+//		System.out.println("j=="+j);		j：凹点的数目
+		int []maxlen = new int[j];
+		for(int i=0;i<j;i++)
+			maxlen[i]=3;
+		for(int i=0;i<j;i++)
+		{
+			m.put(minpoint[i], maxlen[i]);	//凹点和对应凹谷长匹配
+		}
+		
+		for(int k=0;k<j;k++)
+		{
+			for(int q=minpoint[k]-1;q>=1;q--)
+			{
+				if(arr[q-1]>arr[q])
+				{
+					int tlen=m.get(minpoint[k]);
+					tlen++;
+					m.put(minpoint[k], tlen);
+				}
+				else break;					//加上才好使
+			}
+			
+			for(int q=minpoint[k]+1;q<=arr.length-2;q++)
+			{
+				if(arr[q+1]>arr[q])
+				{
+					int tlen=m.get(minpoint[k]);
+					tlen++;
+					m.put(minpoint[k], tlen);
+				}
+				else break;
+			}
+			
+		}	
+		
+//		for(int k=0;k<j;k++)
+//			System.out.println(k+" point length:"+m.get(minpoint[k]));
+		
+		for(int k=0;k<j;k++)
+		{
+			int len=m.get(minpoint[k]);	
+			if(len>maxlength)
+				maxlength=m.get(minpoint[k]);
+		}
+	
+		return maxlength;
+
+		/********* End *********/	
+	}
+}

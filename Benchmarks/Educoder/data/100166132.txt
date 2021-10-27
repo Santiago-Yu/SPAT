@@ -1,0 +1,51 @@
+package step1;
+
+public class Person {
+    private String name; //姓名
+    private String number; //身份证号
+    private Date birthday; //出生日期
+    
+   /************Begin*************/
+
+    public Person(String n,String nu, Date bir){
+        name = n;
+        number = nu;
+        birthday = bir;
+    }
+    
+    public Person(String n,String nu,int year,int month,int day){
+        name = n;
+        number = nu;
+        birthday = new Date(year, month, day);
+    }
+    
+    public Person(){
+        birthday = new Date();
+    }
+	
+    public void setinfo(String n, String nu, Date d){
+    	name = n;
+        number = nu;
+        birthday = d;
+    }        
+    
+    @Override
+    public String toString(){
+        return "name=" + getName() + " number=" + getNum() + " birthday:" + birthday.toString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNum() {
+        return number;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+    
+   /************End*************/
+}
+

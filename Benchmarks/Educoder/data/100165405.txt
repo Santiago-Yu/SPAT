@@ -1,0 +1,57 @@
+package step2;
+import step1.Person;
+import step1.Date;
+import step2.Student;
+public class Student extends Person{
+    private int reg_num; //学号
+    private Date reg_day; //注册日期
+   // TO DO YOU CODE HERE
+    public String getname(){
+     return super.getname();   
+    }
+    public String getnum(){
+     return super.getnum();   
+    }
+		public Student(){
+            super();  
+            reg_num=0;
+            this.reg_day=new Date(1999,9,9);
+        }
+    public Student(String name,String a,int y,int m,int d,int q,int z,int x,int c){
+    	super(name,a,y,m,d);
+        reg_num=q;
+        this.reg_day=new Date(z,x,c);
+    }
+public Student(String name,String a,Date y,int m,Date d){
+    super(name,a,y);
+    reg_num= m;
+    this.reg_day=new Date(d);
+}
+public String toString(){
+    
+ return "name="+super.getname()+" number=" +super.getnum()+" birthday:"+super.gety()+"."+super.getm()+"."+super.getdd()+"reg_num:"+reg_num+"reg_day:"+reg_day.getYear()+"."+reg_day.getMonth()+"."+reg_day.getDay();                                                                                  
+}   
+     public void setinfo(String a,String b,Date c){
+        change(c);
+        setname(a);
+      setnum(b);
+    }
+    public Date getreg_day(){
+     return reg_day;       
+    }
+    public Date getbirth(){
+return super.getd();
+    }
+    public void change(Date a){
+        reg_day.setYear(a.getYear());
+        reg_day.setMonth(a.getMonth());
+        reg_day.setDay(a.getDay());
+    }
+    public void setname(String y){
+     super.setname(y);
+    }
+    public void setnum(String r){
+     super.setnum(r);
+    }
+}
+

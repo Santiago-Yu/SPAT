@@ -1,0 +1,79 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        int flag=1;
+        for(int r=0; r<arr.length-1; r++){
+            if(arr[r]>arr[r+1]){
+            	flag = 0;
+            }
+        }
+		if(flag==1){
+            for(int e=0; e<arr.length;e++){
+                System.out.print(arr[e]+" ");
+                if(e == (arr.length)-1)
+                    System.out.println();
+            }
+        }else{
+        	/*//进行从左到右排序。
+			for(int i=0;i<arr.length-1;i++){
+				if(arr[i]>arr[i+1]){
+					int temp;
+					temp = arr[i];
+					 arr[i] =arr[i+1];
+					 arr[i+1] = temp;
+                	for(int x=0; x<arr.length;x++){
+                		System.out.print(arr[x]+" ");
+                    	if(x == (arr.length)-1)
+                      	  System.out.println();
+                	}	
+ 				}		
+			}*/
+			while(flag==0){
+                //进行从左到右排序。
+				for(int i=0;i<arr.length-1;i++){
+					if(arr[i]>arr[i+1]){
+						int temp;
+						temp = arr[i];
+						 arr[i] =arr[i+1];
+						 arr[i+1] = temp;
+                		for(int x=0; x<arr.length;x++){
+                			System.out.print(arr[x]+" ");
+                    		if(x == (arr.length)-1)
+                      	  	System.out.println();
+                		}	
+ 					}		
+				}
+                //进行从右到左的排序。
+				for(int j=arr.length-1; j>0; j--){
+		  			if(arr[j]<arr[j-1]){
+		  				int temp1;
+		  				temp1 = arr[j];
+		 				arr[j] = arr[j-1];
+		 				arr[j-1] = temp1;
+             		    for(int y=0; y<arr.length; y++){
+               			 	System.out.print(arr[y]+" ");
+                     		if(y == (arr.length)-1)
+                 	    	   System.out.println();
+                	  	}
+             	 	}
+		 	 	}
+                flag = 1;
+                for(int r=0; r<arr.length-1; r++){
+            		if(arr[r]>arr[r+1]){
+            			flag = 0;
+                    }
+        		}
+                
+            }        
+        }
+           /*for(int l=0; l<arr.length;l++){
+           		System.out.print(arr[l]+" ");
+           	 	if(l == (arr.length)-1)
+                	 System.out.println();
+       		}*/
+		/********* End *********/
+     }
+}

@@ -1,0 +1,37 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    int boxType;
+
+    public Box(int boxType) {
+        this.boxType = boxType;
+    }
+    
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume() {
+        //TODO your code
+        switch (this.boxType) {
+            case RECTANGLE:
+                return width * height * depth;
+            case CYLINDER:
+                return 3.14 * width * width * height;
+            default:
+                throw new IllegalArgumentException("不支持的几何类型");
+        }
+    }
+
+}

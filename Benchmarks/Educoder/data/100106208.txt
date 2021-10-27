@@ -1,0 +1,19 @@
+package Step1;
+
+public class UnicodeDemo {
+     public String Encoding(String s) {
+        //将读入的字符串变量转换为字符数组
+         char[] a = s.toCharArray();
+         //将字符数组的每一项都转换为16进制整型字符串，不足4位的要补0
+         for(char c : a)
+         {
+         	 String cn = java.lang.Integer.toHexString(c);
+             System.out.print("\\u");
+             System.out.print(cn); 
+         }
+         System.out.println();
+         //输出转换后的Unicode编码
+         
+         return s;
+     }
+}

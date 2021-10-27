@@ -1,0 +1,28 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		System.out.println("+--"+file.getName());
+		showFileTerr(file,"");
+	}
+	private static void showFileTerr(File file, String string) {
+		File[] files = file.listFiles();
+		for(File f:files) {
+			boolean b = f.isDirectory();
+			if(b) {
+				System.out.println("  "+string+"+--"+f.getName());
+				showFileTerr(f, "  "+string);
+			}else {
+				System.out.println("  "+string+"--"+f.getName());
+			}
+		}
+		
+	}
+
+
+	/********** END **********/
+}

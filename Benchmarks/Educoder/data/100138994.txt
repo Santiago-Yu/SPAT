@@ -1,0 +1,27 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread mt = new MyThread(num);
+        mt.start();
+	}
+}
+
+
+class MyThread  extends Thread  {
+	public int num;
+    public MyThread(int num){
+    	this.num = num;
+    }
+    public void run(){
+        double a = (Math.pow((1+Math.pow(5,0.5))/2,num) - Math.pow((1-Math.pow(5,0.5))/2,num)) * Math.pow(5,0.5) / 5;
+        System.out.println("子线程计算结果为：" + (int)a);
+    }
+}
+
+

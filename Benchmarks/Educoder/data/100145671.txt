@@ -1,0 +1,89 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		int[] normalMonthDays = new int[] { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		String[] strings = releaseDate.split("-");
+		int Year = Integer.parseInt(strings[0]);
+		int Month = Integer.parseInt(strings[1]);
+		int Day = Integer.parseInt(strings[2]);
+		int tempYear = 365;
+		if (isleapYear(Year)) {
+			if (Month > 2) {
+				tempYear = 365;
+			} else {
+				tempYear = 366;
+			}
+		}
+		while (day / tempYear >= 1) {
+			day = day - tempYear;
+			Year++;
+			if (isleapYear(Year)) {
+				tempYear = 366;
+			} else {
+				tempYear = 365;
+			}
+		}
+		if (isleapYear(Year)) {
+			normalMonthDays[2] = 29;
+			if (Month > 2) {
+				day = day - 1;
+			}
+		} else {
+			normalMonthDays[2] = 28;
+		}
+		while (day / normalMonthDays[Month] >= 1) {
+			day = day - normalMonthDays[Month];
+			Month++;
+			if (Month >= 13) {
+				Year++;
+				if (isleapYear(Year)) {
+					normalMonthDays[2] = 29;
+				} else {
+					normalMonthDays[2] = 28;
+				}
+				Month = Month % 12;
+			}
+		}
+		if (isleapYear(Year)) {
+			normalMonthDays[2] = 29;
+		} else {
+			normalMonthDays[2] = 28;
+		}
+		if (day + Day <= normalMonthDays[Month]) {
+			Day = Day + day;
+		} else {
+			Day = day + Day - normalMonthDays[Month];
+			Month++;
+			if (Month > 12) {
+				Year++;
+				Month = Month % 12;
+			}
+		}
+
+		String nMonth = "";
+		if (Month < 10) {
+			nMonth = "0" + Month;
+		} else {
+			nMonth = Integer.toString(Month);
+		}
+		String nDay = "";
+		if (Day < 10) {
+			nDay = "0" + Day;
+		} else {
+			nDay = Integer.toString(Day);
+		}
+		return Year + "-" + nMonth + "-" + nDay;
+        /********* End *********/
+	}
+	public static boolean isleapYear(int year) {
+		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+}

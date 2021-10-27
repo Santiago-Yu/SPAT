@@ -1,0 +1,40 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+	public static void main(String[] args) {
+		Scanner scan1=new Scanner(System.in);
+		/******Begin******/
+        int num=scan1.nextInt();
+        if (num%2==0) {
+        	System.out.print("偶数");
+        }
+        else  {
+        if(is_prime(num)) {
+        	System.out.print("素数");
+        }
+        else{
+        	System.out.print("奇数");
+        }
+        	
+        }
+    
+
+         
+		/******End******/
+	}
+
+	private static boolean is_prime(int num) {
+		// TODO Auto-generated method stub
+		for(int i=2;i<=Math.sqrt(num);i++) {
+			if (num%i==0) {
+				num=-1;
+				break;
+			}
+		}
+		if (num!=-1) {
+			return true;
+		}
+		return false;
+	}
+}

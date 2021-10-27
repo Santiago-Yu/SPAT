@@ -1,0 +1,53 @@
+package step4;
+
+public class DayJudge {
+    public String DayJudge(int year, int month, int day){
+        if((year%4==0&&year%100!=0)||year%400==0)
+        {
+            if(month>=1&&month<=12)
+            {
+        	switch(month)
+            {
+                case 1:return year+"年的第"+day+"天";
+                case 2:return year+"年的第"+(day+31)+"天";
+                case 3:return year+"年的第"+(day+31+29)+"天";
+                case 4:return year+"年的第"+(day+31+29+31)+"天";
+                case 5:return year+"年的第"+(day+31+29+31+30)+"天";
+                case 6:return year+"年的第"+(day+31+29+31+30+31)+"天";
+                case 7:return year+"年的第"+(day+31+29+31+30+31+30)+"天";
+                case 8:return year+"年的第"+(day+31+29+31+30+31+30+31)+"天";
+                case 9:return year+"年的第"+(day+31+29+31+30+31+30+31+31)+"天";
+                case 10:return year+"年的第"+(day+31+29+31+30+31+30+31+31+30)+"天";
+                case 11:return year+"年的第"+(day+31+29+31+30+31+30+31+31+30+31)+"天";  
+                case 12:return year+"年的第"+(day+31+29+31+30+31+30+31+31+30+31+30)+"天";
+            }
+            }
+            else
+                return "月份错误";
+        }
+        else
+        {
+            if(month>=1&&month<=12)
+            {
+            switch(month)
+            {
+                case 1:return year+"年的第"+day+"天";
+                case 2:return year+"年的第"+(day+31)+"天";
+                case 3:return year+"年的第"+(day+31+28)+"天";
+                case 4:return year+"年的第"+(day+31+28+31)+"天";
+                case 5:return year+"年的第"+(day+31+28+31+30)+"天";
+                case 6:return year+"年的第"+(day+31+28+31+30+31)+"天";
+                case 7:return year+"年的第"+(day+31+28+31+30+31+30)+"天";
+                case 8:return year+"年的第"+(day+31+28+31+30+31+30+31)+"天";
+                case 9:return year+"年的第"+(day+31+28+31+30+31+30+31+31)+"天";
+                case 10:return year+"年的第"+(day+31+28+31+30+31+30+31+31+30)+"天";
+                case 11:return year+"年的第"+(day+31+28+31+30+31+30+31+31+30+31)+"天"; 
+                case 12:return year+"年的第"+(day+31+28+31+30+31+30+31+31+30+31+30)+"天";
+            }
+            }
+            else
+                return "月份错误";
+        }
+        return " ";
+	}
+}

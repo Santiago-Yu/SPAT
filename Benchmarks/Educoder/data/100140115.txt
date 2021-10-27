@@ -1,0 +1,34 @@
+package step4;
+import java.util.Scanner;
+public class Reverse {
+  public static StringBuffer start(String data) {
+    StringBuffer ans = new StringBuffer();
+    /********** Begin *********/
+    char []array=data.toCharArray();//将字符串拆分成一个个的字符并赋给一个字符数组
+	  String []array1;//用于存储字符串
+	  String resever="";//用于拼接字符串
+	  for(int i=array.length-1;i>=0;i--){
+	  resever+=array[i];
+	  }//将键盘上接受到的字符串全部字符反转
+	  array1=resever.split(" ");//拆分反转完的字符串
+	  String A="";//用于拼接字符串
+	  for(int i=array1.length-1;i>=0;i--) {
+		  A+=array1[i]+" ";
+	  }//将字符串拼接完成
+   ans = new StringBuffer(A);
+   
+    
+
+
+    /********** End *********/
+    return ans;
+	}
+	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+		String data = input.nextLine();
+		Reverse a = new Reverse();
+		System.out.println(a.start(data));
+	}
+
+}
+

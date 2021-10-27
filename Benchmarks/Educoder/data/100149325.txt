@@ -1,0 +1,60 @@
+package step4;
+
+public class Task {
+    
+	    public void love(int n){
+        switch (n){
+            case 1:
+                printLove1();
+                break;
+            case 2:
+                printLove2();
+                break;
+
+                default:break;
+        }
+    }
+public void printLove1(){
+        double x1 = -1.2;
+        double x2 = 1.2;
+        double y1 = -1.101;
+        double y2 = 1.3;
+        for(double y = y2;y>=y1;y -=0.06)
+        {
+            for(double x = x1;x<=x2;x += 0.025)
+            {
+                double a = x*x+y*y-1;
+                if((a*a*a-x*x*y*y*y)<=0.0) {
+                    System.out.print(" ");
+                }
+                else
+                    System.out.print("$");
+            }
+            System.out.print("\n");
+        }
+}
+        public void printLove2(){
+        double x1 = -1.1;
+        double x2 = 1.1;
+        double y1 = -1.1;
+        double y2 = 1.3;
+        char[] loveBody = "I love you!".toCharArray();
+        int bodyPointer = 0;
+        String background = " ";
+        for(double y = y2;y>=y1;y -=0.06) {
+            bodyPointer = 0;
+            for(double x = x1;x<=x2;x += 0.025) {
+                double a = (5.0 * y / 4.0 - Math.sqrt(Math.abs(x)));
+                double res = x * x + a * a - 1.0;
+                if((res)<=0.0) {
+                    System.out.print(loveBody[bodyPointer % loveBody.length]);
+                    bodyPointer++;
+                }
+                else {
+                    System.out.print(background);
+                }
+            }
+            System.out.print("\n");
+        }
+    }
+}

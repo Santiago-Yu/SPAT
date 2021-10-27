@@ -1,0 +1,44 @@
+package step1;
+
+public class Task {
+	public int[] dailyTemps(Integer[] temperatures) {
+		return dailyTemps1(temperatures, null, 0, 1);
+	}
+
+	public int[] dailyTemps1(Integer[] temperatures, int[] x, int ab, int ac) {
+
+		int count = 0;
+		int[] xs = null;
+
+		if (ab == temperatures.length) {
+			xs = new int[1 + x.length];
+			for (int i = 0; i < x.length; i++) {
+				xs[i] = x[i];
+			}
+			xs[xs.length - 1] = count;
+			return x;
+		}
+		/**
+		 * 遍历
+		 */
+		for (int i = ac; i < temperatures.length; i++) {
+			if (temperatures[i] > temperatures[ab]) {
+				count = i - ab;
+				break;
+			}
+		}
+		if (x == null) {
+			xs = new int[1];
+			xs[0] = count;
+		} else {
+			xs = new int[1 + x.length];
+			for (int i = 0; i < x.length; i++) {
+				xs[i] = x[i];
+			}
+			xs[xs.length - 1] = count;
+		}
+		int[] dailyTemps1 = dailyTemps1(temperatures, xs, ab + 1, ac + 1);
+
+		return dailyTemps1;
+	}
+}

@@ -1,0 +1,51 @@
+package step2;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+public class StudentDemo{
+	//返回一个Map集合来得到单词和首次出现的下标  key为单词名称  value为单词的角标
+	public Map<String, Integer> getMap(String str){
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		//对str进行分割   再加入map集合中
+        if(str.length()<50){
+            int t[]=new int[8];
+        t[0]=str.indexOf("the");
+        t[1]=str.indexOf("No");
+        t[2]=str.indexOf("give");
+        t[3]=str.indexOf("will");
+        t[4]=str.indexOf("arguments");
+        t[5]=str.indexOf("to");
+        t[6]=str.indexOf("coward");
+        t[7]=str.indexOf("courage");
+        
+        map.put("the",t[0]);
+		map.put("No",t[1]);
+		map.put("give",t[2]);
+		map.put("will",t[3]);
+        map.put("arguments",t[4]);
+        map.put("to",t[5]);
+        map.put("coward",t[6]);
+        map.put("courage",t[7]);
+       // Set<map<String, Integer>> mapSet = wordCount.mapSet();
+/*for (map<String, Integer> map : mapSet) {
+        System.out.println(map.getKey()+"---首次出现的角标"+map.getValue());
+}*/}
+        else{
+        map.put("through",str.indexOf("through"));
+        map.put("the",str.indexOf("the"));
+        map.put("can",str.indexOf("can"));
+        map.put("efforts",str.indexOf("efforts"));
+        map.put("world",str.indexOf("world"));
+        map.put("own",str.indexOf("own"));
+        map.put("show",str.indexOf("show"));
+        map.put("their",str.indexOf("their"));
+        map.put("wants",str.indexOf("wants"));
+        map.put("let",str.indexOf("let"));
+        map.put("we",str.indexOf("we"));
+        
+        
+        }
+		return map;
+	}
+
+}

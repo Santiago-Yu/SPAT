@@ -1,0 +1,24 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int num3;  // 实现num1和num2的转换
+        int put = 0;  //实现数值的累加
+        if(num1>num2){
+            num3 = num1;
+            num1 = num2;
+            num2 = num3;
+        }
+            
+		while(num1<=num2){
+            put = num1%10+(num1/10)%10+(num1/100)%10+put;
+            num1++;
+	
+	    }
+        return put;
+        /********** END **********/
+    }
+}

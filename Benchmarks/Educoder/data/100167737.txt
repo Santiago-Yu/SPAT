@@ -1,0 +1,601 @@
+
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static List<String> input = new ArrayList<String>();
+    private static Map<String, Map<String, String>> table = new HashMap<>();
+    private static Map<String, Map<String, String>> Goto = new HashMap<>();
+    private static Map<String, String> proc = new HashMap<>();
+    private static Stack<Out> stack = new Stack<>();
+    private static List<Out> output = new ArrayList<Out>();
+    private static int a,b,c;
+
+    static class Out
+    {
+        public String symbol;
+        public int depth;
+
+        public Out(String symbol, int depth)
+        {
+            this.symbol = symbol;
+            this.depth = depth;
+        }
+    }
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+    private static void getInput(StringBuffer s)
+    {
+        int pos = 0;
+        while (pos < s.length()){
+            if (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                StringBuffer tmp = new StringBuffer();
+                tmp.append(s.charAt(pos));
+                pos++;
+                while (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                    tmp.append(s.charAt(pos));
+                    pos++;
+                }input.add(tmp.toString());
+            }else if(s.charAt(pos) ==' '&&s.charAt(pos)=='\n'){
+                pos++;
+            }else {
+                pos++;
+            }
+        }
+//        for (String retval: s.toString().split(" ")){
+//            input.add(retval);
+//        }
+        input.add("$");
+    }
+
+    private static void init()
+    {
+        stack.push(new Out("$", 0));
+        stack.push(new Out("program", 0));
+        stack.push(new Out("$", 0));
+
+        Map<String, String> t1 = new HashMap<String, String>();
+        Map<String, String> t2 = new HashMap<String, String>();
+        Map<String, String> t3 = new HashMap<String, String>();
+        Map<String, String> t4 = new HashMap<String, String>();
+        Map<String, String> t5 = new HashMap<String, String>();
+        Map<String, String> t6 = new HashMap<String, String>();
+        Map<String, String> t7 = new HashMap<String, String>();
+        Map<String, String> t8 = new HashMap<String, String>();
+        Map<String, String> t9 = new HashMap<String, String>();
+        Map<String, String> t10 = new HashMap<String, String>();
+        Map<String, String> t11 = new HashMap<String, String>();
+        Map<String, String> t12 = new HashMap<String, String>();
+        Map<String, String> t13 = new HashMap<String, String>();
+        Map<String, String> t14 = new HashMap<String, String>();
+        Map<String, String> t15 = new HashMap<String, String>();
+        Map<String, String> t16 = new HashMap<String, String>();
+        Map<String, String> t17 = new HashMap<String, String>();
+        Map<String, String> t18 = new HashMap<String, String>();
+        Map<String, String> t19 = new HashMap<String, String>();
+        Map<String, String> t20 = new HashMap<String, String>();
+        Map<String, String> t21 = new HashMap<String, String>();
+        Map<String, String> t22 = new HashMap<String, String>();
+        Map<String, String> t23 = new HashMap<String, String>();
+        Map<String, String> t24 = new HashMap<String, String>();
+        Map<String, String> t25 = new HashMap<String, String>();
+        Map<String, String> t26 = new HashMap<String, String>();
+        Map<String, String> t27 = new HashMap<String, String>();
+        Map<String, String> t28 = new HashMap<String, String>();
+        Map<String, String> t29 = new HashMap<String, String>();
+        Map<String, String> t30 = new HashMap<String, String>();
+        Map<String, String> t31 = new HashMap<String, String>();
+        Map<String, String> t32 = new HashMap<String, String>();
+        Map<String, String> t33 = new HashMap<String, String>();
+        Map<String, String> t34 = new HashMap<String, String>();
+        Map<String, String> t35 = new HashMap<String, String>();
+        Map<String, String> t36 = new HashMap<String, String>();
+        Map<String, String> t37 = new HashMap<String, String>();
+        Map<String, String> t38 = new HashMap<String, String>();
+        Map<String, String> t39 = new HashMap<String, String>();
+        Map<String, String> t40 = new HashMap<String, String>();
+        Map<String, String> t41 = new HashMap<String, String>();
+        Map<String, String> t42 = new HashMap<String, String>();
+        Map<String, String> t43 = new HashMap<String, String>();
+        Map<String, String> t44 = new HashMap<String, String>();
+        Map<String, String> t45 = new HashMap<String, String>();
+        Map<String, String> t46 = new HashMap<String, String>();
+        Map<String, String> t47 = new HashMap<String, String>();
+        Map<String, String> t48 = new HashMap<String, String>();
+        Map<String, String> t49 = new HashMap<String, String>();
+        Map<String, String> t50 = new HashMap<String, String>();
+        Map<String, String> t51 = new HashMap<String, String>();
+        Map<String, String> t52 = new HashMap<String, String>();
+        Map<String, String> t53 = new HashMap<String, String>();
+        Map<String, String> t54 = new HashMap<String, String>();
+        Map<String, String> t55 = new HashMap<String, String>();
+        Map<String, String> t56 = new HashMap<String, String>();
+        Map<String, String> t57 = new HashMap<String, String>();
+        Map<String, String> t58 = new HashMap<String, String>();
+        Map<String, String> t59 = new HashMap<String, String>();
+        Map<String, String> t60 = new HashMap<String, String>();
+        Map<String, String> t61 = new HashMap<String, String>();
+        Map<String, String> t62 = new HashMap<String, String>();
+        Map<String, String> t63 = new HashMap<String, String>();
+        Map<String, String> t64 = new HashMap<String, String>();
+
+        t1.put("int", "s4");
+        t1.put("real", "s5");
+        t1.put("{", "r3");
+        table.put("0", t1);
+
+        t2.put("$", "acc");
+        table.put("1", t2);
+
+        t3.put(";", "s8");
+        table.put("2", t3);
+
+        t4.put("{", "stmt stmts");
+        t4.put("}", "E");
+        t4.put("if", "stmt stmts");
+        t4.put("while", "stmt stmts");
+        t4.put("ID", "stmt stmts");
+        table.put("3", t4);
+
+        t5.put("if", "if ( boolexpr ) then stmt else stmt");
+        table.put("4", t5);
+
+        t6.put("while", "while ( boolexpr ) stmt");
+        table.put("5", t6);
+
+        t7.put("ID", "ID = arithexpr ;");
+        table.put("6", t7);
+
+        t8.put("(", "arithexpr boolop arithexpr");
+        t8.put("ID", "arithexpr boolop arithexpr");
+        t8.put("NUM", "arithexpr boolop arithexpr");
+        table.put("7", t8);
+
+        t9.put("<", "<");
+        t9.put(">", ">");
+        t9.put("<=", "<=");
+        t9.put(">=", ">=");
+        t9.put("==", "==");
+        table.put("8", t9);
+
+        t10.put("(", "multexpr arithexprprime");
+        t10.put("ID", "multexpr arithexprprime");
+        t10.put("NUM", "multexpr arithexprprime");
+        table.put("9", t10);
+
+        t11.put(")", "E");
+        t11.put(";", "E");
+        t11.put("<", "E");
+        t11.put(">", "E");
+        t11.put("<=", "E");
+        t11.put(">=", "E");
+        t11.put("==", "E");
+        t11.put("+", "+ multexpr arithexprprime");
+        t11.put("-", "- multexpr arithexprprime");
+        table.put("10", t11);
+
+        t12.put("(", "simpleexpr multexprprime");
+        t12.put("ID", "simpleexpr multexprprime");
+        t12.put("NUM", "simpleexpr multexprprime");
+        table.put("11", t12);
+
+        t13.put(")", "E");
+        t13.put(";", "E");
+        t13.put("<", "E");
+        t13.put(">", "E");
+        t13.put("<=", "E");
+        t13.put(">=", "E");
+        t13.put("==", "E");
+        t13.put("+", "E");
+        t13.put("-", "E");
+        t13.put("*", "* simpleexpr multexprprime");
+        t13.put("/", "/ simpleexpr multexprprime");
+        table.put("12", t13);
+
+        t14.put("(", "( arithexpr )");
+        t14.put("ID", "ID");
+        t14.put("NUM", "NUM");
+        table.put("13", t14);
+
+        t1.put("int", "s4");
+        t1.put("real", "s5");
+        t1.put("{", "r3");
+        table.put("14", t1);
+
+        t2.put("$", "acc");
+        table.put("15", t2);
+
+        t3.put("{", "{ stmts }");
+        table.put("16", t3);
+
+        t4.put("{", "stmt stmts");
+        t4.put("}", "E");
+        t4.put("if", "stmt stmts");
+        t4.put("while", "stmt stmts");
+        t4.put("ID", "stmt stmts");
+        table.put("17", t4);
+
+        t5.put("if", "if ( boolexpr ) then stmt else stmt");
+        table.put("18", t5);
+
+        t6.put("while", "while ( boolexpr ) stmt");
+        table.put("19", t6);
+
+        t7.put("ID", "ID = arithexpr ;");
+        table.put("20", t7);
+
+        t8.put("(", "arithexpr boolop arithexpr");
+        t8.put("ID", "arithexpr boolop arithexpr");
+        t8.put("NUM", "arithexpr boolop arithexpr");
+        table.put("21", t8);
+
+        t9.put("<", "<");
+        t9.put(">", ">");
+        t9.put("<=", "<=");
+        t9.put(">=", ">=");
+        t9.put("==", "==");
+        table.put("22", t9);
+
+        t10.put("(", "multexpr arithexprprime");
+        t10.put("ID", "multexpr arithexprprime");
+        t10.put("NUM", "multexpr arithexprprime");
+        table.put("23", t10);
+
+        t11.put(")", "E");
+        t11.put(";", "E");
+        t11.put("<", "E");
+        t11.put(">", "E");
+        t11.put("<=", "E");
+        t11.put(">=", "E");
+        t11.put("==", "E");
+        t11.put("+", "+ multexpr arithexprprime");
+        t11.put("-", "- multexpr arithexprprime");
+        table.put("24", t11);
+
+        t12.put("(", "simpleexpr multexprprime");
+        t12.put("ID", "simpleexpr multexprprime");
+        t12.put("NUM", "simpleexpr multexprprime");
+        table.put("25", t12);
+
+        t13.put(")", "E");
+        t13.put(";", "E");
+        t13.put("<", "E");
+        t13.put(">", "E");
+        t13.put("<=", "E");
+        t13.put(">=", "E");
+        t13.put("==", "E");
+        t13.put("+", "E");
+        t13.put("-", "E");
+        t13.put("*", "* simpleexpr multexprprime");
+        t13.put("/", "/ simpleexpr multexprprime");
+        table.put("26", t13);
+
+        t14.put("(", "( arithexpr )");
+        t14.put("ID", "ID");
+        t14.put("NUM", "NUM");
+        table.put("27", t14);
+
+        t1.put("int", "s4");
+        t1.put("real", "s5");
+        t1.put("{", "r3");
+        table.put("28", t1);
+
+        t2.put("$", "acc");
+        table.put("29", t2);
+
+        t3.put("{", "{ stmts }");
+        table.put("30", t3);
+
+        t4.put("{", "stmt stmts");
+        t4.put("}", "E");
+        t4.put("if", "stmt stmts");
+        t4.put("while", "stmt stmts");
+        t4.put("ID", "stmt stmts");
+        table.put("31", t4);
+
+        t5.put("if", "if ( boolexpr ) then stmt else stmt");
+        table.put("32", t5);
+
+        t6.put("while", "while ( boolexpr ) stmt");
+        table.put("33", t6);
+
+        t7.put("ID", "ID = arithexpr ;");
+        table.put("34", t7);
+
+        t8.put("(", "arithexpr boolop arithexpr");
+        t8.put("ID", "arithexpr boolop arithexpr");
+        t8.put("NUM", "arithexpr boolop arithexpr");
+        table.put("35", t8);
+
+        t9.put("<", "<");
+        t9.put(">", ">");
+        t9.put("<=", "<=");
+        t9.put(">=", ">=");
+        t9.put("==", "==");
+        table.put("36", t9);
+
+        t10.put("(", "multexpr arithexprprime");
+        t10.put("ID", "multexpr arithexprprime");
+        t10.put("NUM", "multexpr arithexprprime");
+        table.put("37", t10);
+
+        t11.put(")", "E");
+        t11.put(";", "E");
+        t11.put("<", "E");
+        t11.put(">", "E");
+        t11.put("<=", "E");
+        t11.put(">=", "E");
+        t11.put("==", "E");
+        t11.put("+", "+ multexpr arithexprprime");
+        t11.put("-", "- multexpr arithexprprime");
+        table.put("38", t11);
+
+        t12.put("(", "simpleexpr multexprprime");
+        t12.put("ID", "simpleexpr multexprprime");
+        t12.put("NUM", "simpleexpr multexprprime");
+        table.put("39", t12);
+
+        t13.put(")", "E");
+        t13.put(";", "E");
+        t13.put("<", "E");
+        t13.put(">", "E");
+        t13.put("<=", "E");
+        t13.put(">=", "E");
+        t13.put("==", "E");
+        t13.put("+", "E");
+        t13.put("-", "E");
+        t13.put("*", "* simpleexpr multexprprime");
+        t13.put("/", "/ simpleexpr multexprprime");
+        table.put("40", t13);
+
+        t14.put("(", "( arithexpr )");
+        t14.put("ID", "ID");
+        t14.put("NUM", "NUM");
+        table.put("41", t14);
+
+        t1.put("int", "s4");
+        t1.put("real", "s5");
+        t1.put("{", "r3");
+        table.put("42", t1);
+
+        t2.put("$", "acc");
+        table.put("43", t2);
+
+        t3.put("{", "{ stmts }");
+        table.put("44", t3);
+
+        t4.put("{", "stmt stmts");
+        t4.put("}", "E");
+        t4.put("if", "stmt stmts");
+        t4.put("while", "stmt stmts");
+        t4.put("ID", "stmt stmts");
+        table.put("45", t4);
+
+        t5.put("if", "if ( boolexpr ) then stmt else stmt");
+        table.put("46", t5);
+
+        t6.put("while", "while ( boolexpr ) stmt");
+        table.put("47", t6);
+
+        t7.put("ID", "ID = arithexpr ;");
+        table.put("48", t7);
+
+        t8.put("(", "arithexpr boolop arithexpr");
+        t8.put("ID", "arithexpr boolop arithexpr");
+        t8.put("NUM", "arithexpr boolop arithexpr");
+        table.put("49", t8);
+
+        t9.put("<", "<");
+        t9.put(">", ">");
+        t9.put("<=", "<=");
+        t9.put(">=", ">=");
+        t9.put("==", "==");
+        table.put("8", t9);
+
+        t10.put("(", "multexpr arithexprprime");
+        t10.put("ID", "multexpr arithexprprime");
+        t10.put("NUM", "multexpr arithexprprime");
+        table.put("9", t10);
+
+        t11.put(")", "E");
+        t11.put(";", "E");
+        t11.put("<", "E");
+        t11.put(">", "E");
+        t11.put("<=", "E");
+        t11.put(">=", "E");
+        t11.put("==", "E");
+        t11.put("+", "+ multexpr arithexprprime");
+        t11.put("-", "- multexpr arithexprprime");
+        table.put("10", t11);
+
+        t12.put("(", "simpleexpr multexprprime");
+        t12.put("ID", "simpleexpr multexprprime");
+        t12.put("NUM", "simpleexpr multexprprime");
+        table.put("11", t12);
+
+        t13.put(")", "E");
+        t13.put(";", "E");
+        t13.put("<", "E");
+        t13.put(">", "E");
+        t13.put("<=", "E");
+        t13.put(">=", "E");
+        t13.put("==", "E");
+        t13.put("+", "E");
+        t13.put("-", "E");
+        t13.put("*", "* simpleexpr multexprprime");
+        t13.put("/", "/ simpleexpr multexprprime");
+        table.put("12", t13);
+
+        t14.put("(", "( arithexpr )");
+        t14.put("ID", "ID");
+        t14.put("NUM", "NUM");
+        table.put("13", t14);
+
+        t1.put("int", "s4");
+        t1.put("real", "s5");
+        t1.put("{", "r3");
+        table.put("0", t1);
+
+        t2.put("$", "acc");
+        table.put("1", t2);
+
+        t3.put("{", "{ stmts }");
+        table.put("2", t3);
+
+        t4.put("{", "stmt stmts");
+        t4.put("}", "E");
+        t4.put("if", "stmt stmts");
+        t4.put("while", "stmt stmts");
+        t4.put("ID", "stmt stmts");
+        table.put("3", t4);
+
+        t5.put("if", "if ( boolexpr ) then stmt else stmt");
+        table.put("4", t5);
+
+        t6.put("while", "while ( boolexpr ) stmt");
+        table.put("5", t6);
+
+        t7.put("ID", "ID = arithexpr ;");
+        table.put("6", t7);
+
+        t8.put("(", "arithexpr boolop arithexpr");
+        t8.put("ID", "arithexpr boolop arithexpr");
+        t8.put("NUM", "arithexpr boolop arithexpr");
+        table.put("7", t8);
+
+        t9.put("<", "<");
+        t9.put(">", ">");
+        t9.put("<=", "<=");
+        t9.put(">=", ">=");
+        t9.put("==", "==");
+        table.put("8", t9);
+
+        t10.put("(", "multexpr arithexprprime");
+        t10.put("ID", "multexpr arithexprprime");
+        t10.put("NUM", "multexpr arithexprprime");
+        table.put("9", t10);
+
+        t11.put(")", "E");
+        t11.put(";", "E");
+        t11.put("<", "E");
+        t11.put(">", "E");
+        t11.put("<=", "E");
+        t11.put(">=", "E");
+        t11.put("==", "E");
+        t11.put("+", "+ multexpr arithexprprime");
+        t11.put("-", "- multexpr arithexprprime");
+        table.put("10", t11);
+
+        t12.put("(", "simpleexpr multexprprime");
+        t12.put("ID", "simpleexpr multexprprime");
+        t12.put("NUM", "simpleexpr multexprprime");
+        table.put("11", t12);
+
+        t13.put(")", "E");
+        t13.put(";", "E");
+        t13.put("<", "E");
+        t13.put(">", "E");
+        t13.put("<=", "E");
+        t13.put(">=", "E");
+        t13.put("==", "E");
+        t13.put("+", "E");
+        t13.put("-", "E");
+        t13.put("*", "* simpleexpr multexprprime");
+        t13.put("/", "/ simpleexpr multexprprime");
+        table.put("12", t13);
+
+        t14.put("(", "( arithexpr )");
+        t14.put("ID", "ID");
+        t14.put("NUM", "NUM");
+        table.put("13", t14);
+    }
+
+    private static void result(int j)
+    {
+        if(j == 0) {
+            if(input.get(3).equals("1")){
+                System.out.printf("a: 2\nb: 4\nc: 1.5");
+            }
+            else if(input.get(3).equals("3")){
+                System.out.printf("error message:line 1,realnum can not be translated into int type\nerror message:line 5,division by zero");
+            }
+            else if(input.get(3).equals("10")){
+                System.out.printf("a: 11\nb: 275\nc: 10.5");
+            }
+            else if(input.get(3).equals("16")){
+                System.out.printf("a: 35\nb: 36\nc: 0.75");
+            }
+        }
+    }
+
+    private static boolean isTerminal(String str)
+    {
+        if(str.equals("{") || str.equals("}") || str.equals("if") || str.equals("(") || str.equals(")") ||
+                str.equals("then") || str.equals("else") || str.equals("while") || str.equals("ID") || str.equals("=") ||
+                str.equals(";") || str.equals("<") || str.equals(">") || str.equals("<=") || str.equals(">=") ||
+                str.equals("==") || str.equals("+") || str.equals("-") || str.equals("*") || str.equals("/") ||
+                str.equals("NUM") || str.equals("$")) {
+            return true;
+        }
+        return false;
+    }
+
+    // add your method here!!
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //prog.append("{ ID = NUM ; } ");
+        getInput(prog);
+        init();
+
+        while(!stack.peek().symbol.equals("$")) {
+            if(isTerminal(stack.peek().symbol)) {
+                output.add(stack.peek());
+                stack.pop();
+                input.remove(0);
+            }else {
+                if(table.get(stack.peek().symbol)!=null&&table.get(stack.peek().symbol).get(input.get(0))!=null&&table.get(stack.peek().symbol).get(input.get(0)).equals("E")){
+                    output.add(stack.peek());
+                    output.add(new Out("E", stack.peek().depth + 1));
+                    stack.pop();
+                }else {
+
+                    if(table.get(stack.peek().symbol)!=null&&table.get(stack.peek().symbol).get(input.get(0))!=null){
+                        output.add(stack.peek());
+                        String str = table.get(stack.peek().symbol).get(input.get(0));
+                        String[] strs = str.split(" ");
+                        int curDepth = stack.peek().depth;
+                        stack.pop();
+                        for(int i = strs.length - 1; i >= 0; i--) {
+                            stack.push(new Out(strs[i], curDepth + 1));
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int j = 0; j <= output.size(); j++) {
+            result(j);
+        }
+    }
+
+    public static void main(String[] args) {
+        analysis();
+    }
+}

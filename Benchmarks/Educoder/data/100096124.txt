@@ -1,0 +1,52 @@
+package step2;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class MarkStatistics {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] class1Grade = new int[5];
+        int[] class2Grade = new int[5];
+        int[] gradeCount = new int[class1Grade.length + class2Grade.length];
+        /********** Begin *********/
+		for(int cai=0;cai<=1;cai++){
+        	for(int yy=0;yy<5;yy++){
+                int caiyy = scanner.nextInt();
+            	if(cai==0){
+            		class1Grade[yy]=caiyy;
+                }
+                    else{
+            			class2Grade[yy]=caiyy;
+                    }
+            }
+        }
+       System.arraycopy( class1Grade, 0, gradeCount, 0, class1Grade.length); 
+       System.arraycopy( class2Grade, 0, gradeCount, class1Grade.length, class2Grade.length);
+       	Arrays.sort(gradeCount);	
+        /********** End *********/
+        for (int i = 0; i < gradeCount.length; i++) {
+            System.out.print(gradeCount[i]);
+            if (i != gradeCount.length - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}
+
+/* 答案
+for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 5; j++) {
+        int num = scanner.nextInt();
+        if (i == 0) {
+            class1Grade[j] = num;    //读取第一个数组，即一班成绩
+        }
+        else {
+            class2Grade[j] = num;    //读取第二个数组，即二班成绩
+        }
+    }
+}
+System.arraycopy(class1Grade, 0, gradeCount, 0, class1Grade.length);    //将class1Grade拷贝进gradeCount
+System.arraycopy(class2Grade, 0, gradeCount, class1Grade.length, class2Grade.length);    //接在gradeCount的后面将class2Grade拷贝进gradeCount，从而实现两个数组合并
+Arrays.sort(gradeCount);    //将gradeCount进行升序排序
+*/

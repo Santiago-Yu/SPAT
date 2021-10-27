@@ -1,0 +1,22 @@
+package step2;
+
+public class Task {
+
+	int num = 0;
+	public int getNum(int n) {
+		if(n == 1) {
+			return ++num;
+		}
+		if(n>0) {
+			if(n%2 != 0) {
+				n --;
+				num ++;
+				getNum(n/2);
+			}else{
+				getNum(n/2);
+			}
+		}
+		return num;
+	}
+	
+}

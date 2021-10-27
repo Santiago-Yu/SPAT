@@ -1,0 +1,25 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int a[101];
+int main()
+{
+    int cunt=0,t,cunt1=0;
+    char chr;
+    do{
+        scanf("%d",&a[cunt++]);
+    }while(chr=getchar()!='\n');
+    scanf("%d",&t);
+    for(int i=0;i<cunt;i++) {
+        for(int j=i+1;j<cunt;j++) {
+            for(int k=j+1;k<cunt;k++) {
+                if(a[i]+a[j]+a[k]<t) {
+                    cunt1++;
+                }
+            }
+        }
+    }
+    cout<<cunt1;
+    return 0;
+}

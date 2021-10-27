@@ -1,0 +1,36 @@
+package step3;
+import java.util.Scanner;
+//求分段函数的值
+public class TestJava25_3 {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("请输入x的值：");
+		int x=sc.nextInt();
+		//此处调用QiuY方法，根据用户输入的x值求分段函数的值并输出
+			int y=TestJava25_3.QiuY(x);
+		
+		
+		System.out.print("y的值为："+y+"\n");
+		
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为QiuY，根据x的值，计算得到y的值并返回
+	
+			public static int QiuY(int x){
+			int y;
+			if(x>0){
+				y=x+3;
+			}
+				else if(x<0){
+					y=x*x-1;
+				}
+				else{
+					y=0;
+			}
+			return y;
+	
+            }
+	/*******End*********/
+
+}

@@ -1,0 +1,30 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file){
+		System.out.println("+--" + file.getName());
+		showDirTree(file,"  ");
+	}
+	
+	public static void showDirTree(File dir,String interval){
+
+		File[] files = dir.listFiles();
+		
+		for (File file : files) {
+            if(!file.isDirectory()){
+				System.out.println(interval + "--" +  file.getName());
+            }else{
+                System.out.println(interval + "+--" +  file.getName());
+				showDirTree(file,interval + "  ");
+			}
+		}
+	}
+    //递归，下一次的效果跟上一次有关，只能通过递归时通过参数操作传递此种叠加效应，若不做操作，
+  //  则下一次效果应跟
+//上一次一样
+    /********** END **********/
+}

@@ -1,0 +1,47 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+				int len = arr.length;
+		int result = 0;
+		int tmp = 0;
+		int []a = new int[len-1];
+		for (int i=1; i<len;i++)
+		{
+			a[i-1] = arr[i]-arr[i-1];
+		}
+		for (int i=0;i<len-1;i++)
+		{
+			int j=i;
+			tmp=0;
+			while ((j<len-1) && (a[j]<=0))
+			{	
+				tmp++;
+				j++;		
+			}
+			if (tmp!= 0)
+			{
+				int index = 0;
+				while ((j < len - 1) && (a[j] > 0))
+				{
+					index = 1;
+					tmp++;
+					j++;
+				}
+				if (index == 0){
+					tmp=0;
+				}
+			}
+			tmp++;
+			if (tmp>2 && tmp>result)
+			{
+				result=tmp;
+			}		
+		}
+		return result;
+		
+		/********* End *********/	
+	}
+}

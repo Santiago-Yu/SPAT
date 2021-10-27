@@ -1,0 +1,24 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread a = new MyThread();		
+		System.out.println("子线程计算结果为："+a.Fib(num));
+	}
+}
+
+
+class MyThread  {
+    int Fib(int n){
+if (n <= 0)
+return 0;
+if (n==1)
+return 1;
+return Fib(n-1)+Fib(n-2);
+}
+}

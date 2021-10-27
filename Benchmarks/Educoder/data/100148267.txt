@@ -1,0 +1,65 @@
+package step1;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+        Thread AA=new MyThread("AA");
+		Thread BB=new MyThread("BB");
+        Thread CC=new MyThread("CC");
+        
+        
+        AA.setPriority(Thread.MAX_PRIORITY);
+        BB.setPriority(Thread.NORM_PRIORITY);
+        CC.setPriority(Thread.MIN_PRIORITY);
+        
+        /*AA.run();
+        BB.run();
+        CC.run();*/
+        
+        AA.start();       
+        BB.start();   
+        CC.start();
+        
+        /*AA.join();
+        CC.join();
+        BB.join();*/
+      
+		
+
+		
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	Lock lock=new ReentrantLock();
+   
+	
+	String threadName;
+	public MyThread(String name){
+    	threadName=name;
+    }
+
+	public  void run() {
+		lock.lock();
+		int count = 5;
+		synchronized(lock){
+		while(count > 0){
+			
+			System.out.println("Java Thread" + this.threadName);
+			count--;
+			try {
+				this.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+          }
+            lock.unlock();
+		}
+	}
+
+	/********* End *********/
+}

@@ -1,0 +1,25 @@
+package step1;
+
+public class Task {
+	public String inversion(String str){
+        char[] oriarr = str.toCharArray();
+        Reverse(oriarr,0,oriarr.length-1);
+        String result = new String(oriarr);
+        return result;
+    }
+
+    public void Swap(char[] arr,int a,int b)
+    {
+        char temp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
+    }
+    public void Reverse(char[] arr,int a,int b)
+    {
+        int i = a,j = b;
+        while (i<j)
+        {
+            Swap(arr,i++,j--);
+        }
+    }
+}

@@ -1,0 +1,30 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] a){
+//		System.out.println(arr.length*arr.length); 
+    	 
+         for (int k = 0; k < a.length; k++) { // 直接调用数组arrays里的sort()这个方法对里边的一维数组进行排序  
+             Arrays.sort(a[k]);  
+         }  
+         for (int i = a.length-1; i >= 0 ; i--) {
+        	 System.out.print("[");
+             for (int j = a[i].length - 1; j >= 0; j--) {  
+                 if(j==0){
+                	 System.out.print(a[i][j]);  
+                 }else{
+                	 System.out.print(a[i][j]+", ");
+                 }
+             }
+             System.out.print("]");
+             System.out.println();  
+         } 
+    }
+    
+    /********** END **********/
+}
+	

@@ -1,0 +1,34 @@
+package step1;
+public class MaxMin {
+	public static void main(String[] args) {
+		double[] arr = new double[100];
+		int s = 0;
+		double max=0,min=100;
+		for(int i=0;i<100;i++) {
+			double d=100*Math.random();
+			arr[i]=d;
+		}
+		//判断大于50的数的个数
+		for(int i=0;i<100;i++) {
+			if(arr[i]>50) {
+				s+=1;
+			}
+		}
+		//求最大值
+		for(int i=0;i<99;i++) {
+			if(arr[i]>max) {
+				max=arr[i];
+			}
+		}
+		//求最小值
+		for(int i=0;i<99;i++) {
+			if(arr[i]<min) {
+				min=arr[i];
+			}
+		}
+		//
+		int MAX=(int)max;
+		int MIN=(int)min;
+		judgeRadom.cpm(arr,MAX,MIN,s);
+	}
+}

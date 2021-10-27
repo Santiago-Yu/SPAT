@@ -1,0 +1,38 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+       int boat = 0;
+			for (int i = 0; i < ferry.length; i++) {
+				for (int j = 0; j < ferry[i].length; j++) {
+					if (ferry[i][j] == '+') {
+						// 遍历竖着的
+						for (int k = i + 1; k < ferry.length; k++) {
+							if (ferry[k][j] == 'o') {
+								break;
+							} else { // 只要竖着的 挨着的 如果是+ 这个船就无效 为了方便统计 就设置为o
+								ferry[k][j] = 'o';// 把查过的变为o
+							}
+
+						}
+						// 遍历横着的
+
+						for (int k = j + 1; k < ferry[i].length; k++) {
+
+							if (ferry[i][k] == 'o') {
+								break;
+							} else {
+								ferry[i][k] = 'o';
+							}
+						}
+						boat++;
+					}
+				}
+			}
+			
+			return boat;
+      /***********END ***************/
+	 }
+}

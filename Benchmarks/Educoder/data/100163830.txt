@@ -1,0 +1,20 @@
+package step2;
+import java.util.Scanner;
+public class SumOfDigit {
+		public static void main(String[] args) {
+			int number;
+            int x5,x4,x1,x2,x3;
+			int sum=0;
+			Scanner scan1=new Scanner(System.in);
+	        number=scan1.nextInt();
+			/******Begin******/
+			x1=(((number/10)/10)/10)/10;
+            x2=(((number-x1*10000)/10)/10)/10;
+            x5=number%10;
+            x4=(number%100-x5)/10;
+            x3=(number%1000-x5-x4*10)/100;
+            sum=x1+x2+x3+x4+x5;
+            System.out.printf(sum+"");
+			/******End******/
+		}
+}

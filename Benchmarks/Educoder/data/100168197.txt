@@ -1,0 +1,35 @@
+package step2;
+
+
+public class FindZhiShu {
+
+
+	public static void main(String[] args) {
+		   /*
+		     打印输出质数的时候务必按照如下格式：System.out.print(质数+" ")；
+		     使用print进行打印同时被打印输出的质数后加上一个空格，
+		     以便于与平台提供的结果格式保持一致！
+            */
+		   /**********begin**********/
+    boolean b; 
+for(int i=2;i<=1000;i++){//因为1不是质数，所以从2开始 
+// 控制 2-1000数输出 
+b=true; 
+for(int j=2;j<=(i/2);j++){ 
+//定与i相同的j, j只取到i的一半，（例如，10的一半对2取整和1—5和6—10取整结果相同） 
+//i对j取整同理，j个数是1—i个数的一半 
+if(i%j==0&&i!=j){//使用 2-i以内的所有值个数的一半和， i/j是否能被除尽 并且i和j不相等的情况，说明不是质数 
+b=false; //剩下的数皆为质数 
+break; 
+} 
+} 
+if(b){ 
+System.out.print(i+" ");//输出质数 
+} 
+} 
+
+
+           /**********end**********/	
+	}
+}
+

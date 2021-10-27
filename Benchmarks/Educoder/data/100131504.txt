@@ -1,0 +1,39 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	private static void getFile(File file,int deep){
+		File[] newfile=file.listFiles();//得到文件下所有的文件目录存放在文件数组中
+		//判断文件是目录还是文件
+		for(int i=0;i<newfile.length;i++){
+			if(newfile[i].isFile()){  //是文件
+				for (int j = 0; j < deep; j++){//输出空格
+                    System.out.print("  ");
+				}
+				System.out.println("--"+newfile[i].getName());
+			}else if(newfile[i].isDirectory()){//是目录
+				for (int j = 0; j < deep; j++){//输出空格
+                    System.out.print("  ");
+				}
+				System.out.println( "+--"+newfile[i].getName());
+				getFile(newfile[i],deep+1);
+			}
+		}
+	}
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		int deep = 1;//设置深度控制每层输出的空格
+        System.out.println( "+--"+file.getName());
+        getFile(file,deep);
+
+
+
+
+
+	}
+	
+
+
+	/********** END **********/
+}

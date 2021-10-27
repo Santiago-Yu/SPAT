@@ -1,0 +1,37 @@
+package step2;
+
+public class BestTeam {
+
+	public static Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance) {
+        Long max = 0L;
+        for (int i = 0; i <= numbers - selectedNum; i++) {
+            Long result = abilities[numbers - i] * getMax(numbers - i - 1, abilities, selectedNum - 1, distance);
+            if (max < result) {
+                max = result;
+            }
+        }
+
+        return max;
+
+    }
+
+
+    public static Long getMax(int numbers, int[] abilities, int selectedNum, int distance) {
+        Long max = 0L;
+        if (selectedNum == 1) {
+            for (int i = 0; i < distance && i <= numbers - selectedNum; i++) {
+                if (max < abilities[numbers - i]) {
+                    max = (long) abilities[numbers - i];
+                }
+            }
+        } else if (selectedNum > 1) {
+            for (int i = 0; i < distance && i <= numbers - selectedNum; i++) {
+                Long result = abilities[numbers - i] * getMax(numbers - i - 1, abilities, selectedNum - 1, distance);
+                if (max < result) {
+                    max = result;
+                }
+            }
+        }
+        return max;
+    }
+}

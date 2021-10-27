@@ -1,0 +1,37 @@
+package step1;
+
+public class Task {
+
+	public void sortArray(int[] arr, String sort){
+	 if(sort.equals("asc")){
+         
+         int sub=0;
+         for(int i=0;i<arr.length;i++){
+             for(int j=i;j<arr.length;j++){
+                 if(arr[i]>arr[j]){
+                 	sub=arr[i];
+                     arr[i]=arr[j];
+                     arr[j]=sub;
+                 }
+                 
+             }
+         }
+     }else{
+     	
+         int sub=0;
+         for(int i=0;i<arr.length;i++){
+             for(int j=i;j<arr.length;j++){
+                 if(arr[i]<arr[j]){
+                 	sub=arr[i];
+                     arr[i]=arr[j];
+                     arr[j]=sub;
+                 }
+                 
+             }
+         }
+     }
+        for (int k = 0; k < arr.length; k++) {
+			System.out.println(arr[k]);
+		}
+     }
+}

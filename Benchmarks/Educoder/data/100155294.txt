@@ -1,0 +1,23 @@
+package task3;
+import java.util.Scanner;
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+   
+    public static final int RECTANGLE = 1;
+    
+    public static final int CYLINDER = 2;
+    
+
+    public double volume(int boxType) {
+        double v = 0;
+        switch (boxType){
+            case 1:v = width*height*depth;break;
+            case 2:v = 3.14*width*width*height;break;
+        }
+        return v;
+    }
+    
+}

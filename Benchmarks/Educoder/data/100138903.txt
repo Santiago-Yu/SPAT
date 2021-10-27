@@ -1,0 +1,53 @@
+ package step2;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		 Callable<Integer> callable = new MyThread(num);
+        FutureTask<Integer> futureTask = new FutureTask<>(callable);
+       Thread thread= new Thread(futureTask);//开启线程
+        thread.start();
+           try {
+            Integer result = futureTask.get();
+            System.out.println("子线程计算结果为：" + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	try{thread.join();
+    }
+    catch(Exception e)
+    {e.printStackTrace();}
+    
+    }
+}
+
+
+class MyThread implements Callable<Integer>   {
+private int num;
+private int[] a=new int[]{1,1}; 
+
+ 
+    public MyThread(int num){this.num=num;}
+    public Integer call()
+    {if((num+1)==1||(num+1)==2)
+       return(a[num]);
+       else for(int i=2;i<(num+1);i++)
+        {int t=a[1];
+         a[1]=a[0]+t;
+         a[0]=t;}
+        return(a[0]);
+        
+    
+    
+    
+    }
+	
+	
+
+}
+

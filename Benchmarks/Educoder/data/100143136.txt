@@ -1,0 +1,61 @@
+package step4;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		File file1=new File("src/step4/input/input.txt");
+        File file3=new File("src/step4/output/output.txt");
+		FileReader bf1=new FileReader(file1);
+        File folder1=new File("src/step4/output");
+        if(!folder1.exists()){
+            folder1.mkdirs();
+        }
+        if(!file3.exists()){
+            file3.createNewFile();
+        }
+        FileWriter bw1=new FileWriter(file3);     
+        char[] cbuf = new char[1024];
+        int len = 0; // 每次读取的长度
+        StringBuilder builder = new StringBuilder();
+        while ((len = bf1.read(cbuf)) != -1) {
+            builder.append(cbuf,0,len);
+        }
+        String str1=new String(builder.toString());
+        bw1.write(str1);  
+        bf1.close();
+        bw1.close();
+        
+        
+		File file2=new File("src/step4/input/input.jpg");
+        File file4=new File("src/step4/output/output.jpg");       
+        FileInputStream bf2=new FileInputStream(file2);        
+        FileOutputStream bw2=new FileOutputStream(file4);  
+        File folder2=new File("src/step4/output");
+        if(!folder2.exists()){
+            folder2.mkdirs();
+        }
+        if(!file4.exists()){
+            file4.createNewFile();
+        }
+        int len2=0;
+        byte[] bb=new byte[1024];
+        String str2=new String();
+        while ((len2 = bf2.read(bb))!= -1){
+          bw2.write(bb,0,len2);  
+        }
+        bf2.close();
+        bw2.close();
+		/********* End *********/		
+	}
+    public void main(String[] args){
+        Task t=new Task();
+    }
+}

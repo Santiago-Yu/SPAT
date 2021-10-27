@@ -1,0 +1,10 @@
+class n3689392 {
+	public static String encrypt(String plaintext) throws Exception {
+		String algorithm = XML.get("security.algorithm");
+		algorithm = (algorithm == null) ? "SHA-1" : algorithm;
+		MessageDigest md = MessageDigest.getInstance(algorithm);
+		md.update(plaintext.getBytes("UTF-8"));
+		return new BASE64Encoder().encode(md.digest());
+	}
+
+}

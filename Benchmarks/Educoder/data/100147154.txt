@@ -1,0 +1,27 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+	static long max = 0;
+	
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+    	dfs(abilities, selectedNum, distance, 0, -1, 1, -1);
+    	return max;
+    }
+    
+    public void dfs(int[] abilities, int selectedNum, int distance, int now, int ii, long cj, int lastIndex) {
+    	if(now == selectedNum) {
+    		if(max < cj) {
+    			max = cj;
+    			// System.out.println(ans);
+    		}
+    		return;
+    	}
+    	for(int i = ii+1 ; i < abilities.length && (lastIndex == -1 || i - lastIndex <= distance); i++) {
+    		dfs(abilities, selectedNum, distance, now+1, i, cj*abilities[i], i);
+    	}
+    }
+	/********* End *********/
+}

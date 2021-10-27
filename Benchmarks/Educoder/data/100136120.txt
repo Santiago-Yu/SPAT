@@ -1,0 +1,121 @@
+package case1;
+
+import java.util.Scanner;
+
+public class Task1 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String dogName = sc.next();
+		String dogSex = sc.next();
+		String dogColor = sc.next();
+		String catName = sc.next();
+		String catSex = sc.next();
+		double catWeight = sc.nextDouble();
+		// 通过有参构造函数实例化Dog类对象dog
+		// dog调用talk()方法
+		// dog调用eat()方法
+		/********* begin *********/
+		Dog dog=new Dog(dogName,dogSex);
+        dog.getcolor(dogColor);
+        dog.talk();
+        dog.eat();
+		/********* end *********/
+		// 通过有参构造函数实例化Cat类对象cat
+		// cat调用talk()方法
+		// cat调用eat()方法
+		/********* begin *********/
+		Cat cat=new Cat(catName,catSex);
+        cat.getweight(catWeight);
+        cat.talk();
+        cat.eat();
+		/********* end *********/
+	}
+}
+
+// 抽象类Pet 封装属性name和sex
+// 构造函数初始化name和sex
+// 声明抽象方法talk()
+// 声明抽象方法eat()
+abstract class Pet {
+	/********* begin *********/
+    private String name;
+    private String sex;
+    public  Pet(String dname,String dsex){
+       name=dname;
+        sex=dsex;
+        
+    }
+     public void getname(String name){
+        this.name =name;
+    }
+     public void getsex(String sex){
+        this.sex =sex;
+    }
+    public String setname(){
+      return this.name;  
+    }
+    public String setsex(){
+     return this.sex;
+    }
+    public void talk(){   
+    };
+    public void eat(){ 
+    };
+	/********* end *********/
+}
+
+// Dog类继承自Pet类 封装属性color
+// 构造函数初始化name、sex和color
+// 实现自己的talk()方法和eat()方法
+// talk()输出'名称：name，性别：sex，颜色：color，汪汪叫'
+// eat()输出'name吃骨头'
+class Dog extends Pet {
+	/********* begin *********/
+    String color;
+    public Dog(String name,String sex){
+        super(name,sex);
+       // super.getname(name);
+        //super.getsex(sex);
+	
+    }
+   
+    public void getcolor(String color){
+        this.color=color;
+    }
+    public void talk(){
+       
+        System.out.println("名称："+super.setname()+"，性别："+super.setsex()+"，颜色："+color+"，汪汪叫");
+    }
+     public void eat(){
+        
+        System.out.println(super.setname()+"吃骨头！");
+    }
+	/********* end *********/
+}
+// Cat类继承自Pet类 封装属性weight
+// 构造函数初始化name、sex和weight
+// 实现自己的talk()方法和eat()方法
+// talk()输出
+// eat()输出'name吃鱼'
+class Cat extends Pet {
+	/********* begin *********/
+    double weight;
+	public Cat(String name,String sex){
+        super(name,sex);
+        // super.getname(name);
+        //super.getsex(sex);
+    }
+    public void getweight(double weight){
+        this.weight=weight;
+    }
+    
+    public void talk(){
+ 
+        System.out.println("名称："+super.setname()+"，性别："+super.setsex()+"，体重："+weight+"kg，喵喵叫");
+    }
+    public void eat(){
+     
+        System.out.println(super.setname()+"吃鱼！");
+    }
+	/********* end *********/
+}

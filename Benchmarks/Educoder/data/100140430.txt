@@ -1,0 +1,45 @@
+package step3;
+
+import java.util.Scanner;
+
+public class HelloWorld {
+    
+    public static void main (String[] args){
+        Scanner in = new Scanner(System.in);
+        String fileName = in.nextLine();
+        String email = in.nextLine();
+        HelloWorld demo = new HelloWorld();
+        demo.judge(fileName,email);
+    }
+
+	public void judge(String fileName,String email){
+		if(fileName.length()>5){
+            String d = fileName.substring(fileName.length()-5, fileName.length());
+            if(d.equals(".java")==true){
+                System.out.println("Java文件名正确");
+            }
+            else{
+            System.out.println("Java文件名无效");
+        }
+        }
+        else{
+            System.out.println("Java文件名无效");
+        }
+        
+        if(email.indexOf("@")!=-1){
+            String i = email.substring(email.indexOf("@")+1, email.length());
+            if(email.indexOf(".")!=0&&email.indexOf(".") > email.indexOf("@")&&i.indexOf("@")==-1){           
+                System.out.println("邮箱名正确");
+            }
+            else{
+                System.out.println("邮箱名无效");
+            }
+        }
+        else{
+            System.out.println("邮箱名无效");
+        }
+        
+	}
+	
+	
+}

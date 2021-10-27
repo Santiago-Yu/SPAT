@@ -1,0 +1,45 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		try{
+            //文字
+        	FileReader fr=new FileReader("src/step4/input/input.txt");
+            FileWriter fw=new FileWriter("src/step4/output/output.txt");
+            char[] a=new char[1024];
+            int n=-1;
+            while((n=fr.read(a))!=-1){
+            	fw.write(a,0,n);
+            }
+            
+            fr.close();
+            fw.flush();
+            fw.close();
+            
+         //图片
+            byte[] Y=new byte[1024];
+        	FileInputStream in=new FileInputStream("src/step4/input/input.jpg");
+            FileOutputStream out=new FileOutputStream("src/step4/output/output.jpg");
+            while((n=in.read(Y))!=-1){
+            	out.write(Y,0,n);
+            }
+            
+            in.close();
+            out.flush();
+            out.close();
+      
+        }catch(Exception e){
+        	System.out.println("错误是："+e);
+        }
+		/********* End *********/		
+	}
+}

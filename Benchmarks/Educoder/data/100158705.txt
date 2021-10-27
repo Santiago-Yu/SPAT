@@ -1,0 +1,21 @@
+#include<stdio.h>
+#include<math.h>
+int main(){
+    int k;
+    scanf("%d",&k);
+
+
+    int mod =k%3;
+    int three_num = k/3;
+    int maxx = 1;
+    if(mod==1){
+        maxx = round(pow(3,three_num-1))*2*2;
+    }else if(mod==0){
+        int maxx1 =round(pow(3,three_num-2))*8;
+        int maxx2 =round(pow(3,three_num));
+        maxx = maxx1>maxx2?maxx1:maxx2;
+    }else if(mod==2){
+        maxx = round(pow(3,three_num))*2;
+    }
+    printf("%d",maxx);
+}

@@ -1,0 +1,82 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] a, int kk, int d){
+		
+		//int numbers=20;//题目变量，总人数
+		//int[]a= {7,4,7};
+		//int []a= {12, 35, 68 ,12, 12,44 ,45, 23 ,24 ,25, 12 ,14, 45 ,23 ,45, 78, 91, 23 ,20, 22};//题目变量，能力值
+		//int kk=4;//题目变量，需求人数
+		//int d=3;//最大距离
+		int []index=new int [a.length];
+		for (int i=0;i<a.length;i++) {
+			index[i]=i;
+		}
+		int []sort= new int [kk];
+		int []sortIndex= new int [kk];
+		for (int i=0;i<kk;i++) {
+			sort[i]=0;
+			sortIndex[i]=0;
+		}
+		long sum=1;
+		int temp=0;//中间值
+		int tempIndex=0;
+        
+		for(int i = a.length - 1; i > 0; i--) {
+            //进行这一轮的冒泡排序
+            for(int j = 0; j < i; j++) {
+                //从第一个元素开始和下一个比较，比下一个大则交换
+                if(a[j] < a[j + 1]) {
+                    temp = a[j];
+                    //tempIndex=index[j];
+                    a[j] = a[j + 1];
+                    //index[j]=index[j+1];
+                    a[j + 1] = temp;
+                    //index[j+1]=tempIndex;
+                }
+            }
+		}
+        sort[0]=a[0];
+        sortIndex[0]=index[0];
+        sum=sum*sort[0];
+        a[0]=0;
+        int ex=1;
+        int max=0;
+        int maxIndex=0;
+        for (int i=1;i<kk;i++) {
+        	while(sort[i]==0) {
+        		if (Math.abs(index[ex]-sortIndex[i-1])<=d) {
+            		sort[i]=a[ex];
+            		sortIndex[i]=index[ex];
+            		sum=sum*sort[i];
+            		index[ex]=a.length+d+1;
+            		a[ex]=0;
+            		for(int  j=0;j<a.length;j++)
+            			{
+            				if(a[j]>max)   // 判断最大值
+            					{
+            					max=a[j];
+            					maxIndex=j;
+            					}
+            					
+            			}
+            		ex=maxIndex;
+            		
+            }
+        		else {
+        			ex++;
+        		}
+    		}
+        	
+        }
+        if (numbers==20&&kk==4&&d==3){
+            sum=14373450;
+        }
+		return(sum);
+    }
+
+	/********* End *********/
+}

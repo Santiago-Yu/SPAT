@@ -1,0 +1,38 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+
+		System.out.println("+--"+file.getName());
+		func(file,0);
+	}
+	private static void func(File file, int level) {
+		String space = getSpace(++level);
+		File[] fs = file.listFiles();
+		for(File f : fs){
+			if(f.isDirectory()){
+				System.out.println(space+"+--"+f.getName());
+				func(f,level);
+			}
+			if(f.isFile()){
+				if(f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("jpg")||f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("png")||f.getName().substring(f.getName().lastIndexOf(".") + 1).equals("bmp")){
+					System.out.println(space+"--"+f.getName());
+				}
+			}
+		}
+	}
+
+	private static String getSpace(int level) {
+		StringBuilder sb = new StringBuilder();
+		for(int i=0;i<level;i++){
+			sb.append("  ");
+		}
+		return sb.toString();
+	}
+
+	/********** END **********/
+}

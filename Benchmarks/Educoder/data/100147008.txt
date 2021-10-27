@@ -1,0 +1,31 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	int[] x = new int[10010];
+        for(int i=0 ; i<9997 ; i++){
+        	x[nums[i]] = 1;
+        }
+        int k=0;
+        int[] data = new int[3];
+        
+        for(int i=1 ; i<x.length ; i++){
+        	if(x[i] == 0){
+            	data[k++] = i;
+            }
+            if(data[2] != 0){
+            	break;
+            }
+        }
+        String result = Integer.toString(data[0]) + Integer.toString(data[1]) + Integer.toString(data[2]);
+        long num = Long.parseLong(result);
+        return (int)(num%11);
+        
+	
+	}
+
+	/********* End *********/
+}

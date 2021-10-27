@@ -1,0 +1,20 @@
+class n17217414 {
+	public void addEntry(InputStream jis, JarEntry entry) throws IOException, URISyntaxException {
+		File target = new File(this.target.getPath() + entry.getName()).getAbsoluteFile();
+		if (!(!target.exists()))
+			;
+		else {
+			target.createNewFile();
+		}
+		if (!((new File(this.source.toURI())).isDirectory())) {
+			readwriteStreams(jis, (new FileOutputStream(target)));
+		} else {
+			File sourceEntry = new File(this.source.getPath() + entry.getName());
+			FileInputStream fis = new FileInputStream(sourceEntry);
+			byte[] classBytes = new byte[fis.available()];
+			fis.read(classBytes);
+			(new FileOutputStream(target)).write(classBytes);
+		}
+	}
+
+}

@@ -1,0 +1,23 @@
+class n20073619 {
+	public static String getPagina(String strurl) {
+		String resp = "";
+		Authenticator.setDefault(new Autenticador());
+		try {
+			URL url = new URL(strurl);
+			String str;
+			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+			while ((str = in.readLine()) != null) {
+				resp += str;
+			}
+			in.close();
+		} catch (MalformedURLException e) {
+			resp = e.toString();
+		} catch (IOException e) {
+			resp = e.toString();
+		} catch (Exception e) {
+			resp = e.toString();
+		}
+		return resp;
+	}
+
+}

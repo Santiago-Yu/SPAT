@@ -1,0 +1,522 @@
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public class Java_LLParserAnalysis
+{
+
+    static class Word {
+
+        private int line;//行数
+        private String word;//单词
+
+        public int getLine() {
+            return line;
+        }
+
+        public void setLine(int line) {
+            this.line = line;
+        }
+
+        public String getWord() {
+            return word;
+        }
+
+        public void setWord(String word) {
+            this.word = word;
+        }
+    }
+
+    static class PrintLine {
+
+        private int tab;
+        private String s;
+        private String notes;
+        private int modCount;
+
+        public PrintLine() {
+        }
+
+        public PrintLine(int tab, String s) {
+            this.tab = tab;
+            this.s = s;
+        }
+
+        public int getTab() {
+            return tab;
+        }
+
+        public void setTab(int tab) {
+            this.tab = tab;
+        }
+
+        public String getS() {
+            return s;
+        }
+
+        public void setS(String s) {
+            this.s = s;
+        }
+
+        public String getNotes() {
+            return notes;
+        }
+
+        public void setNotes(String notes) {
+            this.notes = notes;
+            }
+
+        public int getModCount() {
+            return modCount;
+        }
+
+        public void setModCount(int modCount) {
+            this.modCount = modCount;
+        }
+    }
+
+    private static Map<String,List<String[]>> map = new HashMap<>();
+    private static List<Word> words = new ArrayList<>();//将输入的文本分隔为word
+    //private static int index = 0;//words的index，表示正在匹配第几个word
+    private static String[] reservedWords = new String[]{"{","}",
+            "if","(",")","then","else",
+            "while","(",")",
+            "ID","=",
+            ">","<",">=","<=","==",
+            "+","-",
+            "*","/",
+            "NUM"};
+    private static boolean flag = true;//语法是否有错（true为没错）
+    private static Word mistakeWord = new Word();//错误的词
+    private static int modCount = 0;//修正次数
+
+    //输入文本
+    private static String prog = "";
+
+    //输出文本（以行为单位）
+    private static List<PrintLine> printLines = new CopyOnWriteArrayList<>();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int lineID = 0;
+        while(sc.hasNextLine())
+        {
+            lineID++;
+            String line = sc.nextLine();
+            if((line+"").equals("-1")){
+                break;
+            }
+            prog += line;
+            prog += "\n";
+
+            String[] split = line.split(" ");
+            for(String s:split){
+                if(s.equals(""))continue;
+                Word word = new Word();
+                word.setLine(lineID);
+                word.setWord(s);
+                words.add(word);
+            }
+        }
+    }
+
+
+    // add your method here!!
+
+    //判断是否为保留字
+    private static boolean isReservedWord(String key){
+        for(String s:reservedWords){
+            if(s.equals(key)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+//    //处理follow集
+//    private static boolean isEnd(String key,int index){
+//        String wordd = words.get(index).getWord();
+//        if(key.equals("stmts") && wordd.equals("}"))return true;
+//        if(key.equals("arithexpr") && wordd.equals(";"))return true;
+//        return false;
+//    }
+
+    //找到新的查询终点（begin，end分别是旧查询起终点，key是当前文法左符号）
+    private static int findNewEnd(int begin,int end,String key,String secondKey){
+//        System.out.println("在begin = " + begin + ",end = " + end + "中查找key = " + key + ",secondKey = " + secondKey);
+        if("stmt".equals(key)){
+            if("assgstmt".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    if("else".equals(words.get(i).getWord()))return i-1;
+                }
+            }
+        }
+        if("compoundstmt".equals(key)){
+            int tmp = 0;
+            for(int i=begin;i<=end;i++){
+                if("{".equals(words.get(i).getWord()))tmp++;
+                if("}".equals(words.get(i).getWord()))tmp--;
+                if(tmp==-1)return i-1;
+            }
+        }
+        if("ifstmt".equals(key)){
+            if("boolexpr".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    if(")".equals(words.get(i).getWord()))return i-1;
+                }
+            }
+            if("stmt".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    String word = words.get(i).getWord();
+                    if("else".equals(word))return i-1;
+                }
+            }
+        }
+        if("whilestmt".equals(key)){
+            if("boolexpr".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    if(")".equals(words.get(i).getWord()))return i-1;
+                }
+            }
+        }
+        if("assgstmt".equals(key)){
+            for(int i=begin;i<=end;i++){
+                if(";".equals(words.get(i).getWord())){
+                    return i-1;
+                }
+            }
+            flag = false;
+            modCount++;
+            int line = words.get(begin).getLine();
+            mistakeWord.setLine(line-1);
+            mistakeWord.setWord(";");
+            List<Word> newWords = new ArrayList<>();
+
+            int index = 0;
+            for(;index<words.size();index++){
+                Word w = words.get(index);
+                if(w.getLine()<line){
+                    newWords.add(w);
+                }else{
+                    break;
+                }
+            }
+            newWords.add(mistakeWord);
+            for(;index<words.size();index++){
+                newWords.add(words.get(index));
+            }
+            words = newWords;
+            print(0,"program",203,modCount);
+            deepSearch(1,"program",0,words.size()-1,0,0,modCount);
+
+        }
+        if("boolexpr".equals(key)){
+            if("arithexpr".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    String word = words.get(i).getWord();
+                    if("<".equals(word) || ">".equals(word) || "<=".equals(word) || ">=".equals(word) || "==".equals(word) || ")".equals(word))return i-1;
+                }
+            }
+            if("boolop".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    String word = words.get(i).getWord();
+                    if("ID".equals(word) || "NUM".equals(word))return i-1;
+                }
+            }
+        }
+        if("boolop".equals(key)){
+            for(int i=begin;i<=end;i++){
+                String word = words.get(i).getWord();
+                if("ID".equals(word) || "NUM".equals(word) || "(".equals(word))return i-1;
+            }
+        }
+        if("arithexpr".equals(key)){
+            if("multexpr".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    if("+".equals(words.get(i).getWord()) || "-".equals(words.get(i).getWord()))return i-1;
+                }
+            }
+            if("arithexprprime".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    String word = words.get(i).getWord();
+                    if("<".equals(word) || ">".equals(word) || "<=".equals(word) || ">=".equals(word) || "==".equals(word) || ")".equals(word))return i-1;
+                }
+            }
+        }
+        if("multexpr".equals(key)){
+            if("simpleexpr".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    String word = words.get(i).getWord();
+                    if("<".equals(word) || ">".equals(word) || "<=".equals(word)  || ">=".equals(word)  || "==".equals(word) || "*".equals(word) || ";".equals(word))return i-1;
+                }
+            }
+            if("multexprprime".equals(secondKey)){
+                for(int i=begin;i<=end;i++){
+                    String word = words.get(i).getWord();
+                    if("<".equals(word) || ">".equals(word) || "<=".equals(word)  || ">=".equals(word)  || "==".equals(word))return i-1;
+                }
+            }
+        }
+        if("simpleexpr".equals(key)){
+            for(int i=begin;i<=end;i++){
+                String word = words.get(i).getWord();
+                if("<".equals(word) || ">".equals(word) || "<=".equals(word)  || ">=".equals(word)  || "==".equals(word))return i-1;
+            }
+        }
+        return end;
+    }
+
+
+    //打印
+    private static void print(int tab,String s,int note,int mod){
+        if(mod != modCount){
+            for(PrintLine p:printLines){
+                if(p.getModCount() != modCount){
+                    printLines.remove(p);
+                }
+            }
+        }
+        PrintLine printLine = new PrintLine(tab,s);
+        printLine.setNotes(note+"");
+        printLine.setModCount(mod);
+        while(printLines.size()>1 && printLines.get(printLines.size()-1).getTab()==tab && printLines.get(printLines.size()-1).getS().equals(s)){
+            printLines.remove(printLines.size()-1);
+        }
+        printLines.add(printLine);
+
+//        for(int i=0;i<tab;i++){
+//            System.out.print("  ");
+//        }
+//        System.out.println(s);
+    }
+
+    //撤销上一步打印
+    private static void disPrint(int mod){
+        if(mod!=modCount)return;
+        if(printLines.size()>=1)
+            printLines.remove(printLines.size()-1);
+//        System.out.println("--disPrint--");
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis(int mod)
+    {
+        read_prog();
+//        System.out.print(prog);
+//        System.out.println("-----------------------");
+//        System.out.println("-----------------------");
+//        System.out.println("-----------------------");
+//        System.out.println("-----------------------");
+
+        print(0,"program",203,mod);
+        deepSearch(1,"program",0,words.size()-1,0,0,mod);
+    }
+
+    //int tab：缩进程度；String key：文法左符号；
+    //int begin、end：words中的index区间；int index1：List中的index；int index2：String[]中的index
+    private static boolean deepSearch(int tab,String key,int begin,int end,int index1,int index2,int mod){
+        if(mod != modCount)return false;
+//        print(tab-1,key,211);
+
+        List<String[]> list = map.get(key);
+        if(index1 >= list.size()){
+            return false;
+        }
+
+
+        //继续尝试该分路径
+        String[] ss = list.get(index1);
+
+        if(begin > end){
+            print(tab-1,key,223,mod);
+            if(ss[0].equals("E")){
+                print(tab, "E",225,mod);
+                return true;
+            }
+            disPrint(mod);
+            //尝试下一个分路径
+            if(index1 + 1 < list.size()){
+                if(deepSearch(tab,key,begin,end,index1 + 1,index2,mod))return true;
+            }
+            return false;
+        }
+
+
+
+        if(index2 >= ss.length){
+            return false;
+        }
+        Word word = words.get(begin);
+        String wordd = word.getWord();
+
+        if(ss[index2].equals(wordd)){
+            print(tab,ss[index2],245,mod);
+            if(begin+1>=end && ss.length-1==index2)return true;//找到了需要的，直接返回true，不需要继续深搜
+            if(!deepSearch(tab, key, begin+1,end, index1, index2 + 1,mod)){
+                //System.out.println("删除一次");
+                disPrint(mod);
+            }else{
+                return true;
+            }
+        }
+
+        //发现非终结符，深入搜索
+        list = map.get(ss[index2]);
+        if(list != null){
+            //print(tab,ss[index2],258);
+
+            //计算该分路径下有多少非终结符
+            List<Integer> tmpList = new ArrayList<>();//非终结符对应的id
+            List<Integer> newEndList = new ArrayList<>();//每个非终结符及终结符搜索时对应的begin及end
+            newEndList.add(begin-1);
+            int newEnd = begin;
+//            for(int i=index2;i<ss.length;i++){
+//                if(map.get(ss[i])!=null){
+//                    tmpList.add(i);
+//                }
+////                System.out.println(newEnd);
+//                System.out.print("====key=" + key + ",secondKey=" + ss[i] + ",begin=" + (newEndList.get(i-index2)+1));
+//                newEnd = findNewEnd(newEnd,end,key,ss[i]);
+//                System.out.println(",newEnd=" + newEnd + "====");
+//                newEndList.add(newEnd);
+//
+//            }
+            for(int i=index2;i<ss.length;i++){
+                if(map.get(ss[i])!=null){//是非终结符
+                    tmpList.add(i);
+//                    System.out.print("====key=" + key + ",secondKey=" + ss[i] + ",begin=" + (newEndList.get(i-index2)+1));
+                    newEnd = findNewEnd(newEnd+1,end,key,ss[i]);
+//                    System.out.println(",newEnd=" + newEnd + "====");
+                    newEndList.add(newEnd);
+                }else{//是终结符
+                    newEnd = newEnd + 1;
+                    newEndList.add(newEnd);
+                }
+
+            }
+            //int newEnd = findNewEnd(begin,end,key,secondKey);
+            boolean tmpFlag = true;
+//            for(int i=0;i<tmpList.size();i++){
+//                if(!deepSearch(tab+1,ss[tmpList.get(i)],newEndList.get(i)+1,newEndList.get(i+1),0,0)){
+//                    tmpFlag = false;
+//                }
+//            }
+
+            for(int i=index2;i<ss.length;i++){
+                int index = tmpList.indexOf(i);
+                if(index != -1){
+                    print(tab,ss[tmpList.get(index)],300,mod);
+                    if(!deepSearch(tab+1,ss[tmpList.get(index)],newEndList.get(i-index2)+1,newEndList.get(i-index2+1),0,0,mod)){
+                        tmpFlag = false;
+                        disPrint(mod);
+                    }
+                }else{
+                    if((words.get(newEndList.get(i-index2)+1).getWord()).equals(ss[i])){
+                        print(tab,ss[i],305,mod);
+                    }else{
+//                        System.out.println("!匹配的是: " + words.get(newEndList.get(i-index2)+1) + ",文法中是" + ss[i]);
+                        tmpFlag = false;
+                    }
+                }
+
+            }
+            if(!tmpFlag){
+                //System.out.println("删除一次");
+                //disPrint();
+            }else{
+                for(int i=newEnd+1;i<=end;i++) {
+                    print(tab, words.get(i).getWord(),318,mod);
+                }
+                return true;
+            }
+        }
+
+        list = map.get(key);
+        //尝试下一个分路径
+        if(index1 + 1 < list.size()){
+            begin = begin - index2;
+            index2 = 0;
+            if(deepSearch(tab,key,begin,end,index1 + 1,index2,mod))return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        //处理文法
+        List<String[]> list = new ArrayList<>();String[] choices;list = new ArrayList<>();
+        choices = new String[]{"compoundstmt"};list.add(choices);map.put("program",list);
+        list = new ArrayList<>();
+        choices = new String[]{"ifstmt"};list.add(choices);choices = new String[]{"whilestmt"};list.add(choices);choices = new String[]{"assgstmt"};list.add(choices);choices = new String[]{"compoundstmt"};list.add(choices);map.put("stmt",list);
+        list = new ArrayList<>();
+        choices = new String[]{"{","stmts","}"};list.add(choices);map.put("compoundstmt",list);
+        list = new ArrayList<>();
+        choices = new String[]{"stmt","stmts"};list.add(choices);choices = new String[]{"E"};list.add(choices);map.put("stmts",list);
+        list = new ArrayList<>();
+        choices = new String[]{"if","(","boolexpr",")","then","stmt","else","stmt"};list.add(choices);map.put("ifstmt",list);
+        list = new ArrayList<>();
+        choices = new String[]{"while","(","boolexpr",")","stmt"};list.add(choices);map.put("whilestmt",list);
+        list = new ArrayList<>();
+        choices = new String[]{"ID","=","arithexpr",";"};list.add(choices);map.put("assgstmt",list);
+        list = new ArrayList<>();
+        choices = new String[]{"arithexpr","boolop","arithexpr"};list.add(choices);map.put("boolexpr",list);
+        list = new ArrayList<>();
+        choices = new String[]{"<"};list.add(choices);choices = new String[]{">"};list.add(choices);choices = new String[]{"<="};list.add(choices);choices = new String[]{">="};list.add(choices);choices = new String[]{"=="};list.add(choices);map.put("boolop",list);
+        list = new ArrayList<>();
+        choices = new String[]{"multexpr","arithexprprime"};list.add(choices);map.put("arithexpr",list);
+        list = new ArrayList<>();
+        choices = new String[]{"+","multexpr","arithexprprime"};list.add(choices);choices = new String[]{"-","multexpr","arithexprprime"};list.add(choices);choices = new String[]{"E"};list.add(choices);map.put("arithexprprime",list);
+        list = new ArrayList<>();
+        choices = new String[]{"simpleexpr","multexprprime"};list.add(choices);map.put("multexpr",list);
+        list = new ArrayList<>();
+        choices = new String[]{"*","simpleexpr","multexprprime"};list.add(choices);choices = new String[]{"/","simpleexpr","multexprprime"};list.add(choices);choices = new String[]{"E"};list.add(choices);map.put("multexprprime",list);
+        list = new ArrayList<>();
+        choices = new String[]{"ID"};list.add(choices);choices = new String[]{"NUM"};list.add(choices);choices = new String[]{"(","arithexpr",")"};list.add(choices);map.put("simpleexpr",list);
+
+
+
+
+
+        analysis(0);
+        if(modCount!=0){
+            System.out.println("语法错误,第" + mistakeWord.getLine() + "行,缺少\";\"");
+        }
+        for(int i=0;i<printLines.size()-1;i++){
+            PrintLine p = printLines.get(i);
+            int tab = p.getTab();
+            String s = p.getS();
+            for(int j=0;j<tab;j++){
+                System.out.print("\t");
+            }
+            System.out.println(s);
+        }
+        PrintLine p = printLines.get(printLines.size()-1);
+        int tab = p.getTab();
+        String s = p.getS();
+        for(int j=0;j<tab;j++){
+            System.out.print("\t");
+        }
+        System.out.print(s);
+
+
+
+//        System.out.println("----");
+//        for(Word word:words){
+//            System.out.println(word.getWord());
+//        }
+    }
+}

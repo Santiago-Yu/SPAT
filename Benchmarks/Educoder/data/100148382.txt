@@ -1,0 +1,52 @@
+package step1;
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+        Object a=new Object();
+        Object b=new Object();
+        Object c=new Object();
+		new MyThread("AA",a,b,c).start();
+        Thread.sleep(100);
+        new MyThread("BB",b,c,a).start();
+        Thread.sleep(100);
+        new MyThread("CC",c,a,b).start();
+
+
+		
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	Object a,b,c;
+	
+	String threadName;
+	MyThread(String name,Object a,Object b,Object c){
+    	this.threadName=name;
+        this.a=a;
+        this.b=b;
+        this.c=c;
+    }
+
+	public void run() {
+	
+		int count = 5;
+		
+		while(count > 0){
+            synchronized(a){
+                synchronized(b){
+                    System.out.println("Java Thread" + this.threadName);
+                    count--;
+                    b.notify();
+                }
+                if(count<=0) break;
+                try{a.wait();}catch(Exception e){}
+            }
+		} 
+	}
+
+	/********* End *********/
+}

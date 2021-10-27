@@ -1,0 +1,76 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+     //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+		/**********   Begin   **********/
+        File f = new File(filePath);
+	    Document doc=Jsoup.parse(f,"UTF-8","http://www.ctrip.com/");
+		return doc;
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+		Elements e = doc.select("a[href]");//获取a标签带有href属性
+        List<String> list = new ArrayList<String>();//创建集合
+        for(Element element : e) {
+	    String wb =element.text();//获取连接文本
+	    String lianjie =element.attr("abs:href");//获取连接
+        String bqm = element.tagName();//获取标签名
+        String shuchu = bqm+"$"+lianjie+"("+wb+")";//规范输出格式
+        list.add(shuchu);//往集合添加元素
+         }
+		return list;//返回集合
+		/**********   End   **********/
+	}
+	
+	//获取图片img$http://pic.c-ctrip.com/platform/online/home/er_ctrip_app.jpg
+	public List<String> getMedia(Document doc){
+		/**********   Begin   **********/
+		Elements e = doc.select("img");//获取img
+        List<String> arrays = new ArrayList<String>();//创建集合
+        for(Element element : e) {
+	    String tp =element.html();//获取连接文本
+	    String lianjie =element.attr("abs:src");//获取连接
+        String bqm = element.tagName();//获取标签名
+        String shuchu = bqm+"$"+lianjie;//规范输出格式
+        arrays.add(shuchu);//往集合添加元素
+         }
+	
+
+		return arrays;
+		/**********   End   **********/
+	}
+	
+	//获取link[href]链接
+	//link标签的写法
+	//
+	public List<String> getImports(Document doc){
+		/**********   Begin   **********/
+	//  String List  = doc.select("").attr();
+		Elements links = doc.select("link");//获取a标签带有href属性
+        List<String> list = new ArrayList<String>();//创建集合
+        for(Element el : links) {
+	    String wb =el.attr("rel");//获取连接文本
+        String bqm = el.tagName();//获取标签名
+		String href = el.attr("abs:href");
+		String lianjie = el.attr("rel");
+        String shuchu = bqm+"$"+href+"("+lianjie+")";//规范输出格式
+        list.add(shuchu);//往集合添加元素
+         }
+
+        return list;
+		/**********   End   **********/
+	}
+	
+}

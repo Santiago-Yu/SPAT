@@ -1,0 +1,48 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+        int sum;
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread ab=new MyThread(num);
+		sum=ab.fanhui();
+       System.out.println("子线程计算结果为："+sum); 
+		
+	}
+}
+
+
+class MyThread extends Thread  {
+    
+    
+int i=1,j=1,k=0;
+    
+    public MyThread(int x){
+    
+        if(x==1)
+            k=1;
+        else if(x==2)
+            k=1;
+            else{
+        for(int a=2;a<x;a++){
+        k=i+j;
+        i=j;
+        j=k;
+        
+            
+        }
+           
+        }
+        
+    }
+
+    public int fanhui(){
+     return k;
+    }
+	
+
+}

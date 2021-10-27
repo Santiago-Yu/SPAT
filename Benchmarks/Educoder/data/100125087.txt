@@ -1,0 +1,49 @@
+package step1;
+
+public class Rectangle{
+	private double width;
+	private double length;
+	
+	public double getwidth(){
+		return width;
+	}
+	public void setwidth(double width){
+		this.width=width;
+	}
+	public double getlength(){
+		return width;
+	}
+	public void setlength(double length){
+		this.length=length;
+	}
+	
+	/*********begin*********/
+    public Rectangle(){
+        width=5;
+        length=6;
+    }
+    public Rectangle(double width,double length){
+        setwidth(width);
+        setlength(length);
+    }
+    public double perimeter(){//计算周长
+        return (width+length)*2;
+    }
+    public double area(){//计算面积
+        return width*length;
+    }
+	/*********end*********/
+
+
+	public static void main(String[] args) {
+		/*********begin*********/
+		Rectangle r1 = new Rectangle();
+        System.out.println("r1的周长："+r1.perimeter());
+        System.out.println("r1的面积："+r1.area());
+        Rectangle r2 = new Rectangle(20,10);
+        System.out.println("r2的周长："+r2.perimeter());
+        System.out.println("r2的面积："+r2.area());
+		/*********end*********/
+	}
+
+}

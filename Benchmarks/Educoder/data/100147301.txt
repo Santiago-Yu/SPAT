@@ -1,0 +1,85 @@
+package step3;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.stream.Collectors;
+
+
+public class TeamBuilding {
+
+	/********* Begin *********/
+    public int getMinimumSteps (List<List<Integer>> stones){
+		int dx, dy, gx = 0, gy = 0;
+    	int[][] deep;
+        int M = stones.size();
+		int N = stones.get(0).size();
+
+        dx=0;
+        dy=0;
+        deep = new int[M][N];
+       
+
+        
+        int [][]a = new int [M][N];
+        for (int i = 0; i < stones.size(); i++){
+            for (int j = 0; j <	stones.get(0).size(); j++) {
+            	a[i][j]= stones.get(i).get(j); 
+            }
+        }
+        Boolean ite = true;     
+        int sum = 0;
+        while (ite) {
+        	int min=1000000;
+	        for (int i = 0; i < stones.size(); i++){
+	            for (int j = 0; j <	stones.get(0).size(); j++) {
+	            	if(a[i][j]<min & a[i][j]>1){
+	            		min = a[i][j];
+	            		gx = i;
+	            		gy = j;
+	            	}
+
+	            }
+	        }
+	        if(min==1000000){
+	        	ite = false;
+	        	break;
+	        }
+	       
+	        Queue<Point> q = new LinkedList<Point>();
+	        int[] tx = { -1, 1, 0, 0 };
+	        int[] ty = { 0, 0, 1, -1 };
+	        q.offer(new Point(dx, dy));
+
+	        for (int i = 0; i < M; i++)
+	            for (int j = 0; j < N; j++)
+	                deep[i][j] = -1;
+	        deep[dx][dy] = 0;
+	    	a[gx][gy]=1;
+	        while (q.size() > 0) {
+	            Point p = q.poll();
+	            if (p.x == gx && p.y == gy)
+	                break;
+	            for (int i = 0; i < 4; i++) {
+	                int x = p.x + tx[i];
+	                int y = p.y + ty[i];	//p为当前位置；
+	                if (x >= 0 && x < M && y >= 0 && y < N && a[x][y] >= 1 && deep[x][y] == -1) {
+	                    deep[x][y] = deep[p.x][p.y] + 1;
+	                    q.offer(new Point(x, y));
+	                }
+	            } 
+	        }
+	        dx = gx;
+	        dy = gy;
+	        
+	        int len = deep[gx][gy];
+	        if (len==-1){
+            	return -1;
+            }
+	        sum = sum+len;
+        }
+        return sum;
+    }
+}

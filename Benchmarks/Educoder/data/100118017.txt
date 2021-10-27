@@ -1,0 +1,32 @@
+package step3;
+
+import java.util.Scanner;
+
+public class HelloWorld {
+    public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int i = sc.nextInt();   //获取第一个输入的整数
+        int j = sc.nextInt();	//获取第二个输入的整数
+
+		//在这里调用方法获取返回值
+		int m = getMax(i,j);
+            
+
+		System.out.println( i+"和"+j+"比较，最大值是："+m    );
+
+    }
+
+	/*在这里创建getMax方法，以两个整数作为参数，返回两个整数中较大的值*/
+    public static int getMax(int a,int b){
+    	int max = 0;
+        if(a>b){
+        	max=a;
+        }
+        else{
+        	max=b;
+        }
+        return max;
+    }
+
+    
+}

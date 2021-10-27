@@ -1,0 +1,53 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    static long max(long a, long b) {
+        return a > b ? a : b;
+    };
+
+    static long min(long a, long b) {
+        return a < b ? a : b;
+    };
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		
+        
+
+    
+        long dpMax[][] = new long[abilities.length][selectedNum];
+        long dpMin[][] = new long[abilities.length][selectedNum];
+        for (int i = 0; i < abilities.length; i++) {
+            dpMax[i][0] = abilities[i];
+            dpMin[i][0] = abilities[i];
+        }
+        long maxSoFar = Long.MIN_VALUE;
+        for (int j = 1; j < selectedNum; j++) {
+            for (int i = j ; i < abilities.length; i++) {
+                dpMax[i][j] = Long.MIN_VALUE;
+                dpMin[i][j] = Long.MAX_VALUE;
+                for (int x = 1; x <= distance&& (i - x) >= j - 1; x++) {
+                    long resMax = max(dpMax[i - x][j - 1] * abilities[i], dpMin[i - x][j - 1] * abilities[i]);
+                    long resMin = min(dpMax[i - x][j - 1] * abilities[i], dpMin[i - x][j - 1] * abilities[i]);
+
+                    if (resMax > dpMax[i][j])
+                        dpMax[i][j] = resMax;
+                    if (resMin < dpMin[i][j])
+                        dpMin[i][j] = resMin;
+
+                }
+            }
+        }
+        for (int i = selectedNum-1; i < abilities.length; i++) {
+            if (dpMax[i][selectedNum-1] > maxSoFar) {
+                maxSoFar = dpMax[i][selectedNum-1];
+            }
+        }
+
+        return maxSoFar;
+    
+    }
+	/********* End *********/
+}

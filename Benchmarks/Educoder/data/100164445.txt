@@ -1,0 +1,36 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+  public static void main(String[] agrs){
+     double a,b,c; //方程的三个系数
+    /**********begin******/
+    Scanner in=new Scanner(System.in);
+	double delta=0.0;
+      a=in.nextDouble();
+      b=in.nextDouble();
+      c=in.nextDouble();
+    double answer=0.0;
+	delta=b*b-4*a*c;
+    if(a==0)
+    {
+        System.out.println("无实根");
+    }
+  	else
+    {
+        if(delta>=0)
+    {
+    answer=(-b+Math.sqrt(delta))/(2*a);
+    System.out.printf("X1=%4.2f",answer);
+    System.out.println("");
+    answer=(-b-Math.sqrt(delta))/(2*a);
+  	System.out.printf("X2=%4.2f",answer);
+    }
+    	if(delta<0)
+    {
+        System.out.println("无实根");
+    }
+    }
+    /**********end*****/
+  }
+  	
+}

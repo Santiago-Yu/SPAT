@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+int max (int a,int b)
+{
+	if (a>b)
+	return a;
+	else 
+	return b;
+}
+int f(int n)
+{
+	return n == 0?1:f(n-1)*n; 
+}
+int main()
+{
+	int i,k;
+	int b[100];
+	scanf("%d",&k);
+	b[2]=1;
+	b[3]=2;
+	b[4]=4;
+	b[5]=6;
+	b[6]=9;
+	b[7]=12;
+	b[8]=18;
+	b[9]=27;
+	b[10]=36;
+	b[11]=54;
+	b[12]=81;
+	b[13]=108;
+	b[14]=102;
+	b[15]=243;
+	b[16]=324;
+	for (i=17;i<=50;i++)
+	{
+		b[i]=max(2*b[i-2],3*b[i-3]);
+	}
+	printf("%d",b[k]);
+	return 0;
+}

@@ -1,0 +1,38 @@
+package step2;
+import step1.Date;
+import step1.Person;
+public class Student extends Person {
+    private int reg_name;
+    private Date reg_day = new Date();
+
+    public Student(){
+        super();
+        reg_name = 0;
+    }
+
+    
+    
+    public Student(String name, String number, int year, int month, int day, int reg_name, int reg_year, int reg_month, int reg_day1){
+        super(name, number, year, month, day);//表示调用直接父类的含参构造
+        reg_day.setDate(reg_year, reg_month, reg_day1);
+        this.reg_name=reg_name;
+    }
+
+    public Student(String name,String number, Date day, int reg_name, Date reg_day){
+        super(name, number, day);
+        this.reg_day = reg_day;
+        this.reg_name = reg_name;
+    }
+
+    public String toString(){
+        return super.toString() + "reg_num:" + reg_name + "reg_day:" + reg_day.getYear() + "." + reg_day.getMonth() + "." + reg_day.getDay();
+    }
+
+    public int getreg_name(){
+        return reg_name;
+    }
+
+    public Date getreg_day(){
+        return reg_day;
+    }
+}

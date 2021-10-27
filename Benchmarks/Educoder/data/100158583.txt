@@ -1,0 +1,70 @@
+#include <iostream>
+#include<string>
+#include<string.h>
+using namespace std;
+int main()
+{
+	int result = 0;
+	int temp = 0;
+	char STR1[500];
+	char STR2[500];
+	cin >> STR1;
+	cin >> STR2;
+
+	for (int i = 0; i < strlen(STR1); i++)
+	{
+		for (int j = 0; j < strlen(STR2); j++)
+		{
+			if (STR1[i] == STR2[j])
+			{
+				for (int m = 0;; m++)
+				{
+					if (STR1[i + m] == STR2[j + m] &&STR1[i+m] != '\0' &&STR2[j+m] != ' \0')
+					{
+						temp += 1;
+					}
+					else
+					{
+						if (temp > result)
+						{
+							result = temp;
+						
+						}
+						temp = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+	for (int i = 0; i < strlen(STR2); i++)
+	{
+		for (int j = 0; j < strlen(STR1); j++)
+		{
+			if (STR2[i] == STR1[j])
+			{
+				for (int m = 0; ; m++)
+				{
+					if (STR2[i + m] == STR1[j + m] && STR1[j+ m] != '\0' &&STR2[i + m] != ' \0')
+					{
+						temp++;
+					}
+					else
+					{
+						if (temp > result)
+						{
+							result = temp;
+						
+						}
+						temp = 0;
+						break;
+					}
+				}
+				temp = 0;
+			}
+		}
+	}
+
+	cout << result;
+	return 0;
+}

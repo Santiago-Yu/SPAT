@@ -1,0 +1,51 @@
+package step1;
+
+import java.util.Scanner;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        DecimalFormat df=new DecimalFormat("#.0000000");
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+        System.out.println(df.format(circle.getAcreage()));
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape {
+	public abstract double getAcreage();
+}
+
+class Circle extends Shape {
+    private double radius;
+    public Circle(double d)
+    {
+        radius = d;
+    }
+    public double getAcreage()
+    {
+        return radius * radius * 3.1415926;
+    }
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+    public Rectangle (double d1, double d2)
+    {
+        length = d1;
+        width = d2;
+    }
+    public double getAcreage()
+    {
+		return length * width;
+    }
+}
+/********** End *********/

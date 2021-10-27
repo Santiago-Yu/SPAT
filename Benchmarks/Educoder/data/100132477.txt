@@ -1,0 +1,45 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+      int num=0;
+        int maxLength=0;
+        int[][] Array = new int[2][width];
+        for(int i=0;i<width;i++){
+            if(length%(i+1)==0&&width%(i+1)==0){
+
+                Array[0][i]=(length/(i+1)*(width/(i+1)));//记录正方形个数
+                Array[1][i]=i+1;//记录边长
+
+            }else{
+
+                Array[0][i]=length*width;
+                Array[1][i]=1;
+            }
+
+        }
+        int max = 0;
+        for(int j =0;j<width;j++){
+            if(max<Array[1][j]){
+                num = Array[0][j];
+                maxLength = Array[1][j];
+                max = Array[1][j];
+            }
+        }
+        System.out.println(maxLength);
+        System.out.println(num);
+
+
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

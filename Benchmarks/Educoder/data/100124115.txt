@@ -1,0 +1,32 @@
+package step2;
+public class Fibonacci{
+	public static void main(String args[]){
+	/*********begin********/
+		System.out.print("前20个元素的和为"+sum(20));
+    }
+     
+    public static long sum(int n) {
+        if(n < 1) {
+            return 0;
+        }
+        if(n == 1) {
+            return 1;
+        }
+        if(n == 2) {
+            return 2;
+        }
+         
+        long f1 = 1, f2 = 1;
+        long sum = 2;
+         
+        for(int i=3; i<=n; i++) {
+            f2 = f1 + f2;
+            f1 = f2 - f1;
+            sum += f2;
+        }
+         
+        return sum;
+
+	/********end********/
+	}
+}

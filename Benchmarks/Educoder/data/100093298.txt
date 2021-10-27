@@ -1,0 +1,89 @@
+package step4;
+import java.util.Scanner;
+public class DayJudge {
+//要判断一年中的某一天是该年份的第几天，这个问题涉及到那一天所属月份之前的每个月份包含的天数。
+//因为一年中的每个月份所包含的天数具有一定的规律，同时二月份包含的天数又与年份息息相关。详情如下：
+//1月、3月、5月、7月、8月、10月、12月均包含31天；
+//4月、6月、9月、11月均包含30天；
+//2月：闰年2月包含29天，平年2月包含28天。
+    public static void main(String[] args) {
+
+        // 从命令行读入三个正整数
+        // 这三个整数取自测试集的输入
+        Scanner sc = new Scanner(System.in);
+        int year = sc.nextInt();
+        int month = sc.nextInt();
+        int day = sc.nextInt();
+
+        DayJudge judge = new DayJudge();
+        System.out.println(judge.DayJudge(year, month, day));
+    }
+
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        // 请在此提供实现代码
+		int das;
+		switch(month)
+		{
+			case 1:
+				das=0;
+			break;
+			case 2:
+				das=31;
+			break;
+			case 3:													 
+				
+				das=59;
+			break;
+			case 4:
+				das=90;
+			break;
+			case 5:
+				das=120;
+			break;
+			case 6:
+				das=151;
+			break;//要判断一年中的某一天是该年份的第几天，这个问题涉及到那一天所属月份之前的每个月份包含的天数。
+//因为一年中的每个月份所包含的天数具有一定的规律，同时二月份包含的天数又与年份息息相关。详情如下：
+//1月、3月、5月、7月、8月、10月、12月均包含31天；
+//4月、6月、9月、11月均包含30天；
+//2月：闰年2月包含29天，平年2月包含28天。
+			
+			case 7:
+				das=181;
+			break;
+			case 8:
+				das=212;
+			break;
+			case 9:
+				das=243;
+			break;
+			case 10:
+				das=273;
+			break;
+			case 11:
+				das=304;
+			break;
+			case 12:
+				das=334;
+			break;
+			default:
+				das=0;
+			break;
+			}
+			if(year%4==0&&year%100!=0||year%400==0)
+		{
+				if(month>2)
+				das=das+1+day;
+			else
+				das=das+day;
+		}
+			else
+				das=das+day;
+			return year+"年的第"+das+"天";
+
+
+
+		
+	}
+}

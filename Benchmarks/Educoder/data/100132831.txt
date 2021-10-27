@@ -1,0 +1,44 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 	if (ferry.length==0) {
+			return 0;
+		}
+		int row=ferry.length;
+		int colum=ferry[0].length;
+		int num=0;
+		
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < colum; j++) {
+				if (ferry[i][j]=='+') {
+					ferry[i][j]='o';
+					if (j+1!=colum&&ferry[i][j+1]=='+') {
+						for (int j2 = j+1; j2 < colum; j2++) {
+							if (ferry[i][j2]=='+') {
+								ferry[i][j2]='o';
+							}else {
+								break;
+							}
+						}
+					}else if(i+1!=row&&ferry[i+1][j]=='+') {
+						for (int j2 = i+1; j2 < row; j2++) {
+							if (ferry[j2][j]=='+') {
+								ferry[j2][j]='o';
+							}else {
+								break;
+							}
+						}
+					}
+					num++;
+				}
+			}
+		}
+		return num;
+	 
+         
+      /***********END ***************/
+	 }
+}

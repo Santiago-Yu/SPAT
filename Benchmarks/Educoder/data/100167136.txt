@@ -1,0 +1,211 @@
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.*;
+
+public class Java_LexAnalysis {
+
+    private static StringBuffer prog = new StringBuffer();
+    private static Map<String, Integer> tokens = new HashMap<String, Integer>();
+    private static int lineNum = 1;
+
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine());
+            prog.append('\n');
+        }
+    }
+
+
+    private static void analysis() {
+        read_prog();
+        int pos = 0;
+        int len = prog.length();
+
+        while (pos < prog.length()) {
+            if (prog.charAt(pos) == ' ' || prog.charAt(pos) == '\n') {//空格或者换行符跳过
+                pos++;
+            } else if (Character.isLetter(prog.charAt(pos)) || prog.charAt(pos) == '_') {//保留字或者标识符（字母、下划线、数字组成）
+                StringBuffer temp = new StringBuffer();
+                temp.append(prog.charAt(pos));
+                pos++;
+                while (Character.isLetter(prog.charAt(pos)) || prog.charAt(pos) == '_' || Character.isDigit(prog.charAt(pos))) {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    if (pos >= len) break;
+                }
+                if (tokens.containsKey(temp.toString())) {
+                    if (lineNum != 1) System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                } else {
+                    if (lineNum != 1) System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + 81 + ">");
+                    lineNum++;
+                }
+            } else if (Character.isDigit(prog.charAt(pos))) {
+                StringBuffer temp = new StringBuffer();
+                temp.append(prog.charAt(pos));
+                pos++;
+                while (Character.isDigit(prog.charAt(pos)) || prog.charAt(pos) == '.') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    if (pos >= prog.length()) break;
+                }
+                if (lineNum != 1) System.out.println();
+                System.out.print(lineNum + ": " + "<" + temp + "," + 80 + ">");
+                lineNum++;
+            } else if (prog.charAt(pos) == ',' || prog.charAt(pos) == '.' || prog.charAt(pos) == ';' || prog.charAt(pos) == ':' || prog.charAt(pos) == '?'
+                    || prog.charAt(pos) == '(' || prog.charAt(pos) == ')' || prog.charAt(pos) == '[' || prog.charAt(pos) == ']' || prog.charAt(pos) == '{'
+                    || prog.charAt(pos) == '}' || prog.charAt(pos) == '~' || prog.charAt(pos) == '"') {
+                if (lineNum != 1) System.out.println();
+                System.out.print(lineNum + ": " + "<" + prog.charAt(pos) + "," + tokens.get(String.valueOf(prog.charAt(pos))) + ">");
+                lineNum++;
+                pos++;
+            } else if (prog.charAt(pos) == '!' || prog.charAt(pos) == '%' || prog.charAt(pos) == '*' || prog.charAt(pos) == '^' || prog.charAt(pos) == '=') {
+                StringBuffer temp = new StringBuffer();
+                temp.append(prog.charAt(pos));
+                pos++;
+                if (prog.charAt(pos) == '=') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    if (lineNum != 1) System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                } else if (prog.charAt(pos) == 'd' || prog.charAt(pos) == 'c') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + 81 + ">");
+                    lineNum++;
+                } else {
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                }
+
+            } else if (prog.charAt(pos) == '-' || prog.charAt(pos) == '&' || prog.charAt(pos) == '|' || prog.charAt(pos) == '+') {
+                StringBuffer temp = new StringBuffer();
+                temp.append(prog.charAt(pos));
+                char ch = prog.charAt(pos);
+                pos++;
+                if (ch == prog.charAt(pos) || prog.charAt(pos) == '=') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                } else if (ch == '-' && prog.charAt(pos) == '>') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                } else {
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                }
+            } else if (prog.charAt(pos) == '>' || prog.charAt(pos) == '<') {
+                StringBuffer temp = new StringBuffer();
+                temp.append(prog.charAt(pos));
+                char ch = prog.charAt(pos);
+                pos++;
+                if (prog.charAt(pos) == '=') {
+                    temp.append(prog.charAt(pos));
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                    pos++;
+                } else if (ch == prog.charAt(pos)) {
+                    temp.append(prog.charAt(pos));
+                    //StringBuffer sb = temp;
+                    pos++;
+                    if (prog.charAt(pos) == '=') {
+                        temp.append(prog.charAt(pos));
+                        pos++;
+                        if (lineNum!=1)System.out.println();
+                        System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                        lineNum++;
+                    }
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                }else{
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                }
+            } else if (prog.charAt(pos) == '/') {
+                StringBuffer temp = new StringBuffer();
+                temp.append(prog.charAt(pos));
+                pos++;
+                if (prog.charAt(pos) == '=') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                } else if (prog.charAt(pos) == '/') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    while (prog.charAt(pos) != '\n') {
+                        temp.append(prog.charAt(pos));
+                        pos++;
+                        if (pos >= len) break;
+                    }
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + 79 + ">");
+                    lineNum++;
+                } else if (prog.charAt(pos) == '*') {
+                    temp.append(prog.charAt(pos));
+                    pos++;
+                    while (prog.charAt(pos) != '*' && prog.charAt((pos + 1)) != '/') {
+                        temp.append(prog.charAt(pos));
+                        pos++;
+                        if (pos + 1 > prog.length()) break;
+                    }
+                    temp.append(prog.charAt(pos));
+                    temp.append(prog.charAt(pos + 1));
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + 79 + ">");
+                    lineNum++;
+                    pos += 2;
+                } else {
+                    if (lineNum!=1)System.out.println();
+                    System.out.print(lineNum + ": " + "<" + temp + "," + tokens.get(temp.toString()) + ">");
+                    lineNum++;
+                }
+            } else {
+                //break;
+                pos++;
+            }
+        }
+
+    }
+
+    public static void main(String[] args) {
+        File file = new File("./c_keys.txt");
+        try {
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while (true) {
+                String line = bufferedReader.readLine();
+                if (null == line) {
+                    break;
+                }
+                String[] string = line.split("\\s+ ");
+                String key = string[0];
+                Integer val = Integer.parseInt(string[1]);
+                tokens.put(key, val);
+            }
+            tokens.put("//", 79);
+            bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        analysis();
+    }
+}

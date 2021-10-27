@@ -1,0 +1,64 @@
+package task06;
+
+import java.util.Scanner;
+
+/*
+ * 说明：根据提示，补充完整 begin 和 end 之间的代码。
+ *     （其他代码可以不用改）
+ */
+
+// 定义学生类名
+class Student
+{
+	/**************** begin *****************/
+	/*
+	 * 定义两个非私有属性：姓名name属性和学校school属性，
+	 * 学校school属性为静态的，默认值为北京大学。
+	 */
+	String name;
+    static String school = "北京大学";
+	/**************** end *****************/
+
+	void speak() {
+		System.out.println("我的名字是" + name + ",来自" + school);
+	}
+}
+
+public class Task06 {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+
+		/**************** begin *****************/
+		/*
+		 * 定义两个学生类对象，并为每个对象的年龄属性赋值，
+		 * 值为运行时接收从键盘输入；
+		 * 通过每个对象调用speak()方法。
+		 */		
+        Student s1 = new Student();
+        s1.name = scan.nextLine();
+        Student s2 = new Student();
+        s2.name = scan.nextLine();
+        s1.speak();
+        s2.speak();
+        
+		/**************** end *****************/
+
+
+		/**************** begin *****************/
+		/*
+		 * 改写学生类的school属性值，值为运行时接收从键盘输入
+		 */
+        Student.school = scan.nextLine();
+
+		/**************** end *****************/
+
+
+		/**************** begin *****************/
+		/*
+		 * 再通过前面创建的两个对象分别调用speak()方法
+		 */		
+		s1.speak();
+        s2.speak();
+		/**************** end *****************/
+	}
+}

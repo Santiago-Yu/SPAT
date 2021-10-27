@@ -1,0 +1,23 @@
+package task1;
+
+public class Task1 {
+
+
+	public static void main(String[] args) {
+	Task1 s=new Task1();
+	for(int num=101;num<=998;num++) {
+		boolean f1=s.judge(num);
+		boolean f2=s.judge(num+2);
+		if(f1&&f2) System.out.println(num+"和"+(num+2)+"是姐妹素数");
+		else continue;  
+	}
+	}
+public boolean judge(int num) {
+	boolean flag=true;
+	for(int i=2;i<num/2+1;i++) {
+		if(num%i==0) {flag=false;break;}
+		else continue;
+	}
+	return flag;
+}
+}

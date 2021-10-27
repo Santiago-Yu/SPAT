@@ -1,0 +1,18 @@
+package step3;
+import java.util.Scanner;
+public class Sum{
+	public static void main(String args[]){
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+        int result = Sum.recursionSum(num);
+        System.out.println(result);
+	}
+	
+    public static int recursionSum(int m){
+        /*********begin*********/
+   		if (m == 1) {return m;}
+        return m + recursionSum(m - 1);
+
+        /*********end*********/
+    }  
+}

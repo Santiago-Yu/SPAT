@@ -1,0 +1,27 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+        /********** Begin *********/     
+	for (File f: files) {
+   		 if(f.isDirectory())
+   		 {
+   		     recursiveSearch(f);//遍历目录  我不会的
+  		  }
+	}
+    	for (File f: files) {
+   			 if (f.getName().contains("Search")) {    //判断文件及文件夹名称中是否包含"readme"
+       		 System.out.println(f);
+   			 }
+    	}
+
+	
+        //为什么没有文件夹 只有文件名？？？
+
+        /********** End *********/
+    }
+}

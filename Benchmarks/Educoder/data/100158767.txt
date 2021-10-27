@@ -1,0 +1,46 @@
+package Q102;
+
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner scanner =new Scanner(System.in);
+		
+		String[] split = scanner.nextLine().split(" ");
+		int [] bills=new int[split.length];
+		
+		for (int i = 0; i < bills.length; i++) {
+			bills[i]=Integer.valueOf(split[i]);
+		}
+		System.out.print(lemonadeChange(bills));
+		
+		scanner.close();
+		
+	}
+
+	public static boolean lemonadeChange(int[] bills) {
+		int five = 0, ten = 0;
+		for (int bill : bills) {
+			if (bill == 5)
+				five++;
+			else if (bill == 10) {
+				if (five == 0)
+					return false;
+				five--;
+				ten++;
+			} else {
+				if (five > 0 && ten > 0) {
+					five--;
+					ten--;
+				} else if (five >= 3) {
+					five -= 3;
+				} else {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+}

@@ -1,0 +1,46 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public boolean csh = true;
+	public int countYwj = 0;
+	public void showDirStructure(File file)	{
+		
+		if (csh) {
+			System.out.println("+--" + file.getName());//打印一次文件名
+			for (int i = 0; i < file.getAbsolutePath().length(); i++) {
+				if (file.getAbsolutePath().charAt(i) == '/') {//charAt(i)获取字符串中i位置的字符
+					countYwj++;//记录file.getAbsolutePath().length()即文件夹长度or源文件个数
+				}
+			}
+			csh = false;//停止初始化
+		}
+ 
+		File[] files = file.listFiles();//创建File[]数组.里面包含了files一级目录下的文件和文件夹.
+		for (File file2 : files) {//循环遍历
+			String filePath = file2.getAbsolutePath();  //getAbsolutePath()：返回抽象路径名的绝对路径名字符串,(是定义时的路径对应的相对路径?)
+
+			int countThisFile = 0;
+			for (int i = 0; i < filePath.length(); i++) {
+				if (filePath.charAt(i) == '/') {
+					countThisFile++;//记录这个文件所在位置
+				}
+			}
+			for (int i = 1; i <= 2 * (countThisFile - countYwj); i++) 
+              {//(countThisFile - countYwj）文件位置顺序-源文件位置顺序=文件相对所在位置，并打印两个空格
+				System.out.print(" ");
+			    }
+			if (!file2.isDirectory()) {     // 判断file2是否是文件夹 ，如果不是，
+				System.out.println("--" + file2.getName());
+			} else {
+				System.out.println("+--" + file2.getName());
+				showDirStructure(file2);
+			}
+		}
+	}
+	
+	/********** END **********/
+}

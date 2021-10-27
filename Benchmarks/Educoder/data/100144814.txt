@@ -1,0 +1,27 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] m){
+		/********* Begin *********/
+        int k=m[0].length;
+        int [][] a=new int[k][k];
+        for(int b=0;b<k;b++)
+            for(int c=0;c<k;c++)
+                a[b][c]=m[b][c];
+            
+		for(int i=0;i<m.length;i++){
+        	k=m[i].length;
+            int t=0;
+            for(int j=k-1;j>=0;j--){
+            	m[i][t++]=a[j][i];
+                
+            }
+        }
+        
+		
+		/********* End *********/
+	}
+}
+
+
+

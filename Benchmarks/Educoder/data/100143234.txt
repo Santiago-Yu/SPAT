@@ -1,0 +1,44 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		//文本文件的复制
+        String file = "src/step4/input/input.txt";
+        String fileName = "src/step4/output/output.txt";
+		FileInputStream  fis = new FileInputStream(file);
+        FileOutputStream fos = new FileOutputStream(fileName);
+		int temp = 0;
+        byte [] b = new byte[1024];
+        while((temp = fis.read(b)) != -1){
+        	fos.write(b,0,temp);
+        }
+        fos.flush();
+        fis.close();
+        fos.close();
+        //图片文件
+        String file1 = "src/step4/input/input.jpg";
+        String fileName1 = "src/step4/output/output.jpg";
+        
+        FileReader fr = new FileReader(file1);
+        FileWriter fw = new FileWriter(fileName1);
+        
+        int t = 0;
+        char ch [] = new char[1024];
+        while((t = fr.read(ch)) != -1){
+        	fw.write(new String(ch,0,t));
+        }
+        fw.flush();
+        fw.close();
+        fr.close();
+		/********* End *********/		
+	}
+}

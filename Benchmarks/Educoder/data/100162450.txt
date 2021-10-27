@@ -1,0 +1,39 @@
+package task05;
+
+import java.util.Scanner;
+
+class Student{
+        String name;
+        int age;
+public Student(){
+String name;
+int age;
+	System.out.println("无参的构造方法");
+}
+public Student(String name)
+{
+	this();
+	this.name=name;
+	System.out.println("一个参数的构造方法");
+}
+public  Student(String name,int age)
+{
+		this(name);
+       this.age=age;
+	   System.out.println("两个参数的构造方法");
+	}
+	void speak() {
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+public class Task05 {
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+        Student s=new Student();
+	    s.name=scan.nextLine();
+		s.age=scan.nextInt();
+	System.out.println("一个参数的构造方法");
+	  System.out.println("两个参数的构造方法");
+		s.speak();
+	}
+}

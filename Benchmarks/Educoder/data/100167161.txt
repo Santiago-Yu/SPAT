@@ -1,0 +1,301 @@
+import java.util.Scanner;
+
+public class Java_LexAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static char ch;
+	public static int cnt = 0;
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+
+    // add your method here!!
+    public static String keyWord[] = {"auto", "break", "case", "char", "const", "continue",
+    "default", "do", "double", "else", "enum", "extern", "float", "for", "goto", "if", "int", "long",
+    "register", "return", "short", "signed", "sizeof", "static",
+    "struct", "switch", "typedef", "union", "unsigned", "void",
+    "volatile", "while"};
+    public static boolean isKey(String str){
+        for(int i = 0; i < keyWord.length; i++){
+            if(keyWord[i].equals(str)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    static boolean isLetter(char letter)
+    {
+        if((letter >= 'a' && letter <= 'z')||(letter >= 'A' && letter <= 'Z'))
+            return true;
+        else
+            return false;
+    }
+    
+    static boolean isDigit(char digit)
+    {
+        if(digit >= '0' && digit <= '9')
+            return true;
+        else
+            return false;
+    }
+
+
+
+    public static int getKeywordNum(String str){
+
+        for(int i = 0; i<keyWord.length; i++){
+            if(str.equals(keyWord[i])){
+                return i+1;
+            }
+        }
+        return 0;
+
+    }
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //System.out.print(prog);
+        char[] c = prog.toString().toCharArray();
+        //System.out.print(c);
+        String arr = "";
+        for(int i = 0;i < c.length-2;i++) {
+            ch = c[i];
+            //if(c[i] == ';')System.out.println(c[i]);
+            arr = "";
+            if(ch == ' '||ch == '\t'||ch == '\n'){
+            
+            }
+            else if(isLetter(ch)){
+                while(isLetter(ch)||isDigit(ch)){
+                    arr += ch;
+                    ch = c[++i];
+                }
+                i--;
+                if(isKey(arr)){
+                    System.out.println((++cnt)+": "+"<"+arr+","+getKeywordNum(arr)+">");
+                }
+                else{
+                    System.out.println((++cnt)+": "+"<"+arr+",81"+">");
+                }
+            }
+            else if(isDigit(ch))
+            {
+                while(isDigit(ch)||(ch == '.'&&isDigit(c[++i])))
+                {
+                    if(ch == '.') 
+                        i--;
+                    arr = arr + ch;
+                    ch = c[++i];
+                }
+                
+                System.out.println((++cnt)+": "+"<"+arr+",80"+">");
+                i--;
+            }
+            else switch(ch){
+                	case '+':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<+="+",67>");
+                        else if(ch == '+')System.out.println((++cnt)+": "+"<++"+",66>");
+                        else {
+                            System.out.println((++cnt)+": "+"<"+"+"+",65"+">");
+                            i--;
+                        }
+                    }break;
+                    case '-':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<-="+",35>");
+                        else if(ch == '-')System.out.println((++cnt)+": "+"<--"+",34>");
+                        else if(ch == '>')System.out.println((++cnt)+": "+"<->"+",36>");
+                        else {
+                            System.out.println((++cnt)+": "+"<"+"-"+",33"+">");
+                            i--;
+                        }
+                    }break;
+                    case '*':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<*="+",47>");
+                        else {
+                            System.out.println((++cnt)+": "+"<"+"*"+",46"+">");
+                            i--;
+                        }
+                    }break;
+                    case '/':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"</="+",51>");
+                        //注释
+                        else if(ch == '/'){
+                            ch = c[++i];
+                            //int j = i+1;
+                            //System.out.println("<//"+",79"+">");
+                            while(ch!='\n') {
+                                arr = arr + ch;
+                                ch = c[++i];
+                            }
+
+                            System.out.println((++cnt)+": "+"<//"+arr+",79"+">");
+
+                        }
+                        else if(ch == '*'){
+                            ch = c[++i];
+                            int j = i+1;
+                            char ch2 = c[j];
+                            while(ch != '*' || ch2 != '/'){
+                                //if(ch!='\n')
+                                    arr = arr + ch;
+                                
+                                ch = c[++i];
+                                j = i + 1;
+                                ch2 = c[j];
+
+                            }
+                            i++;
+                            //if(arr.length()==0) i++;
+                            System.out.println((++cnt)+": "+"</*"+arr+"*/"+",79"+">");
+                        }
+                        else {
+                            System.out.println((++cnt)+": "+"<"+"/"+",50"+">");
+                            i--;
+                        }
+                    }break;
+                    case '|':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<|="+",62>");
+                        else if(ch == '|')System.out.println((++cnt)+": "+"<||"+",61>");
+                        else {
+                            System.out.println((++cnt)+": "+"<"+"|"+",60"+">");
+                            i--;
+                        }
+                    }break;
+                    case '&':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<&="+",43>");
+                        else if(ch == '&')System.out.println((++cnt)+": "+"<&&"+",42>");
+                        else {
+                            System.out.println((++cnt)+": "+"<"+"&"+",41"+">");
+                            i--;
+                        }
+                    }break;
+                    case '%':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<%="+",40>");
+                        else {
+                            System.out.println((++cnt)+": "+"<"+"%"+",39"+">");
+                            i--;
+                        }
+                    }break;
+                    
+					case '=':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<=="+",73>");
+                        else {
+                            System.out.println((++cnt)+": "+"<="+",72>");
+                            i--;
+                        }
+                    }break;
+                    case '!':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<!="+",38>");
+                        else {
+                            System.out.println((++cnt)+": "+"<!"+",37>");
+                            i--;
+                        }
+                    }break;
+                    case '^':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<^="+",58>");
+                        else {
+                            System.out.println((++cnt)+": "+"<^"+",57>");
+                            i--;
+                        }
+                    }break;
+                    case '>':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<>="+",75>");
+                        else if(ch == '>'){
+                            ch = c[++i];
+                            if(ch == '=')System.out.println((++cnt)+": "+"<>>="+",77>");
+                            else{
+                                System.out.println((++cnt)+": "+"<>>"+",76>");
+                                i--;
+                            }
+                        }
+                        else {
+                            System.out.println((++cnt)+": "+"<>"+",74>");
+                            i--;
+                        }
+                    }break;
+                    case '<':{
+                        ch = c[++i];
+                        if(ch == '=')System.out.println((++cnt)+": "+"<<="+",71>");
+                        else if(ch == '<'){
+                            ch = c[++i];
+                            if(ch == '=')System.out.println((++cnt)+": "+"<<<="+",70>");
+                            else{
+                                System.out.println((++cnt)+": "+"<<<"+",69>");
+                                i--;
+                            }
+                        }
+                        else {
+                            System.out.println((++cnt)+": "+"<<"+",68>");
+                            i--;
+                        }
+                    }break;
+                    case '"':{
+                        System.out.println((++cnt)+": "+"<"+ch+",78"+">");
+                        ch = c[++i];
+                        while(ch != '"') {
+                            arr = arr + ch;
+                            ch = c[++i];
+                        }
+                        if(arr.length()!=0) System.out.println((++cnt)+": "+"<"+arr+",81"+">");
+                        System.out.println((++cnt)+": "+"<"+ch+",78"+">");
+                    }break;
+                    
+                    case '(':System.out.println((++cnt)+": "+"<"+ch+",44"+">");break;
+                    case ')':System.out.println((++cnt)+": "+"<"+ch+",45"+">");break;
+                    case '[':System.out.println((++cnt)+": "+"<"+ch+",55"+">");break;
+                    case ']':System.out.println((++cnt)+": "+"<"+ch+",56"+">");break;
+                    case ':':System.out.println((++cnt)+": "+"<"+ch+",52"+">");break;
+                    case ';':System.out.println((++cnt)+": "+"<"+ch+",53"+">");break;
+                    case '{':System.out.println((++cnt)+": "+"<"+ch+",59"+">");break;
+                    case '}':System.out.println((++cnt)+": "+"<"+ch+",63"+">");break;
+                    case '~':System.out.println((++cnt)+": "+"<"+ch+",64"+">");break;
+                    case '?':System.out.println((++cnt)+": "+"<"+ch+",54"+">");break;
+                    case '.':System.out.println((++cnt)+": "+"<"+ch+",49"+">");break;
+                    case ',':System.out.println((++cnt)+": "+"<"+ch+",48"+">");break;
+                    
+                    //default: System.out.println(ch+":"+"error");
+                }
+            
+        }
+        System.out.print((++cnt)+": "+"<"+"}"+",63"+">");
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        //System.out.println(keyWord[20]);
+        analysis();
+
+    }
+}
+

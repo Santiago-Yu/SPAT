@@ -1,0 +1,53 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance) {
+		long maxPower = 0;
+
+		for(int i=1; i<=numbers; i++) {
+			int[] temp = abilities.clone();
+			
+			long answer = action(temp,selectedNum,i,distance);
+			if(answer > maxPower)
+				maxPower = answer;
+		}
+		
+		return maxPower;
+	}
+	
+	Long action(int[] abi, int num, int i, int distance) {
+		long a = abi[i];
+		abi[i] = 0;
+		int maxAbi = 0;
+		int maxI = i;
+		int numbers = abi.length-1;
+		
+		if(num == 1) {
+			return a;
+		}
+
+		int l = i-distance;
+		int h = i+distance;
+		if(l < 1 )
+			l = 1;
+		if(h > numbers)
+			h = numbers;
+		
+		for(int j=l; j<=h; j++) {
+			if(j==i)
+				continue;
+			if(abi[j] > maxAbi) {
+				maxAbi = abi[j];
+				maxI = j;
+			}
+		}
+		
+		
+		return a*action(abi,num-1,maxI,distance);
+	}
+
+
+	/********* End *********/
+}

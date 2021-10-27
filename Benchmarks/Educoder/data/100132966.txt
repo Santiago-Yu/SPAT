@@ -1,0 +1,41 @@
+package step2;
+
+public class Task {
+	
+	public int getDaysNum(String startTime,String endTime){
+        int []a= new int[200];
+        int k=0;
+       	int p=0;
+        while(k+1+p<200){
+            k=k+1+p;
+        	a[k]=1;
+            p++;
+             //System.out.print(a[k]);
+        }
+       // for(int j=1;j<100;j++){
+         	//System.out.print(a[j]);   
+        //}
+
+        
+		int day=0;
+		String []arr= startTime.split("-");
+        String []brr = endTime.split("-");
+		int sm = Integer.parseInt(arr[0]);
+        int sd = Integer.parseInt(arr[1]);
+        int em = Integer.parseInt(brr[0]);
+        int ed = Integer.parseInt(brr[1]);
+      //  System.out.println(sm+" "+sd+" "+em+" "+ed);
+        int num=0;
+        if(sm==em) day=ed-sd;
+        else{
+        	day=31-sd+1+ed;
+        }
+        
+		for(int j=sd;j<=day+sd;j++){
+         	if(a[j]==1) num++;   
+        }
+       //System.out.println(num);
+		return num;
+	}
+	
+}

@@ -1,0 +1,23 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        StringBuffer b=new StringBuffer();
+        int d=data.length();
+        for(int i=0;i<d;i++){
+            if(data.charAt(i)==' '){
+                b.reverse();
+                ans.append(b+" ");
+                b=new StringBuffer();
+            } else{
+                b.append(data.charAt(i));
+            }
+        }
+        b.reverse();
+        ans.append(b+" ");
+        /********** End *********/
+        return ans;
+    }
+}

@@ -1,0 +1,54 @@
+
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner scanner = new Scanner(System.in);
+		String ss = scanner.nextLine();
+		String[] str = ss.split(" ");
+		int[] a = new int[str.length];
+		for(int j=0;j<str.length;j++)
+		{
+			a[j] = Integer.valueOf(str[j]);
+		}
+		int n = a.length;
+		int x=0,y=0;
+		boolean pay = false;
+		if(a[0]==5){
+			pay = true;
+			x++;
+		}else{
+			pay = false;
+		}
+		for(int i=1;i<n;i++)
+		{
+			if(a[i]==10){
+				if(x>=1){
+					pay = true;
+					y++;
+					x--;
+				}else{
+					pay = false;
+					break;
+				}
+			}
+			else if(a[i]==5){
+				pay = true;
+				x++;
+			}
+			else if(a[i]==20){
+				if(x>=1&&y>=1){
+					pay = true;
+					x--;
+					y--;
+				}else{
+					pay = false;
+					break;
+				}
+			}
+		}
+		System.out.print(pay);
+	}
+
+}

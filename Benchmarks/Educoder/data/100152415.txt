@@ -1,0 +1,42 @@
+package step2;
+import java.util.Scanner;
+
+public class TestJava11_3 {
+	public static void main(String[] args) {
+		/******Begin******/
+				int a, b, c;// 保存三角形的三条边
+		Scanner in = new Scanner(System.in);// 获取用户输入的三条边
+		System.out.println("请输入三角形的第一条边：");
+		System.out.println("请输入三角形的第二条边：");
+		System.out.println("请输入三角形的第三条边：");
+		a = in.nextInt();
+		b = in.nextInt();
+		c = in.nextInt();
+		in.close();// 关闭输入
+
+		if (a <= 0 || b <= 0 || c <= 0)
+		System.out.println("输入错误，边长不能为负");
+		if ((a + b > c) && Math.abs(a - b) < c && 
+		(a + c > b)&& Math.abs(a - c) < b &&
+		(c + b > a) && Math.abs(c - b) < a) {
+		//三角形满足的要求，两边之和大于第三边，两边之差小于第三边
+
+		if (a == b || b == c || a == c) {
+
+		if (a == b && b == c)
+		System.out.println("输入的三条边构成等边三角形！");
+		else
+		System.out.println("输入的三条边构成等腰三角形！");
+		} else if (a * a + b * b == c * c || a * a + c * c == b * b
+		|| b * b + c * c == a * a)
+		System.out.println("输入的三条边能构成三角形");
+		else
+		System.out.println("输入的三条边构成一个普通的三角形");
+		}else{
+		System.out.println("输入的三条边不构成三角形！");
+		
+		}
+		/******End******/	
+	}
+
+}

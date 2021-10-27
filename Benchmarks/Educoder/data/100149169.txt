@@ -1,0 +1,33 @@
+package step2;
+
+public class Task {
+
+    public int virusArea(int n,int m,char[][] area){
+        /********* Begin *********/
+        if(area==null || area.length==0) return 0;
+        int rows = area.length,cols = area[0].length,count=0;
+        boolean[][] visited=new boolean[rows][cols];
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                if(area[i][j]=='o' && !visited[i][j]){
+                    backtrack(i,j,visited,area,rows,cols);
+                    count++;
+                }
+            }
+        }
+        return count;
+        /********* End *********/
+    }
+
+    //这个过程就是给岛域都标上1的过程
+    private void backtrack(int i, int j, boolean[][] visited, char[][] grid, int rows, int cols) {
+        visited[i][j]=true;
+        //根据题设 只需要检查4个方向而不是8个
+        //另外,需要检查visited=false,因为要避免a->b->a又走回去了
+        boolean rowup=(i-1>=0),rowdown=(i+1<rows),colleft=(j-1>=0),colright=(j+1<cols);
+        if(rowup && grid[i-1][j]=='o' && !visited[i-1][j]) backtrack(i-1,j,visited,grid, rows, cols);  //左边
+        if(rowdown && grid[i+1][j]=='o' && !visited[i+1][j]) backtrack(i+1,j,visited,grid, rows, cols);  //右边
+        if(colleft && grid[i][j-1]=='o' && !visited[i][j-1]) backtrack(i,j-1,visited,grid, rows, cols);  //上面
+        if(colright && grid[i][j+1]=='o' && !visited[i][j+1]) backtrack(i,j+1,visited,grid, rows, cols);  //下面
+    }
+}

@@ -1,0 +1,56 @@
+package case5;
+
+public class abstractTest {
+	public static void main(String[] args) {
+		/********* begin *********/
+		// 分别实例化Student类与Worker类的对象，并调用各自构造方法初始化类属性。
+		Student s=new Student();
+        Worker w=new Worker();
+		// 分别调用各自类中被复写的talk()方法 打印信息。
+		s.talk();
+        w.talk();
+		/********* end *********/
+		
+	}
+}
+
+// 声明一个名为Person的抽象类，在Person中声明了三个属性name age occupation和一个抽象方法——talk()。
+abstract class Person {
+	/********* begin *********/
+        String name;
+    	int age;
+    	String occupation;
+    public void talk(){
+        System.out.println("asdcxz");
+    }
+    abstract void talk();
+	/********* end *********/
+}
+
+// Student类继承自Person类，添加带三个参数的构造方法，复写talk()方法 返回姓名、年龄和职业信息
+class Student extends Person {
+	/********* begin *********/
+    public void talk(){
+
+        name="张三";
+        age=20;
+        occupation="学生";
+        System.out.println("学生——>姓名："+name+"，年龄："+age+"，职业："+occupation+"！");
+    }
+        
+	/********* end *********/
+}
+
+// Worker类继承自Person类，添加带三个参数的构造方法，复写talk()方法 返回姓名、年龄和职业信息
+class Worker extends Person {
+	/********* begin *********/
+    public void talk(){
+  
+        name="李四";
+        age=30;
+        occupation="工人";
+        System.out.println("工人——>姓名："+name+"，年龄："+age+"，职业："+occupation+"！");
+    }
+	/********* end *********/
+
+}

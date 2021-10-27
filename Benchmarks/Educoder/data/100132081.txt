@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		
+				int i=0,j=0;
+		int[] res=new int[temperatures.length];
+		while(i<temperatures.length) {
+			j=i+1;
+			while(j<temperatures.length) {
+				if(temperatures[j]>temperatures[i]) {
+					res[i]=j-i;
+					i++;
+					break;
+				}
+				else j++;
+			}
+			if(j==temperatures.length) {
+				res[i]=0;
+				i++;
+			}
+		}
+		return res;
+		
+
+		/********** END **********/
+	}
+}

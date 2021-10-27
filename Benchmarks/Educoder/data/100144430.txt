@@ -1,0 +1,33 @@
+package step1;
+import java.awt.font.TextMeasurer;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Stack;
+
+public class Task {
+	public String inversion(String str){
+		/********* Begin *********/
+		char array[] = str.toCharArray();
+ int length = array.length;
+ char newArray[] = new char[length];
+ Stack<Character> strStack = new Stack<>();
+ // for (int i = 0; i < length; i++) {
+ // newArray[i] = array[length - 1 - i];
+ // }
+ for (char ch : array) {
+ strStack.push(ch);
+ }
+ for (int i = 0; i < length; i++) {
+ newArray[i] = strStack.pop();
+ }
+ return String.valueOf(newArray);
+		
+		
+		/********* End *********/
+	}
+}

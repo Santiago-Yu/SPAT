@@ -1,0 +1,42 @@
+package step4;
+
+public class DayJudge {
+
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        // 请在此提供实现代码
+		            String a=" ";
+        int c=28;
+        int j=0;
+        if(year%400==0||(year%4==0&&year%100!=0))
+            c=29;
+        if(month<0||month>12)
+            a="错误";
+            else
+            {
+            	switch(month)
+                {
+                    case 1:	j=day;break;
+                    case 2:j=31+day;break;
+                    case 3:j=31+c+day;break;
+                    case 4:j=31+c+31+day;break;
+                    case 5:j=31+c+31+30+day;break;
+                    case 6:j=31+c+31+30+31+day;break;
+                    case 7:j=31+c+31+30+31+30+day;break;
+                    case 8:j=31+c+31+30+31+30+31+day;break;
+                    case 9:j=31+c+31+30+31+30+31+31+day;break;
+                    case 10:j=31+c+31+30+31+30+31+30+31+day;break;
+                    case 11:j=31+c+31+30+31+30+31+31+30+31+day;break;
+                    case 12:j=31+c+31+30+31+30+31+31+30+31+30+day;break;
+                
+                
+                }
+                a=year+"年的第"+j+"天";
+            }
+        return a;
+        
+    	
+    }
+    
+    
+}

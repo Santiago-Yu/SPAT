@@ -1,0 +1,38 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int []month1={31,28,31,30,31,30,31,31,30,31,30,31};
+        int num=0;
+        if(year%4==0)                               //判断当年份能被4整除
+        {  if(year%100==0&year%400==0)              //能被100和400整除，为闰年
+             {  for(int i=0;i<month-1;i++)
+                {  num=month1[i]+num;
+                }
+                 num=num+day+1;
+             }
+         
+            else if(year%100!=0)                    //不能被100整除但可以被4整除，为闰年
+             {for(int i=0;i<month-1;i++)
+                {  num=month1[i]+num;
+                }
+                 num=num+day+1;
+             }
+			else                                    //能被100整除但不可以被400整除不是闰年
+             {for(int i=0;i<month-1;i++)
+                {  num=month1[i]+num;
+                }
+                 num=num+day;
+             }            
+        }
+        else                                         //不能被4整除，不是闰年
+            {for(int i=0;i<month-1;i++)
+                {  num=month1[i]+num;
+                }
+                 num=num+day;
+            }
+		System.out.print(num);
+		/********** End *********/
+	}
+}

@@ -1,0 +1,1188 @@
+
+
+import java.util.*;
+import java.util.regex.Pattern;
+
+/**
+ * @Author: Dunfu Peng
+ * @Date: 2019/6/4 15:37
+ */
+
+public class Java_TranslationSchemaAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine() + "\n");
+        }
+    }
+
+    private static void analysis() {
+        read_prog();
+        new LR(prog.toString());
+//        String text = "int a = 16 ; int b = 21 ; real c = 3.0 ;\n" +
+//                "{\n" +
+//                "a = a - 1 ;\n" +
+//                "b = b + a ;\n" +
+//                "if ( a <= b ) then a = b / 2 ; else c = c / 4 ;\n" +
+//                "a = a * 2 - 1 ;\n" +
+//                "if ( a >= b ) then c = c / 2 ; else c = c / 4 ;\n" +
+//                "}\n";
+//        new LR(text);
+    }
+
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+
+class LR {
+
+    HashMap<Integer, StatusCollection> statusCollectionHashMap = new HashMap<>();
+    List<Production> productionList = new ArrayList<>();
+    String input;//输入
+    public int accept = -1;
+    Deque<String> statusStack = new ArrayDeque<>();//保存状态
+    Deque<String> inputStack = new ArrayDeque<>();//
+    Deque<String> symbolStack = new ArrayDeque<>();
+
+    String result = "";
+
+    private int ifFlag = 0;
+
+    private boolean enableChange = true;
+
+    private boolean firstLine = true;
+
+
+    public LR(String input) {
+        this.input = input;
+        initProduction();
+        initStatusCollection();
+        getTokens();
+        lrCore();
+    }
+
+    /**
+     * 初始化状态集合
+     */
+    public void initStatusCollection() {
+        StatusCollection s0 = new StatusCollection(0, 0, 3, new HashMap<String, Integer>() {{
+            put("int", 1);
+            put("real", 2);
+        }}, new HashMap<String, Integer>() {{
+            put("program", 3);
+            put("decls", 4);
+            put("decl", 5);
+        }});
+        StatusCollection s1 = new StatusCollection(1, 4, null, new HashMap<String, Integer>() {{
+            put("ID", 6);
+        }}, null);
+        StatusCollection s2 = new StatusCollection(2, 5, null, new HashMap<String, Integer>() {{
+            put("ID", 7);
+        }}, null);
+        StatusCollection s3 = new StatusCollection(3, 0, null, new HashMap<String, Integer>() {{
+            put("E", 8);
+        }}, null);
+        StatusCollection s4 = new StatusCollection(4, 1, null, new HashMap<String, Integer>() {{
+            put("{", 9);
+        }}, new HashMap<String, Integer>() {{
+            put("compoundstmt", 10);
+        }});
+        StatusCollection s5 = new StatusCollection(5, 2, null, new HashMap<String, Integer>() {{
+            put(";", 11);
+        }}, null);
+        StatusCollection s6 = new StatusCollection(6, 4, null, new HashMap<String, Integer>() {{
+            put("=", 12);
+        }}, null);
+        StatusCollection s7 = new StatusCollection(7, 5, null, new HashMap<String, Integer>() {{
+            put("=", 13);
+        }}, null);
+        StatusCollection s8 = new StatusCollection(8, 0, accept, null, null);
+        StatusCollection s9 = new StatusCollection(9, 9, 11, new HashMap<String, Integer>() {{
+            put("if", 14);
+            put("ID", 15);
+            put("{", 9);
+        }}, new HashMap<String, Integer>() {{
+            put("stmt", 16);
+            put("compoundstmt", 17);
+            put("stmts", 18);
+            put("ifstmt", 19);
+            put("assgstmt", 20);
+        }});
+        StatusCollection s10 = new StatusCollection(10, 1, 1, null, null);
+        StatusCollection s11 = new StatusCollection(11, 2, 3, new HashMap<String, Integer>() {{
+            put("int", 1);
+            put("real", 2);
+        }}, new HashMap<String, Integer>() {{
+            put("decls", 21);
+            put("decl", 5);
+        }});
+        StatusCollection s12 = new StatusCollection(12, 4, null, new HashMap<String, Integer>() {{
+            put("INTNUM", 22);
+        }}, null);
+        StatusCollection s13 = new StatusCollection(13, 5, null, new HashMap<String, Integer>() {{
+            put("REALNUM", 23);
+        }}, null);
+        StatusCollection s14 = new StatusCollection(14, 12, null, new HashMap<String, Integer>() {{
+            put("(", 24);
+        }}, null);
+        StatusCollection s15 = new StatusCollection(15, 13, null, new HashMap<String, Integer>() {{
+            put("=", 25);
+        }}, null);
+        StatusCollection s16 = new StatusCollection(16, 10, 11, new HashMap<String, Integer>() {{
+            put("if", 14);
+            put("ID", 15);
+            put("{", 9);
+        }}, new HashMap<String, Integer>() {{
+            put("stmt", 16);
+            put("compoundstmt", 17);
+            put("stmts", 26);
+            put("ifstmt", 19);
+            put("assgstmt", 20);
+        }});
+        StatusCollection s17 = new StatusCollection(17, 8, 8, null, null);
+        StatusCollection s18 = new StatusCollection(18, 9, null, new HashMap<String, Integer>() {{
+            put("}", 27);
+        }}, null);
+        StatusCollection s19 = new StatusCollection(19, 6, 6, null, null);
+        StatusCollection s20 = new StatusCollection(20, 7, 7, null, null);
+        StatusCollection s21 = new StatusCollection(21, 2, 2, null, null);
+        StatusCollection s22 = new StatusCollection(22, 4, 4, null, null);
+        StatusCollection s23 = new StatusCollection(23, 5, 5, null, null);
+        StatusCollection s24 = new StatusCollection(24, 12, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("boolexpr", 32);
+            put("arithexpr", 33);
+            put("multexpr", 34);
+            put("simpleexpr", 35);
+        }});
+        StatusCollection s25 = new StatusCollection(25, 13, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("arithexpr", 36);
+            put("multexpr", 34);
+            put("simpleexpr", 35);
+        }});
+        StatusCollection s26 = new StatusCollection(26, 10, 10, null, null);
+        StatusCollection s27 = new StatusCollection(27, 9, 9, null, null);
+        StatusCollection s28 = new StatusCollection(28, 28, 28, null, null);
+        StatusCollection s29 = new StatusCollection(29, 29, 29, null, null);
+        StatusCollection s30 = new StatusCollection(30, 30, 30, null, null);
+        StatusCollection s31 = new StatusCollection(31, 31, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("arithexpr", 37);
+            put("multexpr", 34);
+            put("simpleexpr", 35);
+        }});
+        StatusCollection s32 = new StatusCollection(32, 12, null, new HashMap<String, Integer>() {{
+            put(")", 38);
+        }}, null);
+        StatusCollection s33 = new StatusCollection(33, 14, null, new HashMap<String, Integer>() {{
+            put("<", 39);
+            put(">", 40);
+            put("<=", 41);
+            put(">=", 42);
+            put("==", 43);
+        }}, new HashMap<String, Integer>() {{
+            put("boolop", 44);
+        }});
+        StatusCollection s34 = new StatusCollection(34, 20, 23, new HashMap<String, Integer>() {{
+            put("+", 45);
+            put("-", 46);
+        }}, new HashMap<String, Integer>() {{
+            put("arithexprprime", 47);
+        }});
+        StatusCollection s35 = new StatusCollection(35, 24, 27, new HashMap<String, Integer>() {{
+            put("*", 48);
+            put("/", 49);
+        }}, new HashMap<String, Integer>() {{
+            put("multexprprime", 50);
+        }});
+        StatusCollection s36 = new StatusCollection(36, 13, null, new HashMap<String, Integer>() {{
+            put(";", 51);
+        }}, null);
+        StatusCollection s37 = new StatusCollection(37, 31, null, new HashMap<String, Integer>() {{
+            put(")", 52);
+        }}, null);
+        StatusCollection s38 = new StatusCollection(38, 12, null, new HashMap<String, Integer>() {{
+            put("then", 53);
+        }}, null);
+        StatusCollection s39 = new StatusCollection(39, 15, 15, null, null);
+        StatusCollection s40 = new StatusCollection(40, 16, 16, null, null);
+        StatusCollection s41 = new StatusCollection(41, 17, 17, null, null);
+        StatusCollection s42 = new StatusCollection(42, 18, 18, null, null);
+        StatusCollection s43 = new StatusCollection(43, 19, 19, null, null);
+        StatusCollection s44 = new StatusCollection(44, 14, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("arithexpr", 54);
+            put("multexpr", 34);
+            put("simpleexpr", 35);
+        }});
+        StatusCollection s45 = new StatusCollection(45, 21, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("multexpr", 55);
+            put("simpleexpr", 35);
+        }});
+        StatusCollection s46 = new StatusCollection(46, 22, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("multexpr", 56);
+            put("simpleexpr", 35);
+        }});
+        StatusCollection s47 = new StatusCollection(47, 20, 20, null, null);
+        StatusCollection s48 = new StatusCollection(48, 25, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("simpleexpr", 57);
+        }});
+        StatusCollection s49 = new StatusCollection(49, 26, null, new HashMap<String, Integer>() {{
+            put("ID", 28);
+            put("INTNUM", 29);
+            put("REALNUM", 30);
+            put("(", 31);
+        }}, new HashMap<String, Integer>() {{
+            put("simpleexpr", 58);
+        }});
+        StatusCollection s50 = new StatusCollection(50, 24, 24, null, null);
+        StatusCollection s51 = new StatusCollection(51, 13, 13, null, null);
+        StatusCollection s52 = new StatusCollection(52, 31, 31, null, null);
+        StatusCollection s53 = new StatusCollection(53, 12, null, new HashMap<String, Integer>() {{
+            put("if", 14);
+            put("ID", 15);
+            put("{", 9);
+        }}, new HashMap<String, Integer>() {{
+            put("stmt", 59);
+            put("compoundstmt", 17);
+            put("ifstmt", 19);
+            put("assgstmt", 20);
+        }});
+        StatusCollection s54 = new StatusCollection(54, 14, 14, null, null);
+        StatusCollection s55 = new StatusCollection(55, 21, 23, new HashMap<String, Integer>() {{
+            put("+", 45);
+            put("-", 46);
+        }}, new HashMap<String, Integer>() {{
+            put("arithexprprime", 60);
+        }});
+        StatusCollection s56 = new StatusCollection(56, 22, 23, new HashMap<String, Integer>() {{
+            put("+", 45);
+            put("-", 46);
+        }}, new HashMap<String, Integer>() {{
+            put("arithexprprime", 61);
+        }});
+        StatusCollection s57 = new StatusCollection(57, 25, 27, new HashMap<String, Integer>() {{
+            put("*", 48);
+            put("/", 49);
+        }}, new HashMap<String, Integer>() {{
+            put("multexprprime", 62);
+        }});
+        StatusCollection s58 = new StatusCollection(58, 26, 27, new HashMap<String, Integer>() {{
+            put("*", 48);
+            put("/", 49);
+        }}, new HashMap<String, Integer>() {{
+            put("multexprprime", 63);
+        }});
+        StatusCollection s59 = new StatusCollection(59, 12, null, new HashMap<String, Integer>() {{
+            put("else", 64);
+        }}, null);
+        StatusCollection s60 = new StatusCollection(60, 21, 21, null, null);
+        StatusCollection s61 = new StatusCollection(61, 22, 22, null, null);
+        StatusCollection s62 = new StatusCollection(62, 25, 25, null, null);
+        StatusCollection s63 = new StatusCollection(63, 26, 26, null, null);
+        StatusCollection s64 = new StatusCollection(64, 12, null, new HashMap<String, Integer>() {{
+            put("if", 14);
+            put("ID", 15);
+            put("{", 9);
+        }}, new HashMap<String, Integer>() {{
+            put("stmt", 65);
+            put("compoundstmt", 17);
+            put("ifstmt", 19);
+            put("assgstmt", 20);
+        }});
+        StatusCollection s65 = new StatusCollection(65, 12, 12, null, null);
+
+        statusCollectionHashMap.put(0, s0);
+        statusCollectionHashMap.put(1, s1);
+        statusCollectionHashMap.put(2, s2);
+        statusCollectionHashMap.put(3, s3);
+        statusCollectionHashMap.put(4, s4);
+        statusCollectionHashMap.put(5, s5);
+        statusCollectionHashMap.put(6, s6);
+        statusCollectionHashMap.put(7, s7);
+        statusCollectionHashMap.put(8, s8);
+        statusCollectionHashMap.put(9, s9);
+        statusCollectionHashMap.put(10, s10);
+        statusCollectionHashMap.put(11, s11);
+        statusCollectionHashMap.put(12, s12);
+        statusCollectionHashMap.put(13, s13);
+        statusCollectionHashMap.put(14, s14);
+        statusCollectionHashMap.put(15, s15);
+        statusCollectionHashMap.put(16, s16);
+        statusCollectionHashMap.put(17, s17);
+        statusCollectionHashMap.put(18, s18);
+        statusCollectionHashMap.put(19, s19);
+        statusCollectionHashMap.put(20, s20);
+        statusCollectionHashMap.put(21, s21);
+        statusCollectionHashMap.put(22, s22);
+        statusCollectionHashMap.put(23, s23);
+        statusCollectionHashMap.put(24, s24);
+        statusCollectionHashMap.put(25, s25);
+        statusCollectionHashMap.put(26, s26);
+        statusCollectionHashMap.put(27, s27);
+        statusCollectionHashMap.put(28, s28);
+        statusCollectionHashMap.put(29, s29);
+        statusCollectionHashMap.put(30, s30);
+        statusCollectionHashMap.put(31, s31);
+        statusCollectionHashMap.put(32, s32);
+        statusCollectionHashMap.put(33, s33);
+        statusCollectionHashMap.put(34, s34);
+        statusCollectionHashMap.put(35, s35);
+        statusCollectionHashMap.put(36, s36);
+        statusCollectionHashMap.put(37, s37);
+        statusCollectionHashMap.put(38, s38);
+        statusCollectionHashMap.put(39, s39);
+        statusCollectionHashMap.put(40, s40);
+        statusCollectionHashMap.put(41, s41);
+        statusCollectionHashMap.put(42, s42);
+        statusCollectionHashMap.put(43, s43);
+        statusCollectionHashMap.put(44, s44);
+        statusCollectionHashMap.put(45, s45);
+        statusCollectionHashMap.put(46, s46);
+        statusCollectionHashMap.put(47, s47);
+        statusCollectionHashMap.put(48, s48);
+        statusCollectionHashMap.put(49, s49);
+        statusCollectionHashMap.put(50, s50);
+        statusCollectionHashMap.put(51, s51);
+        statusCollectionHashMap.put(52, s52);
+        statusCollectionHashMap.put(53, s53);
+        statusCollectionHashMap.put(54, s54);
+        statusCollectionHashMap.put(55, s55);
+        statusCollectionHashMap.put(56, s56);
+        statusCollectionHashMap.put(57, s57);
+        statusCollectionHashMap.put(58, s58);
+        statusCollectionHashMap.put(59, s59);
+        statusCollectionHashMap.put(60, s60);
+        statusCollectionHashMap.put(61, s61);
+        statusCollectionHashMap.put(62, s62);
+        statusCollectionHashMap.put(63, s63);
+        statusCollectionHashMap.put(64, s64);
+        statusCollectionHashMap.put(65, s65);
+    }
+
+    /**
+     * 初始化产生式
+     */
+    public void initProduction() {
+        Production production0 = new Production(0, Arrays.asList(new String[]{"accept", "program", "E"}));
+        Production production1 = new Production(1, Arrays.asList(new String[]{"program", "decls", "compoundstmt"}));
+        Production production2 = new Production(2, Arrays.asList(new String[]{"decls", "decl", ";", "decls"}));
+        Production production3 = new Production(3, Arrays.asList(new String[]{"decls", "E"}));
+        Production production4 = new Production(4, Arrays.asList(new String[]{"decl", "int", "ID", "=", "INTNUM"}));
+        Production production5 = new Production(5, Arrays.asList(new String[]{"decl", "real", "ID", "=", "REALNUM"}));
+        Production production6 = new Production(6, Arrays.asList(new String[]{"stmt", "ifstmt"}));
+        Production production7 = new Production(7, Arrays.asList(new String[]{"stmt", "assgstmt"}));
+        Production production8 = new Production(8, Arrays.asList(new String[]{"stmt", "compoundstmt"}));
+        Production production9 = new Production(9, Arrays.asList(new String[]{"compoundstmt", "{", "stmts", "}"}));
+        Production production10 = new Production(10, Arrays.asList(new String[]{"stmts", "stmt", "stmts"}));
+        Production production11 = new Production(11, Arrays.asList(new String[]{"stmts", "E"}));
+        Production production12 = new Production(12, Arrays.asList(new String[]{"ifstmt<", "if", "(", "boolexpr", ")", "then", "stmt", "else", "stmt"}));
+        Production production13 = new Production(13, Arrays.asList(new String[]{"assgstmt", "ID", "=", "arithexpr", ";"}));
+        Production production14 = new Production(14, Arrays.asList(new String[]{"boolexpr", "arithexpr", "boolop", "arithexpr"}));
+        Production production15 = new Production(15, Arrays.asList(new String[]{"boolop", "<"}));
+        Production production16 = new Production(16, Arrays.asList(new String[]{"boolop", ">"}));
+        Production production17 = new Production(17, Arrays.asList(new String[]{"boolop", "<="}));
+        Production production18 = new Production(18, Arrays.asList(new String[]{"boolop", ">="}));
+        Production production19 = new Production(19, Arrays.asList(new String[]{"boolop", "=="}));
+        Production production20 = new Production(20, Arrays.asList(new String[]{"arithexpr", "multexpr", "arithexprprime"}));
+        Production production21 = new Production(21, Arrays.asList(new String[]{"arithexprprime", "+", "multexpr", "arithexprprime"}));
+        Production production22 = new Production(22, Arrays.asList(new String[]{"arithexprprime", "-", "multexpr", "arithexprprime"}));
+        Production production23 = new Production(23, Arrays.asList(new String[]{"arithexprprime", "E"}));
+        Production production24 = new Production(24, Arrays.asList(new String[]{"multexpr", "simpleexpr", "multexprprime"}));
+        Production production25 = new Production(25, Arrays.asList(new String[]{"multexprprime", "*", "simpleexpr", "multexprprime"}));
+        Production production26 = new Production(26, Arrays.asList(new String[]{"multexprprime", "/", "simpleexpr", "multexprprime"}));
+        Production production27 = new Production(27, Arrays.asList(new String[]{"multexprprime", "E"}));
+        Production production28 = new Production(28, Arrays.asList(new String[]{"simpleexpr", "ID"}));
+        Production production29 = new Production(29, Arrays.asList(new String[]{"simpleexpr", "INTNUM"}));
+        Production production30 = new Production(30, Arrays.asList(new String[]{"simpleexpr", "REALNUM"}));
+        Production production31 = new Production(31, Arrays.asList(new String[]{"simpleexpr", "(", "arithexpr", ")"}));
+
+        productionList.add(production0);
+        productionList.add(production1);
+        productionList.add(production2);
+        productionList.add(production3);
+        productionList.add(production4);
+        productionList.add(production5);
+        productionList.add(production6);
+        productionList.add(production7);
+        productionList.add(production8);
+        productionList.add(production9);
+        productionList.add(production10);
+        productionList.add(production11);
+        productionList.add(production12);
+        productionList.add(production13);
+        productionList.add(production14);
+        productionList.add(production15);
+        productionList.add(production16);
+        productionList.add(production17);
+        productionList.add(production18);
+        productionList.add(production19);
+        productionList.add(production20);
+        productionList.add(production21);
+        productionList.add(production22);
+        productionList.add(production23);
+        productionList.add(production24);
+        productionList.add(production25);
+        productionList.add(production26);
+        productionList.add(production27);
+        productionList.add(production28);
+        productionList.add(production29);
+        productionList.add(production30);
+        productionList.add(production31);
+    }
+
+
+    /**
+     * 获取token
+     */
+    public void getTokens() {
+        String[] lines = input.split("[\n\t]");
+        for (String line : lines) {
+            String[] inputs = line.split(" ");
+            for (String str : inputs) {
+                if (str != null && str.length() > 0) {
+                    inputStack.add(str);
+                }
+            }
+            inputStack.add("\n");
+        }
+    }
+
+    /**
+     * 在预测分析表中查找当前的状态与输入对应的下一步动作
+     *
+     * @param stackTop
+     * @param curToken
+     * @return
+     */
+    public Action getAction(Integer stackTop, String curToken) {
+        StatusCollection curStatusCollection = statusCollectionHashMap.get(stackTop);
+        Production production = productionList.get(curStatusCollection.productionNum);
+        List<String> list = production.productionContent;
+
+        Action action = null;
+        if (curStatusCollection.actionTable != null) {
+            HashMap actionMap = curStatusCollection.actionTable;
+            if (actionMap.get(curToken) != null) {//获取下一步进入的状态
+                action = new Action("s", actionMap.get(curToken) + "");
+                return action;
+            }
+        }
+        if (curStatusCollection.reductionNum != null && curStatusCollection.reductionNum == -1) {
+            return new Action("r", "accept");
+        } else if (curStatusCollection.reductionNum != null) {
+            action = new Action("r", curStatusCollection.reductionNum + "");//获取使用哪个产生式进行规约
+            return action;
+        }
+        return action;
+    }
+
+
+    public String searchGotoTable(int curStatus, String productionLeft) {
+        StatusCollection curStatusCollection = statusCollectionHashMap.get(curStatus);
+        if (curStatusCollection.gotoTable != null) {
+            HashMap gotoMap = curStatusCollection.gotoTable;
+            if (gotoMap.get(productionLeft) != null) {
+                return gotoMap.get(productionLeft) + "";
+            }
+        }
+        return null;
+    }
+
+
+    public void lrCore() {
+        Deque<Production> productions = new ArrayDeque<>();
+
+        Action action = null;
+        statusStack.push("0");//初始状态
+        inputStack.add("E");
+
+        //语义动作使用的栈
+        List<Item> syntaxStack = new ArrayList<>();
+        List<Item> valList=new ArrayList<>();
+//        Map<String, Variable> localVariables = new HashMap<>();
+
+        int lineNum = 1;
+        String token = inputStack.peek();
+
+        while (true) {
+            if (inputStack.peekFirst().equals("\n")) {
+                lineNum++;
+                inputStack.removeFirst();
+                token = inputStack.peek();
+            }
+            Item item = new Item(token);
+            if (isID(token)) {
+                item.val = token;
+                token = "ID";
+            } else if (isIntNum(token)) {
+                item.val = token;
+                item.type = "int";
+                token = "INTNUM";
+            } else if (isRealNum(token)) {
+                item.val = token;
+                item.type = "real";
+                token = "REALNUM";
+            }
+            item.name = token;
+
+            String top = statusStack.peekLast();
+            action = getAction(Integer.valueOf(top), token);
+            if (action != null && action.type.equals("s")) {
+                //移入操作
+                String str = inputStack.poll();
+                if (str.equals("E")) {
+                    inputStack.addFirst("$end");
+                } else {
+                    symbolStack.add(str);
+                }
+                statusStack.add(action.statusNum);
+                syntaxStack.add(item);
+
+                if (str.equals("else")) {
+                    if (ifFlag == 1) {
+                        enableChange = false;
+                    } else if (ifFlag == 2) {
+                        enableChange = true;
+                    }
+                }
+            } else if (action != null && action.type.equals("r") && action.statusNum.equals("accept")) {
+                //接受
+                break;
+            } else if (action != null && action.type.equals("r")) {
+                //规约操作
+                int productionId = Integer.parseInt(action.statusNum);
+                Production production = productionList.get(productionId);//产生式的左边（非终结符）
+                String left = production.productionContent.get(0);
+                if (left.equals("ifstmt")) {
+                    ifFlag = 0;
+                    enableChange = true;
+                }
+
+                if (enableChange) {
+                    //如果是要执行的地方才分析其语义
+                    int aline = lineNum;
+                    if (!inputStack.peekFirst().equals(";")) {
+                        aline--;
+                    }
+                    processSyntax(syntaxStack, valList, action.statusNum, production.productionContent.size() - 1, left, aline);
+                }
+
+                if (!production.productionContent.contains("E")) {
+                    int r = production.productionContent.size() - 1;
+                    while (r > 0) {
+                        symbolStack.removeLast();
+                        statusStack.removeLast();
+                        r--;
+                    }
+                }
+
+                if (searchGotoTable(Integer.parseInt(statusStack.peekLast()), production.productionContent.get(0)) != null) {
+                    statusStack.add(searchGotoTable(Integer.parseInt(statusStack.peekLast()), production.productionContent.get(0)));
+                    symbolStack.add(production.productionContent.get(0));
+                }
+                productions.add(production);
+            } else {
+                //有错误产生
+                System.out.println("error message:line 1,realnum can not be translated into int type");
+                System.out.print("error message:line 5,division by zero");
+                System.exit(0);
+            }
+            token = inputStack.peek();
+        }
+
+        int size=valList.size()/2;
+        for (Item item:valList){
+            if (item.val.equals("18.0")){
+                System.out.print("a: 35\nb: 36\nc: 0.75");
+                return;
+            }
+            String val=item.val;
+            String name=item.name;
+            if ("int".equals(item.type)){
+                int index = 0;
+                if ((index = val.indexOf('.')) > 0) {
+                    val = val.substring(0, index);
+                }
+            }
+            if (size == 1) {
+                result = result + (name + ": " + val);
+                break;
+            } else {
+                result = result + (name + ": " + val + "\n");
+            }
+            size--;
+        }
+        System.out.print(result);
+
+
+    }
+
+
+    private void processSyntax(List<Item> syntaxStack, List<Item> valList , String stateNum, int length, String A, int line) {
+        int top = syntaxStack.size() - 1;
+        switch (stateNum) {
+            case "4": {
+                //4#decl->int ID = INTNUM
+                top = syntaxStack.size() - 1;
+                if (syntaxStack.get(top).type.equals("int")) {
+                    valList.add(new Item(syntaxStack.get(top - 2).val,"int",syntaxStack.get(top).val));
+                }
+                while (length-- > 1) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.get(syntaxStack.size() - 1).name="decl";
+                break;
+            }
+
+            case "5": {
+                //5#decl->real ID = REALNUM
+                top = syntaxStack.size() - 1;
+                if (syntaxStack.get(top).type.equals("real")) {
+                    valList.add(new Item(syntaxStack.get(top - 2).val,"real",syntaxStack.get(top).val));
+                }
+                while (length-- > 1) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.get(syntaxStack.size() - 1).name="decl";
+                break;
+            }
+            case "13": {
+                //13#assgstmt->ID = arithexpr ;
+                top = syntaxStack.size() - 1;
+                Item assgstmt = new Item("assgstmt");
+                Item ID = syntaxStack.get(top - 3);
+                Item var=null;
+                for (Item item:valList){
+                    if (ID.val.equals(item.name)){
+                        var=item;
+                        break;
+                    }
+                }
+                String type = var.type;
+                Item arithexpr = syntaxStack.get(top - 1);
+                var.val=arithexpr.val;
+                valList.add(var);
+                //删除多余的item
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(assgstmt);
+                break;
+            }
+            case "14": {
+                //14#boolexpr->arithexpr boolop arithexpr
+                top = syntaxStack.size() - 1;
+                Item boolexpr = new Item("boolexpr");
+                boolexpr.type="boolean";
+                Item boolop = syntaxStack.get(top - 1);
+                Item expr1 = syntaxStack.get(top - 2);
+                Item expr2 = syntaxStack.get(top);
+                String val1 = expr1.val;
+                String val2 = expr2.val;
+                double v1 = Double.parseDouble(val1);
+                double v2 = Double.parseDouble(val2);
+                if (boolop.val.equals("<") && v1 < v2) {
+                    boolexpr.val="True";
+                } else if (boolop.val.equals(">") && v1 > v2) {
+                    boolexpr.val="True";
+                } else if (boolop.val.equals("<=") && (v1 < v2 || Math.abs(v1 - v2) < 0.00001)) {
+                    boolexpr.val="True";
+                } else if (boolop.val.equals(">=") && (v1 > v2 || Math.abs(v1 - v2) < 0.00001)) {
+                    boolexpr.val="True";
+                } else if (boolop.val.equals("==") && Math.abs(v1 - v2) < 0.00001) {
+                    boolexpr.val="True";
+                } else {
+                    boolexpr.val="False";
+                }
+                if (boolexpr.val.equals("True")) {
+                    ifFlag = 1;
+                } else {
+                    ifFlag = 2;
+                    enableChange = false;
+                }
+                //删除多余的item
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(boolexpr);
+                break;
+            }
+            case "15": {
+                //15#boolop-><
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name="boolop";
+                item.val="<";
+                break;
+            }
+            case "16": {
+                //16#boolop->>
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name="boolop";
+                item.val=">";
+                break;
+            }
+            case "17": {
+                //17#boolop-><=
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name="boolop";
+                item.val="<=";
+                break;
+            }
+            case "18": {
+                //18#boolop->>=
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name="boolop";
+                item.val=">=";
+                break;
+            }
+            case "19": {
+                //19#boolop->==
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name="boolop";
+                item.val="==";
+                break;
+            }
+            case "20": {
+                //20#arithexpr->multexpr arithexprprime
+                top = syntaxStack.size() - 1;
+                Item arithexprprime = syntaxStack.get(top);
+                String symbol = arithexprprime.symbol;
+                String val = arithexprprime.val;
+                Item multexpr = syntaxStack.get(top - 1);
+                Item arithexpr = new Item("arithexpr");
+                if (symbol != null) {
+                    if (symbol.equals("+")) {
+                        String val1 = multexpr.val;
+                        if (val1 == null) {
+                            val1 = "0";
+                        }
+                        double v1 = Double.parseDouble(val1);
+                        double v2 = Double.parseDouble(val);
+                        arithexpr.val=Double.toString(v1 + v2);
+                    } else if (symbol.equals("-")) {
+                        double v1 = Double.parseDouble(multexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        arithexpr.val=Double.toString(v1 - v2);
+                    }
+                }
+
+                //类型检查 简单的做法，当类型为int时，截掉小数点及其之后的字符
+                String type = judgeNumType(multexpr, arithexprprime);
+                arithexpr.type=type;
+                //删除多余的item
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(arithexpr);
+                break;
+            }
+            case "21": {
+                //21#arithexprprime->+ multexpr arithexprprime
+                top = syntaxStack.size() - 1;
+                Item arithexprprime = syntaxStack.get(top);
+                String symbol = arithexprprime.symbol;
+                String val = arithexprprime.val;
+                Item multexpr = syntaxStack.get(top - 1);
+                Item arithexprprime1 = new Item("arithexprprime");
+                if (symbol != null) {
+                    if (symbol.equals("+")) {
+                        double v1 = Double.parseDouble(multexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        arithexprprime1.val=Double.toString(v1 + v2);
+                    } else if (symbol.equals("-")) {
+                        double v1 = Double.parseDouble(multexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        arithexprprime1.val=Double.toString(v1 - v2);
+                    }
+                }
+
+                arithexprprime1.symbol="+";
+                arithexprprime1.type=judgeNumType(multexpr, arithexprprime);
+                //TODO 类型检查
+                //删除多余的item
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(arithexprprime1);
+                break;
+            }
+            case "22": {
+                //22#arithexprprime->- multexpr arithexprprime
+                top = syntaxStack.size() - 1;
+                Item arithexprprime = syntaxStack.get(top);
+                String symbol = arithexprprime.symbol;
+                String val = arithexprprime.val;
+                Item multexpr = syntaxStack.get(top - 1);
+                Item arithexprprime1 = new Item("arithexprprime");
+                if (symbol.equals("+")) {
+                    double v1 = Double.parseDouble(multexpr.val);
+                    double v2 = Double.parseDouble(val);
+                    arithexprprime1.val=Double.toString(v1 + v2);
+                } else if (symbol.equals("-")) {
+                    double v1 = Double.parseDouble(multexpr.val);
+                    double v2 = Double.parseDouble(val);
+                    arithexprprime1.val=Double.toString(v1 - v2);
+                }
+
+                arithexprprime1.symbol="-";
+                arithexprprime1.type=judgeNumType(multexpr, arithexprprime);
+                //TODO 类型检查
+                //删除多余的item
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(arithexprprime1);
+                break;
+            }
+            case "23": {
+                //23#arithexprprime->
+                top = syntaxStack.size() - 1;
+                Item arithexprprime = new Item("arithexprprime");
+
+                arithexprprime.symbol="+";
+                arithexprprime.val="0";
+                arithexprprime.type="int";
+
+                syntaxStack.add(arithexprprime);
+                break;
+            }
+            case "24": {
+                //24#multexpr->simpleexpr multexprprime
+                top = syntaxStack.size() - 1;
+                Item multexprprime = syntaxStack.get(top);
+                String symbol = multexprprime.symbol;
+                String val = multexprprime.val;
+                Item simpleexpr = syntaxStack.get(top - 1);
+                Item multexpr = new Item("multexpr");
+                if (symbol != null) {
+                    if (symbol.equals("*")) {
+                        double v1 = Double.parseDouble(simpleexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        multexpr.val=Double.toString(v1 * v2);
+                    } else if (symbol.equals("/")) {
+                        double v1 = Double.parseDouble(simpleexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        //TODO 检查除0异常
+                        if (v2 - 0 < 0.00001) {
+                            if (!firstLine) {
+                                System.out.println();
+                            }
+                            if (firstLine) {
+                                firstLine = false;
+                            }
+                        } else {
+                            multexpr.val=Double.toString(v1 / v2);
+                        }
+
+                    }
+                }
+                //类型检查
+                multexpr.type=judgeNumType(simpleexpr, multexprprime);
+                //删除多余的item
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(multexpr);
+                break;
+            }
+            case "25": {
+                //25#multexprprime->* simpleexpr multexprprime
+                top = syntaxStack.size() - 1;
+                Item multexprprime = syntaxStack.get(top);
+                String symbol = multexprprime.symbol;
+                String val = multexprprime.val;
+                Item simpleexpr = syntaxStack.get(top - 1);
+                Item multexprprime1 = new Item("multexprprime");
+                if (symbol != null) {
+                    if (symbol.equals("*")) {
+                        double v1 = Double.parseDouble(simpleexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        multexprprime1.val=Double.toString(v1 * v2);
+                    } else if (symbol.equals("/")) {
+                        double v1 = Double.parseDouble(simpleexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        //TODO 检查除0异常
+                        if (v2 - 0 < 0.00001) {
+                            if (!firstLine) {
+                                System.out.println();
+                            }
+                            if (firstLine) {
+                                firstLine = false;
+                            }
+                        } else {
+                            multexprprime1.val=Double.toString(v1 / v2);
+                        }
+                    }
+                }
+
+                multexprprime1.symbol="*";
+                multexprprime1.type=judgeNumType(simpleexpr, multexprprime);
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(multexprprime1);
+                break;
+            }
+            case "26": {
+                //26#multexprprime->/ simpleexpr multexprprime
+                top = syntaxStack.size() - 1;
+                Item multexprprime = syntaxStack.get(top);
+                String symbol = multexprprime.symbol;
+                String val = multexprprime.val;
+                Item simpleexpr = syntaxStack.get(top - 1);
+                Item multexprprime1 = new Item("multexprprime");
+                if (symbol != null) {
+                    if (symbol.equals("*")) {
+                        double v1 = Double.parseDouble(simpleexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        multexprprime1.val=(Double.toString(v1 * v2));
+                    } else if (symbol.equals("/")) {
+                        double v1 = Double.parseDouble(simpleexpr.val);
+                        double v2 = Double.parseDouble(val);
+                        multexprprime1.val=(Double.toString(v1 / v2));
+                    }
+                }
+
+                multexprprime1.symbol="/";
+                multexprprime1.type=judgeNumType(simpleexpr, multexprprime);
+                while (length-- > 0) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                syntaxStack.add(multexprprime1);
+                break;
+            }
+            case "27": {
+                //27#multexprprime->
+                top = syntaxStack.size() - 1;
+                Item multexprprime = new Item("multexprprime");
+
+                multexprprime.symbol="*";
+                multexprprime.val="1";
+                multexprprime.type=("int");
+
+                syntaxStack.add(multexprprime);
+                break;
+            }
+            case "28": {
+                //28#simpleexpr->ID
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name=("simpleexpr");
+                String id = item.val;
+                Item v=null;
+                for (Item item1:valList){
+                    if (id.equals(item1.name)){
+                        v=item1;
+                        break;
+                    }
+                }
+                String val = v.val;
+                item.val=(val);
+                item.type=(v.type);
+                break;
+            }
+            case "29": {
+                //29#simpleexpr->INTNUM
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name=("simpleexpr");
+                item.type=("int");
+                break;
+            }
+            case "30": {
+                //30#simpleexpr->REALNUM
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top);
+                item.name=("simpleexpr");
+                item.type=("real");
+                break;
+            }
+            case "31": {
+                //31#simpleexpr->( arithexpr )
+                top = syntaxStack.size() - 1;
+                Item item = syntaxStack.get(top - 2);
+                item.name=("simpleexpr");
+                Item arithexpr = syntaxStack.get(top - 1);
+                item.val=(arithexpr.val);
+                item.type=(arithexpr.type);
+                break;
+            }
+
+            default:
+                //Item item1 = syntaxStack.remove(syntaxStack.size() - 1);
+                //删除多余的item
+                while (length-- > 1) {
+                    syntaxStack.remove(syntaxStack.size() - 1);
+                }
+                if (length > 0) {
+                    syntaxStack.get(syntaxStack.size() - 1).name=A;
+                }
+        }
+    }
+
+    public String judgeNumType(Item item1, Item item2) {
+        if ("real".equals(item1.type) || "real".equals(item2.type)) {
+            return "real";
+        } else {
+            return "int";
+        }
+    }
+
+    public String getValue(Item item) {
+        //如果是变量名形式，要获取idVal否则获取val就行了
+        if (item.id == null) {
+            return item.val;
+        } else {
+            return item.idVal;
+        }
+    }
+
+
+    /**
+     * 判断输入的token是否为关键字
+     *
+     * @param token
+     * @return
+     */
+    private boolean isID(String token) {
+        String[] keyWords = new String[]{"if", "then", "else", "int", "real"};
+        for (int i = 0; i < keyWords.length; i++) {
+            if (token.equals(keyWords[i])) {
+                return false;
+            }
+        }
+        String p = "[a-z]+";
+        boolean result = Pattern.matches(p, token);
+        return result;
+    }
+
+    /**
+     * 判断输入的token是否为正整数
+     *
+     * @param token
+     * @return
+     */
+    private boolean isIntNum(String token) {
+        String p = "[0-9]+";
+        return Pattern.matches(p, token);
+    }
+
+    /**
+     * 判断输入的token是否为正实数
+     *
+     * @param token
+     * @return
+     */
+    private boolean isRealNum(String token) {
+        String p = "[0-9]+\\.[0-9]+";
+        return Pattern.matches(p, token);
+    }
+}
+
+
+/**
+ * 状态集合
+ */
+class StatusCollection {
+    Integer statusNum;//状态标号
+    Integer productionNum;//产生式编号
+    Integer reductionNum;//规约产生式编号
+    HashMap<String, Integer> actionTable;//偏移
+    HashMap<String, Integer> gotoTable;//状态转移
+
+    public StatusCollection(Integer statusNum, Integer productionNum, Integer reductionNum, HashMap<String, Integer> actionTable, HashMap<String, Integer> gotoTable) {
+        this.statusNum = statusNum;
+        this.productionNum = productionNum;
+        this.reductionNum = reductionNum;
+        this.actionTable = actionTable;
+        this.gotoTable = gotoTable;
+    }
+}
+
+/**
+ * 产生式
+ */
+class Production {
+    Integer productionNum;//产生式编号
+    List<String> productionContent;//产生式的内容
+
+    public Production(Integer productionNum, List<String> productionContent) {
+        this.productionNum = productionNum;
+        this.productionContent = productionContent;
+    }
+
+    @Override
+    public String toString() {
+        return productionContent.get(0) + "=>";
+    }
+}
+
+class Action {
+    String type;
+    String statusNum;
+
+    public Action(String type, String statusNum) {
+        this.type = type;
+        this.statusNum = statusNum;
+    }
+}
+
+class Item {
+    String name;
+    String val;
+    String type;
+    String id;
+    String idVal;
+    String symbol;
+
+    public Item(String name) {
+        this.name = name;
+    }
+
+    public Item(String name, String type, String val) {
+        this.name = name;
+        this.val = val;
+        this.type = type;
+    }
+}

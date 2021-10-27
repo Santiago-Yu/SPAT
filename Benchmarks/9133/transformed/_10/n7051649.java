@@ -1,0 +1,15 @@
+class n7051649 {
+	private void copyFile(String inputPath, String basis, String filename) throws GLMRessourceFileException {
+		try {
+			File target = new File(basis, filename);
+			FileChannel inChannel = new FileInputStream(new File(inputPath)).getChannel();
+			FileChannel outChannel = new FileOutputStream(target).getChannel();
+			inChannel.transferTo(0, inChannel.size(), outChannel);
+			inChannel.close();
+			outChannel.close();
+		} catch (Exception e) {
+			throw new GLMRessourceFileException(7);
+		}
+	}
+
+}

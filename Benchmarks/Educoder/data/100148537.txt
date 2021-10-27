@@ -1,0 +1,65 @@
+package step2;
+
+/********* Begin *********/
+//定义站台类，实现卖票的功能。
+public class Station  extends Thread  {     
+
+
+
+    static int a= 20; // 为了保持票数的一致，票数要静态
+
+  
+
+
+
+
+
+    public void a() {
+
+        System.out.println( "卖出了第" + a + "张票");
+
+        a--;
+
+    }
+
+
+
+    public void run() {
+
+        while (a> 0) {
+
+            synchronized ("") {
+
+                if (a> 0) {
+
+                   a();
+
+                } 
+
+            }
+
+            if(a == 0){
+
+                System.out.println("票卖完了");
+
+            }
+
+            try {
+
+                Thread.sleep(100);
+
+            } catch (Exception e) {
+
+
+
+            }
+
+        }
+
+
+
+    }
+
+
+
+}

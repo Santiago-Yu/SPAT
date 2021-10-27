@@ -1,0 +1,55 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+        int result=0;
+        Task task=new Task();
+        for (int i=0;i<n;i++)
+        {
+            for (int j=0;j<m;j++)
+            {
+                if (area[i][j]=='o'){
+
+                    task.change(area,i,j,n,m);
+                    result++;
+                }
+            }
+        }
+       return result;
+	}
+       public void change(char[][] area,int i,int j,int n,int m){
+
+        area[i][j]='x';
+
+        Task task=new Task();
+        if (i-1>-1)
+        {
+            if (area[i-1][j]=='o')
+            {
+                task.change(area,i-1,j,n,m);
+            }
+        }
+        if (i+1<n){
+            if (area[i+1][j]=='o')
+            {
+                task.change(area,i+1,j,n,m);
+            }
+        }
+        if (j-1>-1)
+        {
+            if (area[i][j-1]=='o')
+            {
+                task.change(area,i,j-1,n,m);
+            }
+        }
+        if (j+1<m)
+        {
+            if (area[i][j+1]=='o'){
+                task.change(area,i,j+1,n,m);
+            }
+        }
+
+
+    }
+}

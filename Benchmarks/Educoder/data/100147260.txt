@@ -1,0 +1,158 @@
+package step3;
+
+import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+public class TeamBuilding {
+
+	/********* Begin *********/
+    public int getMinimumSteps (List<List<Integer>> stones){
+        int[][] temp;
+        temp=new int[stones.size()][stones.get(0).size()];
+		for(int i = 0;i < stones.size();i++) {
+			for (int j = 0;j < stones.get(0).size();j++) {
+				temp[i][j] = stones.get(i).get(j);
+			}
+		}
+        int total=0;
+        if(!has(temp))
+            total=0;
+        else{
+        node start=new node(0,0);
+		int[] temp1=find_min(temp);
+		node end=new node(temp1[0],temp1[1]);
+		temp[temp1[0]][temp1[1]]=1;
+		total+=bfs(temp,start,end);
+		int[] temp2;
+		while(((temp2=find_min(temp))[0]<temp.length&&temp2[1]<temp[0].length)&&has(temp))
+		{
+			start.x=temp1[0];
+			start.y=temp1[1];
+			end.x=temp2[0];
+			end.y=temp2[1];
+			if(bfs(temp,start,end)==-1)
+			{
+				total=-1;
+				break;
+			}
+			else {
+			total+=bfs(temp,start,end);
+			}
+			temp[temp2[0]][temp2[1]]=1;
+			temp1=temp2;
+		}}
+        return total;
+
+    }
+	 static int[][] direct={{0,1},{1,0},{-1,0},{0,-1}};
+	static int bfs(int[][] a,node start,node end)
+	{
+		node next = new node();
+		boolean[][] isvisited=new boolean[a.length][a[0].length];
+		isvisited[start.x][start.y]=true;
+		Queue<node> queue=new LinkedList<node>();
+		node text=new node();
+		text.x=start.x;
+		text.y=start.y;
+		text.number=0;
+		queue.offer(start);
+		while(!queue.isEmpty())
+		{
+			 text=queue.poll();
+			int i=0;
+			for(i=0;i<4;i++)
+			{
+				next.x=text.x+direct[i][0];
+				next.y=text.y+direct[i][1];
+				
+				if(next.x>=0&&next.x<a.length&&next.y>=0&&next.y<a[0].length&&isvisited[next.x][next.y]!=true&&a[next.x][next.y]!=0)
+				{
+					isvisited[next.x][next.y]=true;
+					next.number=text.number+1;
+					
+					node g=new node(next.x,next.y,next.number);
+					if(next.x==end.x&&next.y==end.y)
+				{
+					return next.number;
+				}
+					queue.offer(g);
+				}
+			}
+		}
+        if(start.x==end.x&&start.y==end.y)
+			return 0;
+		return -1;
+	}
+	static int[] find_min(int[][] a)
+	{
+		int i=0;
+		int j=0;
+		int min=0;
+		OK:
+		for(i=0;i<a.length;i++)
+		{
+			for(j=0;j<a[i].length;j++)
+			{
+				if(a[i][j]>1)
+				{
+				min=a[i][j];
+					break OK;}
+			}
+		}
+		int temp1=i;
+		int temp2=j;
+		for(i=0;i<a.length;i++)
+		{
+			for(j=0;j<a[i].length;j++)
+			{
+				if(a[i][j]>1&&a[i][j]<min)
+				{min=a[i][j];
+				temp1=i;
+				temp2=j;}
+			}
+		}
+		int[] temp= {temp1,temp2};
+		return temp;
+	}
+	public static boolean has(int[][] a)
+	{
+		int i=0;
+		int j=0;
+		OK:
+		for(i=0;i<a.length;i++)
+		{
+			for(j=0;j<a[i].length;j++)
+			{
+				if(a[i][j]>1)
+				{
+					break OK;}
+			}
+		}
+		if(i==a.length&&j==a[0].length)
+			return false;
+		else return true;
+	}
+static class node
+{
+	int x;
+	int y;
+	int number=0;
+	node(int xx,int yy)
+	{
+		x=xx;
+		y=yy;
+	}    
+	node(){}
+	node(int xx,int yy,int num)
+	{
+		x=xx;
+		y=yy;
+		number=num;
+	}
+}
+
+
+	/********* End *********/
+}

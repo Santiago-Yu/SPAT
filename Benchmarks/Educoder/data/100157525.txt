@@ -1,0 +1,22 @@
+package step2;
+import java.util.*;
+
+
+public class StudentDemo{
+	//返回一个Map集合来得到单词和首次出现的下标  key为单词名称  value为单词的角标
+	public Map<String, Integer> getMap(String str){
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		//对str进行分割   再加入map集合中
+        String[] string = str.split("[ ,]");
+        for(int i = 0; i < string.length; i++) {
+            if(string[i].indexOf(".")==string[i].length()-1) {
+        		map.put(string[i].substring(0, string[i].length()-1),str.indexOf(string[i]));
+        	}else{
+        		map.put(string[i], str.indexOf(string[i]));
+            }
+        }
+     
+		return map;
+	}
+
+}

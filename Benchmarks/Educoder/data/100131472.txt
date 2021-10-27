@@ -1,0 +1,44 @@
+package step2;
+
+import java.io.File;
+import java.util.Stack;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+        Stack<File> stack=new Stack<File>();
+        File temp;
+        int i=file.toString().split("/").length;
+        int j=0;
+        stack.push(file);
+        while(!stack.empty()){
+            temp=(File) stack.pop();
+            j=temp.toString().split("/").length-i;
+            for(int k=0;k<j;k++){
+                System.out.print("  ");
+            }
+            if(temp.isDirectory())
+                System.out.print("+");
+            System.out.print("--");
+            String[] strs = temp.toString().split("/");
+            System.out.print(strs[strs.length-1]+"\n");
+            File[] f=temp.listFiles();
+            if(f!=null)
+            	for(int k=f.length-1;k>=0;k--){
+            		if(f[k].isFile()||f[k].isDirectory())
+            			stack.push(f[k]);
+            	}
+        }                     
+                                          
+
+
+
+
+
+	}
+	
+
+
+	/********** END **********/
+}

@@ -1,0 +1,35 @@
+package step3;
+import java.lang.Thread;
+/**
+ * 模拟一个工具类，该类不用来实例化，只提供各种静态函数
+ * @author Administrator
+ *
+ */
+public class ThreadHelper {
+	/**
+	 * 在子线程中计算参数的阶乘并输出
+	 * @param num
+	 */
+    static public void calcOnNewThread(int num) {
+    	//使用Thread匿名对象以及Runnable匿名对象创建并执行子线程
+    	new Thread(new Runnable() {
+    	    @Override public void run() {
+    	    	int result = 1;
+    	    	/***begin your code here***/ 
+    			for(int i=2;i<=num;i++){
+        result*=i;
+        }
+    			/***end your code***/
+    	    	//直接输出
+    	    	System.out.println(result);
+    	    }		
+    	}).start();
+    }
+    
+    /**
+     * 使用一个私有的构造器，防止该类被实例化
+     */
+    private ThreadHelper() {
+    	throw new UnsupportedOperationException(this.getClass().getSimpleName() + " can not be instantiated.");
+    }
+}

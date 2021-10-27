@@ -1,0 +1,45 @@
+class n22724694 {
+	public List<MytemHistory> getMytemHistories(String janCode) throws GaeException {
+		HttpClient client = new DefaultHttpClient();
+		HttpParams httpParams = client.getParams();
+		HttpConnectionParams.setSoTimeout(httpParams, 10000);
+		HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+		StringBuffer request = new StringBuffer(address);
+		BufferedReader reader = null;
+		request.append("api/mytems/history?jan=");
+		request.append(janCode);
+		try {
+			HttpGet httpGet = new HttpGet(request.toString());
+			HttpResponse httpResponse = client.execute(httpGet);
+			int statusCode = httpResponse.getStatusLine().getStatusCode();
+			if (statusCode == NOT_FOUND) {
+				return null;
+			}
+			reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent(), "UTF-8"));
+			if (statusCode >= 400) {
+				throw new GaeException("Status Error = " + Integer.toString(statusCode));
+			}
+			String line = null;
+			StringBuilder builder = new StringBuilder();
+			while ((line = reader.readLine()) != null) {
+				builder.append(line);
+			}
+			return createMytemHistories(builder.toString());
+		} catch (ClientProtocolException e) {
+			throw new GaeException(e);
+		} catch (SocketTimeoutException e) {
+			throw new GaeException(e);
+		} catch (IOException exception) {
+			throw new GaeException(exception);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+}

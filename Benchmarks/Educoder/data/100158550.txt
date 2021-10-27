@@ -1,0 +1,32 @@
+package Pid_104;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+		String ss = sc.nextLine();
+		int T = sc.nextInt();
+		String[] s = ss.split(" ");
+		int[] a = new int[s.length];
+		int sum = 0;
+		for(int i=0;i<s.length;i++)
+		{
+			a[i] = Integer.parseInt(s[i]);
+		}
+		for(int i=0;i<a.length-2;i++)
+		{
+			for(int j=i+1;j<a.length-1;j++)
+			{
+				for(int k=j+1;k<a.length;k++)
+				{
+					if(a[i]+a[j]+a[k]<T) {
+						sum++;
+					}
+				}
+			}
+		}
+		System.out.print(sum);
+	}
+
+}

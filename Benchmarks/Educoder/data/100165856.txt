@@ -1,0 +1,35 @@
+package step4;
+import step1.Date;
+import step2.Student;
+import step3.Course;
+
+
+public class Report {
+    private Student s;
+    private String major;
+    private Course[] selCourse;
+    public Report() {
+        // selCourse = new Course[10];
+    }
+    public Report(Student s, String major, Course[] c) {
+        this.s = s;
+        this.major = major;
+        this.selCourse = c;
+    }
+
+    public Student getStudent() {
+        return s;
+    }
+    public String getMajor() {
+        return major;
+    }
+
+    @Override
+    public String toString() {
+        String ret = s + " major:" + major + "\n";
+        for (Course i : selCourse) {
+            ret = ret + i + "\n";
+        }
+        return ret;
+    }
+}

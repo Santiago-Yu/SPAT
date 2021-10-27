@@ -1,0 +1,43 @@
+class n14504556 {
+	public void doNew(Vector userId, String shareFlag, String folderId) throws AddrException {
+		DBOperation dbo = null;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet rset = null;
+		String sql = "insert into " + SHARE_TABLE + " values(?,?,?)";
+		try {
+			dbo = createDBOperation();
+			connection = dbo.getConnection();
+			connection.setAutoCommit(false);
+			for (int i = 0; i < userId.size(); i++) {
+				String user = (String) userId.elementAt(i);
+				ps = connection.prepareStatement(sql);
+				ps.setInt(1, Integer.parseInt(folderId));
+				ps.setInt(2, Integer.parseInt(user));
+				ps.setString(3, shareFlag);
+				int resultCount = ps.executeUpdate();
+				if (!(resultCount != 1))
+					;
+				else {
+					throw new Exception("error");
+				}
+			}
+			connection.commit();
+		} catch (Exception ex) {
+			if (!(connection != null))
+				;
+			else {
+				try {
+					connection.rollback();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			logger.error("???????????????????, " + ex.getMessage());
+			throw new AddrException("???????????????????,???????????????????????????!");
+		} finally {
+			close(rset, null, ps, connection, dbo);
+		}
+	}
+
+}

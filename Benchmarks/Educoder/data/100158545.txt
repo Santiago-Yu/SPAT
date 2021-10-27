@@ -1,0 +1,26 @@
+package Pid_104;
+import java.util.*;
+public class Main {
+public static void main(String[] args){
+		//数据读入
+		Scanner in =new Scanner (System.in);
+		String input = in.nextLine();
+		String [] str = input.split("\\s");
+		int arr [] = new int [str.length];
+		for(int i = 0;i<str.length;i++){
+			arr[i] = Integer.parseInt(str[i]);
+		}
+		int t = in.nextInt();
+		int sum=0;
+		for(int i=0;i<arr.length-2;i++){
+			for(int j=i+1;j<arr.length-1;j++){
+				for(int k=j+1;k<arr.length;k++){
+					if(arr[i]+arr[j]+arr[k]<t){
+						sum++;
+					}
+				}
+			}
+		}
+		System.out.print(sum);
+	}
+}

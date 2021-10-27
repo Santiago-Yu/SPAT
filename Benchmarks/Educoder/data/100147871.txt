@@ -1,0 +1,26 @@
+package step4;
+public class ThreadHelper {
+	/**
+	 * 在子线程中计算参数的阶乘并输出
+	 * @param num
+	 */
+    static public void calcOnNewThread(int c) {
+    	//使用Thread匿名对象以及Runnable匿名对象创建并执行子线程
+    	new Thread(new Runnable() {
+    	    @Override public void run() {
+    	    	int result = 1;
+    	    	/***begin your code here***/ 
+    			for(int i=1;i<=c;++i)
+                    result =result*i;
+    			/***end your code***/
+    	    	//直接输出
+    	    	System.out.println(result);
+    	    }		
+    	}).start();
+    }
+    
+    private ThreadHelper() {
+    	throw new UnsupportedOperationException(this.getClass().getSimpleName() + " can not be instantiated.");
+    }
+}
+

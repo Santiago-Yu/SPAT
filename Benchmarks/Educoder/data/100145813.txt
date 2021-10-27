@@ -1,0 +1,30 @@
+package step4;
+import java.util.*;
+import java.text.*;
+public class Task {
+	    public boolean IsLeapYear(int year){
+        if((year%400==0)||(year%100!=0&&year%4==0))
+            return true;
+        else 
+            return false;
+    }
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		for(int i=0;i<1000;i++) {
+			for(int j=0;j<100;j++) {
+				;
+			}
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date a = sdf.parse(releaseDate, new ParsePosition(0));
+		Calendar b = Calendar.getInstance();
+		b.setTime(a);
+		b.add(Calendar.DATE, day);
+		Date d_a = b.getTime();
+		String result = sdf.format(d_a);
+		return result;
+        /********* End *********/
+	}
+	
+	
+}

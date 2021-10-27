@@ -1,0 +1,49 @@
+package step3;
+
+public class Task {
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+         if(ferry.length == 0)return 0;
+      	int i, k, j, n, m;
+        char[][] newer = new char[ferry.length + 2][ferry[0].length + 2];
+        for (i = 1; i < ferry.length + 1; i++) {
+            for (j = 1; j < ferry[0].length + 1; j++) {
+                newer[i][j] = ferry[i - 1][j - 1];
+            }
+        }
+        for (i = 0; i < newer[0].length; i++) {
+            newer[0][i] = 'o';
+            newer[newer.length - 1][i] = 'o';
+        }
+        for(i = 0; i<newer.length; i++) {
+            newer[i][0] = 'o';
+            newer[i][newer[0].length - 1] = 'o';
+        }
+        int num = 0;
+        for (i = 1; i < ferry.length + 1; i++) {
+            for (j = 1; j < ferry[0].length + 1; j++) {
+                if (newer[i][j] == '+' && newer[i - 1][j] == 'o' && newer[i + 1][j] == 'o' && newer[i][j - 1] == 'o' && newer[i][j + 1] == 'o')
+                    num++;//一个’+‘
+            }
+        }
+        for (i = 1; i < ferry.length + 1; i++) {
+            for (j = 1; j < ferry[0].length + 1; j++) {
+                if (newer[i][j - 1] == 'o' && newer[i][j] == '+' && newer[i][j + 1] == '+') {
+                    while (newer[i][j + 1] == '+') j++;
+                    num++;//一行‘+’
+                }
+            }
+        }
+        for (j = 1; j < ferry[0].length + 1; j++) {
+            for (i = 1; i < ferry.length + 1; i++) {
+                if (newer[i - 1][j] == 'o' && newer[i][j] == '+' && newer[i + 1][j] == '+') {
+                    while (newer[i + 1][j] == '+') i++;
+                    num++;//一列‘+’
+                }
+            }
+        }
+        return num;
+         
+      /***********END ***************/
+	 }
+}

@@ -1,0 +1,23 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    StringBuilder str=new StringBuilder();
+		 int[] a = new int[10001];
+		 for(int i=0;i<nums.length;i++){
+			 a[nums[i]]=1;
+		 }
+		 for(int i=1;i<10001;i++){
+			 if(a[i]==0){
+				 str.append(i);
+			 }
+		 }
+		 return (int)(Long.parseUnsignedLong(str.toString())%11);
+	
+	}
+
+	/********* End *********/
+}

@@ -1,0 +1,34 @@
+package step2;
+
+import java.util.Scanner;
+
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+        
+		int shortLine = Math.min(length,width);
+        //if(length<width)
+          //  shortLine = length;
+        //else
+          //  shortLine = width;
+        int maxValue=0,count=0;
+        for(int i=1;i<=shortLine;i++){
+            if((length%i==0)&&(width%i==0)){
+                maxValue = i;
+                count = (length*width)/(i*i);
+            }
+        }
+		System.out.println(maxValue);
+        System.out.println(count);
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

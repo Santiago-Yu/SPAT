@@ -1,0 +1,53 @@
+package setp10;
+import java.util.Arrays;
+
+public class HelloWorld {
+    public static void main(String[] args) {
+     	HelloWorld cls=new HelloWorld();
+        int[] scores={79,52,98,81};
+
+        //调用方法，传入成绩数组，并获取成绩的个数
+        int count=cls.sort(scores);
+
+        System.out.println("共有"+count+"个成绩信息！");
+    }
+
+    /*
+     * 功能：将考试成绩排序并输出，返回成绩的个数
+     * 
+     */
+    public   int sort(int[] n){
+       // 数组从小到大排序处理
+        int max;
+        for(int k=1;k<n.length-1;k++)
+        {
+            for(int i=n.length-1;i>=k;i--)
+            
+            {
+            if(n[i]<n[i-1])
+            {
+            max=n[i];
+                n[i]=n[i-1];
+                n[i-1]=max;
+            }
+            }
+        }
+       // 打印出数组
+		System.out.print("[");
+       int sum=0;
+        for(int i=0;i<n.length;i++){
+        System.out.print(n[i]);
+            
+            if(sum<3)
+            {
+            System.out.print(", ");
+             sum=sum+1;
+            }
+           
+        }
+        System.out.print("]");
+        System.out.println("");
+       //返回数组中元素的个数
+	return n.length;
+    }
+}

@@ -1,0 +1,35 @@
+package step3;
+public class Reverse {
+    public static StringBuffer start(String date) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+
+		int i=0,beg=0,last=0;
+		while(i<date.length())
+		{
+			if(date.charAt(i)==' '||i==date.length()-1)
+			{
+				last=i;
+				
+				String st=new String();
+				if(i==date.length()-1)
+				 st=date.substring(beg,last+1);
+				else
+				 st=date.substring(beg,last);
+				
+				StringBuffer temp=new StringBuffer(st);
+				
+					ans.append(temp.reverse());
+					ans.append(" ");
+				
+				beg=i+1;
+			}
+			
+				i++;
+			
+		}
+
+        /********** End *********/
+        return ans;
+    }
+}

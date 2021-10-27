@@ -1,0 +1,60 @@
+package step3;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+		//String fileName = scanner.nextLine();
+        //String email = scanner.nextLine();
+    int aFN = fileName.indexOf(".java");
+    int aFNs = fileName.indexOf(".");
+    int aFNc = fileName.lastIndexOf(".java");
+	
+	if ((aFN == -1) || (aFNs == 0))
+	{
+		System.out.println("Java文件名无效");
+	}
+	
+	else
+	{
+		String newNameString = new String(fileName.substring(fileName.indexOf(".java")));
+        String newString02 = new String(fileName.substring(fileName.lastIndexOf(".")));
+        int aFN01 = newNameString.indexOf(".java");
+        int aFNc01 = newNameString.lastIndexOf(".java");
+        if (newString02.equals(".txt"))
+            System.out.println("Java文件名无效");
+		else if (newNameString.indexOf(".java") == newNameString.lastIndexOf(".java") && newNameString != ".java" || aFN01 != aFNc01)
+			System.out.println("Java文件名正确");
+		else
+			System.out.println("Java文件名无效");
+	}
+	
+	int aEM = email.indexOf("@");
+    int aEMc = email.lastIndexOf("@");
+	
+	if (aEM == -1 || aEM != aEMc)  //没有 @ 或有两个及以上 @
+	{
+		System.out.println("邮箱名无效");
+	}
+	
+	else  //有且只有一个@。
+	{
+		String email01 = new String(email.substring(aEM));  //从@开始截取字符串01
+		int aEM01 = email01.indexOf(".");  //查找 . 在字符串01中的位置
+		int aEM01c = email01.indexOf("@");  //查找 @ 在字符串01中的位置
+		
+		if (aEM01 == -1)  //@后面没有 .
+			System.out.println("邮箱名无效");
+		else  //@后面有 .
+		{
+			String email02 = new String(email01.substring(email01.indexOf(".")));  //从这个 . 向后截取02
+			int aEM02 = email02.indexOf("@");  //查找02中 @ 的位置
+			 
+			if (aEM02 == -1)  //02中 . 后面没有 @
+				System.out.println("邮箱名正确");
+			else
+				System.out.println("邮箱名无效");
+		}
+	
+	}
+}
+}

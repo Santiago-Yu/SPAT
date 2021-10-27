@@ -1,0 +1,31 @@
+package step4;
+
+//注意文件名，这里应该写ThreadHelper类
+/***begin your code here***/
+public class ThreadHelper {
+	
+    static public void calcOnNewThread(int num) {
+    	new Thread(new Runnable() {
+    	    @Override public void run() {
+    	    	int result = 1;
+				try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    			for(int i=1;i<=num;i++){
+			result=result*i;
+		}
+    	    	System.out.println(result);
+    	    }		
+    	}).start();
+    }
+   
+    private ThreadHelper() {
+    	throw new UnsupportedOperationException(this.getClass().getSimpleName() + " can not be instantiated.");
+    }
+}
+
+
+/***end your code***/

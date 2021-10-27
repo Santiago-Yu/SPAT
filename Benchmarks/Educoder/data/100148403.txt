@@ -1,0 +1,30 @@
+package step2;
+public class Station extends Thread {	 
+	
+	static int tick = 20;					// 1) 为了保持票数的一致，票数要静态    
+	Object ob = "aa";						// 2) 创建一个协助锁定的对象，本身不参与运算，没有实际作用，就是为了帮助实现锁定语句块
+    
+    public Station() {			// 通过构造方法给线程名字赋值
+         super();						
+    }    
+    
+   
+    public void run() {						// 重写run方法，实现买票操作
+        while (tick > 0) {
+								        	//3) 此处无法使用 synchronized (this)，因synchronized ()作用是锁定括号里的对象，
+								        	//这里用this含义是当前对象，此用法只能防止多个线程同时执行同一个对象的同步代码段
+            synchronized (ob) {				//4)利用锁定一个对象语句块，实际上是细粒度锁定了静态变量tick，来达到全局锁定该资源（tick）的目标               
+              if (tick > 0) {				
+                  System.out.println( "卖出了第" + tick + "张票");
+                  tick--;
+              } else 
+                    System.out.println("票卖完了");                             
+            }               
+            try {
+                 sleep(100);//休息一秒
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+ }

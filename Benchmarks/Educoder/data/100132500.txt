@@ -1,0 +1,28 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int area = length * width;
+        
+        int j = width;
+		int a = width / j;
+        int b = length / j;
+        int k = a * b;
+        
+		while(!(width%j == 0 && length%j == 0 &&area - j * j * k < 1e-6 )){
+         	j --;
+            a = width / j;
+            b = length / j;
+            k = a * b;
+        }
+		System.out.println(j);
+        System.out.println(k);
+		/********** END **********/
+	}
+}

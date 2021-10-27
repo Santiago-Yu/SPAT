@@ -1,0 +1,50 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+	int d=0;
+        int days=0;
+		String op=null;
+        int e = 0;
+        do {           
+            if (month < 0 || month > 12 || day < 0 || day > 31) {
+                System.out.println("input error!");
+                e = 1;
+            }
+        } while (e == 1);
+        for (int i = 1; i <month; i++) {
+            switch (i) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12: {
+                days = 31;
+                break;
+            }
+            case 4:
+            case 6:
+            case 9:
+            case 11: {
+                days = 30;
+                break;
+            }
+            case 2: {
+                
+                if ((year % 100 !=0 &&year % 4 == 0) || (year % 100 == 0 && year%400==0)) {
+                    days = 29;
+                } else {
+                    days = 28;
+                }
+            }
+            default:
+                break;
+            }
+            d+=days;
+        }
+				System.out.print((d+day));
+    }
+}
+

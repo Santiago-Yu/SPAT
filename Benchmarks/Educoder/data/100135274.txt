@@ -1,0 +1,47 @@
+package case5;
+
+public class abstractTest {
+	public static void main(String[] args) {
+		
+		Person s = new Student();
+        Person w = new Worker();
+        s.name = "张三";
+        s.age = 20;
+        s.occupation = "学生";
+        w.name = "李四";
+        w.age = 30;
+        w.occupation = "工人";
+        
+		s.talk();
+        w.talk();
+		
+		
+	}
+}
+
+
+abstract class Person {
+	
+    public String name;
+    public int age;
+    public String occupation;
+    public abstract void talk();
+	
+}
+
+
+class Student extends Person {
+	
+   public void talk(){
+        System.out.println("学生——>姓名：" + name + "，年龄：" + age + "，职业：" + occupation+"！");
+    }
+	
+}
+ 
+class Worker extends Person {
+	
+   public void talk(){
+        System.out.println("工人——>姓名：" + name + "，年龄：" + age + "，职业：" + occupation+"！");
+   }
+
+}

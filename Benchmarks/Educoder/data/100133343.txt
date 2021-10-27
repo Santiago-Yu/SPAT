@@ -1,0 +1,39 @@
+package case1;
+
+public class TestPersonDemo {
+	public static void main(String[] args) {
+		/********* begin *********/
+		// 声明并实例化一Person对象p
+         Person p1 = Person.getPerson();
+		// 给p中的属性赋值
+        p1.setPersen(p1,"张三",18);
+		// 调用Person类中的talk()方法
+        p1.talk(p1);
+		/********* end *********/
+
+	}
+}
+
+// 在这里定义Person类
+class Person {
+	/********* begin *********/
+     private String name;
+     private int age;
+    public void setPersen (Person p,String name,int age)
+    {
+        p.name = name;
+        p.age = age;
+    }
+    static public Person getPerson()
+    {
+        return new Person();
+    }
+     public void talk(Person p)
+     {
+         System.out.println("我是："+ p.name+"，今年："+p.age+"岁");
+     }
+    
+    
+   
+	/********* end *********/
+}

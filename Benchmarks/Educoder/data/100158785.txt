@@ -1,0 +1,23 @@
+package Q103;
+import java.util.Scanner;
+public class Main {
+	public int f(int n){
+		int a=0,b=1,c=2;
+		for(int i=3;i<=n;i++){
+			a=b;
+			b=c;
+			c=a+b;
+		}
+		return c;
+	}
+	public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+		int num=sc.nextInt();
+		Main oa = new Main();
+
+		int a=oa.f(num);
+		System.out.print(a);
+	}
+
+}

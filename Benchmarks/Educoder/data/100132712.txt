@@ -1,0 +1,87 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] boats) {
+	 	int width = boats.length;
+         if(width == 0){
+			return 0;
+		}
+		int length = boats[0].length,num = 0;
+		//横向的船
+		for(int i = 0; i < width ;i++){
+			
+			for (int j = 0; j < length; j++) {
+				for (int j2 = j+1; j2 < length; j2++) {
+					if(boats[i][j] == '+'){
+						if(boats[i][j2] == 'o'){
+							if(j2-j>1){
+								num++;
+							}
+							j = j2;
+						}else if(boats[i][j2] == '+' && j2 == length-1 &&boats[i][j2-2] == '+'){
+							num++;
+							j = j2;
+					}
+				}	
+			}
+		}
+	}
+		//竖向的船
+		for(int j = 0; j < length ;j++){
+			if(j==0){//第一列
+				for (int i = 0; i < width; i++) {
+					for (int i2 = i; i2 < width; i2++) {
+						if(boats[i][j] == '+'){
+							if((boats[i2][j] == 'o' && length != 1 &&boats[i][j+1] == 'o')){
+								num++;
+								i = i2;
+							}else if(boats[i2][j] == 'o' && length == 1){
+                                num++;
+								i = i2;
+                            }else if(boats[i2][j] == '+' && i2 == width-1){
+								if(length == 1){
+									num++;
+									i = i2;
+								}else if(boats[i][j+1] == 'o')
+								num++;
+								i = i2;
+							}
+						}
+					}
+				}
+			}else if(j==length-1){//最后一列
+				for (int i = 0; i < width; i++) {
+					for (int i2 = i; i2 < width; i2++) {
+						if(boats[i][j] == '+'){
+							if(boats[i2][j] == 'o' && boats[i][j-1] == 'o'){
+								num++;
+								i = i2;
+							}else if(boats[i2][j] == '+' && i2 == width-1 && boats[i][j-1] == 'o'){
+								num++;
+								i = i2;
+							}
+						}
+					}	
+				}
+			}else{//中间列
+				for (int i = 0; i < width; i++) {
+					for (int i2 = i; i2 < width; i2++) {
+						if(boats[i][j] == '+'){
+							if(boats[i2][j] == 'o' && boats[i][j-1] == 'o' && boats[i][j+1] == 'o'){
+								num++;
+								i = i2;
+							}else if(boats[i2][j] == '+' && i2 == width-1&& boats[i][j-1] == 'o'&& boats[i][j+1] == 'o'){
+								num++;
+								i = i2;
+							}	
+						}
+					}	
+				}
+			}
+		}	
+		return num;
+	 
+	 
+	 }
+}

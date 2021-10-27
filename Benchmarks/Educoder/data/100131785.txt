@@ -1,0 +1,78 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+	System.out.println("+--"+file.getName());
+        File[] files=file.listFiles();
+        if(files!=null){
+        	for(int i=0;i<files.length;i++){
+                int daishu=0;
+                if (files[i].isDirectory()){
+            		for(int j=0;j<(daishu+1)*2;j++){
+                		System.out.print(" ");
+                	}
+                	System.out.println("+--"+files[i].getName());
+                	daishu++;
+                	getFileListName(files[i].getAbsolutePath(),daishu);
+                
+                }else{
+                	
+                    String fileName=files[i].getName();    
+					String fileTyle=fileName.substring(fileName.lastIndexOf("."),fileName.length()); 
+                    
+					if(fileTyle.equals(".jpg")||fileTyle.equals(".png")||fileTyle.equals(".bmp")){
+                    	for(int j=0;j<(daishu+1)*2;j++){
+                			System.out.print(" ");
+                		}
+                    	System.out.println("--"+files[i].getName());
+                   	}
+                }
+            }
+		}
+	}
+        
+        
+        
+        
+	public static void getFileListName(String strPath,int daishu){
+    	File dir=new File(strPath);
+        File[] files=dir.listFiles();
+        if(files!=null){
+        	for(int i=0;i<files.length;i++){
+                int daishu1=daishu;
+                if (files[i].isDirectory()){
+            		for(int j=0;j<(daishu1+1)*2;j++){
+                		System.out.print(" ");
+                	}
+                	System.out.println("+--"+files[i].getName());
+                	daishu1++;
+                	getFileListName(files[i].getAbsolutePath(),daishu1);
+                
+                }else{
+                	
+                    String fileName=files[i].getName();    
+					String fileTyle=fileName.substring(fileName.lastIndexOf("."),fileName.length()); 
+                    
+					if(fileTyle.equals(".jpg")||fileTyle.equals(".png")||fileTyle.equals(".bmp")){
+                    	for(int j=0;j<(daishu1+1)*2;j++){
+                			System.out.print(" ");
+                		}
+                    	System.out.println("--"+files[i].getName());
+                   	}
+                }
+            }
+		}
+    }	
+
+
+
+
+    
+	
+
+	/********** END **********/
+}

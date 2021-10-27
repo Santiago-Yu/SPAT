@@ -1,0 +1,27 @@
+package Q202;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int[] dp = new int[10];
+		int flag = 1;
+		int n;
+		n = sc.nextInt();
+		for(int i = 9; i >=2; i--){
+			while(n%i==0){
+				n/=i;
+				dp[i]++;
+			}
+		}
+		if(n>10)System.out.print("0");
+		else dp[n]++;
+		for(int i = 2; i <= 9; i++){
+			while(dp[i]>0){
+				System.out.print(i);
+				dp[i]--;
+			}
+		}
+	}
+
+}

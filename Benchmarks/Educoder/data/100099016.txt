@@ -1,0 +1,43 @@
+package step2;
+
+import java.util.Scanner;
+
+public class SelfIntroduction {
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public void setEducation(String education) {
+        this.education = education;
+    }
+    public void setPosition(String position) {
+        this.position = position;
+    }
+    public void introduction() {
+        /********** Begin *********/
+		System.out.println("大家好！我是" + name + "，我今年" + age + "岁，" + education + "学历，" + "目前职位是" + position);
+        /********** End *********/
+    }
+    private String name;
+    private int age;
+    private String education;
+    private String position;
+
+    public static void main(String[] args) {
+        /********** Begin *********/
+		Scanner scanner = new Scanner(System.in);
+SelfIntroduction people = new SelfIntroduction();
+String name = scanner.next();
+int age = scanner.nextInt();
+String education = scanner.next();
+String position = scanner.next();
+people.setName(name);
+people.setAge(age);
+people.setEducation(education);
+people.setPosition(position);
+people.introduction();
+        /********** End *********/
+    }
+}

@@ -1,0 +1,27 @@
+#include <iostream>
+#include <string.h>
+#include <stdio.h>
+using namespace std;
+int main()
+{
+    char s1[501];
+    char s2[501];
+    char c;
+    int l;
+    int max = 0;
+scanf("%s",s1);
+    scanf("%s",s2);
+    for(int i= 0;i<strlen(s1);i++){
+    	for(int j = 0;j<strlen(s2);j++){
+    		if(s1[i]==s2[j]){
+    			l=1;
+    			for(int z = 1;z+j<strlen(s2)&&z+i<strlen(s1);z++){
+    				if(s1[z+i]==s2[j+z])l++;
+    				else break;
+    			}
+    			if(l>max) max = l;
+    		}
+    	}
+    }
+    printf ("%d",max);
+}

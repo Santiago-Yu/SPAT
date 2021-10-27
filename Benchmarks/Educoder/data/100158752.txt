@@ -1,0 +1,60 @@
+package Q102;
+import  java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        int wu = 0;
+        int shi = 0;
+        int ershi = 0;
+        int cost;
+        int flag = 1;
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNext()){
+            cost = sc.nextInt();
+            if(flag == 1){
+                if(cost == 5){
+                    wu++;
+                }
+                else if(cost == 10){
+                    if(wu == 0){
+                        flag = 0;
+                    }
+                    else{
+                        wu--;
+                        shi++;
+                    }
+                }
+                else if(cost == 20){
+                    if(wu == 0){
+                        flag = 0;
+                    }
+                    else{
+                        if(shi == 0){
+                            if(wu<3){
+                                flag = 0;
+                            }
+                            else{
+                                wu -= 3;
+                            }
+                        }
+                        else{
+                            shi--;
+                            wu--;
+                        }
+                    }
+                }
+            }
+            else{
+                continue;
+            }
+        }
+        if(flag == 1){
+            System.out.print("true");
+        }
+        else{
+            System.out.print("false");
+        }
+	}
+
+}

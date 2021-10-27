@@ -1,0 +1,33 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+        int t=0;
+        int plag=0;
+        boolean b1=true;
+		 int b=Integer.parseInt(date.substring(2));
+		if(date.charAt(0)=='8')
+	 {
+		 b=b+31;
+	 }
+	 if(date.charAt(0)=='9')
+	 {
+		 b=b+62;
+	 }
+        for(int k=1;k<=20;k++)
+	{
+		t=t+k;
+		if(b==t)
+		{
+            plag=1;
+			break;
+		}
+	}
+	if(plag==0)
+	{
+		b1=false;
+	}
+        return b1;
+	}
+}

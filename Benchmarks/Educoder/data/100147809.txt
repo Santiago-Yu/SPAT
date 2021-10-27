@@ -1,0 +1,25 @@
+package step4;
+import java.lang.Thread;
+public class MyThread extends Thread{
+	private int num;
+	public MyThread() {
+		this(0);
+	}
+	public MyThread(int num) {
+		this.num = num;
+	}
+	public void run() {
+		int result = 1;
+		for(int i = 1; i <= num; i++)
+		{
+			result *= i;
+		}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(result);
+	}
+}

@@ -1,0 +1,40 @@
+package step2;
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String s;
+        /********** Begin*******/
+        //补全try/catch块，异常类型为IOException
+        try {
+            s=reader.readLine();
+            char[]str=s.toCharArray();
+            int l=0;
+            int ss=0;
+            int n=0;
+            int o=0;
+            for(int a=0;a<str.length;a++)
+            {
+                if(str[a]==' ')
+            {
+                ss++;
+            }
+            else if((str[a]>=48)&&(str[a]<=57))
+            {
+            n++;
+            }
+            else if((str[a]>=65)&&(str[a]<=90)||(str[a]>=97)&&(str[a]<=122))
+            {
+            l++;
+            }
+            else o++;
+            }
+            System.out.print("letter="+l+",space="+ss+",number="+n+",other="+o);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        /********** End *********/
+    }
+}

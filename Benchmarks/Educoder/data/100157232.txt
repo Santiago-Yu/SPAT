@@ -1,0 +1,39 @@
+package step2;
+import java.util.*;
+//输入一个数，将其插入到一个已排好序的数组中，使得原数组依然按原序有序。
+public class Insert {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		final int N=9;
+		int in,num[]=new int[N+1];
+		num[0]=1;
+		num[1]=4;
+		num[2]=7;
+		num[3]=13;
+		num[4]=16;
+		num[5]=19;
+		num[6]=22;
+		num[7]=25;
+		num[8]=28;
+		System.out.println("插入数之前的数组：");
+		for(int i=0;i<num.length-1;i++){
+			System.out.print(num[i]+"\t");
+		}System.out.println();
+		System.out.println("输入插入的数：");
+		num[9]=sc.nextInt();
+		int d;
+		for(int k=1;k<N;k++) {
+			for(int j=N;j>=k;j--){
+				if(num[j]<num[j-1]) {
+					d=num[j];
+					num[j]=num[j-1];
+					num[j-1]=d;
+				}
+			}
+		}
+		System.out.println("插入数之后的数组：");
+		for(int i=0;i<num.length;i++){
+			System.out.print(num[i]+"\t");
+		}System.out.println();
+	}
+}

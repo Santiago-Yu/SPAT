@@ -1,0 +1,44 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 int sum=0;
+		
+		for(int i = 0; i<ferry.length;i++){//最外层的循环  有多少行
+			
+		
+			for(int j = 0;j<ferry[i].length;j++){//每行一维数组 有多少个元素
+				
+				
+				if(ferry[i][j] == '+'){//先找到第一个"+"
+					int j1;
+					for(j1 = i+1 ; j1 < ferry.length; j1++){//竖向找
+						if(ferry[j1][j]=='o'){
+							break;
+						}else {
+							ferry[j1][j]='o';
+						}
+					}
+					
+					for(j1 = j+1 ; j1< ferry[i].length;j1++){//横向找
+						
+						if(ferry[i][j1]=='o') {
+							break;
+						}
+					}
+					j = --j1;
+					sum ++;
+					
+			}
+			
+		}
+
+		}
+		return sum;
+	 
+         
+      /***********END ***************/
+	 }
+}

@@ -1,0 +1,47 @@
+package step4;
+
+public class DayJudge {
+
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        // 请在此提供实现代码
+        if((year%4==0&&(year%100!=0))||(year%400==0))
+        {
+            switch(month)
+            {
+                case 1:return year+"年的第"+day+"天";
+                case 2:return year+"年的第"+(31+day)+"天";
+                case 3:return year+"年的第"+(31+29+day)+"天";
+                case 4:return year+"年的第"+(31+29+31+day)+"天";
+                case 5:return year+"年的第"+(31+29+31+30+day)+"天";
+                case 6:return year+"年的第"+(31+29+31+30+31+day)+"天";
+                case 7:return year+"年的第"+(31+29+31+30+31+30+day)+"天";
+                case 8:return year+"年的第"+(31+29+31+30+31+30+31+day)+"天";
+                case 9:return year+"年的第"+(31+29+31+30+31+30+31+31+day)+"天";
+                case 10:return year+"年的第"+(31+29+31+30+31+30+31+31+30+day)+"天";
+                case 11:return year+"年的第"+(31+29+31+30+31+30+31+31+30+31+day)+"天";
+                case 12:return year+"年的第"+(31+29+31+30+31+30+31+31+30+31+30+day)+"天";
+                default:return "输入月份非法";
+            }
+        }
+        else  
+		{
+			switch(month)
+			{
+          		case 1:return year+"年的第"+day+"天";
+           		case 2:return year+"年的第"+(31+day)+"天";
+                case 3:return year+"年的第"+(31+28+day)+"天";
+                case 4:return year+"年的第"+(31+28+31+day)+"天";
+                case 5:return year+"年的第"+(31+28+31+30+day)+"天";
+                case 6:return year+"年的第"+(31+28+31+30+31+day)+"天";
+                case 7:return year+"年的第"+(31+28+31+30+31+30+day)+"天";
+                case 8:return year+"年的第"+(31+28+31+30+31+30+31+day)+"天";
+                case 9:return year+"年的第"+(31+28+31+30+31+30+31+31+day)+"天";
+                case 10:return year+"年的第"+(31+28+31+30+31+30+31+31+30+day)+"天";
+                case 11:return year+"年的第"+(31+28+31+30+31+30+31+31+30+31+day)+"天";
+                case 12:return year+"年的第"+(31+28+31+30+31+30+31+31+30+31+30+day)+"天";
+                default:return "输入月份非法";
+			}
+		}
+	}
+}

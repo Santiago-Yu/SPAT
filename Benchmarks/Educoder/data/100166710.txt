@@ -1,0 +1,81 @@
+package step1;
+import java.util.*;
+public class Test_Figure {
+  public static void main(String args[]){
+	  Scanner sc=new Scanner(System.in);
+	  double x=sc.nextDouble();
+	  Circle c=new Circle(x);
+	  
+	  double l,w;
+	  l=sc.nextDouble();
+	  w=sc.nextDouble();
+	  Rectangle r1=new Rectangle(l,w);
+	  
+	  System.out.println(c.area());
+	  System.out.println(r1.area());	
+   }
+}
+
+interface Figure{
+	double PI=3.14;
+	public double area(); //求面积
+}
+/*********Begin***********/
+class Circle implements Figure{
+	double x = 0.0;
+	public Circle(double x){
+		this.x = x;
+	}
+
+    // setter abd getter
+	public void setX(){
+		this.x = x;
+	}
+	public double getX(){
+		return x;
+	}
+
+	public double area(){
+		return PI*x*x;
+	}
+
+	public String toString(){
+		return "The Circle :r="+this.x;
+	}
+}
+
+class Rectangle implements Figure{
+    double l = 0.0;
+	double w = 0.0;
+	public Rectangle(double l,double w){
+		this.l = l;
+		this.w = w;
+	}
+
+    //setter and getter
+	public void setLength(){
+		this.l = l;
+	}
+	public void setWidthth(){
+		this.w = w;
+	}
+	public double getLength(){
+		return this.l;
+	}
+	public double getWidth(){
+		return this.w;
+	}
+
+	public double area(){
+		return l*w;
+	}
+
+	public String toString(){
+		return "The Rectangle :length="+this.l+",width="+this.w;
+	}
+}
+
+
+
+/*********End***********/
+

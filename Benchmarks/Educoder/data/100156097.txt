@@ -1,0 +1,29 @@
+package step2;
+import java.util.Scanner;
+
+//用户根据提示信息从键盘输入年份，输出该年份是否为闰年
+public class TestJava22KJ_1 {
+
+	public static void main(String[] args) {
+		//step1：提示用户输入年份
+		Scanner sc=new Scanner(System.in);
+		System.out.println("请输入一个年份：");
+		int y=sc.nextInt();   //y保存用户输入的年份
+		//此处调用方法JudgeLeapYear，判断y是闰年还是平年
+		int p=TestJava22KJ_1.JudgeLeapYear(y);
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为JudgeLeapYear，实现判断某个年份是闰年还是平年的功能
+	public static int JudgeLeapYear(int n) {
+		if (n % 4 == 0 && n % 100 != 0 || n % 400 == 0) {
+			System.out.println(n+"年是闰年");
+		}else{
+			System.out.println(n+"年是平年");
+		}
+		return n;
+	}
+	
+	
+	
+	/*******End*********/
+}

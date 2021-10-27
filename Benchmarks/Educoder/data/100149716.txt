@@ -1,0 +1,76 @@
+package step1;
+
+import java.sql.*;
+
+public class QueryPass {
+	
+	// 查询数据代码不用上实验报告
+	public static void queryDB() {
+		
+		/********* Begin *********/
+
+		// 第一步：加载驱动
+		try {
+        Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException ce) {
+            System.out.println("SQLException:" + ce.getMessage());
+        }
+        ResultSet rs=null;
+        Connection con=null;
+        Statement stat=null;
+		
+
+		// 第二步：建立连接, "root"和"123123"是针对MySQL设置了用户名(root)和密码(123123)的情况
+		// 127.0.0.1:3306是mysql服务器地址及端口   数据库编码格式设置为utf-8
+		try{
+        	con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/tsgc?useUnicode=true&characterEncoding=utf-8", "root", "123123");
+		
+
+		// 第三步：建立statement对象                                                                          
+		stat = con.createStatement();
+
+		
+
+		// 第四步：
+		rs=stat.executeQuery("select * from employee ");
+        while(rs.next()){
+            System.out.print("no:"+rs.getInt("no")+"\t");
+            System.out.print("name:"+rs.getString("name")+"\t");
+            System.out.print("password:"+rs.getString("password")+"\t");
+            System.out.print("sex:"+rs.getString("sex")+"\t");
+            System.out.print("salary"+rs.getDouble("salary"));
+            System.out.println();
+        }
+    	}
+		catch (SQLException e) {
+        System.out.println("SQLException1:" + e.getMessage());
+    	}
+
+		// 第五步：关闭statement对象和连接对象
+		finally {
+        try {
+            if(rs!=null){
+                rs.close();
+                rs=null;
+            }
+            if (stat != null) {
+                stat.close();
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            if (con != null) {
+                con.close();
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    	}
+
+
+		/********* End *********/
+	}
+}

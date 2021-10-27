@@ -1,0 +1,22 @@
+package step4;
+
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+       SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        String[] str=releaseDate.split("-");
+		c.set(Integer.parseInt(str[0]),Integer.parseInt(str[1])-1,Integer.parseInt(str[2]));
+        c.add(Calendar.DATE, day);// day为增加的天数，可以改变的
+        Date d = c.getTime();
+        String enddate = format.format(d);
+        return enddate;
+        /********* End *********/
+	}
+	
+	
+}

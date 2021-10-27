@@ -1,0 +1,47 @@
+package step4;
+import java.util.Scanner;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+public class Josephus {
+
+   public static void main(String args[]){
+	   /**
+		* 数组解决约瑟夫环问题
+		* @param total   总人数（如41）
+		* @param number  要报的数（如3）
+		* Josecount()算法，显示最后一个的编号
+		*/
+		   int total,number;
+		   Scanner scan = new Scanner(System.in);
+		   total=scan.nextInt();  
+		   number=scan.nextInt(); 
+	       Josecount(total,number);
+
+   }
+    
+	public static void Josecount(int personNumber ,int number) { 
+	 
+	        /*************begin***************/
+	int n, m;
+	int i, j = 1;
+	int t;
+	Vector p = new Vector();
+	
+    n = personNumber; m = number;
+	for (i = 1; i <= n; ++i)
+    {
+		p.addElement(i);
+	}
+	for (; n > 1; --n)
+    {
+		j = (j + m - 1) % p.size();
+		if (j == 0) j = p.size();
+		p.removeElementAt(j - 1);
+	}
+        System.out.printf("最后一个人编号：%d", p.firstElement());
+	        /*************end***************/
+	}
+
+}

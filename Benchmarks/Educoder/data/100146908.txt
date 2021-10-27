@@ -1,0 +1,61 @@
+package step1;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+  		//String result="";
+        int[] x=new int[3];
+        //int num;
+    	int[] toolarray = new int[10001];
+    	toolarray[0]=1;
+    	for(int i=0;i<nums.length;i++){
+    		int temp=nums[i];
+    		toolarray[temp]=1;
+    	
+    	}
+        int k=0;
+    	for(int i=0;i<toolarray.length;i++){
+    		int num=toolarray[i];
+    		if(num!=1){
+    			x[k]=i;
+                //System.out.printf(x[k]);
+                k++;
+    	}
+    	}
+    	//return result;
+		int max = 0, min = 0;
+		for (int i = 1; i < 3; i++) {
+			if (x[i] > x[max])
+				max = i;
+			if (x[i] < x[min])
+				min = i;
+		}
+		int mid = 0;
+		for (int i = 0; i < 3; i++) {
+			if (i != max && i != min) {
+				mid = i;
+				break;
+			}
+		}
+        //System.out.printf("Integer.valueOf(str)%11");
+		
+		String str = "";
+        str+=String.valueOf(x[min])+String.valueOf(x[mid])+String.valueOf(x[max]);
+        //System.out.printf("Integer.valueOf(str)%11");
+        long l = Long.valueOf(str).longValue();
+        //int y=(int)l%11;
+        int returnId=Integer.parseInt(String.valueOf(l%11));
+        return returnId;
+
+    }
+    
+
+	/********* End *********/
+    
+}

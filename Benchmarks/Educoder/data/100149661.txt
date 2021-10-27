@@ -1,0 +1,33 @@
+package step1;
+
+import java.sql.*;
+
+public class QueryPass {
+	
+	// 查询数据代码不用上实验报告
+	public static void queryDB() throws SQLException {
+		
+		/********* Begin *********/
+
+		// 第一步：加载驱动
+		Connection cnn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/tsgc?characterEncoding=utf8","root","123123");
+		// 第三步：建立statement对象
+		Statement st = cnn.createStatement();
+	String sql="select * from employee";
+ResultSet rs=st.executeQuery(sql);
+      
+       	while(rs.next()){
+			System.out.println("no:"+rs.getInt("no")+"\tname:"+
+		rs.getString("name")+"\tpassword:"+rs.getString("password")+
+		"\tsex:"+rs.getString("sex")+"\tsalary"+rs.getDouble("salary"));
+		}
+		
+rs.close();
+st.close();
+cnn.close();
+		
+		
+
+		/********* End *********/
+	}
+}

@@ -1,0 +1,42 @@
+package step3;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+	
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		List<String> l=new ArrayList<String>();
+        Elements es=doc.select("a[href]");
+		for(Element e : es){
+            l.add(e.tagName()+"$"+e.attr("abs:href")+"("+e.text()+")");
+        }
+	    return l;
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		List<String> l=new ArrayList<String>();
+        Elements es=doc.select("[src]");
+        for(Element e : es){
+            if(e.tagName().equals("img")){
+                l.add(e.tagName()+"$"+e.attr("abs:src"));
+            }
+        }
+		
+        return l;
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		List<String> l=new ArrayList<String>();
+		Elements es=doc.select("link[href]");
+        for(Element e : es){
+            l.add(e.tagName()+"$"+e.attr("abs:href")+"("+e.attr("rel")+")");
+        }
+        return l;
+	}
+	
+}

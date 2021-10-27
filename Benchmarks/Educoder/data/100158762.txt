@@ -1,0 +1,36 @@
+package Q102;
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		int five = 0;
+		int ten= 0;
+		int twenty= 0;
+		int flag = 0;
+		Scanner sc = new Scanner(System.in);
+		while(sc.hasNext()){
+			int money = sc.nextInt();
+			if(money == 5)
+			five++;
+			if(money==10){
+				five--;
+				ten++;
+			}
+			if(money==20){
+				five--;
+				ten--;
+				twenty++;
+			}
+			if(five<0||ten<0){
+				System.out.print("false");
+				flag = 1;
+				return;
+			}
+		}
+		if(flag!=1)
+		System.out.print("true");
+	}
+
+}

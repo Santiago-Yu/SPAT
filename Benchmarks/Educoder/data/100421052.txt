@@ -1,0 +1,40 @@
+    public static void main(String[] args) {
+        try {
+            configurationModules = new ConfigurationModules();
+        } catch (ExceptionInitialisation e) {
+            UI.erreurFatale("Erreur lors du chargement des modules !", e);
+        }
+        configurationGenerale = new ConfigurationGenerale(configurationModules);
+        try {
+            configurationGenerale.chargeConfiguration(configurationModules, fichierConfigurationGenerale);
+        } catch (FileNotFoundException e) {
+            System.err.println("[INIT] Attention : Fichier de configuration g茅n茅rale non trouv茅 脿 l'emplacement \"" + fichierConfigurationGenerale + "\" !");
+        } catch (InvalidPropertiesFormatException e) {
+            UI.erreur("Le fichier de configuration g茅n茅ral est mal form茅 !", e);
+        } catch (IOException e) {
+            UI.erreur("Erreur lors du chargement du fichier de configuration g茅n茅ral.", e);
+        }
+        args = recolleArgumentsEspaces(args);
+        int index = 0;
+        while (index != -1 && index < args.length) {
+            index = analyseArgument(args, index);
+        }
+        i18n = UI.getI18nInstance(Galaxiia.class);
+        Thread.setDefaultUncaughtExceptionHandler(new GestionExceptions());
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Throwable t) {
+            UI.erreur("Impossible d'utiliser le th猫me syst猫me pour l'interface.", t);
+        }
+        UI.init();
+        try {
+            configurationGenerale.sauvegardeConfiguration();
+        } catch (IOException e) {
+            UI.erreur("Erreur lors de la sauvegarde du fichier de configuration g茅n茅rale.", e);
+        }
+        try {
+            configurationGenerale.getInterfaceJoueur().getConstructor(new Class[] { args.getClass(), ConfigurationGenerale.class }).newInstance(new Object[] { args, configurationGenerale });
+        } catch (Throwable t) {
+            UI.erreurFatale("Impossible de d茅marrer l'interface !", t);
+        }
+    }

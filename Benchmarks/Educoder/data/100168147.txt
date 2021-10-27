@@ -1,0 +1,22 @@
+package step2;
+
+
+public class FindZhiShu {
+public static Boolean isPrime(int n) { 
+		for (int i = 2; i <= Math.sqrt(n); i++) { 
+		if (n % i == 0) {
+		return false;
+		} 
+		}
+		return true;
+		}
+	public static void main(String[] args) {
+		int len = 1000;
+		//1既不是素数也不是合数,2是最少的偶素数.
+		for(int i = 2; i <= len; i ++) {
+		if(FindZhiShu.isPrime(i)) {
+		System.out.print(i + " ");
+		}
+		}
+		} 
+}

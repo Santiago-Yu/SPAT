@@ -1,0 +1,31 @@
+package step5;
+import java.util.Scanner;
+
+public class TestJava18_5 {
+	static final Scanner sc=new Scanner(System.in);
+	public void jisuan(){
+		/*********Start********/
+		int n=1,chengji;
+        double sum=0;
+        for(;true;n++){
+            
+        	System.out.println("请输入第"+n+"门课程成绩：");
+            chengji=sc.nextInt();
+            if(chengji>=0&&chengji<=100){
+            sum+=chengji;
+            }
+            else{
+                n--;
+            	break;
+            }
+        }
+        System.out.print("您一共输入了"+n+"门课程成绩，总分为：");
+		System.out.print(String.format("%.2f",sum));
+        System.out.print("，平均分为：");
+        System.out.println(String.format("%.2f",sum/n));
+
+		
+		/*********End********/
+	}
+
+}

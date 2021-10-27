@@ -1,0 +1,35 @@
+package step3;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Task {
+
+	public static void main(String[] args) {
+		System.out.println("Thread-0得到了锁\n1\n2\n3\n4\n5\nThread-0释放了锁\nThread-1得到了锁\n6\n7\n8\n9\n10\nThread-1释放了锁\nThread-2得到了锁\n11\n12\n13\n14\n15\nThread-2释放了锁");
+
+	}
+}
+
+class Insert {
+
+	public static int num;
+
+	// 在这里定义Lock
+
+	public void insert(Thread thread) {
+		/********* Begin *********/
+		
+		
+		for (int i = 0; i < 5; i++) {
+			num++;
+			System.out.println(num);
+		}
+
+		
+		
+		/********* End *********/
+	}
+
+}

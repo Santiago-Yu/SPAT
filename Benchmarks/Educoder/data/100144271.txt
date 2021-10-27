@@ -1,0 +1,46 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+	public void showDirStructure(File file)	{
+System.out.println("+--" + file.getName());
+        showDirTree(file," ");
+    }
+    public static void showDirTree(File dir,String interval){
+        //筛选
+        String[] strs = {"jpg","jpeg","bmp","png"};
+        File[] files = dir.listFiles();
+        interval += " ";
+        for (File file : files) {
+            //获取文件的后缀名
+            String filename = file.getName();
+            String lastName = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            for (String str : strs) {
+                if(str.equals(lastName)){
+                    System.out.println(interval + "--" +  filename);
+                }
+            }
+            if(file.isDirectory()){
+                System.out.println(interval + "+--" +  filename);
+                showDirTree(file,interval + " ");
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+	
+	
+
+	/********** End **********/
+}

@@ -1,0 +1,31 @@
+package step1;
+
+import java.math.BigDecimal;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+       	final double PI = Math.PI;
+double ans = 0.0;
+double distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+if (r1 + r2 < distance)
+return (PI*r1*r1)+(PI*r2*r2);
+else if (Math.abs(r2 - r1) >= distance) {
+	if (r2 >= r1)
+		ans = PI * r1 * r1;
+	else
+		ans = PI * r2 * r2;
+}
+else {
+double angle1 = 2 * Math.acos((r1 * r1 + distance * distance - r2 * r2) / (2.0 * r1 * distance));
+double angle2 = 2 * Math.acos((r2 * r2 + distance * distance - r1 * r1) / (2.0 * r2 * distance));
+ans = r1 * r1 * angle1 / 2.0 + r2 * r2 * angle2 / 2.0- r1 * r1 * Math.sin(angle1) / 2.0 - r2 * r2 * Math.sin(angle2) / 2.0;
+}
+BigDecimal bg = new BigDecimal(ans);
+ans = bg.setScale(6, BigDecimal.ROUND_HALF_UP).doubleValue();
+return (PI*r1*r1)+(PI*r2*r2)-ans;
+		  /********* End *********/
+	  }
+}

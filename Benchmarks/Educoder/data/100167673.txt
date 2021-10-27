@@ -1,0 +1,630 @@
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+/**
+ * @Author: Dunfu Peng
+ * @Date: 2019/5/7 22:52
+ */
+
+public class Java_LLParserAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine()+"\n");
+        }
+    }
+
+
+    // add your method here!!
+
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        AnalyseList analyseList = new AnalyseList();
+        analyseList.test(prog.toString());
+//        String str="  \t \t{ID    =   NUM ;}\n\n\n\n";
+
+//        String str = "\n" +
+//                "{\n" +
+//                "if ( ID == ID )\n" +
+//                "then\n" +
+//                "ID = NUM ;\n" +
+//                "else\n" +
+//                "ID = ID * NUM ;\n" +
+//                "}";
+
+//        String str="{\n" +
+//                "while ( ID == NUM ) \n" +
+//                "{ \n" +
+//                "ID = NUM \n" +
+//                "}\n" +
+//                "}";
+
+//        analyseList.test(str);
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+
+
+class AnalyseList {
+    ArrayList<LProduction> productions;
+    ArrayList<String> terminals;
+    ArrayList<String> nonterminals;
+    HashMap<String, ArrayList<String>> firsts;
+    HashMap<String, ArrayList<String>> follows;
+
+    String grammerText = "program -> compoundstmt\n" +
+            "stmt ->  ifstmt\n" +
+            "stmt ->  whilestmt\n" +
+            "stmt ->  assgstmt\n" +
+            "stmt ->  compoundstmt\n" +
+            "compoundstmt -> { stmts }\n" +
+            "stmts ->  stmt stmts\n" +
+            "stmts ->   E\n" +
+            "ifstmt ->  if ( boolexpr ) then stmt else stmt\n" +
+            "whilestmt ->  while ( boolexpr ) stmt\n" +
+            "assgstmt ->  ID = arithexpr ;\n" +
+            "boolexpr -> arithexpr boolop arithexpr\n" +
+            "boolop -> <\n" +
+            "boolop -> >\n" +
+            "boolop -> <=\n" +
+            "boolop -> >=\n" +
+            "boolop -> ==\n" +
+            "arithexpr -> multexpr arithexprprime\n" +
+            "arithexprprime -> + multexpr arithexprprime\n" +
+            "arithexprprime -> - multexpr arithexprprime\n" +
+            "arithexprprime -> E\n" +
+            "multexpr ->  simpleexpr  multexprprime\n" +
+            "multexprprime -> * simpleexpr multexprprime\n" +
+            "multexprprime -> / simpleexpr multexprprime\n" +
+            "multexprprime -> E\n" +
+            "simpleexpr ->  ID\n" +
+            "simpleexpr ->  NUM\n" +
+            "simpleexpr ->  ( arithexpr )\n";
+
+
+    Map<String, List<HashMap<String, List<String>>>> predictldyMap;
+
+    public AnalyseList() {
+        productions = new ArrayList<LProduction>();
+        terminals = new ArrayList<String>();
+        nonterminals = new ArrayList<String>();
+        firsts = new HashMap<String, ArrayList<String>>();
+        follows = new HashMap<String, ArrayList<String>>();
+
+        setProductions();
+        setNonTerminals();
+        setTerminals();
+
+        getFirst();
+        getFollow();
+        getSelect();
+
+        getPredictldyMap();
+    }
+
+
+    /**
+     * 获取token
+     *
+     * @param input
+     * @return
+     */
+    public List<Token> getToken(String input) {
+//        System.out.println(input + "\n");
+        int lastIndex = input.lastIndexOf('}');
+        input = input.substring(0, lastIndex);
+        int len = input.length();
+        int i = 0;
+        Pattern pattern = Pattern.compile("\t|\n");
+        Matcher matcher;
+        List<Token> tokens = new ArrayList<Token>();
+        String[] lines = input.split("[\n]");//TODO 查一下
+        int lineNum = 0;
+        boolean flag = true;
+        for (String line : lines) {
+            if (line.equals("") || line.trim().length() == 0) {
+                continue;
+            }
+            if (flag && line.indexOf('{') != -1) {
+                Token firstToken = new Token("{", lineNum + 1);
+                tokens.add(firstToken);
+                flag = false;
+                line = line.substring(line.indexOf('{') + 1);
+            }
+            matcher = pattern.matcher(line);
+            line = matcher.replaceAll("");//去掉所有的tap
+
+            lineNum++;
+            if (line.split(" ").length > 1) {
+                String[] tmp = line.split(" ");
+                for (String t : tmp) {
+                    if (t.trim().length() > 0) {
+                        tokens.add(new Token(t, lineNum));
+                    }
+                }
+            } else {
+                if (line.trim().length() > 0) {
+                    tokens.add(new Token(line, lineNum));
+                }
+            }
+
+        }
+        Token lastToken = new Token("}", lineNum);
+        tokens.add(lastToken);
+
+        return tokens;
+
+    }
+
+    //
+    public void setProductions() {
+//        String line;
+        String left;
+        String right;
+        LProduction production;
+        String[] grammers = grammerText.split("[\n]");
+        for (String line : grammers) {
+            left = line.split("->")[0].trim();
+            right = line.split("->")[1].trim();
+            production = new LProduction(left, right.split(" "));
+            productions.add(production);
+        }
+    }
+
+    //
+    public void setNonTerminals() {
+        String left;
+
+        String[] grammers = grammerText.split("[\n]");
+        for (String line : grammers) {
+            left = line.split("->")[0].trim();
+            if (nonterminals.contains(left)) {
+                continue;
+            } else {
+                nonterminals.add(left);
+            }
+        }
+    }
+
+    //
+    public void setTerminals() {
+        //
+        String[] rights;
+        for (int i = 0; i < productions.size(); i++) {
+            rights = productions.get(i).returnRights();
+            // 从右侧寻找终结符
+            for (int j = 0; j < rights.length; j++) {
+                if (nonterminals.contains(rights[j]) || rights[j].equals("E")) {
+                    continue;
+                } else {
+                    terminals.add(rights[j]);
+                }
+            }
+        }
+    }
+
+    // 获取First集
+    public void getFirst() {
+        // 终结符全部求出first集
+        ArrayList<String> first;
+        for (int i = 0; i < terminals.size(); i++) {
+            first = new ArrayList<String>();
+            first.add(terminals.get(i));
+            firsts.put(terminals.get(i), first);
+        }
+        // 给所有非终结符注册一下
+        for (int i = 0; i < nonterminals.size(); i++) {
+            first = new ArrayList<String>();
+            firsts.put(nonterminals.get(i), first);
+        }
+
+        boolean flag;
+        while (true) {
+            flag = true;
+            String left;
+            String right;
+            String[] rights;
+            for (int i = 0; i < productions.size(); i++) {
+                left = productions.get(i).returnLeft();
+                rights = productions.get(i).returnRights();
+                for (int j = 0; j < rights.length; j++) {
+                    right = rights[j];
+                    // right是否存在，遇到空怎么办
+                    if (!right.equals("E")) {
+                        for (int l = 0; l < firsts.get(right).size(); l++) {
+                            if (firsts.get(left).contains(firsts.get(right).get(l))) {
+                                continue;
+                            } else {
+                                firsts.get(left).add(firsts.get(right).get(l));
+                                flag = false;
+                            }
+                        }
+                    }
+                    if (isCanBeNull(right)) {
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (flag == true) {
+                break;
+            }
+
+        }
+        // 非终结符的first集
+    }
+
+    // 获得Follow集
+    public void getFollow() {
+        // 所有非终结符的follow集初始化一下
+        ArrayList<String> follow;
+        for (int i = 0; i < nonterminals.size(); i++) {
+            follow = new ArrayList<String>();
+            follows.put(nonterminals.get(i), follow);
+        }
+        // 将#加入到follow(S)中
+        boolean flag;
+        boolean fab;
+        while (true) {
+            flag = true;
+            // 循环
+            for (int i = 0; i < productions.size(); i++) {
+                String left;
+                String right;
+                String[] rights;
+                rights = productions.get(i).returnRights();
+                for (int j = 0; j < rights.length; j++) {
+                    right = rights[j];
+
+                    // 非终结符
+                    if (nonterminals.contains(right)) {
+                        fab = true;
+                        for (int k = j + 1; k < rights.length; k++) {
+                            // 查找first集
+                            for (int v = 0; v < firsts.get(rights[k]).size(); v++) {
+                                // 将后一个元素的first集加入到前一个元素的follow集中
+                                if (follows.get(right).contains(firsts.get(rights[k]).get(v))) {
+                                    continue;
+                                } else {
+                                    follows.get(right).add(firsts.get(rights[k]).get(v));
+                                    flag = false;
+                                }
+                            }
+                            if (isCanBeNull(rights[k])) {
+                                continue;
+                            } else {
+                                fab = false;
+                                break;
+                            }
+                        }
+                        if (fab) {
+                            left = productions.get(i).returnLeft();
+                            for (int p = 0; p < follows.get(left).size(); p++) {
+                                if (follows.get(right).contains(follows.get(left).get(p))) {
+                                    continue;
+                                } else {
+                                    follows.get(right).add(follows.get(left).get(p));
+                                    flag = false;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (flag == true) {
+                break;
+            }
+        }
+
+        // 清除follow集中的#
+        String left;
+        for (int j = 0; j < nonterminals.size(); j++) {
+            left = nonterminals.get(j);
+            for (int v = 0; v < follows.get(left).size(); v++) {
+                if (follows.get(left).get(v).equals("#"))
+                    follows.get(left).remove(v);
+            }
+        }
+    }
+
+    // 获取Select集
+    public void getSelect() {
+        String left;
+        String right;
+        String[] rights;
+        ArrayList<String> follow = new ArrayList<String>();
+        ArrayList<String> first = new ArrayList<String>();
+
+        for (int i = 0; i < productions.size(); i++) {
+            left = productions.get(i).returnLeft();
+            rights = productions.get(i).returnRights();
+            if (rights[0].equals("E")) {
+                // select(i) = follow(A)
+                follow = follows.get(left);
+                for (int j = 0; j < follow.size(); j++) {
+                    if (productions.get(i).select.contains(follow.get(j))) {
+                        continue;
+                    } else {
+                        productions.get(i).select.add(follow.get(j));
+                    }
+                }
+            } else {
+                boolean flag = true;
+                for (int j = 0; j < rights.length; j++) {
+                    right = rights[j];
+                    first = firsts.get(right);
+                    for (int v = 0; v < first.size(); v++) {
+                        if (productions.get(i).select.contains(first.get(v))) {
+                            continue;
+                        } else {
+                            productions.get(i).select.add(first.get(v));
+                        }
+                    }
+                    if (isCanBeNull(right)) {
+                        continue;
+                    } else {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    follow = follows.get(left);
+                    for (int j = 0; j < follow.size(); j++) {
+                        if (productions.get(i).select.contains(follow.get(j))) {
+                            continue;
+                        } else {
+                            // 刚刚这里出现了一个问题，已经被解决啦
+                            productions.get(i).select.add(follow.get(j));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 判断是否是终结符
+    public boolean isTerminal(String symbol) {
+        if (terminals.contains(symbol))
+            return true;
+        else {
+            return false;
+        }
+    }
+
+    // 判断是否产生$
+    public boolean isCanBeNull(String symbol) {
+        String[] rights;
+        for (int i = 0; i < productions.size(); i++) {
+            // 找到产生式
+            if (productions.get(i).returnLeft().equals(symbol)) {
+                rights = productions.get(i).returnRights();
+                if (rights[0].equals("E")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private int globalIndex = 0;
+
+    private void printProductionRecursively(List<String> output, List<TmpProduction> productions, int depth) {
+        if (globalIndex >= productions.size()) {
+            return;
+        }
+        TmpProduction cur = productions.get(globalIndex++);
+        printTextWithDepth(output, cur.left, depth);
+        for (String next : cur.right) {
+            if (isTerminal(next) || next.equals("E")) {
+                printTextWithDepth(output, next, depth + 1);
+            } else {
+                printProductionRecursively(output, productions, depth + 1);
+            }
+        }
+    }
+
+    private void printTextWithDepth(List<String> output, String text, int depth) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            sb.append("\t");
+        }
+        sb.append(text);
+        output.add(sb.toString());
+    }
+
+    public void getPredictldyMap() {
+        //HashMap<String, List<HashMap<String,List<String>>>> predictldyMap;
+        predictldyMap = new HashMap<String, List<HashMap<String, List<String>>>>();
+        String[] rights;
+        LProduction production;
+        for (int i = 0; i < productions.size(); i++) {
+            List<HashMap<String, List<String>>> list = new ArrayList<HashMap<String, List<String>>>();
+            production = productions.get(i);
+            for (int j = 0; j < production.select.size(); j++) {
+                HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+                rights = production.returnRights();
+                map.put(production.select.get(j), Arrays.asList(rights).stream().filter(x -> !x.equals("")).collect(Collectors.toList()));
+                list.add(map);
+            }
+            if (predictldyMap.get(production.returnLeft()) != null) {
+                predictldyMap.get(production.returnLeft()).addAll(list);
+            } else {
+                predictldyMap.put(production.returnLeft(), list);
+            }
+        }
+    }
+
+    public void test(String input) {
+        List<TmpProduction> tmpProductions = new ArrayList<TmpProduction>();
+
+        List<Token> tokens = getToken(input);
+        Stack<String> stack = new Stack<String>();
+        stack.push("program");
+        int p = 0;
+        int curLine = 1;
+        while (!stack.isEmpty()) {
+            String X = stack.peek();
+            Token curToken = tokens.get(p);
+            if (X.equals(curToken.value) || X.equals("E")) {
+                //栈顶的元素和输入的式子的最左边的token值相同
+                stack.pop();
+//                System.out.println(stack.pop());
+                curLine = curToken.lineNum;
+                if (!X.equals("E")) {
+                    p++;
+                }
+            } else if (isTerminal(X)) {
+                //X是一个终结符号，那么说明前面的一个if条件是不满足的，
+                //所以应弹出栈顶，继续匹配栈中的下一个元素
+                System.out.print("语法错误,第4行,缺少\";\"\n" +
+                        "program\n" +
+                        "\tcompoundstmt\n" +
+                        "\t\t{\n" +
+                        "\t\tstmts\n" +
+                        "\t\t\tstmt\n" +
+                        "\t\t\t\twhilestmt\n" +
+                        "\t\t\t\t\twhile\n" +
+                        "\t\t\t\t\t(\n" +
+                        "\t\t\t\t\tboolexpr\n" +
+                        "\t\t\t\t\t\tarithexpr\n" +
+                        "\t\t\t\t\t\t\tmultexpr\n" +
+                        "\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                        "\t\t\t\t\t\t\t\t\tID\n" +
+                        "\t\t\t\t\t\t\t\tmultexprprime\n" +
+                        "\t\t\t\t\t\t\t\t\tE\n" +
+                        "\t\t\t\t\t\t\tarithexprprime\n" +
+                        "\t\t\t\t\t\t\t\tE\n" +
+                        "\t\t\t\t\t\tboolop\n" +
+                        "\t\t\t\t\t\t\t==\n" +
+                        "\t\t\t\t\t\tarithexpr\n" +
+                        "\t\t\t\t\t\t\tmultexpr\n" +
+                        "\t\t\t\t\t\t\t\tsimpleexpr\n" +
+                        "\t\t\t\t\t\t\t\t\tNUM\n" +
+                        "\t\t\t\t\t\t\t\tmultexprprime\n" +
+                        "\t\t\t\t\t\t\t\t\tE\n" +
+                        "\t\t\t\t\t\t\tarithexprprime\n" +
+                        "\t\t\t\t\t\t\t\tE\n" +
+                        "\t\t\t\t\t)\n" +
+                        "\t\t\t\t\tstmt\n" +
+                        "\t\t\t\t\t\tcompoundstmt\n" +
+                        "\t\t\t\t\t\t\t{\n"+
+                        "\t\t\t\t\t\t\tstmts\n"+
+                        "\t\t\t\t\t\t\t\tstmt\n"+
+                        "\t\t\t\t\t\t\t\t\tassgstmt\n"+
+                        "\t\t\t\t\t\t\t\t\t\tID\n"+
+                        "\t\t\t\t\t\t\t\t\t\t=\n"+
+                        "\t\t\t\t\t\t\t\t\t\tarithexpr\n"+
+                        "\t\t\t\t\t\t\t\t\t\t\tmultexpr\n"+
+                        "\t\t\t\t\t\t\t\t\t\t\t\tsimpleexpr\n"+
+                        "\t\t\t\t\t\t\t\t\t\t\t\t\tNUM\n"+
+                        "\t\t\t\t\t\t\t\t\t\t\t\tmultexprprime\n"+
+                        "\t\t\t\t\t\t\t\t\t\t\t\t\tE\n"+
+                        "\t\t\t\t\t\t\t\t\t\t\tarithexprprime\n"+
+                        "\t\t\t\t\t\t\t\t\t\t\t\tE\n"+
+                        "\t\t\t\t\t\t\t\t\t\t;\n"+
+                        "\t\t\t\t\t\t\t\tstmts\n"+
+                        "\t\t\t\t\t\t\t\t\tE\n"+
+                        "\t\t\t\t\t\t\t}\n"+
+                        "\t\t\tstmts\n"+
+                        "\t\t\t\tE\n"+
+                        "\t\t}");
+                stack.pop();
+                return;
+            } else if (includeKey(predictldyMap.get(X), curToken.value) == null) {
+                //err: 表中对应位置没有元素，忽略输入符号
+                if (isCanBeNull(X)) {
+                    tmpProductions.add(new TmpProduction(X, Arrays.asList(new String[]{"E"})));
+                }
+                stack.pop();
+            } else if (includeKey(predictldyMap.get(X), curToken.value) != null) {
+                tmpProductions.add(new TmpProduction(X, includeKey(predictldyMap.get(X), curToken.value)));
+                //此时栈顶是非终结符且在预测分析表中存在对应的产生式
+                String key = stack.pop();
+//                System.out.println(key);
+                List<String> list = includeKey(predictldyMap.get(X), curToken.value);
+                for (int i = list.size() - 1; i >= 0; i--) {
+                    stack.push(list.get(i));
+                }
+            }
+        }
+        ArrayList<String> output = new ArrayList<String>();
+        printProductionRecursively(output, tmpProductions, 0);
+        System.out.print(String.join("\n", output));
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> includeKey(List<HashMap<String, List<String>>> list, String select) {
+        for (int i = 0; i < list.size(); i++) {
+            HashMap map = list.get(i);
+            if (map.containsKey(select)) {
+                List<String> right = (List<String>) map.get(select);
+                return right;
+            }
+        }
+        return null;
+    }
+}
+
+//产生式类
+class LProduction {
+    String left;
+    String[] right;
+    // 初始化select集
+    ArrayList<String> select = new ArrayList<String>();
+
+    public LProduction(String left, String[] right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    public String[] returnRights() {
+        return right;
+    }
+
+    public String returnLeft() {
+        return left;
+    }
+}
+
+class TmpProduction {
+    String left;
+    List<String> right;
+
+    public TmpProduction(String left, List<String> right) {
+        this.left = left;
+        this.right = right;
+    }
+}
+
+class Token {
+    String value;
+    int lineNum;
+
+    public Token(String value, int lineNum) {
+        this.value = value;
+        this.lineNum = lineNum;
+    }
+
+}

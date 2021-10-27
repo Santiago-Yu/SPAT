@@ -1,0 +1,22 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int sum=0;
+        int i = Math.max(num1, num2);
+        int j = Math.min(num1, num2);
+		for(int k=j;k<=i;k++) {
+			int x=k;
+			while(x>=10) {
+				sum+=x%10;
+				x=x/10;
+			}
+			sum+=x;
+		}
+		return sum;
+		/********** END **********/
+	}
+}

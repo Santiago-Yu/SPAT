@@ -1,0 +1,49 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		int[] record = new int[10];
+		int length = record.length;
+		int count = 0;
+		int[] recordRecovery = new int[10];
+		/********** Begin *********/
+		for (int i = 0; i < record.length; i++) {
+			int xuehao = scanner.nextInt();
+			record[i] = xuehao;
+		}
+
+		for (int i = 0; i < record.length; i++) {
+			boolean isTrue = true;
+			for (int j = i + 1; j < record.length; j++) {
+				if (record[i] == record[j]) {
+					isTrue = false;
+					break;
+				}
+			}
+			if (isTrue) {
+				// 没有元素就将原数组的元素赋给临时数组
+				recordRecovery[count] = record[i];
+				// 走到这里证明当前元素没有重复，那么记录自增
+				count++;
+			}
+		}
+
+		int[] newArr = new int[count];
+
+		System.arraycopy(recordRecovery, 0, newArr, 0, count);
+        Arrays.sort(newArr);
+
+		for (int i = 0; i < newArr.length; i++) {
+			if (i < newArr.length - 1) {
+				System.out.print(newArr[i] + " ");
+			} else {
+				System.out.print(newArr[i]);
+			}
+		}
+
+	}
+}

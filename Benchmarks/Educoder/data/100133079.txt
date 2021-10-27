@@ -1,0 +1,23 @@
+package step2;
+
+import java.util.Arrays;
+
+public class Task {
+	
+	public int getTheWay(int num,int bagCapacity,long[] snacks){
+		int ans = 1;
+		int max = 1 << num;
+		for(int i=1; i<max; i++) {
+			long sum = 0;
+			for(int j=0; j<num; j++) {
+				if(((1 << j) & i) > 0) {
+					sum += snacks[j];
+				}
+			}
+			if(sum <= bagCapacity) {
+				ans++;
+			}
+		}
+		return ans;
+	}
+}

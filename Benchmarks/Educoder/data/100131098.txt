@@ -1,0 +1,36 @@
+package step1;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n=sc.nextInt();
+		int m=sc.nextInt();
+		System.out.println(getSum(n,m));
+		
+	}
+	public static int value(int num){
+        int sum=0;
+        int n;
+        while(num!=0){
+            n=num%10;
+            sum+=n;
+            num=(num-n)/10;
+        }
+        return sum;
+    }
+
+	public static int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        int re=0;
+
+        for(int i=num1;i<=num2;i++){
+            re+=value(i);
+        }
+        return re;
+		
+		/********** END **********/
+	}
+	
+}

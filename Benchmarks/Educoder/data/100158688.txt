@@ -1,0 +1,22 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int i=0,j,k,res=0;
+    int a[30];
+    while(scanf("%d",&a[i])!=EOF){
+        i++;
+    }
+    int l=i-1;
+    int num=a[i-1];
+    for(i=0;i<l-2;i++){
+			for(j=i+1;j<l-1;j++){
+				for(k=j+1;k<l;k++){
+					if(a[i]+a[j]+a[k]<num)
+						res++;
+				}
+			}
+		}
+    printf("%d",res);
+    return 0;
+}

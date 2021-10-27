@@ -1,0 +1,31 @@
+package Q202;
+import java.util.*;
+public class Main {
+	public static int x,i,t,j;
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int divide[] = {9,8,7,6,5,4,3,2};
+		int tie[] = new int[20];
+		while(sc.hasNextInt() && x<=10000005) {
+			x = sc.nextInt();
+			t = x;
+			j = 0;
+			if(x == 1)	System.out.printf("%d",x);
+			else {
+				for(i=0;i<8;i++) {
+					while(t%divide[i]==0) {
+						tie[j] = divide[i];
+						t /= divide[i];
+						j++;
+					}
+				}
+				if(t==1) {
+					for(i=j-1;i>=0;i--) {
+						System.out.printf("%d", tie[i]);
+					}
+				}
+				else return ;
+			}
+		}
+	}
+}

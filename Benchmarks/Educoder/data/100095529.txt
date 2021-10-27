@@ -1,0 +1,45 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        //1..12月之前的31天的月份有几个
+        int [] before31 = {0, 0,1,1,1,2,3,3,4,5,5,6,6 };
+        int [] before30 = {0, 0,0,0,0,1,1,2,2,2,3,3,4 };
+        int [] before28 = {0, 0,0,1,1,1,1,1,1,1,1,1,1 };                  
+		
+        int result = 0;
+        int febdays = 28;
+        if (( year % 400 == 0) || (year %4 ==0 && year %100 != 0)){
+            febdays = 29;
+        }
+        if(month == 1){
+            result = day;
+        }else if(month ==2){
+            result = day+ 31; 
+        }
+        else {
+            result = day + 31 * before31[month]+before30[month]*30+febdays;
+        }
+        //switch(month){
+          //  case 1:{ result = day; break;}
+            //case 2:{ result = day+31; break;}
+            //case 3:{ result = day + 31 + febdays; break;}
+          //  case 4:{ result = day + 31 + febdays; break;}
+         //   case 5:{ result = day + 31*2+ febdays+30; break;}
+          //  case 6:{ result = day + 31*3 +febdays+30;break;}
+          //  case 7:{ result = day + 31*3 + febdays+30*2;break;}
+          //  case 8:{ result = day + 31*4 +febdays+30*2;break;}
+          //  case 9:{result = day + 31* 5 + febdays+30*2;break;}
+          //  case 10:{ result = day+31*6 + febdays + 30*3;break;}
+          //  case 11:{result = day+31*6 +febdays +30*3; break;}
+          //  case 12:{ result = day+31*6 +febdays +30*4;break;}
+         // }
+        
+        System.out.print(result);        
+        
+
+
+		/********** End *********/
+	}
+}

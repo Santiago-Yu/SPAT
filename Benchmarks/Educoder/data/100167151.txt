@@ -1,0 +1,393 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Java_LexAnalysis {
+
+    private static StringBuffer prog = new StringBuffer();
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine()) {
+            prog.append(sc.nextLine() + "\n");
+        }
+    }
+
+    public class Token {
+        Type type;
+        String content;
+        int index;
+
+        public Token(Type type, String content, int index) {
+            this.index = index;
+            this.type = type;
+            this.content = content;
+            if (type == Type.IDENTIFIER && keywords.containsKey(content))
+                this.type = Type.KEYWORD;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("{type: `%s`, content: `%s`}", type, content);
+        }
+    }
+
+    private static List<Character> specialChar = Arrays.asList('-', '!', '%', '&', '(', ')', '*', ',', '.', '/', ':', ';', '?', '[', ']', '^', '{', '|', '}', '~', '+', '<', '=', '>', '"');
+    public static Map<String, String> keywords = new HashMap<String, String>() {{
+        put("auto", "1");
+        put("break", "2");
+        put("case", "3");
+        put("char", "4");
+        put("const", "5");
+        put("continue", "6");
+        put("default", "7");
+        put("do", "8");
+        put("double", "9");
+        put("else", "10");
+        put("enum", "11");
+        put("extern", "12");
+        put("float", "13");
+        put("for", "14");
+        put("goto", "15");
+        put("if", "16");
+        put("int", "17");
+        put("long", "18");
+        put("register", "19");
+        put("return", "20");
+        put("short", "21");
+        put("signed", "22");
+        put("sizeof", "23");
+        put("static", "24");
+        put("struct", "25");
+        put("switch", "26");
+        put("typedef", "27");
+        put("union", "28");
+        put("unsigned", "29");
+        put("void", "30");
+        put("volatile", "31");
+        put("while", "32");
+    }};
+    public static Map<String, String> operators = new HashMap<String, String>() {{
+        put("-", "33");
+        put("--", "34");
+        put("-=", "35");
+        put("->", "36");
+        put("!", "37");
+        put("!=", "38");
+        put("%", "39");
+        put("%=", "40");
+        put("&", "41");
+        put("&&", "42");
+        put("&=", "43");
+        put("*", "46");
+        put("*=", "47");
+        put(".", "49");
+        put("/", "50");
+        put("/=", "51");
+        put(":", "52");
+        put("?", "54");
+        put("^", "57");
+        put("^=", "58");
+        put("|", "60");
+        put("||", "61");
+        put("|=", "62");
+        put("~", "64");
+        put("+", "65");
+        put("++", "66");
+        put("+=", "67");
+        put("<", "68");
+        put("<<", "69");
+        put("<<=", "70");
+        put("<=", "71");
+        put("=", "72");
+        put("==", "73");
+        put(">", "74");
+        put(">=", "75");
+        put(">>", "76");
+        put(">>=", "77");
+    }};
+    public static Map<String, String> delimeters = new HashMap<String, String>() {{
+        put("(", "44");
+        put(")", "45");
+        put(",", "48");
+        put(";", "53");
+        put("[", "55");
+        put("]", "56");
+        put("{", "59");
+        put("}", "63");
+        put("\"", "78");
+
+    }};
+
+    enum Type {
+        IDENTIFIER,
+        DELIMITER,
+        STRING,
+        NUMBER,
+        KEYWORD,
+        OPERATOR,
+        COMMENT,
+        UNKNOWN
+    }
+
+    enum State {
+        DEFAULT,    // 没有接收任何内容
+        NUMBER,     // 正在接收数字
+        IDENTIFIER, // 正在接收标识符
+        SPECIAL,    // 正在接收特殊字符
+        STRING,     // 正在接收字符串
+        WRONG       // 错误子串
+    }
+
+    enum CharType {
+        LETTER,
+        DIGIT,
+        BLANK,
+        SPECIAL,
+        UNKNOWN
+    }
+
+    private CharType getCharType(char c) {
+        if (c == ' ' || c == '\t' || c == '\n') {
+            return CharType.BLANK;
+        } else if (Character.isLetter(c)) {
+            return CharType.LETTER;
+        } else if (Character.isDigit(c)) {
+            return CharType.DIGIT;
+        } else if (specialChar.contains(c)) {
+            return CharType.SPECIAL;
+        } else {
+            return CharType.UNKNOWN;
+        }
+    }
+
+    private Type getSpecialType(String s) {
+        if (operators.containsKey(s)) return Type.OPERATOR;
+        if (delimeters.containsKey(s)) return Type.DELIMITER;
+        return null;
+    }
+
+    private State nextState(StringBuilder sb, List<Token> tokenList, State prev, char c, int index) {
+        CharType charType = getCharType(c);
+        switch (prev) {
+            case DEFAULT:
+                switch (charType) {
+                    case LETTER:
+                        sb.append(c);
+                        return State.IDENTIFIER;
+                    case DIGIT:
+                        sb.append(c);
+                        return State.NUMBER;
+                    case BLANK:
+                        return State.DEFAULT;
+                    case SPECIAL:
+                        sb.append(c);
+                        return State.SPECIAL;
+                    case UNKNOWN:
+                        sb.append(c);
+                        return State.WRONG;
+                }
+            case NUMBER:
+                switch (charType) {
+                    case LETTER:
+                        sb.append(c);
+                        return State.WRONG;
+                    case DIGIT:
+                        sb.append(c);
+                        return State.NUMBER;
+                    case BLANK:
+                        tokenList.add(new Token(Type.NUMBER, sb.toString(), index));
+                        sb.setLength(0);
+                        return State.DEFAULT;
+                    case SPECIAL:
+                        tokenList.add(new Token(Type.NUMBER, sb.toString(), index));
+                        sb.setLength(0);
+                        sb.append(c);
+                        return State.SPECIAL;
+                    case UNKNOWN:
+                        sb.append(c);
+                        return State.WRONG;
+                }
+            case IDENTIFIER:
+                switch (charType) {
+                    case LETTER:
+                    case DIGIT:
+                        sb.append(c);
+                        return State.IDENTIFIER;
+                    case BLANK:
+                        tokenList.add(new Token(Type.IDENTIFIER, sb.toString(), index));
+                        sb.setLength(0);
+                        return State.DEFAULT;
+                    case SPECIAL:
+                        tokenList.add(new Token(Type.IDENTIFIER, sb.toString(), index));
+                        sb.setLength(0);
+                        sb.append(c);
+                        return State.SPECIAL;
+                    case UNKNOWN:
+                        sb.append(c);
+                        return State.WRONG;
+                }
+            case SPECIAL:
+                String special = sb.toString();
+                Type type = getSpecialType(sb.toString());
+                switch (charType) {
+                    case LETTER:
+                    case DIGIT:
+                        tokenList.add(new Token(type, special, index));
+                        sb.setLength(0);
+                        sb.append(c);
+                        if (special.equals("\"")) return State.STRING;
+                        return charType == CharType.LETTER ? State.IDENTIFIER : State.NUMBER;
+                    case BLANK:
+                        tokenList.add(new Token(type, special, index));
+                        sb.setLength(0);
+                        return State.DEFAULT;
+                    case SPECIAL:
+                        if (getSpecialType(special + c) == null) {
+                            tokenList.add(new Token(type, special, index));
+                            sb.setLength(0);
+                            if (special.equals("\"")) {
+                                sb.append(c);
+                                return State.STRING;
+                            }
+                        }
+                        sb.append(c);
+                        return State.SPECIAL;
+                    case UNKNOWN:
+                        sb.append(c);
+                        return State.WRONG;
+                }
+            case STRING:
+                switch (charType) {
+                    case LETTER:
+                    case DIGIT:
+                    case BLANK:
+                    case UNKNOWN:
+                        sb.append(c);
+                        return State.STRING;
+                    case SPECIAL:
+                        if (c != '"') {
+                            sb.append(c);
+                            return State.STRING;
+                        }
+                        tokenList.add(new Token(Type.STRING, sb.toString(), index));
+                        sb.setLength(0);
+                        tokenList.add(new Token(Type.DELIMITER, "\"", index));
+                        return State.DEFAULT;
+                }
+            case WRONG:
+                switch (charType) {
+                    case LETTER:
+                    case DIGIT:
+                    case SPECIAL:
+                    case UNKNOWN:
+                        sb.append(c);
+                        return State.WRONG;
+                    case BLANK:
+                        tokenList.add(new Token(Type.UNKNOWN, sb.toString(), index));
+                        sb.setLength(0);
+                        return State.DEFAULT;
+                }
+        }
+        return prev;
+    }
+
+    private List<Token> preProcess() {
+        // TODO: 有点欠考虑了
+        List<Token> tokens = new ArrayList<>();
+
+        Matcher m = Pattern.compile("/\\*.*?\\*/").matcher(prog);
+        while (m.find()) {
+            tokens.add(new Token(Type.COMMENT, m.group(0).substring(0, m.group(0).length()), m.end(0)));
+            prog.replace(m.start(0), m.end(0), new String(new char[m.group(0).length()]).replace('\0', ' ') + "\n");
+        }
+
+
+        m = Pattern.compile("//.*\n").matcher(prog);
+        while (m.find()) {
+            tokens.add(new Token(Type.COMMENT, m.group(0).substring(0, m.group(0).length() - 1), m.end(0)));
+            prog.replace(m.start(0), m.end(0), new String(new char[m.group(0).length() - 1]).replace('\0', ' ') + "\n");
+        }
+        return tokens;
+    }
+
+    public List<Token> tokenize(String flow) {
+        StringBuilder sb = new StringBuilder();
+        State state = State.DEFAULT;
+        List<Token> res = new ArrayList<>();
+        int index = 0;
+        for (char c : flow.toCharArray()) {
+            state = nextState(sb, res, state, c, index++);
+        }
+        state = nextState(sb, res, state, ' ', index++);
+        return res;
+    }
+
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        Java_LexAnalysis tokenizer = new Java_LexAnalysis();
+        List<Token> comments = tokenizer.preProcess();
+        List<Token> tokens = tokenizer.tokenize(prog.toString());
+        List<Token> res = new ArrayList<>();
+        res.addAll(comments);
+        res.addAll(tokens);
+        res.sort((a, b) -> {
+            return a.index - b.index;
+        });
+        int id = 1;
+        tokenizer.printToken(id, res.get(0));
+        for (int i = 1; i < res.size(); i++) {
+            Token token = res.get(i);
+            System.out.println();
+            tokenizer.printToken(++id, token);
+        }
+    }
+
+    private static void printToken(int id, Token token) {
+        switch (token.type) {
+            case COMMENT:
+                System.out.printf("%d: <%s,79>", id, token.content);
+                break;
+            case STRING:
+                System.out.printf("%d: <%s,81>", id, token.content);
+                break;
+            case OPERATOR:
+                System.out.printf("%d: <%s,%s>", id, token.content, operators.get(token.content));
+                break;
+            case DELIMITER:
+                System.out.printf("%d: <%s,%s>", id, token.content, delimeters.get(token.content));
+                break;
+            case NUMBER:
+                System.out.printf("%d: <%s,80>", id, token.content);
+                break;
+            case IDENTIFIER:
+                System.out.printf("%d: <%s,81>", id, token.content);
+                break;
+            case KEYWORD:
+                System.out.printf("%d: <%s,%s>", id, token.content, keywords.get(token.content));
+                break;
+            case UNKNOWN:
+            default:
+                break;
+        }
+    }
+
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

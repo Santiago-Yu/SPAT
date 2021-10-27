@@ -1,0 +1,26 @@
+package step4;
+
+//注意文件名，这里应该写MyThread类
+/***begin your code here***/
+public class MyThread extends Thread
+ {
+         int num;
+      public MyThread(int num)
+      {
+       this.num=num;
+      }
+      public void run()
+      {
+     try{Thread.sleep(5000);}catch(InterruptedException e){System.out.println("e.GetMessage()");}
+           int i=1;
+          int a=num;
+          while(a>1)
+          {
+             i=i*a;
+             a--;
+          }
+          System.out.println(i);
+      }
+ }
+/***end your code***/
+

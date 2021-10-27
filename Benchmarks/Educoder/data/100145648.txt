@@ -1,0 +1,96 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+
+      
+        String[]date = releaseDate.split("-");
+        int myyear;
+        int year = Integer.parseInt(date[0]);
+        int month = Integer.parseInt(date[1]);
+        int days = Integer.parseInt(date[2]);
+        int feb;
+
+        if(month>=3){
+            if((year+1)%4==0&&(year+1)%100!=0||(year+1)%400==0){
+                myyear = 366;
+            }else{
+                myyear = 365;
+            }
+        }
+        else {
+            if(year%4==0&&year%100!=0||year%400==0){
+                myyear = 366;
+            }else{
+                myyear = 365;
+            }
+        }
+        if(year%4==0&&year%100!=0||year%400==0){
+           feb = 29;
+        }else{
+            feb = 28;
+        }
+
+        while(day>myyear){
+            day -= myyear;
+            year++;
+            if(month>=3){
+                if((year+1)%4==0&&(year+1)%100!=0||(year+1)%400==0){
+                    myyear = 366;
+                }else{
+                    myyear = 365;
+                }
+            }
+            else {
+                if(year%4==0&&year%100!=0||year%400==0){
+                    myyear = 366;
+                }else{
+                    myyear = 365;
+                }
+            }
+        }
+
+        int months[] ={31,feb,31,30,31,30,31,31,30,31,30,31};
+
+
+
+        while(day!=0){
+            if(year%4==0&&year%100!=0||year%400==0){
+                feb = 29;
+            }else{
+                feb = 28;
+            }
+            months[1] = feb;
+            if(months[month-1]-days>=day){
+                days = days+day;
+                day = 0;
+            }
+            else {
+                day-= months[month-1]-days;
+                days = 0;
+                month++;
+            }
+            if(month==13){
+                year++;
+                if(year%4==0&&year%100!=0||year%400==0){
+                    feb = 29;
+                }else{
+                    feb = 28;
+                }
+                months[1] = feb;
+
+                month = 1;
+            }
+        }
+        return year+"-"+String.format("%02d",month)+"-"+String.format("%02d",days);
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

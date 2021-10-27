@@ -1,0 +1,37 @@
+package step1;
+
+import java.util.Arrays;
+
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	int[] arr = getThreeNum(nums); 
+    	Arrays.sort(arr);
+    	String str = "" + arr[0] + arr[1] + arr[2]; 
+    	Long x = Long.parseLong(str);  
+        return (int)(x % 11); 
+        
+	
+	}
+    
+    public int[] getThreeNum(int[] nums) {
+    	int[] arr = new int[3]; 
+    	Arrays.sort(nums);
+    	int idx = 0; 
+    	for (int i = 0; i < nums.length-1; ++i) {
+    		if (nums[i+1]-nums[i] > 1) {
+    			arr[idx++] = nums[i] + 1; 
+    		} 
+    	}
+    	
+    	for (int i = idx; i < 3; ++i)
+    		arr[i] = nums[9996] + i; 
+    	return arr; 
+    }
+
+
+	/********* End *********/
+}

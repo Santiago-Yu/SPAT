@@ -1,0 +1,45 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        int i, j, x, y;
+        boolean f;
+        int a[] = new int[3];
+        int temp = 0;
+        int size = nums.length;
+        for( i = 0 ; i < size-1; i ++)
+        {
+            for( j = 0 ;j < size-1-i ; j++) {
+                if (nums[j] > nums[j + 1])  //交换两数位置
+                {
+                    temp = nums[j];
+                    nums[j] = nums[j + 1];
+                    nums[j + 1] = temp;
+                }
+            } }
+
+        j = 0;
+        x = 2;
+        for (i =0;i<nums.length;i++) {
+            //System.out.println(nums[i]);
+            if(nums[i]==i+x) {
+                a[j] = i + x - 1;
+                j++;
+                x++;
+            }
+        }
+        
+        String s = "";
+        for (i=0;i<3;i++) {
+            s = s + Integer.toString(a[i]);
+        }
+        return (int)(Long.parseLong(s)%11);
+    
+	
+	}
+
+	/********* End *********/
+}

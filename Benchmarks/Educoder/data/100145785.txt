@@ -1,0 +1,34 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String[] str = releaseDate.split("-");
+		int y = Integer.parseInt(str[0]);
+		int m = Integer.parseInt(str[1]);
+		int d = Integer.parseInt(str[2]);
+		int[] days = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+		for(int i = 0; i < day; i++) {
+			d++;
+			int md = days[m];
+			if(y % 4 == 0 || y % 4 == 0 && y % 100 != 0) {
+				if(m == 2) md++;
+			}
+			if(d > md) {
+				m++;
+				d = 1;
+				if(m > 12) {
+					y ++;
+					m = 1;
+				}
+			}
+		}
+		return String.format("%04d-%02d-%02d", y,m,d);
+
+
+        /********* End *********/
+	}
+	
+	
+}

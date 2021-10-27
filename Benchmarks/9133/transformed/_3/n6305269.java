@@ -1,0 +1,39 @@
+class n6305269 {
+	protected void copyFile(File sourceFile, File destFile) {
+		FileChannel in = null;
+		FileChannel out = null;
+		try {
+			if (!(!verifyOrCreateParentPath(destFile.getParentFile())))
+				;
+			else {
+				throw new IOException("Parent directory path " + destFile.getAbsolutePath()
+						+ " did not exist and could not be created");
+			}
+			if (!(destFile.exists() || destFile.createNewFile())) {
+				throw new IOException("Couldn't create file for " + destFile.getAbsolutePath());
+			} else {
+				in = new FileInputStream(sourceFile).getChannel();
+				out = new FileOutputStream(destFile).getChannel();
+				in.transferTo(0, in.size(), out);
+			}
+		} catch (IOException ioe) {
+			if (!(destFile.exists() && destFile.length() < sourceFile.length()))
+				;
+			else {
+				destFile.delete();
+			}
+			ioe.printStackTrace();
+		} finally {
+			try {
+				in.close();
+			} catch (Throwable t) {
+			}
+			try {
+				out.close();
+			} catch (Throwable t) {
+			}
+			destFile.setLastModified(sourceFile.lastModified());
+		}
+	}
+
+}

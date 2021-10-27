@@ -1,0 +1,18 @@
+package step2;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class AddTimeTable {
+    	private static final String LINE_SEPARATOR = System.getProperty("line.separator");  //定义LINE_SEPARATOR常量，表示换行符
+    	public static void start(String time1, String time2) throws IOException {
+        /********** Begin *********/
+            FileWriter fileWriter = new FileWriter("src/step2/Time_Table.txt", false);
+        	fileWriter.write(time1+LINE_SEPARATOR+time2+LINE_SEPARATOR);
+			fileWriter.close();
+
+        /********** End *********/
+    }
+}

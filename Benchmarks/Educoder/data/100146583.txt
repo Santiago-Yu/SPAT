@@ -1,0 +1,55 @@
+package com.servlet;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+
+public class LoginServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("utf-8");
+        resp.setContentType("text/html;charset=utf-8");
+        /********* Begin *********/
+		//请在此进行登录校验
+
+
+PrintWriter writer=resp.getWriter();
+        String verifycode=req.getParameter("verifycode");
+        
+        String username=req.getParameter("username");
+        
+        String password=req.getParameter("password");
+        
+        HttpSession session =req.getSession();
+        
+        String realCode =(String)session.getAttribute("sessionYzm");
+        
+        if(!verifycode.equals(realCode)){
+            writer.write("验证码错误");
+        }else{
+        //writer.write("验证码正确");
+        if(username.equals("admin")&&password.equals("admin123")){
+            writer.write("登录成功");
+        }else{
+            writer.write("登录失败");
+        }
+        }
+
+
+
+
+
+
+        /********* Begin *********/
+    }
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req,resp);
+    }
+}

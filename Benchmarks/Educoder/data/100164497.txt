@@ -1,0 +1,33 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+  public static void main(String[] agrs){
+	  double a,b,c;
+	  Scanner scan= new Scanner(System.in);
+       a = scan.nextDouble();
+     b = scan.nextDouble();
+    c = scan.nextDouble();
+    /**********begin******/
+    if(a!=0) {
+    if(b*b-4*a*c>=0){
+     
+           double res=Math.sqrt(b*b-4*a*c);
+            double ans=(-b + res)/(2*a);
+          System.out.printf("X1=%4.2f",ans); 
+          ans=(-b - res)/(2*a);
+          System.out.println("");
+          System.out.printf("X2=%4.2f",ans); 
+      
+    }else{
+      System.out.printf("无实根");
+    }
+
+  
+  
+    }else {
+    	System.out.printf("唯一根 X=%4.2f",-c/b);
+    }
+    /**********end*****/
+  }
+  	
+}

@@ -1,0 +1,24 @@
+package step3;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		//将src/step3/input/目录下的input.txt文件复制到src/step3/output/目录下；
+		//复制的新文件命名为output.txt；
+		//input.txt文件中只有8个字符
+		FileReader reader = new FileReader("src/step3/input/input.txt");
+		char[] cbuf = new char[8];
+        reader.read(cbuf);
+        FileWriter writer = new FileWriter("src/step3/output/output.txt");
+        writer.write(cbuf);
+        reader.close();
+        writer.close();
+		/********* End *********/		
+	}
+}

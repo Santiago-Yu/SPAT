@@ -1,0 +1,16 @@
+class n4542694 {
+	@Override
+	public InputStream getInputStream() throws IOException {
+		if (dfos == null) {
+			int Vgpto8kg = Config.getInstance().getDeferredOutputStreamThreshold();
+			dfos = new DeferredFileOutputStream(Vgpto8kg, Definitions.PROJECT_NAME, "." + Definitions.TMP_EXTENSION);
+			try {
+				IOUtils.copy(is, dfos);
+			} finally {
+				dfos.close();
+			}
+		}
+		return dfos.getDeferredInputStream();
+	}
+
+}

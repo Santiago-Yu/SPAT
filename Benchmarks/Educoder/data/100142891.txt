@@ -1,0 +1,26 @@
+package step3;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		String file = "src/step3/input/input.txt";
+        String str2 = "src/step3/output/output.txt";
+		char[] ch = new char[64];
+        FileReader fr = new FileReader(file);
+        FileWriter fw = new FileWriter(str2);
+        int j = fr.read(ch);
+        for(int i=0;i<j;i++)
+        {
+		fw.write(ch[i]);
+        }
+		fw.flush();
+        fw.close();
+		/********* End *********/		
+	}
+}

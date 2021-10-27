@@ -1,0 +1,108 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		
+		return(getResult(num1,num2));
+        
+		
+		/********** END **********/
+	}
+    
+    
+    public int getResult(int x,int y) {
+		int suma[]  =new int[10];
+
+		sum(x, y, 3, suma, true);
+		int count = 0;
+		
+		for(int i=1;i<suma.length;i++) {
+			count += suma[i]*i;
+		}
+		
+		return count;
+	}
+	
+	public void sum(int x,int y,int cent, int[] suma, boolean combine) {		
+		if( cent>1) {
+			int diver = (int)Math.pow(10, cent-1);
+			
+			int currentx = x/diver;
+			int currenty = y/diver;
+			
+			int rendx = x%diver;
+			int rendy = y%diver;
+			
+			if(combine) {
+				if( currentx != currenty ) {
+					sumk(cent, currentx+1, currenty-1, suma);
+					
+					suma[currentx] += ((gen9(cent-1)-rendx)+1);
+					suma[currenty] += (rendy+1);	
+				} else {
+					suma[currentx] += ((rendy-rendx)+1);
+				}
+			} else {
+				sumk(cent, currentx+1, 9, suma);
+				sumk(cent, 0, currenty-1, suma);
+				
+				suma[currentx] += ((gen9(cent-1)-rendx)+1);
+				suma[currenty] += (rendy+1);
+			}
+			
+			sum(rendx, rendy, cent-1, suma, combine && currentx == currenty);
+		} else {
+			if(combine) {
+				for(int i=x;i<=y;i++) {
+					suma[i] += 1;
+				}
+			} else {
+				for(int i=x;i<=9;i++) {
+					suma[i] += 1;
+				}
+				for(int i=0;i<=y;i++) {
+					suma[i] += 1;
+				}
+			}
+		}
+	}
+	
+	public void sumk(int cent, int s, int e, int [] suma) {
+		if(cent>2) {
+			for(int i=s; i<=e; i++) {
+				for(int j=0; j<=9; j++) {
+					if( j==i ) {
+						suma[j] += Math.pow(10, cent-1) + (cent-1)*Math.pow(10, cent-2);
+					} else {
+						suma[j] += (cent-1)*Math.pow(10, cent-2);
+					}
+				}
+			}
+		} else if(cent==2){
+			for(int i=s; i<=e; i++) {
+				for(int j=0; j<=9; j++) {
+					if( j==i ) {
+						suma[j] += 11;
+					} else {
+						suma[j] += 1;
+					}
+				}
+			}
+		} else if(cent==1) {
+			for(int i=s; i<=e; i++) {
+				suma[i] += 1;
+			}
+		}
+	}
+	
+	public int gen9(int n) {
+		int c = 0;
+		for(int i=1;i<=n;i++) {
+			c += Math.pow(10, n-1)*9;
+		}
+		return c;
+	}
+}

@@ -1,0 +1,81 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		int index=0;
+		int y=1000;
+		int year=0;
+		for(;index<releaseDate.length();index++){
+			if(releaseDate.charAt(index)<'0'||releaseDate.charAt(index)>'9'){
+				index++;
+				break;
+			}
+			year=year+(releaseDate.charAt(index)-'0')*y;
+			y=y/10;
+		}
+		int m=10;
+		int month=0;
+		for(;index<releaseDate.length();index++){
+			if(releaseDate.charAt(index)<'0'||releaseDate.charAt(index)>'9'){
+				index++;
+				break;
+			}
+			month=month+(releaseDate.charAt(index)-'0')*m;
+			m=m/10;
+		}
+		int d=10;
+		int date=0;
+		for(;index<releaseDate.length();index++){
+			if(releaseDate.charAt(index)<'0'||releaseDate.charAt(index)>'9'){
+				index++;
+				break;
+			}
+			date=date+(releaseDate.charAt(index)-'0')*d;
+			d=d/10;
+		}
+		for(int i=1;i<=day;i++){
+			date++;
+			if((month==1||month==3||month==5||month==7||month==8||month==10||month==12)&&date>31){
+				date=1;
+				month++;
+			}
+			else if((month==4||month==6||month==9||month==11)&&date>30){
+				date=1;
+				month++;
+			}
+			else if(((year%400==0||year%4==0&&year%100!=0)&&month==2&&date>29)||(!(year%400==0||year%4==0&&year%100!=0)&&month==2&&date>28)){
+				date=1;
+				month++;
+			}
+			if(month>12){
+				year++;
+				month=1;
+				date=1;
+			}
+		}
+		String str=year+"-"+month+'-'+date;;
+        if(month<10&&date<10)
+			str=year+"-"+'0'+month+'-'+'0'+date;
+        if(date<10&&month>=10)
+            str=year+"-"+month+'-'+'0'+date;
+        if(month<10&&date>=10)
+        	str=year+"-"+'0'+month+'-'+date;
+        return str;
+
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

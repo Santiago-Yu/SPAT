@@ -1,0 +1,47 @@
+package step1;
+import java.math.BigDecimal;
+
+public class Task {
+    
+    final double PI = Math.PI;
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  	double ans = 0.0;
+        double d = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+        double angle1, angle2;
+        double interArea = 0.0;//相交面积
+        double area = 0.0;
+
+        // 相离或外切
+        if (r1 + r2 < d)
+            interArea = 0;
+            // 内含或内切
+        else if (Math.abs(r2 - r1) >= d)
+        {
+            if (r2 >= r1)
+                interArea = PI * r1 * r1;
+            else
+                interArea = PI * r2 * r2;
+        }
+        // 相交
+        else {
+            //利用余弦定理求半径和圆心连线的夹角cos(a) = (x*x + y*y-z*z)/(2 * x *y)
+            angle1  = 2 * Math.acos((r1 * r1 + d * d - r2 * r2) / (2.0 * r1 * d));
+            angle2 = 2 * Math.acos((r2 * r2 + d * d - r1 * r1) / (2.0 * r2 * d));
+            interArea = r1 * r1 * angle1 / 2.0 + r2 * r2 * angle2 / 2.0- r1 * r1 * Math.sin(angle1) / 2.0 - r2 * r2 * Math.sin(angle2) / 2.0;
+        }
+        String areastr;
+        area = PI * r1 * r1 + PI * r2 * r2 - interArea;
+
+        areastr = Double.toString(area);
+        BigDecimal bg = new BigDecimal(areastr);
+        area = bg.setScale(6, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+        return area;
+		  
+		  
+		  /********* End *********/
+	  }
+}

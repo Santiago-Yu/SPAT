@@ -1,0 +1,112 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 	int count = 0;
+		if (ferry.length == 0) {
+			return count;
+		} else if (ferry.length == 1) {
+			for (int i = 0; i < ferry[0].length; i++) {
+				if (ferry[0][i] == '+') {
+					if ((ferry[0].length - (1 + i)) != 0) {
+						if (ferry[0][i + 1] == '+') {
+							count++;
+							break;
+						} else {
+							count++;
+						}
+					} else {
+						count++;
+					}
+				}
+			}
+		} else if (ferry[0].length == 1) {
+			for (int i = 0; i < ferry.length; i++) {
+				if (ferry[i][0] == '+') {
+					if ((ferry.length - i) != 1) {
+						if (ferry[i + 1][0] == '+') {
+							count++;
+							break;
+						} else {
+							count++;
+						}
+					} else {
+						count++;
+					}
+				}
+			}
+		} else {
+			for (int i = 0; i < ferry.length; i++) {
+				for (int j = 0; j < ferry[i].length; j++) {
+					if (ferry[i][j] == '+') {
+						if (((ferry[i].length - (1 + j)) != 0) && (ferry.length - (i + 1) != 0)) {
+							if (ferry[i][j + 1] == '+') {
+								for (int k = 0; k < ferry[i].length; k++) {
+									ferry[i][k] = 'o';
+								}
+								count++;
+								break;
+							} else if (ferry[i + 1][j] == '+') {
+								for (int k = 0; k < ferry.length; k++) {
+									ferry[k][j] = 'o';
+								}
+								count++;
+							} else {
+								if ((ferry[i].length - (j + 2)) != 0) {
+									int n = 0;
+									for (int k = j + 2; k < ferry[i].length; k++) {
+										if (ferry[i][k] == '+') {
+											for (int x = 0; x < ferry.length; x++) {
+												ferry[x][j] = 'o';
+											}
+											n = 1;
+											count++;
+											break;
+										}
+									}
+									if (n == 0) {
+										for (int k = 0; k < ferry[i].length; k++) {
+											ferry[i][k] = 'o';
+										}
+										count++;
+									}
+								} else {
+									for (int k = 0; k < ferry[i].length; k++) {
+										ferry[i][k] = 'o';
+									}
+									count++;
+								}
+							}
+						} else if (((ferry[i].length - (1 + j)) == 0) && (ferry.length - (i + 1) == 0)) {
+							if (ferry[i][j] == '+') {
+								for (int k = 0; k < ferry[i].length; k++) {
+									ferry[i][k] = 'o';
+								}
+								count++;
+							}
+						} else if (((ferry[i].length - (1 + j)) != 0) && (ferry.length - (i + 1) == 0)) {
+							if (ferry[i][j + 1] == '+') {
+								for (int k = 0; k < ferry[i].length; k++) {
+									ferry[i][k] = 'o';
+								}
+								count++;
+								break;
+							}
+						} else if (((ferry[i].length - (1 + j)) == 0) && (ferry.length - (i + 1) != 0)) {
+							if (ferry[i + 1][j] == '+') {
+								for (int k = 0; k < ferry.length; k++) {
+									ferry[k][j] = 'o';
+								}
+								count++;
+							}
+						}
+					}
+				}
+			}
+		}
+		return count;
+      /***********END ***************/
+	 }
+}

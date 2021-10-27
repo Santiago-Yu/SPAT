@@ -1,0 +1,124 @@
+package step2;
+import java.util.ArrayList;
+
+class UnsortedException extends Exception {
+    private static final long serialVersionUID = 1L;
+    public UnsortedException(String message) {
+        super(message);
+    }
+}
+
+public class QueryList {
+
+/*OVERVIEW:请求队列类，管理乘客请求（Query）
+    请求队列需要在添加请求时对请求的合法性进行二次判断，所以需要记录楼层的取值范围，队列中最后一个请求的时间
+  对于不满足时间非降序的添加请求，需要抛出一个可辨识的异常便于处理逻辑，所以额外定义了一个UnsortedException类
+请求队列提供添加、遍历、清空的方法
+*/
+	//请求队列
+    private ArrayList<Query> queue;
+	//最高和最低楼层
+    private int highLevel, lowLevel;
+	//队列中最近一次请求的时间
+    private double lastTime;
+
+    public QueryList(int high, int low, double time) {
+        queue = new ArrayList<Query>();
+        highLevel = high;
+        lowLevel = low;
+        lastTime = time;
+    }
+
+    public QueryList(int high, int low) {
+        this(high, low, 0);
+    }
+	
+	/**
+     * 类的约束条件检查
+     * @return
+     *        true:类成员变量满足约束条件
+     *        false: 类成员变量不满足约束条件
+     *
+     * @return
+     */
+	 
+    /*******************不等式开始***********************
+	highLevel > lowLevel && lowLevel >0 && highLevel>0
+	
+     ********************不等式结束**********************/
+    public boolean repOk(){
+        /*******************Begin*********************/
+		double t;
+        t=this.queue.get(0).getTime();
+        for(int i=1;i<this.queue.size();i++){
+            if(this.queue.get(i).getTime()<t){
+                return false;
+            }
+            t=this.queue.get(i).getTime();
+            if(this.queue.get(i).getTarget()>highLevel){
+                return false;
+            }
+            if(this.queue.get(i).getTarget()<lowLevel){
+                return false;
+            }
+            if(this.queue.get(i).getTarget()==highLevel
+               &&
+               this.queue.get(i).getDirection()==Query.Direction.UP){
+               return false;
+            }
+            if(this.queue.get(i).getTarget()==lowLevel
+               &&
+               this.queue.get(i).getDirection()==Query.Direction.DOWN){
+               return false;
+            }
+            
+    	}
+    	return true;
+         
+        /********************End**********************/
+    }
+
+    public boolean append(Query req) {
+       /*@ REQUIRES: req != null ;
+         @ MODIFIES: this;
+         @ EFFECTS:
+         (this.lastTime>req.queryTime)==>\result=false;
+         (req.targetFloor=low && req.queryDirection==Direction.DOWN)==>\result=false;
+         (req.targetFloor=high && req.queryDirection==Direction.UP)==>\result=false;
+         (this.queue.size == \old(this.queue).size+1) && (this.queue.contains(req)==true)&&(this.queue.lastTime==req.queryTime) && (\result==true);
+       */
+        return true;
+    }
+
+    public boolean remove(int index){
+        /*@MODIFIES:this
+        @EFFECTS:
+           normal_behavior
+           (\old(this).get(index) !=null) ==> (this.size == \old(this).size-1) && (this.contains(\old(this).get(index))==false) && (\result==true) ;
+           (\old(this).size ==0)==>exceptional_behavior(EmptyQueueException)
+           (index >=\old(this).size) ==> exceptional_behavior (InvalidIndexException);
+           (index < 0) ==> exceptional_behavior (InvalidIndexException);
+        */
+        try {
+            queue.remove(index);
+        } catch(Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public int getSize() {
+        return queue.size();
+    }
+
+    public Query getQuery(int index) {
+        return queue.get(index);
+    }
+
+    public void clear() {
+        queue.clear();
+    }
+    public void setQueue(ArrayList<Query> queue){
+        this.queue = queue;
+    }
+}

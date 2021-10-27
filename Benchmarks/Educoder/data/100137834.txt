@@ -1,0 +1,26 @@
+package case5;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
+
+public class DateTest {
+	public static void main(String[] args) throws ParseException {
+		// ??????????? ???yyyy-MM-dd
+		// ????????????
+		// ????????????
+		// ??2020?10?1?????
+		// ???????????
+		// ????????? ????
+		Scanner sc = new Scanner(System.in);
+		String line = sc.nextLine();
+		/********* Begin *********/
+        SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd");
+		Date date1 = sim.parse(line);
+        Date date2 = sim.parse("2020-10-01");
+        System.out.println("你的出生日期距离2020年10月1日:"+(date2.getTime()-date1.getTime())/(1000*60*60*24)+"天");
+		
+           
+	}
+}

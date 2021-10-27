@@ -1,0 +1,62 @@
+package step1;
+
+public class Rectangle{
+	private double width;
+	private double length;
+	
+	/*********begin*********/
+	public Rectangle(){
+    }
+    
+    public Rectangle(double width , double length){
+        
+        this.width = width;
+        this.length = length;
+    }
+    
+    public double getWidth(){
+        
+        return width;
+    }
+    
+    public double getLength(){
+        
+        return length;
+    }
+    
+    public void setWidth(double width){
+        
+        this.width = width;
+    }
+    
+    public void setLength(double length){
+        
+        this.length = length;
+    }
+    
+    public double perimeter(){
+        
+        return 2.0*(length + width);
+    }
+    
+    public double area(){
+        
+        return length * width;
+    }
+	/*********end*********/
+
+
+	public static void main(String[] args) {
+		/*********begin*********/
+		Rectangle rec2 = new Rectangle(20.0 , 10.0);
+        Rectangle rec1 = new Rectangle();
+        rec1.setWidth(5.0);
+        rec1.setLength(6.0);
+        System.out.println("r1的周长：" + rec1.perimeter());
+		System.out.println("r1的面积：" + rec1.area());
+        System.out.println("r2的周长：" + rec2.perimeter());
+        System.out.println("r2的面积：" + rec2.area());
+		/*********end*********/
+	}
+
+}

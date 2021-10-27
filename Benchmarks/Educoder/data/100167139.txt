@@ -1,0 +1,343 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class Java_LexAnalysis {
+
+    public static HashMap<String , Integer> hm = new HashMap<String, Integer>();
+    public static int num;
+    public static StringBuilder sb = new StringBuilder();
+    public static ArrayList<String> al = new ArrayList<String>();
+    public static ArrayList<String> p = new ArrayList<String>();
+    public static ArrayList<String> q = new ArrayList<String>();
+    public static int g = 1;
+    public static int k = 0;
+    public static int h = 0;
+    public static void main(String[] args) throws IOException {
+        String[] str = {"auto","break","case","char","const","continue","default",
+                "do","double","else","enum","extern","float","for","goto","if","int",
+                "long","register","return","short","signed","sizeof",
+                "static","struct","switch","typedef","union","unsigned","void","volatile",
+                "while","-","--","-=","->","!","!=","%","%=","&","&&","&=","(",")","*",
+                "*=",",",".","/","/=",":",";","?","[","]","^","^=","{","|","||","|=",
+                "}","~","+","++","+=","<","<<","<<=","<=","=","==",">",">=",">>",">>=","\""};
+        for(int i = 1 ; i <= 78 ; i++){
+            hm.put(str[i - 1] , i);
+        }
+        Scanner sc = new Scanner(System.in);
+        StringBuilder ss = new StringBuilder();
+        while(sc.hasNextLine()){
+            String s = sc.nextLine();            
+            ss.append(s + '\n');
+            //s.append(sc.nextLine());
+            //System.out.println(ss);
+        }
+        ss.append('$');
+        preDo(ss.toString(),ss.length());
+        //System.out.println("start");
+        cal();
+        printout();
+    }
+
+    public static void preDo(String a,int len){
+        char[] c = a.toCharArray();
+        for(int i = 0 ; i < len ; i++){
+            if(c[i] == '/' && c[i + 1] == '/'){
+                int k = i;
+                i = i + 2;
+                sb.append("//");
+                while(c[i] != '\n'){
+                    i++;
+                }
+                String s = a.substring(k,i);
+                //System.out.println("// : " + s);
+                p.add(s);
+            }
+            if(c[i] == '/' && c[i+1] == '*'){
+                sb.append("/*");
+                int k = i;
+                i = i + 2;
+                while(c[i] != '*' || c[i + 1] != '/'){
+                    i++;
+                }
+                i = i + 2;
+                String s = a.substring(k , i);
+                //System.out.println("/* :" + s);
+                q.add(s);
+            }
+            if(c[i] != '\n' && c[i] != '\t' && c[i] != '\r'){
+                sb.append(c[i]);
+            }
+        }
+    }
+
+
+    public static void cal(){
+        for(num = 0 ; num < sb.length() ;){
+            char c = sb.charAt(num);
+            if(isLetter(c)){
+                String s0 = getKeyWord(num);
+                if(isKeyWord(s0)){
+                    print(s0,hm.get(s0));
+                }else{
+                    print(s0,81);
+                }
+            }else if(isNumber(c)){
+                String s1 = getNumber(num);
+                print(s1,80);
+            }else if(isBoundary(c)){
+                String ss = String.valueOf(c);
+                print(ss,hm.get(ss));
+                num++;
+            }else if(c == '"'){
+                print("\"",hm.get("\""));
+                num++;
+                String s4 = getWords(num);
+                print(s4,81);
+                num++;
+                print("\"",hm.get("\""));
+            }else if(c == '+'){
+                num++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("+=",hm.get("+="));
+                    num++;
+                }else if(a == '+'){
+                    print("++",hm.get("++"));
+                    num++;
+                }else{
+                    print("+",hm.get("+"));
+                }
+            }else if(c == '-'){
+                num++;
+                char a = sb.charAt(num);
+                if(a == '-'){
+                    print("--",hm.get("--"));
+                    num++;
+                }else if(a == '='){
+                    print("-=",hm.get("-="));
+                    num++;
+                }else if(a == '>'){
+                    print("->",hm.get("->"));
+                    num++;
+                }else{
+                    print("-",hm.get("-"));
+                }
+            }else if(c == '>'){
+                num++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print(">=",hm.get(">="));
+                    num++;
+                }else if(a == '>'){
+                    num++;
+                    char b = sb.charAt(num);
+                    if(b == '='){
+                        print(">>=",hm.get(">>="));
+                        num++;
+                    }else{
+                        print(">>",hm.get(">>"));
+                    }
+                }
+            }else if(c == '<'){
+                num++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("<=",hm.get("<="));
+                    num++;
+                }else if(a == '<'){
+                    num++;
+                    char b = sb.charAt(num);
+                    if(b == '='){
+                        print("<<=",hm.get("<<="));
+                        num++;
+                    }else{
+                        print("<<",hm.get("<<"));
+                    }
+                }
+            }else if(c == '='){
+                num++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("==",hm.get("=="));
+                    num++;
+                }else{
+                    print("=",hm.get("="));
+                }
+            }else if(c == '!'){
+                num++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("!=",hm.get("!="));
+                    num++;
+                }else{
+                    print("!",hm.get("!"));
+                }
+            } else if (c == '|') {
+                num++;
+                char a = sb.charAt(num);
+                if (a == '|') {
+                    print("||",hm.get("||"));
+                    num++;
+                }else if(a == '='){
+                    print("|=",hm.get("|="));
+                    num++;
+                } else{
+                    print("|",hm.get("|"));
+                }
+            }else if(c == '&'){
+                num ++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("&=",hm.get("&="));
+                    num++;
+                }else if(a == '&'){
+                    print("&&",hm.get("&&"));
+                    num++;
+                }else {
+                    print("&",hm.get("&"));
+                }
+            }else if(c == '%'){
+                num ++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("%=",hm.get("%="));
+                    num++;
+                }else{
+                    print("%",hm.get("%"));
+                }
+            }else if(c == '*'){
+                num ++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("*=",hm.get("*="));
+                    num++;
+                }else{
+                    print("*",hm.get("*"));
+                }
+            }else if(c == '^'){
+                num ++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("^=",hm.get("^="));
+                    num++;
+                }else{
+                    print("^",hm.get("^"));
+                }
+            }else if(c == '/'){
+                num++;
+                char a = sb.charAt(num);
+                if(a == '='){
+                    print("/=",hm.get("/="));
+                    num++;
+                }else if(a == '/'){
+                    print(p.get(k),79);
+                    k++;
+                    num++;
+                }else if(a == '*'){
+                    print(q.get(h),79);
+                    h++;
+                    num++;
+                }else{
+                    print("/",hm.get("/"));
+                }
+            }else if(c == '$'){
+                break;
+            }else if(c == ' '){
+                num++;
+            }
+        }
+
+    }
+
+    public static String getKeyWord(int n){
+        int j = n + 1;
+        boolean t = true;
+        StringBuilder s = new StringBuilder();
+        s.append(sb.charAt(num));
+        while(t){
+            char a = sb.charAt(j);
+            if(isNumber(a) || isLetter(a)){
+                s.append(a);
+                if(isKeyWord(s.toString())){
+                    j++;
+                    num = j;
+                    return s.toString();
+                }
+                j++;
+            }else{
+                t = false;
+                num = j;
+            }
+        }
+        return s.toString();
+    }
+
+    public static String getNumber(int n){
+        int j = n + 1;
+        boolean t = true;
+        while(t){
+            char a = sb.charAt(j);
+            if(isNumber(a)){
+                j++;
+            }else{
+                t = false;
+            }
+        }
+        String s = sb.substring(num,j);
+        num = j;
+        return s;
+    }
+
+    public static String getWords(int n){
+        int j = n + 1;
+        while(sb.charAt(j) != '"'){
+            j++;
+        }
+        String s = sb.substring(num , j);
+        num = j;
+        return s;
+    }
+
+    public static boolean isNumber(char c){
+        if(c >= '0' && c <= '9'){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isLetter(char c){
+        if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'){
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean isBoundary(char c){
+        if(c == '(' || c == ')' || c == ',' || c == '.' || c == ';' || c == ':' || c == '?'
+                || c == '[' || c == ']' || c == '{' || c == '}' || c == '~' ){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isKeyWord(String s){
+        if(hm.containsKey(s)){
+            return true;
+        }
+        return false;
+    }
+
+    public static void  print(String s , int n){
+        al.add(g++ + ": " + "<" + s + "," + n + ">");
+    }
+
+    public static void printout(){
+        for(int i = 0 ; i < al.size() - 1 ; i++){
+            System.out.println(al.get(i));
+        }
+        System.out.print(al.get(al.size() - 1));
+    }
+}

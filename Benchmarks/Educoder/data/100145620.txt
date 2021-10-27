@@ -1,0 +1,85 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		int mon[] = {31,29,31,30,31,30,31,31,30,31,30,31};
+		int y = Integer.parseInt(releaseDate.substring(0, 4));
+		int m = Integer.parseInt(releaseDate.substring(5, 7));
+		int d = Integer.parseInt(releaseDate.substring(8, 10));
+		boolean f = false; //当前是否是闰年
+		String ans = "";
+		//System.out.println(y+" "+m+" "+d+" "+day);
+		if( (y%400==0) || (y%4==0&&y%100!=0) ) {
+			f = true;//闰年
+			int dd = d+day;
+			while (dd > mon[m-1]) {
+				dd = dd-mon[m-1];
+				m = (m+1)%12;
+				if(m==0) m=12;
+				if(m==1) {
+					//System.out.println("跨年啦");
+					y++;
+					if( !((y%400==0) || (y%4==0&&y%100!=0))&&f==true ) {
+						
+						mon[1]--;
+						f = false;
+						//System.out.println("今年是:"+y+" 二月份有"+mon[1]+"天");
+					} else if (((y%400==0) || (y%4==0&&y%100!=0)) && f==false) {
+						mon[1]++;
+						f = true;
+						//System.out.println("今年是:"+y+" 二月份有"+mon[1]+"天");
+					}
+				}
+				//System.out.println(dd+" "+m);
+			}
+			if(m<10) ans = ""+y+"-0"+m+"-";
+			else ans = ""+y+"-"+m+"-";
+			if(dd<10) ans = ans+"0"+dd;
+            else ans = ans+dd;
+		} else {
+			//不是闰年
+			mon[1]--;
+			int dd = d+day;
+			while (dd > mon[m-1]) {
+				dd = dd-mon[m-1];
+				m = (m+1)%12;
+				if(m==0) m=12;
+				if(m==1) {
+					//System.out.println("跨年啦");
+					y++;
+					if( !((y%400==0) || (y%4==0&&y%100!=0))&&f==true ) {
+						
+						mon[1]--;
+						f = false;
+						//System.out.println("今年是:"+y+" "+mon[1]);
+					} else if (((y%400==0) || (y%4==0&&y%100!=0)) && f==false) {
+						mon[1]++;
+						f = true;
+						//System.out.println("今年是:"+y+" "+mon[1]);
+					}
+				}
+				//System.out.println(dd+" "+m);
+			}
+			if(m<10) ans = ""+y+"-0"+m+"-";
+			else ans = ""+y+"-"+m+"-";
+			if(dd<10) ans = ans+"0"+dd;
+            else ans = ans+dd;
+		}
+		return ans;
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

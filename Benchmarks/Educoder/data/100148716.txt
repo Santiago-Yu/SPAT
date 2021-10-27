@@ -1,0 +1,53 @@
+package step1;
+import java.util.stream.IntStream;
+
+
+public class Task {
+	 public void sort(Integer[] arr) {
+        /********* Begin *********/
+        if (null == arr || isSorted(arr)) {
+            print(arr);
+            return;
+        }
+
+        while (!isSorted(arr)) {
+            for (int i = 0; i < arr.length - 1; i++) {
+                if (arr[i].intValue() > arr[i + 1].intValue()) {
+
+                    swap(arr, i, i + 1);
+                    print(arr);
+                }
+            }
+
+            for (int i = arr.length - 1; i > 0; i--) {
+                if (arr[i].intValue() < arr[i - 1].intValue()) {
+
+                    swap(arr, i, i - 1);
+                    print(arr);
+                }
+            }
+        }
+
+        /********* End *********/
+    }
+
+    public static boolean isSorted(Integer[] array) {
+        return !IntStream.range(0, array.length - 1).anyMatch(i -> array[i].intValue() > array[i + 1].intValue());
+    }
+
+    public static void print(Integer[] array) {
+        if (null != array) {
+            IntStream.range(0, array.length).forEach(i -> System.out.print(array[i].intValue() + " "));
+            System.out.println();
+        }
+    }
+
+
+    public static void swap(Integer[] arr, int i, int j) {
+        Integer tmp;
+        tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+
+}

@@ -1,0 +1,27 @@
+class n8868058 {
+	private String getPage(String urlString) throws Exception {
+		if (pageBuffer.containsKey(urlString))
+			return pageBuffer.get(urlString);
+		URL url = new URL(urlString);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.connect();
+		StringBuilder page = new StringBuilder();
+		BufferedReader in = null;
+		try {
+			String line;
+			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			while ((line = in.readLine()) != null) {
+				page.append(line);
+				page.append("\n");
+			}
+		} catch (IOException ioe) {
+			logger.warn("Failed to read web page");
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+		return page.toString();
+	}
+
+}

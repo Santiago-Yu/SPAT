@@ -1,0 +1,43 @@
+package step1;
+import java.text.DecimalFormat;
+public class Rectangle{
+	private double width;
+	private double length;
+	
+	/*********begin*********/
+	public Rectangle(){
+        width = 5;
+        length = 6;
+    }
+    public Rectangle(double width, double length){
+        this.width = width;
+        this.length = length;
+    }
+	/*********end*********/
+	public void perimeter(){
+    	double zhouchang = 2*(width+length);
+        DecimalFormat df = new DecimalFormat("0.0");
+        System.out.println(df.format(zhouchang));
+    }
+    public void area(){
+    	double mianji = length*width;
+        DecimalFormat df = new DecimalFormat("0.0");
+        System.out.println(df.format(mianji));
+    }
+
+	public static void main(String[] args) {
+		/*********begin*********/
+		Rectangle r1 = new Rectangle();
+        Rectangle r2 = new Rectangle(10, 20);
+        System.out.print("r1的周长：");
+        r1.perimeter();
+        System.out.print("r1的面积：");
+        r1.area();
+        System.out.print("r2的周长：");
+        r2.perimeter();
+        System.out.print("r2的面积：");
+        r2.area();
+		/*********end*********/
+	}
+
+}

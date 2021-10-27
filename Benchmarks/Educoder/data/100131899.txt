@@ -1,0 +1,40 @@
+package step3;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Task {
+	/********** BEGIN **********/
+	static int level = 0;					//层次
+	public static void showDirStructure(File file)	{
+		String[] arr = {"jpg","png","bmp"};
+	    List<String> list = new ArrayList<>();
+	    for (int i = 0; i < arr.length; i++) {
+			list.add(arr[i]);
+		}
+		if(file.isDirectory()) {
+			for(int i = 0; i < level; i++) {
+				System.out.print("  ");
+			}
+			level++;
+			System.out.println("+--" + file.getName());
+			File[] tempList = file.listFiles();
+			for (File fi : tempList) {
+				showDirStructure(fi);
+			}
+			level--;
+		}else {
+			
+			String fileName = file.getName();
+        	String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+        	if(list.contains(suffix)) {
+                for(int i = 0; i < level; i++) {
+				System.out.print("  ");
+			}
+        		System.out.println("--" + file.getName());
+        	}
+		}
+	}
+	/********** END **********/
+}

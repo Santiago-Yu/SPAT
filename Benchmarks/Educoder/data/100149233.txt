@@ -1,0 +1,41 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        int sum=0;
+		for(int i=0;i<n;i++) {
+			for(int j=0;j<m;j++) {
+				if(area[i][j]=='o') {
+					sum++;
+					area=transation(n,m,i,j,area);
+				}
+				if(area[i][j]=='x'||area[i][j]=='y')
+					continue;
+			}
+		}
+		return sum;
+	}
+	private char[][] transation(int n,int m,int a,int b,char[][] area) {
+		area[a][b]='y';
+		if(a<n-1) {
+			if(area[a+1][b]=='o')
+				area=transation(n,m,a+1,b,area);
+		}
+		if(b<m-1) {
+			if(area[a][b+1]=='o')
+				area=transation(n,m,a,b+1,area);
+		}
+		if(b>0) {
+			if(area[a][b-1]=='o')
+				area=transation(n,m,a,b-1,area);
+		}
+		if(a>0) {
+			if(area[a-1][b]=='o')
+				area=transation(n,m,a-1,b,area);
+		}
+		return area;
+		/********* End *********/	
+	}
+}

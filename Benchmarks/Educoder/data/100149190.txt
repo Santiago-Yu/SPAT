@@ -1,0 +1,47 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+
+			boolean[][] flag = new boolean[n][m];
+		int sum = 0;
+//		LinkedList<Integer> list = new LinkedList<Integer>();
+		int[] list = new int[100];
+		int head = 0, tail = 0;
+		int[] X = {0,0,1,-1};
+		int[] Y = {1,-1,0,0};
+		for(int i = 0; i < n; ++i) {
+			for(int j = 0; j < m; ++j) {
+				if(area[i][j] == 'o' && flag[i][j] == false) {
+//					list.add(i); list.add(j);
+					list[tail++] = i; list[tail++] = j;
+					flag[i][j] = true;
+					sum++;
+					while(head != tail) {		
+						int nowX = list[head];
+						list[head++] = 0;
+						int nowY = list[head];
+						list[head++] = 0;
+						int newX, newY;
+						for(int k = 0; k < 4; ++k) {
+							newX = nowX + X[k];
+							newY = nowY + Y[k];
+							if(newX > -1 && newX < n && newY > -1 && newY < m) {
+								if(area[newX][newY] == 'o' && flag[newX][newY] == false) {
+//									list.add(newX); list.add(newY);
+									list[tail++] = newX; list[tail++] = newY;
+									flag[newX][newY] = true;
+								}
+							}
+						}
+					}
+				}
+                head = tail = 0;
+			}
+		}
+		return sum;
+		/********* End *********/	
+	}
+}

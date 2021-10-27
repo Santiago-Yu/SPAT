@@ -1,0 +1,38 @@
+package step5;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class HelloWorld {
+	
+	public static void main(String[] args) {
+			Scanner sc = new Scanner(System.in);
+		//动态创建数组
+		int[] arr = new int[sc.nextInt()];
+		for(int i = 0 ; i< arr.length ; i++){
+			arr[i] = sc.nextInt();
+		}
+		/********** Begin **********/
+		for (int c=0;c<arr.length;c++ )
+		{
+			for (int b=c+1;b<arr.length;b++ )
+			{
+				if(arr[c]>arr[b])
+				{
+					int tep=arr[c];//实现两个变量的值互换，由此可以排列出数组从小到大
+					arr[c]=arr[b];
+					arr[b]=tep;
+				}
+				}
+			}
+		
+		System.out.println(Arrays.toString(arr));
+		
+		
+		
+		
+		/********** End **********/
+	}
+}
+		
+

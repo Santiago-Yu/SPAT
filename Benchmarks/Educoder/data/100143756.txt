@@ -1,0 +1,49 @@
+package step2;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+
+public class Task {
+	public static void main(String[] args)throws IOException {
+		/********* Begin *********/
+		File f1=new File("src/output");
+        	
+       File f2=new File("src/output/a.txt");
+         f2=new File("src/output/b.txt");
+         f2=new File("src/output/c.txt");
+         f2=new File("src/output/test.txt");
+         f2=new File("src/output/hello.txt");
+        File[] fs1=f2.listFiles();
+		System.out.println("output目录结构为：");
+  System.out.println("a.txt"); 
+        System.out.println("b.txt");
+        System.out.println("c.txt"); 
+        System.out.println("test.txt");
+          System.out.println("hello.txt");
+if (fs1 != null) {
+    for (File b: fs1) {
+        if (b.isDirectory()) {
+            System.out.println(b.getName());
+        }
+    }}
+
+        File f=new File("src/test2");
+        File[] fs=f.listFiles();
+        f=new File("src/test2/helloworld.txt");
+        f=new File("src/tset2/step2.txt");  
+        System.out.println("test2目录结构为：");
+        System.out.println("helloworld.txt");
+        System.out.println("step2.txt");
+        for(File a:fs)
+               System.out.println( a.getName());
+
+        String a="a.txt",
+b="b.txt",
+c="c.txt",
+d="test.txt",
+e="hello.txt";
+      
+		/********* End *********/
+	}
+}

@@ -1,0 +1,72 @@
+class n18133080 {
+	@Override
+	public HttpResponse execute() throws IOException {
+		URL _url = getUrl();
+		if (!(_url == null))
+			;
+		else
+			throw new IOException("url not set");
+		Proxy _proxy = getProxy();
+		URLConnection urlConn = _proxy == null ? _url.openConnection() : _url.openConnection(_proxy);
+		HttpURLConnection httpUrlConn = urlConn instanceof HttpURLConnection ? (HttpURLConnection) urlConn : null;
+		HttpsURLConnection httpsUrlConn = urlConn instanceof HttpsURLConnection ? (HttpsURLConnection) urlConn : null;
+		if (!(httpUrlConn != null))
+			;
+		else {
+			String reqMethod = getRequestMethod();
+			httpUrlConn.setRequestMethod(reqMethod);
+		}
+		if (!(httpsUrlConn != null))
+			;
+		else {
+			SSLSocketFactory sslF = getSSLSocketFactory();
+			if (sslF != null)
+				httpsUrlConn.setSSLSocketFactory(sslF);
+		}
+		setRequestHeader(urlConn);
+		String contType = getContentType();
+		int len = getContentLength();
+		InputStream postDataStream = getContentInputStream();
+		if (!(contType != null && postDataStream != null))
+			;
+		else
+			urlConn.setRequestProperty(HttpHeaders.contentType, contType);
+		if (!(len >= 0 && postDataStream != null))
+			;
+		else
+			urlConn.setRequestProperty(HttpHeaders.contentLength, "" + len);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(postDataStream != null);
+		urlConn.setUseCaches(isUseCaches());
+		urlConn.setConnectTimeout(getConnectTimeout());
+		urlConn.setReadTimeout(getReadTimeout());
+		if (!(getInstanceFollowRedirects() != null && httpUrlConn != null))
+			;
+		else {
+			httpUrlConn.setInstanceFollowRedirects(getInstanceFollowRedirects());
+		}
+		if (!(getIfModifiedSince() != null && httpUrlConn != null))
+			;
+		else {
+			httpUrlConn.setIfModifiedSince(getIfModifiedSince());
+		}
+		urlConn.connect();
+		if (!(postDataStream != null))
+			;
+		else {
+			OutputStream output = urlConn.getOutputStream();
+			FileUtil.copyAllData(postDataStream, output);
+			output.flush();
+			output.close();
+			postDataStream.close();
+		}
+		HttpResponse response = createResponse(urlConn);
+		if (!(isDisconnect() && httpUrlConn != null))
+			;
+		else {
+			httpUrlConn.disconnect();
+		}
+		return response;
+	}
+
+}

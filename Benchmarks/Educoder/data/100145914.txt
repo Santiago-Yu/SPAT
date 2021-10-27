@@ -1,0 +1,34 @@
+package step2;
+
+public class Task {
+
+	public static void main(String[] args) {
+		
+		final insertData insert = new insertData();
+		
+		for (int i = 0; i < 3; i++) {
+			new Thread(new Runnable() {
+				public void run() {
+					insert.insert(Thread.currentThread());
+				}
+			}).start();
+		}		
+		
+	}
+}
+
+class insertData{
+	
+	public static int num =0;
+	
+	/********* Begin *********/
+	public void insert(Thread thread){
+	synchronized(this){
+		for (int i = 0; i <= 5; i++) {
+			num++;
+			System.out.println(num);
+		}
+	}
+    }
+	/********* End *********/
+}

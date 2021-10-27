@@ -1,0 +1,25 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+   public static void main(String[] args) {
+	        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+	        String str;
+	        try {
+	        	int ennum=0,spnum=0,numb=0,ornum=0;
+	        	str = reader.readLine();
+	        	for(int i = 0; i < str.length(); i++) {
+	        		char c = str.charAt(i);
+	        		if(c>='0' && c<='9') numb++;
+	        		else if(c == ' ') spnum++;
+	        		else if(c >= 'a' && c <= 'z' || c>='A' && c<='Z') ennum++;
+	        		else ornum++;
+	        	}
+	        	System.out.print("letter="+ennum+",space="+spnum+",number="+numb+",other="+ornum);
+	        } catch(IOException e) {
+	        	e.printStackTrace();
+	        }
+			
+	  }
+}

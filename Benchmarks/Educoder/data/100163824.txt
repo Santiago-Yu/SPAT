@@ -1,0 +1,24 @@
+package step2;
+import java.util.Scanner;
+public class SumOfDigit {
+		public static void main(String[] args) {
+			int number;
+			int sum=0;
+			Scanner scan1=new Scanner(System.in);
+	        number=scan1.nextInt();
+			/******Begin******/
+   int a1,a2,a3,a4,a5;
+			a5=number%10;
+			a4=(number%100-a5)/10;
+			a3=(number%1000-10*a4-a5)/100;
+			a2=(number%10000-100*a3-10*a4-a5)/1000;
+			a1=number/10000;
+			sum=a1+a2+a3+a4+a5;
+			System.out.print(sum);
+
+	         
+	        
+	                    
+			/******End******/
+		}
+}

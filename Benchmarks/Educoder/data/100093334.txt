@@ -1,0 +1,46 @@
+package step4;
+
+public class DayJudge {
+
+    // 根据输入年、月、日判断这一天是当年的第几天
+    public String DayJudge(int year, int month, int day){
+        // 请在此提供实现代码
+        String str;
+        int djt;
+        djt=0;
+        if((year%4==0&&year%100!=0)||year%400==0){
+            switch(month){
+                     case 1:djt=day;break; 
+                     case 2:djt=day+31;break;
+                     case 3:djt=day+31+29;break;
+                     case 4:djt=day+31+29+31;break;
+                     case 5:djt=day+31+29+31+30;break;
+                     case 6:djt=day+31+29+31+30+31;break;
+                     case 7:djt=day+31+29+31+30+31+30;break;
+                     case 8:djt=day+31+29+31+30+31+30+31;break;
+                     case 9:djt=day+31+29+31+30+31+30+31+31;break;
+                     case 10:djt=day+31+29+31+30+31+30+31+31+30;break;
+                     case 11:djt=day+31+29+31+30+31+30+31+31+30+31;break;
+                     default:djt=day+31+29+31+30+31+30+31+31+30+31+30;
+            }
+        }
+        else{
+            switch(month){
+                     case 1:djt=day;break; 
+                     case 2:djt=day+31;break;
+                     case 3:djt=day+31+28;break;
+                     case 4:djt=day+31+28+31;break;
+                     case 5:djt=day+31+28+31+30;break;
+                     case 6:djt=day+31+28+31+30+31;break;
+                     case 7:djt=day+31+28+31+30+31+30;break;
+                     case 8:djt=day+31+28+31+30+31+30+31;break;
+                     case 9:djt=day+31+28+31+30+31+30+31+31;break;
+                     case 10:djt=day+31+28+31+30+31+30+31+31+30;break;
+                     case 11:djt=day+31+28+31+30+31+30+31+31+30+31;break;
+                     default:djt=day+31+28+31+30+31+30+31+31+30+31+30;
+            }
+        }
+        str=year+"年的第"+djt+"天";
+        return str;
+	}
+}

@@ -1,0 +1,78 @@
+package step1;
+
+public class Task {
+
+    public void sort(Integer[] arr){
+        /********* Begin *********/
+        boolean turn=true;//left
+        int count=Integer.MIN_VALUE;
+        if(scan(arr)){
+            for(int in:arr){
+                System.out.print(in+" ");
+            }
+            System.out.println();
+        }
+        else{
+            while(true){
+                if(scan(arr)){
+                    break;
+                }
+                leftSort(arr);
+                if(scan(arr)){
+                    break;
+                }
+                rightSort(arr);
+            }
+        }
+        /********* End *********/
+    }
+
+    public boolean scan(Integer[] arr){
+        for(int i=0;i<arr.length-1;i++){
+            if(arr[i]>arr[i+1]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int leftSort(Integer[] arr){
+        int count=0;
+        for(int i=0;i<arr.length-1;i++){
+            if(arr[i]>arr[i+1]){
+                int temp=arr[i];
+                arr[i]=arr[i+1];
+                arr[i+1]=temp;
+                count++;
+                for(int in:arr){
+                    System.out.print(in+" ");
+                }
+                System.out.println();
+            }
+        }
+        return count;
+    }
+
+    public int rightSort(Integer[] arr){
+        int count=0;
+        for(int i=arr.length-1;i>0;i--){
+            if(arr[i]<arr[i-1]){
+                int temp=arr[i];
+                arr[i]=arr[i-1];
+                arr[i-1]=temp;
+                count++;
+                for(int in:arr){
+                    System.out.print(in+" ");
+                }
+                System.out.println();
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Integer[] ints = {4, 1, 3, 5, 2};
+        new Task().sort(ints);
+    }
+
+}

@@ -1,0 +1,76 @@
+package case2;
+
+public class extendsTest {
+	public static void main(String args[]) {
+		Cat cat = new Cat("大花猫", 6);
+		Dog dog = new Dog("大黑狗", 8);
+		cat.voice();
+		cat.eat();
+		cat.print();
+		dog.voice();
+		dog.eat();
+		dog.print();
+	}
+}
+
+class Animal {
+	/********* begin *********/
+	private String name;
+	private int age;
+	
+	public void get(String name,int age) {
+		this.name = name;
+		this.age = age;
+	}
+	
+	public String showName() {
+		return name;
+	}
+	
+	public int showAge() {
+		return age;
+	}
+	
+	public void print() {
+		System.out.println(showName()+""+showAge()+"岁");
+	}
+
+	/********* end *********/
+
+}
+
+class Cat extends Animal {
+	// 定义Cat类的voice()和eat()方法
+	/********* begin *********/
+	Cat(String name,int age){
+		get(name, age);
+	}
+	
+	public void voice() {
+		System.out.println(showName()+"喵喵叫");
+	}
+	
+	public void eat() {
+		System.out.println(showName()+"吃鱼");
+	}
+	/********* end *********/
+}
+
+class Dog extends Animal {
+	// 定义Dog类的voice()和eat()方法
+	/********* begin *********/
+	Dog(String name,int age){
+		get(name, age);
+	}
+	
+	public void voice() {
+		System.out.println(showName()+"汪汪叫");
+	}
+	
+	public void eat() {
+		System.out.println(showName()+"吃骨头");
+	}
+
+
+	/********* end *********/
+}

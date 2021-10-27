@@ -1,0 +1,54 @@
+package step1;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	
+	Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < nums.length; i++) {
+			map.put(nums[i], 0);
+		}
+		ArrayList<Integer> left = new ArrayList<Integer>();
+		int[] number = new int[3];
+		int index = 0;
+		for (int j = 0; j < 10000; j++) {
+			if (!map.containsKey(j + 1)) {
+				number[index] = j + 1;
+				index++;
+			}
+		}
+			int[] f = bubblesort(number);
+			String fns = f[0]+""+ f[1] +f[2];
+        	
+        	
+			double ll = Double.parseDouble(fns);
+			double yushu = ll % 11; 
+            
+        
+            String str = String.valueOf(yushu);//浮点变量a转换为字符串str
+            int idx = str.lastIndexOf(".");//查找小数点的位置
+            String strNum = str.substring(0,idx);//截取从字符串开始到小数点位置的字符串，就是整数部分
+            int numf = Integer.valueOf(strNum);
+        	//System.out.println(yushu);
+			return numf;
+    }
+    	public static int[] bubblesort(int[] num) {
+		for (int i = 0; i < num.length - 1; i++) {
+			for (int j = 0; j < num.length - 1 - i; j++) {
+				if (num[j] > num[j + 1]) {
+					int temp = num[j];
+					num[j] = num[j + 1];
+					num[j + 1] = temp;
+				}
+
+			}
+		}
+		return num;
+	}
+
+	/********* End *********/
+}

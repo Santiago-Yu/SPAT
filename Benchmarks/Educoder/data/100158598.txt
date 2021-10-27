@@ -1,0 +1,26 @@
+#include<iostream>
+#include<string>
+#include<cstdio>
+std::string st1,st2,st;
+int mx = 0;
+int len,i;
+int main()
+{
+	std::cin >> st1;
+	std::cin >> st2;
+	for(int l = st1.length();l;--l)
+	{
+		for (int i = 0;i+l<=st1.length();++i )
+		{
+			st = st1.substr(i, l);
+			if(st2.find(st)!=std::string::npos)
+			{
+				mx = l;
+				break;
+			}
+		}
+		if(mx)break;
+	}
+	printf("%d",mx);
+	return 0;
+}

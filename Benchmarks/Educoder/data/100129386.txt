@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Test {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String name = sc.next();
+		String sex = sc.next();
+		
+		//分别使用两种构造器来创建Person对象  
+		Person P= new Person();
+        Person P1= new Person(name,sex);
+		
+		
+	}
+}
+
+//创建Person对象，并创建两种构造方法
+class Person{
+    String Pname;
+    String Psex;
+        public 	Person(){
+        System.out.println("一个人被创建了");
+        }
+        public  Person(String name,String sex){
+            Pname=name;
+            Psex=sex;
+        System.out.println("姓名："+Pname  +"，性别："+Psex  +"，被创建了");
+        }
+}

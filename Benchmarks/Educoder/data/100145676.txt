@@ -1,0 +1,123 @@
+package step4;
+
+public class Task {
+	static boolean runnian(int _year) {
+		if (_year % 4 == 0 && _year % 100 != 0 || (_year % 400 == 0))return true;
+		else return false;
+	}
+
+	static int dayLength(int year,int month) {
+		switch (month)
+		{
+		case 1: {
+			return 31;
+		}
+		case 2: {	
+			if (runnian(year)) {
+				return 29;
+			}
+			else {
+				return 28;
+			}
+		}
+		case 3:
+			return 31;
+		case 4:
+			return 30;
+		case 5:
+			return 31;
+		case 6:
+			return 30;
+		case 7:
+			return 31;
+		case 8:
+			return 31;
+		case 9:
+			return 30;
+		case 10:
+			return 31;
+		case 11:
+			return 30;
+		case 12:
+			return 31;
+		default:
+			break;
+		}
+		return 0;
+	}
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+		int[]sub=new int[10];
+		for(int i=0;i<10;i++)
+		{
+			if(i==4||i==7)
+				continue;
+			sub[i]=Integer.parseInt(releaseDate.substring(i, i+1));
+		}
+		int shijiancha = day;
+		int year=sub[0]*1000+sub[1]*100+sub[2]*10+sub[3];
+		int month=sub[5]*10+sub[6];
+		int day1=sub[8]*10+sub[9];
+//		String b=year+"-"+month+"-"+day1;
+//		System.out.println(b);
+		while (true) {
+			
+			if(shijiancha==0)
+				break;
+			if (day1> dayLength(year, month)) 
+				{
+				day1=1;
+			month++;
+				}
+			
+			if (month > 12) 
+			{
+					year++;
+					month=1;
+			}
+				day1++;
+				shijiancha--;
+		}
+		
+		
+	String s=null;
+	String month1=null;
+	String day2=null;
+//	for(int i=0;i<10;i++)
+//	{
+//		if(i==4||i==7)
+//			s=s+"-";
+//		s=s+sub[i];
+//	}
+	if(month/10==0)
+	{
+		month1="0"+month;
+	}
+	else
+		month1=""+month;
+	if(day1/10==0)
+	{
+		day2="0"+day1;
+	}
+	else
+	day2=""+day1;
+	s=year+"-"+month1+"-"+day2;
+//	System.out.println(s);
+		return s;
+	
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

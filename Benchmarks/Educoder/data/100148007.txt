@@ -1,0 +1,28 @@
+package step4;
+
+//注意文件名，这里应该写MyRunnable类
+/***begin your code here***/
+class MyRunnable  extends Thread implements Runnable{
+    int num;
+    int result = 1;
+    public  MyRunnable(int num){
+        this.num = num;
+    }
+         public void run(){
+         for(int i = 1; i <=num;i++)
+         {
+             result = result*i;
+         }
+                             try{
+       Thread.sleep(300);
+    }catch(Exception e)
+    {                 
+    }
+             System.out.println(result);
+
+         }
+ 
+             
+}
+
+/***end your code***/

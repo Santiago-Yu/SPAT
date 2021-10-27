@@ -1,0 +1,38 @@
+package step2;
+
+import java.util.Scanner;
+
+public class SystemUpdate {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String name = scanner.next();
+        String birth = scanner.next();
+        String position = scanner.next();
+        double salary = scanner.nextDouble();
+        Salary employee = new Salary(name, birth, position, salary);
+        employee.introduction();
+    }
+}
+
+/********** Begin *********/
+class Employee {
+String Name;
+String Birth;
+String Position; 
+Employee(String name, String birth,String position){ 
+this.Name=name;
+this.Birth=birth;
+this.Position=position;
+}
+} 
+class Salary extends Employee {
+double S;
+Salary(String name, String birth,String position,double s ){
+super(name,birth,position);
+this.S=s;
+}
+void introduction(){
+System.out.print("员工姓名："+Name+" "+"出生年月："+Birth+" "+"职位："+Position+" "+"薪水："+S);
+}
+}
+/********** End *********/

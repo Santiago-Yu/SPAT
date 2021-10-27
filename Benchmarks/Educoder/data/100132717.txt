@@ -1,0 +1,66 @@
+package step3;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 		if(ferry.length==0) return 0;
+		int count=0,i=0,j=0;
+		int flag=0;
+		int cn=ferry[0].length;
+		int rn=ferry.length;
+		Set<Integer> col=new HashSet<>();
+		while(i<rn) {
+			j=0;
+			while(j<cn&&!col.contains(j)) {
+				if(ferry[i][j]=='+') {
+					if(i!=rn-1&&ferry[i+1][j]=='+') {
+						col.add(j);
+						j=j+2;
+						continue;
+					}
+					
+					count++;
+					
+					int k=j+1;
+					
+					while(k<cn) {
+						if(ferry[i][k]=='o') break;
+						else k++;
+					}
+					
+					j=k+1;	
+				}
+				else j++;
+			}
+			i++;
+		}
+		i=0;
+		for(int p : col) {
+			i=0;
+			while(i<rn) {
+				if(ferry[i][p]=='+') {
+					
+					count++;
+					
+					int k=i+1;
+					
+					while(k<rn) {
+						if(ferry[k][p]=='o') break;
+						else k++;
+					}
+					
+					i=k+1;	
+				}
+				else i++;
+			}
+		}
+
+		return count;
+	 
+         
+      /***********END ***************/
+	 }
+}

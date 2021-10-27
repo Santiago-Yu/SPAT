@@ -1,0 +1,47 @@
+package step1;
+
+import java.util.Scanner;
+
+public class ShapeTrouble {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+        System.out.println(circle.getAcreage());
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape {
+    abstract double getAcreage();
+}
+
+class Circle extends Shape {
+    private double radius;
+	Circle(double radius){
+		this.radius=radius;
+	}
+    public double getAcreage(){
+    	return 3.1415926*radius*radius;
+    }
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+    Rectangle(double length,double width){
+    	this.length=length;
+    	this.width=width;
+    }
+    public double getAcreage(){
+    	return length*width;
+    }
+}
+/********** End *********/
+//将Shape类定义为抽象类，Shape类的getAcreage()方法（获取面积）定义为抽象方法。
+//将Circle类和Rectangle类定义为Shape类的子类，分别重写Shape类的抽象方法getAcreage()，返回各自的面积。
+//PI取3.1415926。

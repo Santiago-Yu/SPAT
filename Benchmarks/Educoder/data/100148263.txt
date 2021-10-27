@@ -1,0 +1,47 @@
+package step1;
+import java.util.Date;
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/
+		//在这里创建线程， 开启线程
+		MyThread m1=new MyThread("AA");
+        MyThread m2=new MyThread("BB");
+		MyThread m3=new MyThread("CC");
+        m1.setPriority(Thread.MAX_PRIORITY);
+        m2.setPriority(Thread.NORM_PRIORITY);
+        m3.setPriority(Thread.MIN_PRIORITY);
+        m1.start();
+        m2.start();
+		m3.start();
+		
+		
+		/********* End *********/
+	}
+}
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	String threadName;
+    
+	public MyThread(String threadName){
+        this.threadName=threadName;
+    }
+
+	public void run() {
+	
+		int count = 5;
+		
+		while(count > 0){
+				try {
+					Thread.sleep(300);
+					System.out.println("Java Thread" + this.threadName);
+					count--;
+				}catch(Exception e) {
+				
+				}
+                
+		}
+	}
+
+	/********* End *********/
+}

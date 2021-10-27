@@ -1,0 +1,30 @@
+package step4;
+
+public class MyRunnable implements Runnable {
+	private int num;
+	
+    public MyRunnable() {
+    	this(0);
+    }
+    
+    public MyRunnable(int num) {
+    	this.num=num;
+    }
+	
+	@Override
+	public void run() {
+    	int result = 1;
+		for(int i=1;i<=num;i++)
+            result*=i;
+        
+        try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	System.out.println(result);
+	}
+
+}
+

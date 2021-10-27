@@ -1,0 +1,29 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+  public static void main(String[] args) {
+   Scanner scan1=new Scanner(System.in);
+   /******Begin******/
+            int num,k,jc=0;
+            num=scan1.nextInt();
+            if(num%2==0)
+                System.out.printf("偶数");
+            if(num%2==1&&num>1){
+                for(k=2;k<num/2;k++)
+                { if(num%k==0)
+                {jc=1;
+                    break;}}
+                if(jc==1)
+                System.out.printf("奇数");
+                else
+                     System.out.printf("素数");
+            }
+                
+
+
+
+          
+   /******End******/
+  }
+}

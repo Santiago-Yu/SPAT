@@ -1,0 +1,33 @@
+package step1;
+	import java.util.Scanner;
+
+	public class Task {
+    public int getSum(int num1, int num2) {
+        /********** BEGIN **********/
+        int sum = 0;
+        for (int i = num1; i <= num2; i++) {
+            if(i < 100){
+                sum += i/10 + i%10;
+            }else{
+                sum += i/100 + i%100/10 + i%10;
+            }
+        }
+        return sum;
+        /********** END **********/
+    }
+
+
+	     public static void main(String[] args)
+	    {
+	        int x;
+	    	Scanner input=new Scanner(System.in);
+	        int n=input.nextInt();
+	        int m=input.nextInt();
+	        Task task=new Task();
+	        x=task.getSum(n,m);
+	        System.out.println("输出："+x);
+	    }
+	   
+	}
+
+

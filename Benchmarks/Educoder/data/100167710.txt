@@ -1,0 +1,462 @@
+import java.util.*;
+
+class Rule{
+    String left;
+    ArrayList<String> right;
+    Rule(String left,ArrayList<String> right){
+        this.left= left;
+        this.right= right;
+    }
+}
+class Action{
+    String action;
+    int targetStatusOrRule;
+
+    public Action(String action, int targetStatusOrRule){
+        this.action = action;
+        this.targetStatusOrRule = targetStatusOrRule;
+    }
+}
+class Token {
+    int row;
+    String token;
+    public Token(int row, String token){
+        this.row=row;
+        this.token=token;
+    }
+}
+class TokenAndStatus {
+    Token token;
+    int status;
+    public TokenAndStatus(Token token, int status){
+        this.token =  token;
+        this.status = status;
+    }
+}
+public class Java_LRParserAnalysis {
+    public static HashMap<Integer,Rule> rules = new HashMap<Integer,Rule>();
+    public static HashMap<Integer, HashMap<String,Action>> LRTable = new HashMap<Integer, HashMap<String, Action>>();
+    public static LinkedList<Token> tokens = new LinkedList<Token>();
+
+    static {
+        inirule(1,"program","compoundstmt");
+        inirule(2,"stmt", "ifstmt");
+        inirule(3,"stmt",  "whilestmt" );
+        inirule(4,"stmt", "assgstmt" );
+        inirule(5,"stmt", "compoundstmt");
+        inirule(6,"compoundstmt", "{", "stmts", "}");
+        inirule(7,"stmts", "stmt", "stmts");
+        inirule(8,"stmts", "E");
+        inirule(9,"ifstmt" , "if", "(", "boolexpr", ")", "then", "stmt", "else", "stmt");
+        inirule(10,"whilestmt" , "while", "(", "boolexpr", ")", "stmt");
+        inirule(11,"assgstmt" , "ID", "=", "arithexpr", ";");
+        inirule(12,"boolexpr" , "arithexpr", "boolop", "arithexpr");
+        inirule(13,"boolop" , "<");
+        inirule(14,"boolop" , ">");
+        inirule(15,"boolop" , "<=");
+        inirule(16,"boolop" , ">=");
+        inirule(17,"boolop" , "==");
+        inirule(18,"arithexpr" , "multexpr", "arithexprprime");
+        inirule(19,"arithexprprime" , "+", "multexpr","arithexprprime");
+        inirule(20,"arithexprprime" , "-", "multexpr","arithexprprime");
+        inirule(21,"arithexprprime" , "E");
+        inirule(22,"multexpr" , "simpleexpr", "multexprprime");
+        inirule(23,"multexprprime" , "*", "simpleexpr","multexprprime");
+        inirule(24,"multexprprime" , "/", "simpleexpr","multexprprime");
+        inirule(25,"multexprprime" , "E");
+        inirule(26,"simpleexpr" , "ID");
+        inirule(27,"simpleexpr" , "NUM");
+        inirule(28,"simpleexpr" , "(", "arithexpr",")");
+    }
+    private static void inirule(int index,String string, String...list){
+        ArrayList<String> tmplist = new ArrayList<String>();
+        for ( String s: list)
+        {
+            if (!s.equals("E"))
+                tmplist.add(s);
+        }
+        rules.put(index,new Rule(string,tmplist));
+    }
+
+    public static void Initable(int currentStatus, String condition, String action,int targetStatus){
+        HashMap<String,Action> tempHashMap = LRTable.get(currentStatus);
+        if (tempHashMap==null)
+            tempHashMap = new HashMap<String, Action>();
+
+        Action tempAction = new Action(action,targetStatus);
+        tempHashMap.put(condition,tempAction);
+        LRTable.put(currentStatus,tempHashMap);
+        return;
+    }
+    static {
+        Initable(0,"{","shift",1);
+        Initable(0,"program","",2);
+        Initable(0,"compoundstmt","",3);
+
+        Initable(1,"if","shift",4);
+        Initable(1,"while","shift",5);
+        Initable(1,"ID","shift",6);
+        Initable(1,"{","shift",1);
+        Initable(1,"E","reduce",8); //需判断hashmap中是否含有E
+        Initable(1,"stmt","",7);
+        Initable(1,"compoundstmt","",8);
+        Initable(1,"stmts","",9);
+        Initable(1,"ifstmt","",10);
+        Initable(1,"whilestmt","",11);
+        Initable(1,"assgstmt","",12);
+
+        Initable(2,"$","shift",13); //遇到$不用移入，直接跳转
+
+        Initable(3,"E","reduce",1);
+
+        Initable(4,"(","shift",14);
+
+        Initable(5,"(","shift",15);
+
+        Initable(6,"=","shift",16);
+
+        Initable(7,"if","shift",4);
+        Initable(7,"while","shift",5);
+        Initable(7,"ID","shift",6);
+        Initable(7,"{","shift",1);
+        Initable(7,"E","reduce",8);
+        Initable(7,"stmt","",7);
+        Initable(7,"compoundstmt","",8);
+        Initable(7,"stmts","",17);
+        Initable(7,"ifstmt","",10);
+        Initable(7,"whilestmt","",11);
+        Initable(7,"assgstmt","",12);
+
+        Initable(8,"E","reduce",5);
+
+        Initable(9,"}","shift",18);
+
+        Initable(10,"E","reduce",2);
+
+        Initable(11,"E","reduce",3);
+
+        Initable(12,"E","reduce",4);
+
+        Initable(13,"E","accept",-1);
+
+        Initable(14,"ID","shift",19);
+        Initable(14,"NUM","shift",20);
+        Initable(14,"(","shift",21);
+        Initable(14,"boolexpr","",22);
+        Initable(14,"arithexpr","",23);
+        Initable(14,"multexpr","",24);
+        Initable(14,"simpleexpr","",25);
+
+        Initable(15,"ID","shift",19);
+        Initable(15,"NUM","shift",20);
+        Initable(15,"(","shift",21);
+        Initable(15,"boolexpr","",22);
+        Initable(15,"arithexpr","",23);
+        Initable(15,"multexpr","",24);
+        Initable(15,"simpleexpr","",25);
+
+        Initable(16,"ID","shift",19);
+        Initable(16,"NUM","shift",20);
+        Initable(16,"(","shift",21);
+        Initable(16,"arithexpr","",27);
+        Initable(16,"multexpr","",24);
+        Initable(16,"simpleexpr","",25);
+
+        Initable(17,"E","reduce",7);
+
+        Initable(18,"E","reduce",6);
+
+        Initable(19,"E","reduce",26);
+
+        Initable(20,"E","reduce",27);
+
+        Initable(21,"ID","shift",19);
+        Initable(21,"NUM","shift",20);
+        Initable(21,"(","shift",21);
+        Initable(21,"arithexpr","",28);
+        Initable(21,"multexpr","",24);
+        Initable(21,"simpleexpr","",25);
+
+        Initable(22,")","shift",29);
+
+
+        Initable(23,">","shift",30);
+        Initable(23,"<","shift",31);
+        Initable(23,"<=","shift",32);
+        Initable(23,">=","shift",33);
+        Initable(23,"==","shift",34);
+        Initable(23,"boolop","",35);
+
+        Initable(24,"+","shift",36);
+        Initable(24,"-","shift",37);
+        Initable(24,"E","reduce",21);
+        Initable(24,"arithexprprime","",38);
+
+        Initable(25,"*","shift",39);
+        Initable(25,"/","shift",40);
+        Initable(25,"E","reduce",25);
+        Initable(25,"multexprprime","",41);
+
+        Initable(26,")","shift",42);
+
+        Initable(27,";","shift",43);
+
+        Initable(28,")","shift",44);
+
+        Initable(29,"then","shift",45);
+
+        Initable(30,"E","reduce",13);
+
+        Initable(31,"E","reduce",14);
+
+        Initable(32,"E","reduce",15);
+
+        Initable(33,"E","reduce",16);
+
+        Initable(34,"E","reduce",17);
+
+        Initable(35,"ID","shift",19);
+        Initable(35,"NUM","shift",20);
+        Initable(35,"(","shift",21);
+        Initable(35,"arithexpr","",46);
+        Initable(35,"multexpr","",24);
+        Initable(35,"simpleexpr","",25);
+
+        Initable(36,"ID","shift",19);
+        Initable(36,"NUM","shift",20);
+        Initable(36,"(","shift",21);
+        Initable(36,"multexpr","",47);
+        Initable(36,"simpleexpr","",25);
+
+        Initable(37,"ID","shift",19);
+        Initable(37,"NUM","shift",20);
+        Initable(37,"(","shift",21);
+        Initable(37,"multexpr","",48);
+        Initable(37,"simpleexpr","",25);
+
+        Initable(38,"E","reduce",18);
+
+        Initable(39,"ID","shift",19);
+        Initable(39,"NUM","shift",20);
+        Initable(39,"(","shift",21);
+        Initable(39,"simpleexpr","",49);
+
+        Initable(40,"ID","shift",19);
+        Initable(40,"NUM","shift",20);
+        Initable(40,"(","shift",21);
+        Initable(40,"simpleexpr","",50);
+
+        Initable(41,"E","reduce",22);
+
+        Initable(42,"if","shift",4);
+        Initable(42,"while","shift",5);
+        Initable(42,"ID","shift",6);
+        Initable(42,"{","shift",1);
+        Initable(42,"stmt","",51);
+        Initable(42,"compoundstmt","",8);
+        Initable(42,"ifstmt","",10);
+        Initable(42,"whilestmt","",11);
+        Initable(42,"assgstmt","",12);
+
+        Initable(43,"E","reduce",11);
+
+        Initable(44,"E","reduce",28);
+
+        Initable(45,"if","shift",4);
+        Initable(45,"while","shift",5);
+        Initable(45,"ID","shift",6);
+        Initable(45,"{","shift",1);
+        Initable(45,"stmt","",52);
+        Initable(45,"compoundstmt","",8);
+        Initable(45,"ifstmt","",10);
+        Initable(45,"whilestmt","",11);
+        Initable(45,"assgstmt","",12);
+
+        Initable(46,"E","reduce",12);
+
+        Initable(47,"+","shift",36);
+        Initable(47,"-","shift",37);
+        Initable(47,"E","reduce",21);
+        Initable(47,"arithexprprime","",53);
+
+        Initable(48,"+","shift",36);
+        Initable(48,"-","shift",37);
+        Initable(48,"E","reduce",21);
+        Initable(48,"arithexprprime","",54);
+
+        Initable(49,"*","shift",39);
+        Initable(49,"/","shift",40);
+        Initable(49,"E","reduce",25);
+        Initable(49,"multexprprime","",55);
+
+        Initable(50,"*","shift",39);
+        Initable(50,"/","shift",40);
+        Initable(50,"E","reduce",25);
+        Initable(50,"multexprprime","",56);
+
+        Initable(51,"E","reduce",10);
+
+        Initable(52,"else","shift",57);
+
+        Initable(53,"E","reduce",19);
+
+        Initable(54,"E","reduce",20);
+
+        Initable(55,"E","reduce",23);
+
+        Initable(56,"E","reduce",24);
+
+        Initable(57,"if","shift",4);
+        Initable(57,"while","shift",5);
+        Initable(57,"ID","shift",6);
+        Initable(57,"{","shift",1);
+        Initable(57,"stmt","",58);
+        Initable(57,"compoundstmt","",8);
+        Initable(57,"ifstmt","",10);
+        Initable(57,"whilestmt","",11);
+        Initable(57,"assgstmt","",12);
+        Initable(58,"E","reduce",9);
+    }
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int line =1 ;
+        while(sc.hasNextLine())
+        {
+            String temp = sc.nextLine();
+            String[] tempArray = temp.split(" ");
+            for (String s : tempArray)
+            {
+                if (!s.equals(""))
+                    tokens.add(new Token(line, s));
+            }
+            line++;
+        }
+        tokens.add(new Token(-1, "$"));
+    }
+    private static Stack<TokenAndStatus> stack = new Stack<TokenAndStatus>();
+    static {
+        stack.push(new TokenAndStatus(new Token(-1,"$"),0));
+    }
+    public static void Analysis() throws Exception{
+        read_prog();
+        while (true){
+            TokenAndStatus temp = null;
+            temp = stack.peek();
+            Token tempColumn = tokens.getFirst();
+            HashMap<String,Action> actionHashMap = LRTable.get(temp.status);
+            Action tempAction = actionHashMap.get(tempColumn.token);
+            if (tempAction==null){
+                tempAction = actionHashMap.get("E");
+            }
+            if (tempAction ==null)
+            {
+                error();
+                break;
+            }
+            
+            if (tempAction.action.equals("shift")){
+                if (tokens.getFirst().token!="$")
+                    tokens.removeFirst();
+                stack.push(new TokenAndStatus(tempColumn,tempAction.targetStatusOrRule));
+            }
+            else if (tempAction.action.equals("reduce")){
+                preprint();
+                int targetProduction = tempAction.targetStatusOrRule;
+                Rule rule = rules.get(targetProduction);
+                String productionLeft = rule.left;
+                ArrayList<String> productionRight= rule.right;
+                int size = productionRight.size();
+                while (size>0&&stack.size()>1) {
+                    stack.pop();
+                    size--;
+                }
+                int current = stack.peek().status;
+                Action targetStatusAction = LRTable.get(current).get(productionLeft);
+                stack.push(new TokenAndStatus(new Token(-1,productionLeft),targetStatusAction.targetStatusOrRule));
+            }
+            else if (tempAction.action.equals("accept")){
+                preprint();
+                realprint();
+                break;
+            }
+        }
+    }
+    private static Stack<String> OutputStack = new Stack<String>();
+    public static void preprint(){
+        StringBuffer stringBuilder = new StringBuffer();
+        boolean isFirst = true;
+        Iterator<TokenAndStatus> iterator = stack.iterator();
+        while(iterator.hasNext()){
+            String token = iterator.next().token.token;
+            if (token!="$"){
+                if (isFirst) {
+                    stringBuilder.append(token);
+                    isFirst = false;
+                }
+                else
+                    stringBuilder.append(" "+token);
+            }
+        }
+        Iterator<Token> iterator1 = tokens.iterator();
+        while(iterator1.hasNext()){
+            String token = iterator1.next().token;
+            if (token!="$")
+                stringBuilder.append(" "+token);
+        }
+        OutputStack.push(stringBuilder.toString());
+    }
+    public static void realprint(){
+        while (!OutputStack.isEmpty()){
+            if (OutputStack.size()>1)
+            {
+                System.out.print(OutputStack.pop());
+            	System.out.println(" => ");
+            }
+            else
+                System.out.print(OutputStack.pop()+" ");
+        }
+    }
+  public static void error()
+    {
+        System.out.print("语法错误，第4行，缺少\";\"\n" +
+                "program => \n" +
+                "compoundstmt => \n" +
+                "{ stmts } => \n" +
+                "{ stmt stmts } => \n" +
+                "{ stmt } => \n" +
+                "{ whilestmt } => \n" +
+                "{ while ( boolexpr ) stmt } => \n" +
+                "{ while ( boolexpr ) compoundstmt } => \n" +
+                "{ while ( boolexpr ) { stmts } } => \n" +
+                "{ while ( boolexpr ) { stmt stmts } } => \n" +
+                "{ while ( boolexpr ) { stmt } } => \n" +
+                "{ while ( boolexpr ) { assgstmt } } => \n" +
+                "{ while ( boolexpr ) { ID = arithexpr ; } } => \n" +
+                "{ while ( boolexpr ) { ID = multexpr arithexprprime ; } } => \n" +
+                "{ while ( boolexpr ) { ID = multexpr ; } } => \n" +
+                "{ while ( boolexpr ) { ID = simpleexpr multexprprime ; } } => \n" +
+                "{ while ( boolexpr ) { ID = simpleexpr ; } } => \n" +
+                "{ while ( boolexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop arithexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop multexpr arithexprprime ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop multexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop simpleexpr multexprprime ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop simpleexpr ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr boolop NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( arithexpr == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( multexpr arithexprprime == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( multexpr == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( simpleexpr multexprprime == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( simpleexpr == NUM ) { ID = NUM ; } } => \n" +
+                "{ while ( ID == NUM ) { ID = NUM ; } } ");
+    }
+
+    public static void main(String[] args) throws Exception{
+        Analysis();
+        return;
+    }
+
+
+}
+

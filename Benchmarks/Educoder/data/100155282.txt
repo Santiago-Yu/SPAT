@@ -1,0 +1,34 @@
+package task3;
+
+public class Box {
+
+    double width=0.0;
+    double height=0.0;
+    double depth=0.0;
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume(int boxType) {
+        //TODO write your code here
+        double result=0.0;
+        switch(boxType)
+        {
+            case 1:
+                result=width*height*depth;
+                break;
+            case 2:
+                result=width*height*depth*3.14;
+                break;
+        }
+        return result;
+    }
+
+}

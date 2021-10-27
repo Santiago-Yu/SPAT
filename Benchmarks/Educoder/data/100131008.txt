@@ -1,0 +1,27 @@
+package step1;
+import java.util.Scanner;
+public class Task {
+
+	public static void main(String args[]) throws Exception{ 
+		int x,y;
+		Scanner scanner = new Scanner(System.in);
+		x=scanner.nextInt();
+		y=scanner.nextInt();
+		Task a=new Task();
+		System.out.println(a.getSum(x,y));
+	}
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		
+		int i,sum=0,a,b,c;
+		for(i=num1;i<=num2;i++) {
+			a=i%1000/100;
+			b=i%100/10;
+			c=i%10;
+			sum=sum+a+b+c;
+		}
+		return sum;
+		
+		/********** END **********/
+	}
+}

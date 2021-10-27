@@ -1,0 +1,41 @@
+package case8;
+
+public class TestPolymorphism {
+	public static void main(String[] args) {
+				Animal a=new Cat();
+        a.eat();
+        Animal b=new Lion();
+        b.eat();
+        Animal c=new Dog();
+        c.eat();
+	}
+}
+
+// Animal类中定义eat()方法
+class Animal {
+	public	void eat(){   	
+    }
+}
+
+// Dog类继承Animal类 复写eat()方法
+class Dog extends Animal {
+	public void	eat(){
+    	System.out.println("eating meat...");
+    }
+}
+
+// Cat类继承Animal类 复写eat()方法
+class Cat extends Animal {
+	public void	eat(){
+    System.out.println("eating bread...");
+}
+}
+
+// Lion类继承Animal类 复写eat()方法
+class Lion extends Animal {
+	public void	eat(){
+    	System.out.println("eating rat...");
+}
+	}
+
+

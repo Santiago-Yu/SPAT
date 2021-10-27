@@ -1,0 +1,19 @@
+package Q103;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner in = new Scanner (System.in);
+		int n = in.nextInt();
+		int f0=1,f1=1,f2=0;
+		for(int i=2;i<=n;i++) {
+			f2=f1+f0;
+			f0=f1;
+			f1=f2;
+		}
+      System.out.print(f2);
+
+	}
+
+}

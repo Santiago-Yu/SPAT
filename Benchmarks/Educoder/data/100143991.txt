@@ -1,0 +1,86 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+		
+        boolean isDir = file.isDirectory();
+        if(isDir == true){
+           System.out.println("+--"+file.getName());
+           File[] files = file.listFiles();
+            for(File file1:files){
+               boolean id = file1.isDirectory();
+                if(id == true){
+                   System.out.println("  +--"+file1.getName());
+                    File[] files2 = file1.listFiles();
+                    for(File file2:files2){
+                       boolean i = file2.isDirectory();
+                        if(i == true){
+                          System.out.println("    +--"+file2.getName());
+                            File[] files3 = file2.listFiles();
+                            for(File file3:files3){
+                               boolean d = file3.isDirectory();
+                                if(d == true){
+                                System.out.println("      +--"+file3.getName());
+                                    File[] files4 = file3.listFiles();
+                                    for(File file4:files4){
+                                       boolean f =file4.isDirectory();
+                                        if(f==true){
+                                         System.out.println("        +--"+file4.getName());
+                                            File[] files5= file4.listFiles();
+                                            for(File file5:files5){
+                                               boolean s =file5.isDirectory();
+                                                if(s==true){
+                                                 System.out.println("          +--"+file5.getName());
+                                                  /* File[] files6 = file5.listFiles();
+                                                    for(File[] file6:files6){
+                                                       boolean a =file6.isDirectory();
+                                                        if(a==true){
+                                                         System.out.println("            +--"+file6.getName());
+                                                        }
+                                                        else{
+                                                           System.out.println("            --"+file6.getName());
+                                                        }
+                                                    }*/
+                                                } 
+                                                else{
+                                                   System.out.println("          --"+file5.getName());
+                                                }
+                                            }
+                                         }
+                                        else{
+                                             System.out.println("        --"+file4.getName());
+                                        }
+                                    }
+                                }
+                                else{
+                                    System.out.println("      --"+file3.getName());
+                                }
+                            }
+                        }
+                        else{
+                          System.out.println("    --"+file2.getName()); 
+                        }
+                    }                   
+                }
+                else{
+                   System.out.println("  --"+file1.getName()); 
+                }
+            }
+        } else{
+            System.out.println("--"+file.getName());
+        }   
+        
+
+
+
+
+	}
+	
+
+
+	/********** End **********/
+}

@@ -1,0 +1,48 @@
+package step4;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		File file=new File("src/step4/input/input.txt");
+        FileReader fr=new FileReader(file);
+        char[] data=new char[1024];
+        int len=0;
+        StringBuffer buffer=new StringBuffer();
+        File target=new File("src/step4/output/output.txt");
+        if(!target.exists())
+            target.createNewFile();
+        FileWriter fw=new FileWriter(target);
+		while((len=fr.read(data))!=-1){
+         	buffer.append(data,0,len);   
+        }
+        fw.write(buffer.toString());
+        fr.close();
+        fw.flush();
+        fw.close();
+		File file2=new File("src/step4/input/input.jpg");
+        FileInputStream fi=new FileInputStream(file2);
+        int len2=0;
+        byte[] data2=new byte[1024];
+        StringBuffer buffer2=new StringBuffer();
+        File target2=new File("src/step4/output/output.jpg");
+        if(!target2.exists())
+            target2.createNewFile();
+        FileOutputStream fo=new FileOutputStream(target2);
+        while((len2=fi.read(data2))!=-1){
+         	buffer2.append(new String(data2,0,len2));   
+        }
+        fo.write(buffer2.toString().getBytes());
+        fi.close();
+        fo.flush();
+        fo.close();
+		/********* End *********/		
+	}
+}

@@ -1,0 +1,45 @@
+package step2;
+
+import java.io.File;
+import java.io.IOException;
+
+public class FileUtil {
+	public static void start() {
+		/********** Begin *********/
+File file = new File("src/step2");
+File[] fileFile = file.listFiles();
+       
+   
+       
+        boolean b=true;
+        int i=0;
+         int c=1;
+        int j=0;
+        
+        while(b){
+          if(  fileFile[i].isDirectory()==true)
+          {System.out.println(  fileFile[i].getName());
+            
+            b=false;
+          }
+            i++;
+        } 
+        for(j=0;j<3;j++)
+        {
+           if(  fileFile[j].isDirectory()==false)
+          {System.out.println(  fileFile[j].getName());
+            
+           
+          }
+        } 
+        
+        
+        
+        
+   
+       //file对象指向step3文件夹，故方法返回true
+
+		/********** End *********/
+	}
+}
+

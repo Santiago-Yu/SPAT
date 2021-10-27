@@ -1,0 +1,28 @@
+package step1;
+import java.util.Arrays;
+
+public class Task {
+
+	public void sortArray(int[] arr, String sort){
+		/********** BEGIN **********/
+		if (sort.equals("asc")) {
+			Arrays.sort(arr);
+		} else {
+			Arrays.sort(arr);
+			int temp = 0;
+			for (int start = 0, end = arr.length - 1; start < end; start++, end--) {
+				temp = arr[start];
+				arr[start] = arr[end];
+				arr[end] = temp;
+			}
+		}
+		
+		
+		for(int a:arr){
+			System.out.println(a);
+		}
+
+		
+		/********** END **********/
+	}
+}

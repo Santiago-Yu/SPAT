@@ -1,0 +1,38 @@
+package step1;
+
+
+public class Task
+{
+	
+	public double solve(double x1, double y1, double r1,
+            double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double area = 0.0 ;
+		  double pi = 3.141592654;
+		  if((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)>=(r1+r2)*(r1+r2))
+		  {
+			area = pi*r1*r1+pi*r2*r2; 
+		  }
+		  if(Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))<=r1-r2||Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))<=r2-r1)
+		  {
+			  if(r1>r2)
+				  area = pi*r1*r1;
+			  else 
+				  area = pi*r2*r2;
+		  }
+		  if(Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))+r2>r1&&Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))+r1>r2&&(x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)<(r1+r2)*(r1+r2))
+		  {
+			  double radian1 = Math.acos((r1*r1+(x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)-r2*r2)/(2*r1*Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))));
+			  double radian2 = Math.acos((r2*r2+(x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)-r1*r1)/(2*r2*Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))));
+			  double angel1  = radian1*180/pi;
+			  double angel2 = radian2*180/pi;
+			  double double_area = pi/360*(2*angel1*r1*r1+2*angel2*r2*r2)-(r1*r1*Math.sin(2*radian1)+r2*r2*Math.sin(2*radian2))/2;
+			  area = pi*r1*r1+pi*r2*r2-double_area;
+		  }
+		  
+		  
+		  /********* End *********/
+		return area;
+	  }
+
+}

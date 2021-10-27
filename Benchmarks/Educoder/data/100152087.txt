@@ -1,0 +1,46 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double area1 = Math.PI*r1*r1;
+		  double area2 = Math.PI*r2*r2;
+		  
+		  double flag = sharedArea(x1, y1, r1, x2, y2, r2);
+		  
+		  if(flag == 0) 
+			  return area1+area2;
+		  else if(flag == -1) {
+			  if(area1 > area2)
+				  return area1;
+			  else
+				  return area2;
+		  } else {
+			  return area1+area2-flag;
+		  }
+
+		  
+		  
+		  /********* End *********/
+	  }
+    double sharedArea(double x1, double y1, double r1,
+            double x2, double y2, double r2){
+		double alpha,area;
+		double d=Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+		if(d>r1+r2){
+			return 0;
+		} else if(r1+d<r2 || r2+d<r1) {
+			return -1;
+		}
+		alpha=Math.acos((d*d+r1*r1-r2*r2)/(2*d*r1));
+		area=alpha*r1*r1;
+		alpha=Math.acos((d*d+r2*r2-r1*r1)/(2*d*r2));
+		area+=alpha*r2*r2;
+		double s=(d+r1+r2)/2;
+		area-=Math.sqrt(s*(s-d)*(s-r1)*(s-r2))*2;
+		return area;
+	}
+
+}

@@ -1,0 +1,62 @@
+  package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        //int[] record = new int[10];
+        //int[] recordRecovery = new int[10];
+     
+        /********** Begin *********/
+        long []  record=new long[10];
+        for(int i=0;i<10;i++){
+           record[i]=scanner.nextLong();
+        }   
+             int t=0;
+        //定义一个临时数组
+        long[]  temparr=new long[ record.length];
+        
+        //遍历原数组
+        for(int i=0;i<record.length;i++){
+            
+            //声明一个标记
+            boolean xiao=true;
+            
+            //内层循环将原数组的元素逐个对比
+              for(int j=i+1;j<record.length;j++){
+                  
+                  //如果发现有重复元素，改变标记状态，结束当次内层循环
+            if(record[i]==record[j]){
+               xiao=false;
+                  break;
+          }
+              }
+            
+            //判断标记是否被改变，如果没有被改变就是没有重复元素
+        if(xiao){
+            
+            //没有重复的元素就将原数组的元素赋给临时数组
+          temparr[t]= record[i];
+            
+            //走到这里证明当前元素没有重复，那么记录自增
+            t++;
+        }
+  }
+       
+        //声明需要返回的数组，这个才是去除重复的数的数组
+        long[]  recordRecovery=new long[t];
+        
+        //用arraycopy方法将刚才去除重复的数的数组拷贝到新的数组
+       System.arraycopy( temparr,0,recordRecovery,0,t);
+        Arrays.sort(recordRecovery);
+        /********** End *********/
+        for (int i = 0; i < recordRecovery.length; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i != recordRecovery.length - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

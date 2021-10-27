@@ -1,0 +1,27 @@
+package step3;
+import java.util.Scanner;
+public class Factorial {
+	public void factorial(int n){
+		int product=n;
+		if(n!=0)
+		{
+			while(n>1)
+			{
+				product=product*(n-1);
+				n--;
+			}
+		}
+		else 
+		{
+			product=1;
+		}
+		System.out.print(product);
+	}
+	public static void main(String[] args)
+	{	
+		Scanner scanner=new Scanner(System.in);
+		int product=scanner.nextInt();
+		Factorial fac=new Factorial();
+		fac.factorial(product);
+	}
+}

@@ -1,0 +1,68 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		int in=arr.length-1;
+		boolean flag=true;
+		for(int i=0;i<in;++i) {
+			if(arr[i]>arr[i+1]) {
+				flag=false;
+			}
+		}
+		if(flag) {
+			for(int s=0;s<=in;++s) {
+				System.out.print(arr[s]);
+				System.out.print(' ');
+			}
+			System.out.println();
+			return;
+		}
+		for(int i=0;i<in;++i) {
+			if(i%2==0) {
+				for(int j=0;j<in;++j) {
+					if(arr[j]>arr[j+1]) {
+						Integer temp = arr[j];
+						arr[j]=arr[j+1];
+						arr[j+1]=temp;
+						for(int s=0;s<=in;++s) {
+							System.out.print(arr[s]);
+							System.out.print(' ');
+						}
+						System.out.println();
+					}
+				}
+			}else {
+				for(int j=in;j>1;--j) {
+					if(arr[j-1]>arr[j]) {
+						Integer temp = arr[j];
+						arr[j]=arr[j-1];
+						arr[j-1]=temp;
+						for(int s=0;s<=in;++s) {
+							System.out.print(arr[s]);
+							System.out.print(' ');
+						}
+						System.out.println();
+					}
+				}
+			}
+		}
+	}
+	
+	public void prArea(int n,int m,char[][] area,boolean[][] flag,int x,int y) {
+		int px[]=new int[] {0,0,1,-1};
+		int py[]=new int[] {1,-1,0,0};
+		for(int i=0;i<4;++i) {
+			int tx=x+px[i];
+			int ty=y+py[i];
+			if(tx>-1&&ty>-1&&tx<m&&ty<n&&area[ty][tx]=='o'&&flag[ty][tx]) {
+				flag[ty][tx]=false;
+				prArea(n, m, area, flag, tx, ty);
+			}
+		}
+	
+
+		
+		/********* End *********/
+	}
+}

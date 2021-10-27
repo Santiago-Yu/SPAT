@@ -1,0 +1,42 @@
+package Step2;
+
+import java.util.Scanner;
+
+public class RankingBySwitch {
+	public static void main(String args[]){
+        Scanner scan = new Scanner(System.in);
+        int scor = scan.nextInt();
+
+        String result = "";
+        if (scor >= 90 && scor<=100) {
+            result = "A";
+        } else if (scor >= 80 && scor<90) {
+            result = "B";
+        }  else if (scor >= 70 && scor<80) {
+            result = "C";
+        }  else if (scor >= 60 && scor<70) {
+            result = "D";
+        } else {
+            result = "E";
+        }
+
+        //switch-case语句
+        switch(result) {
+            case "A":
+                System.out.println("成绩为"+scor+"分，评定为优秀");
+                break;
+            case "B":
+                System.out.println("成绩为"+scor+"分，评定为良好");
+                break;
+            case "C":
+                System.out.println("成绩为"+scor+"分，评定为中等");
+                break;
+            case "D":
+                System.out.println("成绩为"+scor+"分，评定为及格");
+                break;
+            case "E":
+                System.out.println("成绩为"+scor+"分，评定为不及格");
+                break;
+        }
+	}
+}

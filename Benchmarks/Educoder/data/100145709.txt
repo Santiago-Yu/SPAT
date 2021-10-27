@@ -1,0 +1,44 @@
+package step4;
+
+public class Task {
+	public static String getDate(String releaseDate,int day){
+		
+		/********* Begin *********/
+		boolean leapYear = false;
+		String[] sourceStrArray = releaseDate.split("-");
+		int[] days = {31,28,31,30,31,30,31,31,30,31,30,31};
+		int year = Integer.valueOf(sourceStrArray[0]);
+		int mouth = Integer.valueOf(sourceStrArray[1]);
+		int date = Integer.valueOf(sourceStrArray[2]);
+		if(year % 4 == 0 && year != 100) {
+			days[1] = 29;
+		}else if(year % 400 == 0) {
+			days[1] = 29;
+		}else days[1] = 28;
+		date = day + date;
+		while(date > days[mouth-1]) {
+			date = date - days[mouth-1];
+			mouth ++;
+			if(mouth == 13) {
+				mouth = 1;
+				year ++;
+				if(year % 4 == 0 && year != 100) {
+					days[1] = 29;
+				}else if(year % 400 == 0) {
+					days[1] = 29;
+				}else days[1] = 28;
+			}
+
+		}
+		String a;
+		a = String.valueOf(year)+"-";
+		if (mouth < 10) a = a + "0";
+		a = a + String.valueOf(mouth)+"-";
+		if(date < 10) a = a + "0";
+		a = a + String.valueOf(date);
+		return a;
+        /********* End *********/
+}
+	
+	
+}

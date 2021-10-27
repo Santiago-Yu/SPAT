@@ -1,0 +1,35 @@
+package step3;
+import java.util.Scanner;
+
+//根据边长计算长方形的周长及面积，用方法完成。
+public class TestJava23_10 {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("请输入长方形的长：");
+		float c=sc.nextFloat();
+		System.out.println("请输入长方形的宽：");
+		float k=sc.nextFloat();
+		//此处分别调用ZhouChang方法和MianJi方法，求出长方形的周长、面积并输出
+		float l=ZhouChang(c,k);
+        float s=MianJi(c,k);
+		System.out.printf("长为：%.2f，宽为：%.2f的长方形的周长是：%.2f，面积是：%.2f\n",c,k,l,s);
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为ZhouChang，实现求长方形的周长的功能，并返回
+	public static float ZhouChang(float c,float k){
+    return (c+k)*2;
+    
+    }
+	
+	
+	
+	/*******End*********/
+	//此处定义一个方法，名为MianJi，实现求长方形的面积的功能，并返回
+	public static float MianJi(float c,float k){
+    return c*k; }
+	
+	
+	
+	/*******End*********/
+}

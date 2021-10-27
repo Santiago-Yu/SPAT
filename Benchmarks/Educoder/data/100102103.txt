@@ -1,0 +1,33 @@
+package step2;
+
+import java.io.File;
+import java.io.IOException;
+
+public class FileUtil {
+	public static void start() {
+		/********** Begin *********/
+        File file = new File("src/step2");
+        File[] fileFile = file.listFiles();
+       //fileFile[].isDirectory()判断是不是文件夹
+        //先要吧文件夹的名字打出来
+      for(int x=0;;x++)
+        {
+            if (fileFile[x].isDirectory()==true)
+            {
+        System.out.println(fileFile[x].getName());break;
+            }
+        }
+        
+			String result[] = file.list();
+			for (int i = 0; i < result.length; i++) {
+                  if (fileFile[i].isDirectory()==false) 
+				System.out.println(result[i]);
+			}
+		
+
+        
+			
+		// 它先运行主函数，然后把主函数的文件名打出来了，它把路径都打出来了
+		/********** End *********/
+    }
+}

@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int num[100];
+    int n = 0;
+    int d;
+    while(scanf("%d",&num[n])!=EOF)
+        n++;
+    d = num[n-1];
+    n--;
+    //scanf("%d",&d);
+   // cout<<d<<endl;
+    int count = 0;
+    for(int i = 0;i<n;i++)
+    for(int j = i+1;j<n;j++)
+    for(int k = j+1;k<n;k++)
+    if(num[i]+num[j]+num[k]<d)count++;
+    cout<<count;
+
+}

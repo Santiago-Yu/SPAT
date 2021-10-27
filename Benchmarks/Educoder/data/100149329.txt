@@ -1,0 +1,60 @@
+package step4;
+
+public class Task {
+    
+	public void love(int n){
+		/********* Begin *********/
+
+        if(n==1)
+            aiXin();
+        else
+            aiXin2();
+		
+		/********* End *********/	
+	}
+       public void aiXin(){
+	          for(float y = (float) 1.3;y>-1.101;y -=0.06)  {  
+	              for(float x= (float) -1.2;x<1.2;x+= 0.025){
+	            	  
+	                    float a = x*x+y*y-1;  
+	                  	if(y>0.95 && y<1.05  && x > 0.98) 
+                            System.out.print("$");
+	                    else if((a*a*a-x*x*y*y*y)<=1e-8)  {    
+	                           System.out.print(" ");  
+	                    }  
+	                   
+	                    else  
+	                           System.out.print("$");  
+	              }  
+	              System.out.println();
+                  
+	       }  
+	         
+	    }
+	   public static void aiXin2(){
+		   String tmp = "I love you!";
+		   char t [] = tmp.toCharArray();
+		   int i = 0;
+	          for(float y = (float) 1.3;y>=-1.04;y -=0.06)  { 
+	        	  i=0;
+	              for(float x= (float) -1.1;x<=1.1;x+= 0.025){
+	            	  
+	                    float a = (float) (5.0*y/4.0-Math.sqrt(Math.abs(x)));  
+	                  
+	                    if((a*a+x*x)<=1+1e-6)  {    
+	                           System.out.print(t[i]); 
+	                           i++;
+	                           if(i==t.length)
+	                        	   i=0;
+	                    }  
+	                   
+	                    else if(x<1.08)
+	                           System.out.print(" "); 
+
+	              } 
+                  if(y>-1.04)
+                      System.out.println();  
+	       }  
+	         
+	    }
+}

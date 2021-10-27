@@ -1,0 +1,38 @@
+package step3;
+
+public class Task {
+
+    static char[][] ch;
+    static boolean[][] vis;
+    static int dir[][] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+    public void dfs(int x, int y) {
+        vis[x][y] = true;
+        for (int i = 0; i < 4; i++) {
+            if (x + dir[i][0] < 0 ||
+                    x + dir[i][0] >= ch.length ||
+                    y + dir[i][1] < 0 ||
+                    y + dir[i][1] >= ch[0].length) continue;
+            if (ch[x + dir[i][0]][y + dir[i][1]] == 'o') continue;
+            if(vis[x + dir[i][0]][y + dir[i][1]]) continue;
+            dfs(x + dir[i][0], y + dir[i][1]);
+        }
+
+    }
+
+    public int countOfShips(char[][] ferry) {
+                if (ferry.length == 0) return 0;
+        ch = ferry;
+        vis=new boolean[ch.length][ch[0].length];
+        int num = 0;
+        for (int i = 0; i < ferry.length; i++) {
+            for (int j = 0; j < ferry[i].length; j++) {
+                if (!vis[i][j] && ferry[i][j] == '+') {
+                    dfs(i, j);
+                    num++;
+                }
+            }
+        }
+        return num;
+    }
+}

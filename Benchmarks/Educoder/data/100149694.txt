@@ -1,0 +1,45 @@
+package step1;
+
+import java.sql.*;
+
+public class QueryPass {
+	
+    private static String mydriver = "com.mysql.jdbc.Driver";
+    private static String mysqlurl = "jdbc:mysql://127.0.0.1:3306/tsgc?characterEncoding=UTF-8"; 
+    private static String mysqlname = "root";
+    private static String mysqlpass = "123123";
+    
+	// 查询数据代码不用上实验报告
+	public static void queryDB() throws SQLException, ClassNotFoundException{
+		
+		/********* Begin *********/
+
+		// 第一步：加载驱动
+		Class.forName(mydriver);
+		
+
+		// 第二步：建立连接, "root"和"123123"是针对MySQL设置了用户名(root)和密码(123123)的情况
+		// 127.0.0.1:3306是mysql服务器地址及端口   数据库编码格式设置为utf-8
+		Connection myconnection = DriverManager.getConnection(mysqlurl,mysqlname,mysqlpass);
+		
+
+		// 第三步：建立statement对象
+		Statement mystatement = myconnection.createStatement();
+		
+
+		// 第四步：查询数据
+        String sql = "select * from employee";
+		ResultSet myresultset = mystatement.executeQuery(sql);
+		while(myresultset.next()){
+            System.out.println("no:"+myresultset.getInt(1)+"\tname:"+myresultset.getString(2)+
+                               "\tpassword:"+myresultset.getString(3)+"\tsex:"+myresultset.getString(4)+
+                               "\tsalary"+myresultset.getDouble(5));
+        }
+        
+		// 第五步：关闭statement对象和连接对象
+		mystatement.close();
+		
+
+		/********* End *********/
+	}
+}

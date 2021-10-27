@@ -1,0 +1,57 @@
+package step3;
+import step1.Date;
+
+   /******Begin**************/
+public class Course {
+    int code;
+    String courseName;
+    Date testTime = new Date();
+    int score;
+
+    public int getCode(){
+        return code;
+    }
+
+    public String getCourseName(){
+        return courseName;
+    }
+
+    public Date getTestTime(){
+        return testTime;
+    }
+
+    public int getScore(){
+        return score;
+    }
+
+    public Course() {
+        code = 0;
+        courseName = "";
+        score = 0;
+    }
+
+    public Course(int code, String courseName, Date testTime, int score) {
+        this.code = code;
+        this.courseName = courseName;
+        this.testTime = testTime;
+        this.score = score;
+    }
+
+    public Course(int code, String courseName, int year, int month, int day, int score) {
+        this.code = code;
+        this.courseName = courseName;
+        this.testTime.setDate(year, month, day);
+        this.score = score;
+    }
+
+    public String toString() {
+        return code + " " + courseName + " " + testTime.getYear() + "." + testTime.getMonth() + "." + testTime.getDay() + " " + score;
+    }
+}
+
+
+
+
+   /******End************/
+
+

@@ -1,0 +1,45 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr) {
+		int start = 0;
+		int end = arr.length - 1;
+		int count=0,row_count=0;
+		while (true) {
+			for (int i = start; i < end; i++) {
+				if (arr[i] > arr[i + 1]) {
+					swap(arr, i, i + 1);
+					print(arr);
+					count++;
+				}
+			}
+			for (int i = end; i > start; i--) {
+				if (arr[i] < arr[i - 1]) {
+					swap(arr, i, i - 1);
+					print(arr);
+					count++;
+				}
+			}
+			row_count++;
+			if(count==0) {
+				if(row_count==1) print(arr);
+				break;
+			}
+			else count=0;
+		}
+	}
+
+	public static void swap(Integer[] arr, int i, int j) {
+		int temp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
+	}
+
+	public static void print(Integer[] arr) {
+		for (int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i] + " ");
+		}
+		System.out.println();
+	}
+}

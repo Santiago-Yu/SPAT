@@ -1,0 +1,244 @@
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+/*********************数据说明***********************
+* 训练数据：src/step1/input/train.csv
+* 测试数据：src/step1/input/test.csv
+* 结果文件：src/step1/ground_truth/test_prediction.csv
+****************************************************/
+public class Task {
+
+  public static void main(String[] args) throws IOException {
+    /********* Begin *********/
+
+    List<String> train = getListFromCsv("src/step1/input/train.csv");
+    int m = train.size();
+    int n = 73;
+    double[][] trainData = new double[m][n];
+    double[] y = new double[m];
+    for (int i = 0; i < m; i++) {
+      String d = train.get(i);
+      String[] dArr = d.split(",");
+      for (int j = 1, k = 0; j < dArr.length - 1; j++, k++) {
+        trainData[i][k] = Double.parseDouble(dArr[j]);
+      }
+      y[i] = Double.parseDouble(dArr[dArr.length - 1])==1?1:-1;
+    }
+
+    // LinearRegression lr = new LinearRegression(trainData, m, n, 0.01, 10);
+    // lr.trainTheta();
+    // lr.printTheta();
+    // double[] theta = lr.theta;
+    SimpleSvm svm = new SimpleSvm(0.1);
+    svm.Train(trainData, y, 100);
+    // svm.Test(trainData, y);
+    List<String> test = getListFromCsv("src/step1/input/test.csv");
+    List<String> ids = new LinkedList<>();
+    List<String> result = new LinkedList<>();
+    int mm = test.size();
+    for (int i = 0; i < mm; i++) {
+      String[] line = test.get(i).split(",");
+      int line_res = 0;
+      double[] lineArr = new double[line.length-1];
+      for (int j = 1; j < line.length; j++) {
+        lineArr[j-1]=Double.parseDouble(line[j]);
+      }
+      ids.add(line[0]);
+      result.add(svm.predict(lineArr)==1?"1":"0");
+    }
+    writeCsvFile("src/step1/ground_truth/test_prediction.csv", ids, result);
+
+    /********* End *********/
+  }
+
+  /**
+   * 读取csv文件
+   *
+   * @param path 文件路径
+   * @return 用户的集合
+   * @throws IOException
+   */
+  public static List<String> getListFromCsv(String path) throws IOException {
+    List<String> info = new ArrayList<>();
+    try {
+      // 创建CSV读对象   需要设置编码格式为UTF-8
+      CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)), Charset.forName("UTF-8"));
+      // 读表头
+      boolean readHeaders = csvReader.readHeaders();
+      while (csvReader.readRecord()) {
+        // 读一整行
+        // 读取第一列的数据   csvReader.get(0);
+        // 读取一行的数据
+        String row = csvReader.getRawRecord();
+        info.add(row);
+      }
+      csvReader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return info;
+  }
+
+  /**
+   * 写结果文件
+   *
+   * @param filePath 文件路径
+   * @param data 要写入的数据
+   * @throws IOException
+   */
+  public static void writeCsvFile(String filePath, List<String> ids, List<String> data) throws IOException {
+    // 创建CSV写对象
+    CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+    // CsvWriter csvWriter = new CsvWriter(filePath);
+    // 写表头
+    String[] headers = {"ID", "TARGET"};
+    csvWriter.writeRecord(headers);
+    //循环写数据
+    for (int i = 0; i < ids.size(); i++) {
+      String[] content = {ids.get(i), data.get(i)};
+      csvWriter.writeRecord(content);
+    }
+    csvWriter.close();
+  }
+
+
+  static class SimpleSvm {
+    private int exampleNum;
+    private int exampleDim;
+    private double[] w;
+    private double lambda;
+    private double lr = 0.001;//0.00001
+    private double threshold = 0.01;
+    private double cost;
+    private double[] grad;
+    private double[] yp;
+
+    public SimpleSvm(double paramLambda) {
+
+      lambda = paramLambda;
+
+    }
+
+    private void CostAndGrad(double[][] X, double[] y) {
+      cost = 0;
+      for (int m = 0; m < exampleNum; m++) {
+        yp[m] = 0;
+        for (int d = 0; d < exampleDim; d++) {
+          yp[m] += X[m][d] * w[d];
+        }
+
+        if (y[m] * yp[m] - 1 < 0) {
+          cost += (1 - y[m] * yp[m]);
+        }
+
+      }
+
+      for (int d = 0; d < exampleDim; d++) {
+        cost += 0.5 * lambda * w[d] * w[d];
+      }
+
+
+      for (int d = 0; d < exampleDim; d++) {
+        grad[d] = Math.abs(lambda * w[d]);
+        for (int m = 0; m < exampleNum; m++) {
+          if (y[m] * yp[m] - 1 < 0) {
+            grad[d] -= y[m] * X[m][d];
+          }
+        }
+      }
+    }
+
+    private void update() {
+      for (int d = 0; d < exampleDim; d++) {
+        w[d] -= lr * grad[d];
+      }
+    }
+
+    public void Train(double[][] X, double[] y, int maxIters) {
+      exampleNum = X.length;
+      if (exampleNum <= 0) {
+        // System.out.println("num of example <=0!");
+        return;
+      }
+      exampleDim = X[0].length;
+      w = new double[exampleDim];
+      grad = new double[exampleDim];
+      yp = new double[exampleNum];
+
+      for (int iter = 0; iter < maxIters; iter++) {
+
+        CostAndGrad(X, y);
+        // System.out.println("cost:" + cost);
+        if (cost < threshold) {
+          break;
+        }
+        update();
+
+      }
+    }
+
+    private int predict(double[] x) {
+      double pre = 0;
+      for (int j = 0; j < x.length; j++) {
+        pre += x[j] * w[j];
+      }
+      if (pre >= 0)//这个阈值一般位于-1到1
+        return 1;
+      else return -1;
+    }
+
+    public void Test(double[][] testX, double[] testY) {
+      int error = 0;
+      for (int i = 0; i < testX.length; i++) {
+        if (predict(testX[i]) != testY[i]) {
+          error++;
+        }
+      }
+      System.out.println("total:" + testX.length);
+      System.out.println("error:" + error);
+      System.out.println("error rate:" + ((double) error / testX.length));
+      System.out.println("acc rate:" + ((double) (testX.length - error) / testX.length));
+    }
+
+
+    public static void loadData(double[][] X, double[] y, String trainFile) throws IOException {
+
+      File file = new File(trainFile);
+      RandomAccessFile raf = new RandomAccessFile(file, "r");
+      StringTokenizer tokenizer, tokenizer2;
+
+      int index = 0;
+      while (true) {
+        String line = raf.readLine();
+
+        if (line == null) break;
+        tokenizer = new StringTokenizer(line, " ");
+        y[index] = Double.parseDouble(tokenizer.nextToken());
+        //System.out.println(y[index]);
+        while (tokenizer.hasMoreTokens()) {
+          tokenizer2 = new StringTokenizer(tokenizer.nextToken(), ":");
+          int k = Integer.parseInt(tokenizer2.nextToken());
+          double v = Double.parseDouble(tokenizer2.nextToken());
+          X[index][k] = v;
+          //System.out.println(k);
+          //System.out.println(v);
+        }
+        X[index][0] = 1;
+        index++;
+      }
+    }
+
+
+  }
+    
+}

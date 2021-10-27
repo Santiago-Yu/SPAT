@@ -1,0 +1,22 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int edgeSize=0,number=0;
+		for(int i=1;i<=width;i++) {
+			if(width%i==0 && length%i==0) {
+				edgeSize = i;
+				number = (width/i)*(length/i);
+			}
+		}
+		System.out.println(edgeSize);
+		System.out.println(number);
+		/********** END **********/
+	}
+}

@@ -1,0 +1,92 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int s,n;
+		if (year%4==0)
+        {
+            if (year%100==0)
+            {
+                if (year%400==0)
+                {
+                    n=1;
+                }
+				else 
+                {
+                    n=0;
+                }
+            }
+            else 
+            {
+                n=1;
+            }
+        }
+        else
+        {
+            n=0;
+        }
+        switch(month){
+            case 1:
+                s=day;
+                System.out.print(s);
+                break;
+            case 2:
+                s=31+day;
+                System.out.print(s);
+                break;
+            case 3:
+                s=31+28+day+n;
+                System.out.print(s);
+                break;
+            case 4:
+                s=31+28+31+day+n;
+                System.out.print(s);
+                break;
+            case 5:
+                s=31+28+31+30+day+n;
+                System.out.print(s);
+                break;
+            case 6:
+                s=31+28+31+30+31+day+n;
+                System.out.print(s);
+                break;
+            case 7:
+                s=31+28+31+30+31+30+day+n;
+      			System.out.print(s);
+                break;
+            case 8:
+                s=31+28+31+30+31+30+31+day+n;
+                System.out.print(s);
+                break;
+            case 9:
+                s=31+28+31+30+31+30+31+31+day+n;
+                System.out.print(s);
+                break;
+            case 10:
+                s=31+28+31+30+31+30+31+31+30+day+n;
+                System.out.print(s);
+                break;
+            case 11:
+                s=31+28+31+30+31+30+31+31+30+31+day+n;
+                System.out.print(s);
+                break;
+            case 12:
+                s=31+28+31+30+31+30+31+31+30+31+30+day+n;
+                break;
+            default:
+				System.out.print("Warn");
+                break;
+        }
+                
+                
+                
+				
+                
+            
+                
+
+
+		/********** End *********/
+	}
+}

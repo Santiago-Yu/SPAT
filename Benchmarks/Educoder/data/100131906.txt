@@ -1,0 +1,58 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+    public static boolean bol = true;
+	public int count1 = 0;
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		
+		File[] fs = file.listFiles();
+		
+		if(bol){
+			System.out.println("+--" + file.getName());
+			for(int i=0;i<file.getAbsolutePath().length();i++) {
+				if(file.getAbsolutePath().charAt(i)=='/') {
+					count1++;
+				}
+			}
+			bol = false;
+		} 
+		for(File f:fs){
+			
+           
+		    int count2 = 0;
+			for(int i=0;i<f.getAbsolutePath().length();i++) {
+				if(f.getAbsolutePath().charAt(i)=='/') {
+					count2++;
+				}
+			}
+
+			if(f.isDirectory())
+			{	
+                for(int i=0;i<(count2-count1)*2;i++)
+                    System.out.print(" ");
+				System.out.println("+--"+f.getName());
+				showDirStructure(f);
+			}
+			else{
+				int l = f.getName().length();
+				String fc = f.getName().substring(l-3);
+				if(fc.compareTo("jpg")==0||fc.compareTo("png")==0||fc.compareTo("bmp")==0){
+                    for(int i=0;i<(count2-count1)*2;i++)
+                       System.out.print(" ");
+					System.out.println("--"+f.getName());
+                
+                    }
+			}
+
+		}
+
+
+
+	}
+
+	}
+	
+

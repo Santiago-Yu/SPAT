@@ -1,0 +1,46 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+         
+         if(ferry==null||ferry.length==0||ferry.length==1&&ferry[0].length==0)return 0;
+         else{
+        int count=0;
+	 	int [][]temp=new int[ferry.length][ferry[0].length];
+        
+	 	for(int i=0;i<ferry.length;i++){
+        	for(int j=0;j<ferry[0].length;j++){
+        		if(ferry[i][j]=='+'){
+                    if(temp[i][j]==0){
+                    	count++;
+                        temp[i][j]=1;
+                    }
+                    //垂直
+                	int m;
+               		for(m=i;m<ferry.length;m++){
+                    	if(ferry[m][j]=='+'){
+                        	temp[m][j]=1;
+                    	}else{
+                        	break;
+                    	}
+                	}
+                	//水平
+                	int k;
+                	for(k=j;k<ferry[0].length;k++){
+                    	if(ferry[i][k]=='+'){
+                        	temp[i][k]=1;
+                    	}else{
+                        	break;
+                    	}
+                	}
+                	j=k;
+                }
+                
+        	}
+            
+     	}
+         return count;
+	 }
+     }
+}

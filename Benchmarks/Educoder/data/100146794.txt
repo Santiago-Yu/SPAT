@@ -1,0 +1,26 @@
+package step1;
+import java.math.BigInteger;
+import java.util.Arrays;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+        if(nums==null) return 0;
+		int[]a=new int[10001];
+		int[]lostNums=new int[3];
+		for(int e:nums) a[e]=1;
+		int index=0;
+		for(int i=1;i<a.length;i++) {
+			if(a[i]==0) lostNums[index++]=i;
+			if(index==lostNums.length) break;
+		}
+		Arrays.sort(lostNums);
+		StringBuilder sb=new StringBuilder();
+		for(int e:lostNums) sb.append(e);
+		BigInteger bigInt=new BigInteger(sb.toString());
+		return bigInt.mod(BigInteger.valueOf(11)).intValue();
+	}
+
+	/********* End *********/
+}

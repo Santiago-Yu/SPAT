@@ -1,0 +1,21 @@
+    public static void zipFilesToZipFile(String dirPath, File file, ZipOutputStream zouts) {
+        FileInputStream fin = null;
+        ZipEntry entry = null;
+        byte[] buf = new byte[4096];
+        int readByte = 0;
+        if (file.isFile()) {
+            try {
+                fin = new FileInputStream(file);
+                entry = new ZipEntry(getEntryName(dirPath, file));
+                zouts.putNextEntry(entry);
+                while ((readByte = fin.read(buf)) != -1) {
+                    zouts.write(buf, 0, readByte);
+                }
+                zouts.closeEntry();
+                fin.close();
+                System.out.println("娣诲姞鏂囦欢" + file.getAbsolutePath() + "鍒皕ip鏂囦欢涓�!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }

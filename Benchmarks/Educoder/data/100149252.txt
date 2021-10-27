@@ -1,0 +1,46 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+			int cnt = 0;
+			for(int i=0;i<n;i++)
+	            for(int j=0;j<m;j++)
+	            {
+	                if(area[i][j]=='o')   
+	                {
+	                    cnt++;
+	                    dfs(area,i,j,n,m);     
+	                }
+	            }
+			
+			return cnt;
+			/********* End *********/	
+		}
+		public static void dfs(char area[][],int a,int b,int n,int m)
+		{
+					
+			    if(a-1>=0 && area[a-1][b]=='o')
+			    {
+			    	area[a-1][b]='x';
+			    	dfs(area,a-1,b,n,m);
+			    }  
+			    if(a+1<n && area[a+1][b]=='o')
+			    {
+			    	area[a+1][b]='x';
+			    	dfs(area,a+1,b,n,m);
+			    }  
+			    if(b-1>=0 && area[a][b-1]=='o')
+			    {
+			    	area[a][b-1]='x';
+			    	dfs(area,a,b-1,n,m);
+			    }  
+			    if(b+1<m && area[a][b+1]=='o')
+			    {
+			    	area[a][b+1]='x';
+			    	dfs(area,a,b+1,n,m);
+			    }  
+
+		}
+}

@@ -1,0 +1,36 @@
+package task02;
+
+import java.util.Scanner;
+
+/*
+ * 说明：根据提示，补充完整 begin 和 end 之间的代码。
+ *     （其他代码可以不用改）
+ */
+
+/**************** begin *****************/
+// 在此定义学生
+class Student{
+        String name;
+        int age;
+	void speak() {
+		System.out.println("我的名字是" + name + ",今年" + age + "岁");
+	}
+}
+
+public class Task02{
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+      Student s1=new Student();
+	  Student s2=new Student();
+	  Student s3=new Student();
+		s1.name=scan.nextLine();
+		s1.age=scan.nextInt();
+		s2.name=scan.next();
+		s2.age=scan.nextInt();
+	   s1.speak();
+	  s2.speak();
+	  s3=s2;
+	  s3.speak();
+ 
+	}
+}

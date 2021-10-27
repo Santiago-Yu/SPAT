@@ -1,0 +1,43 @@
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		int fifth = 0, tenth = 0; 
+		boolean hasChange = true;
+		Scanner in = new Scanner(System.in);
+		
+		if(in.hasNextLine()){
+			String input = in.nextLine();			
+			String temp[] = input.split(" ");
+			
+			for(String sub : temp){
+				int price = Integer.parseInt(sub);
+				
+				if(price == 5)
+					fifth++;
+				else if(price == 10){
+					if(fifth>0){
+						tenth++;
+						fifth--;
+					}
+					else
+						hasChange = false;
+				}
+				else{
+					if(tenth>0 && fifth>0){
+						tenth--;
+						fifth--;
+					}else if (tenth >= 3)
+						fifth -= 3;
+					else
+						hasChange = false;
+				}
+			}
+		}
+		
+		System.out.print(hasChange);
+	}
+
+}

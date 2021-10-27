@@ -1,0 +1,32 @@
+package Pid_101;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        
+		Scanner sc = new Scanner(System.in);
+		String[] sr = new String[2];
+		sr[0] = sc.nextLine();
+		sr[1] = sc.nextLine();
+		int len = 0;
+		int max = 0;
+		int tmp1,tmp2;
+		for(int i = 0;i<sr[0].length();i++)
+			for(int j = 0;j<sr[1].length();j++){
+					tmp1 = i;
+					tmp2 = j;
+					while(sr[0].charAt(tmp1++) == sr[1].charAt(tmp2++)){
+						len++;
+						if(tmp1 == sr[0].length()||tmp2 == sr[1].length())
+							break;
+					}
+					if(len>max)
+						max = len;
+					len = 0;
+			}
+		System.out.printf("%d",max);
+	
+	}
+
+}

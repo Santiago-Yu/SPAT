@@ -1,0 +1,51 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	private final String DIRPRE = "+--";
+	private final String FILEPRE = "--";
+	private final int BLANK = 2;
+	
+	public void showDirStructure(File file) {
+		if(file.exists() == false) return;
+		if(file.isFile()) {
+			System.out.println(FILEPRE + file.getName());
+			return;
+		}
+		showDir(file,0);
+		
+	}
+	
+	private void showDir(File dir, int b) {
+		File[] fileList = dir.listFiles();
+		print(dir,b);
+		for(File f:fileList) {
+			if(f.isDirectory()) {
+				showDir(f,b+BLANK);
+			}
+			else {
+				print(f,b + BLANK);
+			}
+		}
+	}
+
+	private void print(File f,int b) {
+		StringBuilder blankStr = new StringBuilder();
+		for(int i=0;i<b;i++) {
+			blankStr.append(" ");
+		}
+		if(f.isDirectory()) {
+			System.out.println(blankStr + DIRPRE + f.getName());
+		}
+		else if(f.isFile()) {
+			System.out.println(blankStr + FILEPRE + f.getName());
+		}
+	}
+	
+
+
+	/********** END **********/
+}

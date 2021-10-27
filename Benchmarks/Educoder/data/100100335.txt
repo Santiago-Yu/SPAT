@@ -1,0 +1,40 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+        try {
+			str=reader.readLine();
+			 int letterCount = 0; //英文字母个数
+			 int blankCount = 0;  //空格个数
+			 int numCount = 0;  //数字个数
+			 int otherCount = 0;  //其他字符个数
+			 for(int i = 0;i < str.length();i ++){
+				   char tem = str.charAt(i);
+				   if((tem >= 'A' && tem <= 'Z') || (tem >= 'a' && tem <= 'z'))//英文字母
+					    letterCount ++;
+					   else if(tem == ' ')//空格
+					    blankCount ++;
+					   else if(tem > '0' && tem < '9')//数字
+					    numCount ++;
+					   else//其他
+					    otherCount ++;
+			 }
+			 
+			  System.out.print("letter=" + letterCount + ",");
+			  System.out.print("space=" +blankCount + ",");
+			  System.out.print("number=" + numCount + ",");
+			  System.out.print("other=" + otherCount);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        /********** End *********/
+    
+    }
+}

@@ -1,0 +1,45 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public static void sortArray(int[][] arr){
+		int a2[][] = new int[arr.length][];// 临时数组
+		int length = arr.length - 1;// 行的长度的下标：4
+
+		for (int i = 0; i < arr.length; i++) {
+			if (length > i) {
+				a2[i] = arr[i]; // 先把第一个数存给a2
+				arr[i] = arr[length];// 再把b1的值换成aj
+				arr[length] = a2[i];// 再把a2的值给aj
+				length--;
+			}
+		}
+		for (int i = 0; i < arr.length; i++) {// 循环行
+
+			for (int j = 0; j < arr[i].length; j++) {// 循环列，把列降序排序
+				for (int j2 = j + 1; j2 < arr[i].length; j2++) {
+					if (arr[i][j] < arr[i][j2]) {
+						int temp = arr[i][j];
+						arr[i][j] = arr[i][j2];
+						arr[i][j2] = temp;
+					}
+				}
+			}
+		}
+		for (int[] is : arr) {
+			System.out.println(Arrays.toString(is));
+		}
+    }
+    
+    /********** END **********/
+    public static void main(String[] args) {
+
+		int arr[][] = { {3,1,2,3 }, { 4,5,6},	{ 7,8 ,9}};
+		sortArray(arr);
+
+	}
+}
+	

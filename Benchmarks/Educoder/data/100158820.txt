@@ -1,0 +1,21 @@
+package Q201;
+import java.util.*;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner cin = new Scanner(System.in);
+		int n = cin.nextInt();
+		while (n > 9){
+			int tmp = n;
+			n = 0;
+			while (tmp > 0){
+				n += (tmp % 10) * (tmp % 10);
+				tmp /= 10;
+			}
+		}
+		if (n == 1) System.out.print("YES");
+		else System.out.print("NO");
+	}
+
+}

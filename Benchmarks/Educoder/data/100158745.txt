@@ -1,0 +1,35 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    int i,j;
+    int m,n,o;
+    cin>>i>>j;
+    int min0,ans;
+    int num[i][j]={0};
+    int dp[i][j]={0};
+    ans=10086;
+    for(m=0;m<i;m++)
+        for(n=0;n<j;n++)
+            cin>>num[m][n];
+    for(n=0;n<j;n++)
+        dp[0][n]=num[0][n];//第一层就是原答案
+    for(m=1;m<i;m++)//一个一个柱子来
+    {
+        for(n=0;n<j;n++)//不同颜色
+        {
+            min0=10086;
+            for(o=0;o<j;o++)
+            {
+                if(o==n)
+                    continue;
+                min0=min(min0,dp[m-1][o]);
+            }//寻找上一个柱子中最优解
+            dp[m][n]=num[m][n]+min0;
+         }
+    }
+    for(n=0;n<j;n++)
+        ans=min(ans,dp[i-1][n]);//寻找
+    cout <<ans;
+    return 0;
+}

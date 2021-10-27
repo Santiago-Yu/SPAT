@@ -1,0 +1,28 @@
+package step1;
+import java.util.Scanner;
+
+public class TestJava11_2 {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner sc=new Scanner(System.in);
+        System.out.println("请输入西瓜重量：");
+        float a=sc.nextFloat();
+        System.out.println("请输入顾客所付钱数：");
+        float b=sc.nextFloat();
+        if(a>20){ 
+            a*=0.85;
+        }else if(a<=20&&a>15){
+            a*=0.90;
+        }else if(a<=15&&a>10){
+            a*=0.95;
+        }else if(a<=10&&a>5){
+            a*=1.00;
+        }else if(a<=5){
+            a*=1.05;
+        }
+        System.out.printf("西瓜应付钱数：%.2f\n",a);
+        System.out.printf("应找钱数：%.2f\n",(b-a));
+		/******End******/	
+	}
+
+}

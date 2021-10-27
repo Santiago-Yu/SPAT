@@ -1,0 +1,32 @@
+package step1;
+
+public class Task {
+   
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+		Integer[] a=temperatures;
+		//int flag=panduan(a);
+		int jiange=0;
+		int [] newArray=new int[a.length];
+		if(a.length>=1 && a.length<=10000 ) {
+		for(int i=0;i<a.length;i++ ) {
+			for(int j=i;j<a.length;j++) {
+				if(a[i]<a[j]) {
+					
+					newArray[i]=j-i;
+                    break;
+				}else {
+					newArray[i]=0;
+				}
+			}
+		}
+		
+		
+		}
+		
+		
+
+		return newArray;
+		/********** END **********/
+	}
+}

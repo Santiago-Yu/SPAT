@@ -1,0 +1,82 @@
+package step2;
+
+import java.util.Arrays;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+        numbers = numbers+1;
+        long result = 1;
+        int maxLength = (selectedNum-1)*distance+1;
+        if(numbers <= maxLength){
+            Arrays.sort(abilities);
+            for(int i=0; i<selectedNum;i++){
+                result = result*abilities[numbers-1-i];
+            }
+        }else {
+            int resultNum = numbers-maxLength+1;
+            long[] predict = new long[resultNum];
+            for(int j=0;j<resultNum;j++){
+                int[] temp = Arrays.copyOfRange(abilities,j,j+maxLength);
+                int[] original = Arrays.copyOf(temp,maxLength);
+                long loopResult = 1;
+                Arrays.sort(temp);
+                for (int i = 0; i < temp.length / 2; i++) {
+                    int tempNum = temp[i];
+                    temp[i] = temp[temp.length - 1 - i];
+                    temp[temp.length - 1 - i] = tempNum;
+                }
+                int[] index = new int[selectedNum];
+                int repeatNum = 0;
+                for(int q=0;q<selectedNum;q++){
+                    if(q>=1){
+                        if(temp[q-1] == temp[q]){
+                            repeatNum ++;
+                        }else {
+                            repeatNum = 0;
+                        }
+                    }
+                    if(repeatNum == 0){
+                        search(original,0,temp.length,temp[q]);
+                    }else {
+                        search(original,index[q-1]+1,temp.length,temp[q]);
+                    }
+                }
+                Arrays.sort(index);
+                boolean law = true;
+                for(int k=0;k<index.length-1;k++){
+                    if(index[k+1]-index[k]>distance){
+                        law = false;
+                    }
+                }
+                if(law){
+                    for(int i=0; i<selectedNum;i++){
+                        loopResult = loopResult*temp[i];
+                    }
+                    predict[j] = loopResult;
+                }
+            }
+            result = predict[0];
+            for(int p=1; p<resultNum; p++){
+                if(result<predict[p]){
+                    result = predict[p];
+                }
+            }
+        }
+        return result;
+    }
+    
+    public static int search(int[] original, int from ,int to ,int key){
+        int index = from;
+        for(;index<to;index++){
+            if(original[index] == key){
+                break;
+            }
+        }
+        return index;
+    }
+
+	/********* End *********/
+}

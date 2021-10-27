@@ -1,0 +1,38 @@
+package step2;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateExceptionTest {
+
+	public static void main(String[] args) throws  ParseException {
+		/*****Begin*****/
+		int a=0,b=0,c=0;
+		Scanner sc = new Scanner(System.in);
+		try {
+			a = sc.nextInt();
+			if(a%1!=0)
+				throw new InputMismatchException();
+			b = sc.nextInt();
+			if(b%1!=0)
+				throw new InputMismatchException();
+			c= sc.nextInt();
+			if(c%1!=0)
+				throw new InputMismatchException();
+	
+			DateException de = new DateException(a,b,c);			
+		}catch (InputMismatchException e){
+			
+			System.out.print(e.toString()+"请输入整数");
+		}catch(DateException e) {
+			System.out.println(e.toString());
+		}
+		
+		
+		/******End******/
+	}
+
+}

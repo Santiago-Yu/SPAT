@@ -1,0 +1,30 @@
+package step1;
+
+public class Task {
+
+	public double solve(double x1, double y1, double r1, double x2, double y2, double r2)
+	{
+		double d = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+		
+		double cos1 = (r1 * r1 + d * d - r2 * r2) / (2 * r1 * d);
+		double agle1 = Math.acos(cos1);
+		double sin1 =Math.sqrt( 1-cos1*cos1);
+		double sin1_2 = 2*sin1*cos1;
+		double s1 = r1*r1*sin1_2/2;
+		double roundS1 = r1*r1*agle1;
+		double loseS1 = roundS1-s1;
+
+		double cos2 = (r2 * r2 + d * d - r1 * r1) /( 2 * r2 * d);
+		double agle2 = Math.acos(cos2);
+		double sin2 =Math.sqrt( 1-cos2*cos2);
+		double sin2_2 = 2*sin2*cos2;
+		double s2 = r2*r2*sin2_2/2;
+		double roundS2 = r2*r2*agle2;
+		double loseS2 = roundS2-s2;
+		return Math.PI*r1*r1+Math.PI*r2*r2-loseS1-loseS2;
+
+		/********* Begin *********/
+
+		/********* End *********/
+	}
+}

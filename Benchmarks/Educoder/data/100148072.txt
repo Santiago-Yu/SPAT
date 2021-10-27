@@ -1,0 +1,46 @@
+package task2;
+
+import java.util.Scanner;
+
+public class Task2 {
+	/********* Begin *********/
+	public static void main(String[] args) {
+		int excellent = 0;
+		int fine = 0;
+		int middle = 0;
+		int pass = 0;
+		int fail = 0;
+		Scanner sc = new Scanner(System.in);
+		while (true) {
+			int score = 0;
+			score = sc.nextInt();
+			if (score == -1)
+				break;
+			switch (score / 10) {
+			case 10:
+			case 9:
+				excellent++;
+				break;
+			case 8:
+				fine++;
+				break;
+			case 7:
+				middle++;
+				break;
+			case 6:
+				pass++;
+				break;
+			case 5:
+			case 4:
+			case 3:
+			case 2:
+			case 1:
+				fail++;
+				break;
+			}
+		}
+		System.out.println("不及格：" + fail + "人  及格：" + pass + "人 中等：" + middle
+				+ "人 良好：" + fine + "人 优秀：" + excellent + "人");
+	}
+	/********* End *********/
+}

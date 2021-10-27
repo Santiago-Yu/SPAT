@@ -1,0 +1,18 @@
+package step3;
+public class Reverse {
+    public static StringBuffer start(String data) {     //表示这是一个函数    它把一个字符串传给你所以不要你去输入
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        String view = data;                             //将传入的数据存入str
+	    String [] str=view.split(" ");                  //将str中的数据根据空格进行分隔开然后存入一个（字符串数组）中
+       for(int i=0;i<str.length;i++){					//循环遍历字符串数组
+           StringBuffer number = new StringBuffer(str[i]);     //每循环一个创建一个StringBuffer类将数据进行翻转，因为只有StringBuffer才可以调用reverse函数
+           String number2=(number.reverse()).toString();
+           ans.append(number2+" ");                        //每循环一次将翻转之后的数据加在ans类的后面
+        }
+        /********** End *********/
+        return ans;                                     		//返回一个StringBuffer类
+    }
+}
+     /*重点在于这个只是让你定义一个函数，它不需要你去进行输入，后台会自己去进行输入，所以不需要scanner去进行输入
+       ，是系统调用这个函数同时给这个函数传入一个String类然后让你去进行翻转返回一个StringBuffer类*/

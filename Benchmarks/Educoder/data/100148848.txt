@@ -1,0 +1,63 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        boolean mm = true;
+	int cnt = 0;
+				for(int i = 0; i < arr.length-1; ++i)
+					if(arr[i] > arr[i+1])
+						cnt = 1;
+				if(cnt == 0)
+				{
+					for (int k = 0; k < arr.length; ++k)
+						System.out.printf("%d ",arr[k]);
+					System.out.println();
+                    
+mm = false;
+					//break;
+				}
+
+		while(mm == true)
+	        {
+				int cn = 0;
+				for(int i = 0; i < arr.length-1; ++i)
+					if(arr[i] > arr[i+1])
+						cn = 1;
+				if(cn == 0)
+				{
+					//for (int k = 0; k < arr.length; ++k)
+						//System.out.printf("%d ",arr[k]);
+					//System.out.println();
+					break;
+				}
+					
+				for(int j = 0; j < arr.length-1; ++j)
+				{
+					if(arr[j] > arr[j+1])
+					{
+						int t = arr[j];
+						arr[j] = arr[j+1];
+						arr[j+1] = t;
+						for (int k = 0; k < arr.length; ++k)
+							System.out.print(arr[k]+" ");
+						System.out.println();
+					}
+	            }
+				for(int j = arr.length-1; j > 0 ; --j)
+				{
+					if(arr[j] < arr[j-1])
+					{
+						int t = arr[j];
+						arr[j] = arr[j-1];
+						arr[j-1] = t;
+						for (int k = 0; k < arr.length; ++k)
+							System.out.print(arr[k]+" ");
+						System.out.println();
+					}
+				}
+			}
+		/********* End *********/
+    }
+}

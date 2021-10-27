@@ -1,0 +1,84 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	class node{
+		String name;
+		node child;
+		node brother;
+	}
+	node head;
+	String result = "";
+	public void showDirStructure(File file)	{
+		//
+		head = new node();
+		head.name = file.getName();
+		creatTree(file,head);
+		String pre = "";
+		getResult(pre,head);
+		System.out.println(result);
+	
+	
+	
+	}
+	public void getResult(String pre,node head) {
+		//如果是文件
+		if(head.child==null) {
+			if(!result.equals(""))
+				result+="\n"+pre+"--"+head.name;
+			else
+				result+=pre+"--"+head.name;
+			return;
+		}
+		if(head.child!=null) {
+			if(!result.equals(""))
+				result+="\n"+pre+"+--"+head.name;
+			else
+				result+=pre+"+--"+head.name;
+			pre += "  ";
+			node temp = head.child;
+			while(temp!=null) {
+				getResult(pre,temp);
+				temp = temp.brother;
+			}
+		}
+		
+	}
+	public void creatTree(File file,node head) {
+		//若文件非目录
+		if(!file.isDirectory()) {
+			head.child = null;
+			return;
+		}
+		File files[] = file.listFiles();
+		int k;
+		for(int i=0;i<files.length;i++) {
+			k = i;
+			for(int j = i+1;j<files.length;j++) {
+				if(files[k].getName().compareTo(files[j].getName()) == 1) {
+					k = j;
+				}
+			}
+			File temp = files[k];
+			files[k] = files[i];
+			files[i] = temp;
+		}
+		node temp = null;
+		node newnode = null;
+		for(int i = files.length-1;i >= 0;i-- ) {
+			newnode = new node();
+			newnode.name = files[i].getName();
+			newnode.brother = temp;
+			creatTree(files[i],newnode);
+			temp = newnode;
+		}
+		head.child = newnode;
+	}
+	
+
+
+	/********** END **********/
+}

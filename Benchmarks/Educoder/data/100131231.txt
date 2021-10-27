@@ -1,0 +1,28 @@
+package step1;
+
+public class Task {
+   
+	
+	public static int getSum(int num1, int num2) {
+        int sum = 0,s  =0;
+		/********** BEGIN **********/
+	
+		if(num1 < num2) {
+			s = num1;
+			num1 = num2;
+			num2 = s;
+		}
+		while(num1 >= num2) {
+			sum +=num2%10;
+			sum +=num2/10%10;
+            sum +=num2/100%10;
+			num2++;
+		}
+		return sum;
+	
+
+		
+    
+		/********** END **********/
+	}
+}

@@ -1,0 +1,31 @@
+#include <iostream>
+#include <cstdio>
+using namespace std;
+int a[10000];
+int maxn=0;
+int i=0;
+int t;
+int main()
+{
+    while(scanf("%d",&a[i++]))
+          {
+              char c=getchar();
+              if(c!=' ')
+                  break;
+          }
+    cin>>a[i];
+    t=a[i];
+    for(int j=0;j<=i-3;j++)
+    { 
+        for(int k=j+1;k<=i-2;k++)
+            
+            {
+                for(int c=k+1;c<=i-1;c++)
+                    if(a[j]+a[k]+a[c]<t)
+                        maxn++;
+            }
+    }
+        cout<<maxn;
+    return 0;
+        
+}

@@ -1,0 +1,98 @@
+package step4;
+import java.io.FileOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.io.FileWriter;
+
+public class Test {
+	public static void main(String[] args) throws IOException {
+		Task task = new Task();
+
+		task.task();
+
+		//校验
+		File inputFile = new File("src/step4/input/input.txt");
+		File outFile = new File("src/step4/output/output.txt");
+		String inputStr = getFileSha1(inputFile);
+		String outputStr = getFileSha1(outFile);
+		if(inputStr.equals(outputStr)){
+			System.out.println("文本文件复制成功");
+		}else{
+			System.out.println("文本文件复制错误，请检查代码");
+		}
+		
+		File imgInputFile = new File("src/step4/input/input.jpg");
+		File imgOutFile = new File("src/step4/output/output.jpg");
+		String imgInputStr = getFileSha1(imgInputFile);
+		String imgOutputStr = getFileSha1(imgOutFile);
+		if(imgInputStr.equals(imgOutputStr)){
+			System.out.println("图片文件复制成功");
+		}else{
+			System.out.println("图片文件复制错误，请检查代码");
+		}
+	}
+
+	public static String getFileSha1(File file) {
+		if (!file.isFile()) {
+			return null;
+		}
+		MessageDigest digest = null;
+		FileInputStream in = null;
+		byte buffer[] = new byte[8192];
+		int len;
+		try {
+			digest = MessageDigest.getInstance("SHA-1");
+			in = new FileInputStream(file);
+			while ((len = in.read(buffer)) != -1) {
+				digest.update(buffer, 0, len);
+			}
+			BigInteger bigInt = new BigInteger(1, digest.digest());
+			return bigInt.toString(16);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				in.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
+class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		FileReader fr = new FileReader("src/step4/input/input.txt");
+		int len = 0;
+        char[] cbuf = new char[1024];
+        
+        FileWriter fw = new FileWriter("src/step4/output/output.txt");
+		
+        while((len = fr.read(cbuf))!= -1){
+        	fw.write(cbuf,0,len);
+        }
+        fw.close();
+        fr.close();
+        
+        FileInputStream fs = new FileInputStream("src/step4/input/input.jpg");
+        FileOutputStream fos = new FileOutputStream("src/step4/output/output.jpg");
+        
+        int len1 = 0;
+        byte[] bys = new byte[1024];
+        
+        while((len = fs.read(bys))!= -1){
+        	fos.write(bys,0,len);
+        }
+        fs.close();
+        fos.close();
+		/********* End *********/		
+	}
+}

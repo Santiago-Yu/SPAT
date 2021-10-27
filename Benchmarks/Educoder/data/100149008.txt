@@ -1,0 +1,38 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+		if(arr==null||arr.length<3) return 0;
+		int cnt=0;
+		for(int i=0;i<arr.length-2;i++) {
+			int tCnt=1;
+			boolean up=false,down=true;
+			//以i个点为起始点的凹谷
+			for(int j=i;j<arr.length-1;j++) {
+				//向下走
+				if(down) {
+					if(arr[j]>arr[j+1]) tCnt++;
+					else {
+						tCnt++;
+						down=false;up=true;
+					}
+				}
+				//向上走
+				else if(up){
+					if(arr[j]<arr[j+1]) tCnt++;
+					else {
+						up=false;
+					}
+				}else {
+					//下和上都走过了
+					break;
+				}
+			}//End 以i个点为起始点的凹谷
+			if(cnt<tCnt) cnt=tCnt;
+		}
+		return cnt<3?0:cnt;
+		/********* End *********/	
+	}
+}

@@ -1,0 +1,78 @@
+package step4;
+import java.util.Scanner;
+
+//根据输入的秒数，输出对应的分钟数和小时数，用方法完成。
+public class TestJava25_4 {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("请输入秒数：");
+		int seconds = sc.nextInt();
+		//此处调用方法，输出对应的分钟数和小时数
+	int h=TestJava25_4.fenshu(seconds);
+    int m=TestJava25_4.fenshu2(seconds);
+        System.out.print(seconds+"秒对应的小时数是"+h);
+		System.out.println("，分钟数是："+m);
+	}
+	/*******Start*********/
+	//此处定义方法
+	public static int fenshu(int n){
+    int h=0,m,s;
+        
+        for(h=0;h<24;h++){
+            m=0;
+            if(n<=0){
+           return h;
+           } 
+        for(;m<60;m++){
+            s=0;
+            if(n<=0){
+           return h;
+           } 
+        for(;s<60;s++){
+            
+        if(n<=0){
+           return h;
+           } 
+            n--;
+        }
+    }
+    }
+        return h;
+    }
+    public static int fenshu2(int n){
+    int h=0,m=0,s;
+       
+        for(h=0;h<24;h++){
+            
+           if(n<=0){
+               if(m==60){
+               m=0;
+               }
+           return m;
+           } 
+            m=0;
+        for(;m<60;m++){
+            
+            if(n<=0){
+            return m;
+            }
+            s=0;
+        for(;s<60;s++){
+            
+            if(n<=0){
+           return m;
+           
+           } 
+            n--;
+        }
+        }
+    
+    }
+        return m;
+    }
+    
+	
+	
+	/*******End*********/
+}

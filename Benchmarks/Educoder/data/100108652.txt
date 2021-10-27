@@ -1,0 +1,66 @@
+package step3;
+
+/**
+ * Created by zengpeng on 2018/1/30.
+ */
+public class MyQueue<T> {
+    private T[] Q;
+    private int head;
+    private int tail;
+    private int size;
+
+    public MyQueue() {
+        this(1);
+    }
+
+    public MyQueue(int capacity) {
+        Q = (T[]) new Object[capacity];
+        size = 0;
+        head = tail = 0;
+    }
+
+    /**
+     * 入队操作
+     *
+     * @param item
+     */
+    public void enqueue(T item) {
+        /********** Begin *********/
+        tail = (head + size) % Q.length;
+        Q[tail] = item;
+        size++;
+
+
+        /********** End *********/
+    }
+
+    /**
+     * 出队操作
+     *
+     * @return
+     */
+    public T dequeue() {
+
+        /********** Begin *********/
+        T tempData = Q[head];
+        Q[head] = null;
+        head = (head + 1) % (Q.length);
+        size--;
+        return tempData;
+
+        /********** End *********/
+    }
+
+    /**
+     * 判断队列是否为空
+     * @return
+     */
+    public boolean isEmpty() {
+        return (head == tail) && (size < Q.length);
+    }
+
+    public int size() {
+        return size;
+    }
+
+}

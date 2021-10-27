@@ -1,0 +1,24 @@
+package step1;
+import java.util.Arrays;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+       String s="";
+		Arrays.sort(nums);
+		int result=0;
+		for(int i=1;i<=10000;i++)
+		{
+			int k=Arrays.binarySearch(nums,i);
+			if(k<0)
+			{	
+				s=s+i;	
+			 result=Integer.parseInt(s)%11;
+			 s=""+result;
+			}
+		}
+		return result%11;
+ }
+	/********* End *********/
+}

@@ -1,0 +1,73 @@
+
+package step4;
+import step1.Date;
+import step2.Student;
+import step3.Course;
+
+
+public class Report {
+    public Student s;//学生基本信息
+    public String major; //所学专业  
+    public Course[] selCourse;//所选课程
+   /************Begin****************/
+    public Report()
+    {
+        s=new Student();
+        major="";
+        selCourse=new Course[5];
+        for (int i=0;i<5;i++)
+  			selCourse[i] = new Course();
+    }
+    
+    public Report(Student s1,String major,Course selCourse1[])
+    {
+      
+        s=new Student();
+        s.name=s1.name;
+        s.number=s1.number;
+        s.birthday.setDate(s1.birthday.getYear(),s1.birthday.getMonth(),s1.birthday.getDay());
+        s.reg_num=s1.reg_num;
+        s.reg_day.setDate(s1.reg_day.getYear(),s1.reg_day.getMonth(),s1.reg_day.getDay());
+
+        this.major=major;
+        selCourse=new Course[selCourse1.length];
+        //selCourse1=new Course[5];
+        for(int i=0;i<selCourse1.length;i++)
+        {
+            selCourse[i]=new Course();
+            //selCourse1[i]=new Course();            
+        	selCourse[i]=selCourse1[i];
+        }
+        
+        
+    }
+    
+    public String toString()
+    {
+        String temp="";
+    	for(int i=0;i<selCourse.length;i++)
+    		temp+=(selCourse[i].toString()+"\n");
+    	return "name="+s.name+" "+"number="+s.number+" "+"birthday:"+s.birthday+"reg_num:"+s.reg_num+"reg_day:"+s.reg_day+" "+"major:"+major+"\n"+temp;
+    
+    }
+    
+    public Student getStudent()
+    {
+        return s;
+    }
+    
+   /* class Main
+    {
+        public void main(String args[])
+        {
+            Course[] selCourse1=new Course[10];
+            
+        }
+    }*/
+    
+
+
+    /************End****************/
+
+  
+}

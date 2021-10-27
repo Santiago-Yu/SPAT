@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include <iostream>
+#include<ctype.h>
+using namespace std;
+int main()
+{
+	int a[300];
+	char c;
+	int i=0,n=0,t,j,k;
+	int res=0;
+	while((c=getchar())!='\n')
+	{
+		if(1)
+		{
+			ungetc(c,stdin);
+			scanf("%d",&a[n++]);
+		}
+	}
+	scanf("%d",&t);
+	for(i=0;i<n;i++)
+	{
+		for(j=i+1;j<n;j++)
+		{
+			for(k=j+1;k<n;k++)
+			{
+				if(a[i]+a[j]+a[k]<t)
+					res+=1;
+			}
+		}
+	}
+	printf("%d",res);
+	return 0;
+}

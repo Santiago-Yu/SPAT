@@ -1,0 +1,37 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		/********** BEGIN **********/
+		if (n % 2 == 0) {// 偶数，3/2+3/4+...+3/n
+            System.out.println(evenNumber(n));
+        } else {// 奇数，4/1+4/3+...+4/n
+            System.out.println(oddNumber(n));
+        }
+    }
+    public static double evenNumber(int n) {
+        double result = 0;
+        for (int i = 2; i <= n; i = i + 2) {
+            result = result + 3 / (double) i;
+        }
+        return result;
+    }
+    public static double oddNumber(int n) {
+        double result = 0;
+        for (int i = 1; i <= n; i = i + 2) {
+            result += 4 / (double) i;
+        }
+        return result;
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

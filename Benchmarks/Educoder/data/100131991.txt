@@ -1,0 +1,44 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		int level = 0;
+        String[] suffixs = {".jpg",".png",".bmp"};
+        if(file.isDirectory()) {
+            String[] tarr = file.getPath().split("/");
+        	System.out.println("+--"+tarr[tarr.length-1]);
+            listfile(file,level,suffixs);
+        }
+	}
+	
+    public void listfile(File path,int level,String[] suffixs) {
+		File[] files = null;
+		int i=0,j=0;
+		if(path.isDirectory()) {
+			level++;
+			files = path.listFiles();
+			for(i=0;i<files.length;i++) {
+                String[] tarr = files[i].getPath().split("/");
+				if(files[i].isDirectory()) {
+					for(j=0;j<level;j++) System.out.print("  ");
+                	System.out.println("+--"+tarr[tarr.length-1]);
+                	listfile(files[i],level,suffixs);
+                } else {
+                	for(int l=0;l<suffixs.length;l++) {
+                        if(tarr[tarr.length-1].endsWith(suffixs[l])) {
+                        	for(j=0;j<level;j++) System.out.print("  ");
+                            System.out.println("--"+tarr[tarr.length-1]);
+                            break;
+                        }
+                    }
+                }
+			}
+		}
+	}
+
+	/********** END **********/
+}

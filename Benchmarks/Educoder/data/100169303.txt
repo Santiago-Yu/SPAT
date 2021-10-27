@@ -1,0 +1,38 @@
+package step1;
+import java.util.List;
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+StringBuffer t = new StringBuffer(s);
+        for(Operation op : ops){
+            if(op.t.equals("I")){   //插入
+                t.insert(p,op.s);
+                p = (p + op.s.length()) <= t.length() ? (p + op.s.length()) : t.length();
+            }else if(op.t.equals("B")){   //向前删除
+                int start = (p-op.l) >= 0 ? (p-op.l) :0;
+                t.delete(start,p);
+                p = start;
+            }else if(op.t.equals("D")){   //向后删除
+                t.delete(p,p+op.l);
+            }else if(op.t.equals("L")){    //左移
+                p = (p - op.l) >=0 ? (p - op.l) : 0;
+            }else if(op.t.equals("R")){
+                p = (p + op.l) <= t.length() ? (p + op.l) : t.length();
+            }
+        }
+        if(t.length() != 0){
+            return  t.toString();
+        }
+
+
+        return null;	
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

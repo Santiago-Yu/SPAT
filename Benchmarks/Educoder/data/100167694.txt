@@ -1,0 +1,915 @@
+//package mypack;
+
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Stack;
+
+public class Java_LRParserAnalysis {
+	private static String prog = new String();
+	public static String[] tmpString;
+	public static int rowCnt = 0;
+	public static int[] rowContentCnt = new int[500];
+	public static int[] recordRowContentCnt = new int[500];
+	/**
+	 * this method is to read the standard input
+	 */
+	private static void read_prog() {
+		Scanner sc = new Scanner(System.in);
+		while (sc.hasNextLine()) {
+			String temp = sc.nextLine();
+			prog = prog + temp;
+			rowCnt++;
+			for (int i = 0; i < temp.trim().split(" ").length; i++) {
+				rowContentCnt[rowCnt]++;
+			}
+			if (prog.length() > 0 && !prog.substring(prog.length()-1).equals(" ")) {
+				prog += " ";
+			}
+		}
+		for (int i = 0; i < rowContentCnt.length; i++) {
+			recordRowContentCnt[i] = rowContentCnt[i];
+		}
+	}
+
+	// add your method here!!
+
+	// 符号串的first集
+	public HashMap<String, HashSet<String>> firstSet = new HashMap<>();
+	// 开始符
+	public static String S = "program";
+	// 非终结符的follow集
+	public HashMap<String, HashSet<String>> followSet = new HashMap<>();
+	// 非终结符
+	public HashSet<String> NTSet = new HashSet<>();
+	// 终结符
+	public HashSet<String> TSet = new HashSet<>();
+	// 非终结符-产生式集合
+	public HashMap<String, ArrayList<String>> expressionSet = new HashMap<>();
+	public String[][] table;
+
+	public String[] inputExpression = { "program -> compoundstmt",
+			"stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt",
+			"compoundstmt ->  { stmts }",
+			"stmts ->  stmt stmts   |   E", 
+			"ifstmt ->  if ( boolexpr ) then stmt else stmt",
+			"whilestmt ->  while ( boolexpr ) stmt", 
+			"assgstmt ->  ID = arithexpr ;",
+			"boolexpr  ->  arithexpr boolop arithexpr", 
+			"boolop ->   <  |  >  |  <=  |  >=  | ==",
+			"arithexpr  ->  multexpr arithexprprime",
+			"arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E",
+			"multexpr ->  simpleexpr multexprprime",
+			"multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E",
+			"simpleexpr ->  ID  |  NUM  |  ( arithexpr )" };
+	public String[] productions = {
+			"p -> program",
+			"program -> compoundstmt",
+			"stmt -> ifstmt",
+			"stmt -> whilestmt",
+			"stmt -> assgstmt",
+			"stmt -> compoundstmt",
+			"compoundstmt -> { stmts }",
+			"stmts -> stmt stmts",
+			"stmts -> E",
+			"ifstmt -> if ( boolexpr ) then stmt else stmt",
+			"whilestmt -> while ( boolexpr ) stmt", 
+			"assgstmt -> ID = arithexpr ;",
+			"boolexpr -> arithexpr boolop arithexpr", 
+			"boolop -> <",
+			"boolop -> >",
+			"boolop -> <=",
+			"boolop -> >=",
+			"boolop -> ==",
+			"arithexpr -> multexpr arithexprprime",
+			"arithexprprime -> + multexpr arithexprprime",
+			"arithexprprime -> - multexpr arithexprprime",
+			"arithexprprime -> E",
+			"multexpr -> simpleexpr multexprprime",
+			"multexprprime -> * simpleexpr multexprprime",
+			"multexprprime -> / simpleexpr multexprprime",
+			"multexprprime -> E",
+			"simpleexpr -> ID",
+			"simpleexpr -> NUM",
+			"simpleexpr -> ( arithexpr )"
+	};
+	public static Stack<String> analyzeStack = new Stack<>();
+//	public Stack<String> stackState = new Stack<>();
+//	public Stack<String> stackSymbol = new Stack<>();
+	public static String action = "";
+	public static ArrayList<String> inputString = new ArrayList<String>();
+	static int index = 0;
+	public static String errorInfo = null;
+	public int errorNum;
+	public boolean errorFlag = false;
+												
+	public String[][] tableSLR = {
+            {"",   "{",   "}",   "if",   "(",   ")",   "then", "else", "while", "ID",  "=",   ";",   "<",   ">",   "<=",   ">=",   "==",   "+",   "-",   "*",   "/",   "NUM",  "$",   "program", "stmt", "compoundstmt", "stmts", "ifstmt", "whilestmt", "assgstmt", "boolexpr", "boolop", "arithexpr", "arithexprprime", "multexpr", "multexprprime", "simpleexpr"},
+            {"0",  "s3",  "",    "",     "",    "",    "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "1",       "",     "2",            "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"1",  "",    "",    "",     "",    "",    "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "acc", "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"2",  "",    "",    "",     "",    "",    "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "r1",  "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"3",  "s3",  "r8",  "s10",  "",    "",    "",     "",     "s11",   "s12", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "5",    "9",            "4",     "6",      "7",         "8",        "",         "",       "",          "",               "",         "",              ""},
+            {"4",  "",    "s13", "",     "",    "",    "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"5",  "s3",  "r8",  "s10",  "",    "",    "",     "",     "s11",   "s12", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "5",    "9",            "14",    "6",      "7",         "8",        "",         "",       "",          "",               "",         "",              ""},
+            {"6",  "r2",  "r2",  "r2",   "",    "",    "",     "r2",   "r2",    "r2",  "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"7",  "r3",  "r3",  "r3",   "",    "",    "",     "r3",   "r3",    "r3",  "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"8",  "r4",  "r4",  "r4",   "",    "",    "",     "r4",   "r4",    "r4",  "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"9",  "r5",  "r5",  "r5",   "",    "",    "",     "r5",   "r5",    "r5",  "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"10", "",    "",    "",     "s15", "",    "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"11", "",    "",    "",     "s16", "",    "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"12", "",    "",    "",     "",    "",    "",     "",     "",      "",    "s17", "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"13", "r6",  "r6",  "r6",   "",    "",    "",     "r6",   "r6",    "r6",  "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "r6",  "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"14", "",    "r7",  "",     "",    "",    "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"15", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "18",       "",       "19",        "",               "20",       "",              "21"},
+            {"16", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "25",       "",       "19",        "",               "20",       "",              "21"},
+            {"17", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "26",        "",               "20",       "",              "21"},
+            {"18", "",    "",    "",     "",    "s28", "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"19", "",    "",    "",     "",    "",    "",     "",     "",      "",    "",    "",    "s30", "s31", "s32",  "s33",  "s34",  "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "29",     "",          "",               "",         "",              ""},
+            {"20", "",    "",    "",     "",    "r21", "",     "",     "",      "",    "",    "r21", "r21", "r21", "r21",  "r21",  "r21",  "s36", "s37", "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "35",             "",         "",              ""},
+            {"21", "",    "",    "",     "",    "r25", "",     "",     "",      "",    "",    "r25", "r25", "r25", "r25",  "r25",  "r25",  "r25", "r25", "s39", "s40", "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "38",            ""},
+            {"22", "",    "",    "",     "",    "r26", "",     "",     "",      "",    "",    "r26", "r26", "r26", "r26",  "r26",  "r26",  "r26", "r26", "r26", "r26", "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"23", "",    "",    "",     "",    "r27", "",     "",     "",      "",    "",    "r27", "r27", "r27", "r27",  "r27",  "r27",  "r27", "r27", "r27", "r27", "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"24", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "41",        "",               "20",       "",              "21"},
+            {"25", "",    "",    "",     "",    "s42", "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"26", "",    "",    "",     "",    "",    "",     "",     "",      "",    "",    "s27", "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"27", "r11", "r11", "r11",  "",    "",    "",     "r11",  "r11",   "r11", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"28", "",    "",    "",     "",    "",    "s43",  "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"29", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "44",        "",               "20",       "",              "21"},
+            {"30", "",    "",    "",     "r13", "",    "",     "",     "",      "r13", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "r13",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"31", "",    "",    "",     "r14", "",    "",     "",     "",      "r14", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "r14",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"32", "",    "",    "",     "r15", "",    "",     "",     "",      "r15", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "r15",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"33", "",    "",    "",     "r16", "",    "",     "",     "",      "r16", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "r16",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"34", "",    "",    "",     "r17", "",    "",     "",     "",      "r17", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "r17",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"35", "",    "",    "",     "",    "r18", "",     "",     "",      "",    "",    "r18", "r18", "r18", "r18",  "r18",  "r18",  "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"36", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "45",       "",              "21"},
+            {"37", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "45",       "",              "21"},
+            {"38", "",    "",    "",     "",    "r22", "",     "",     "",      "",    "",    "r22", "r22", "r22", "r22",  "r22",  "r22",  "r22", "r22", "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"39", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              "47"},
+            {"40", "",    "",    "",     "s24", "",    "",     "",     "",      "s22", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "s23",  "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              "48"},
+            {"41", "",    "",    "",     "",    "s49", "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"42", "s3",  "",    "s10",  "",    "",    "",     "",     "s11",   "s12", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "50",   "9",            "",      "6",      "7",         "8",        "",         "",       "",          "",               "",         "",              ""},
+            {"43", "s3",  "",    "s10",  "",    "",    "",     "",     "s11",   "s12", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "51",   "9",            "",      "6",      "7",         "8",        "",         "",       "",          "",               "",         "",              ""},
+            {"44", "",    "",    "",     "",    "r12", "",     "",     "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"45", "",    "",    "",     "",    "r21", "",     "",     "",      "",    "",    "r21", "r21", "r21", "r21",  "r21",  "r21",  "s36", "s37", "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "52",             "",         "",              ""},
+            {"46", "",    "",    "",     "",    "r21", "",     "",     "",      "",    "",    "r21", "r21", "r21", "r21",  "r21",  "r21",  "s36", "s37", "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "53",             "",         "",              ""},
+            {"47", "",    "",    "",     "",    "r25", "",     "",     "",      "",    "",    "r25", "r25", "r25", "r25",  "r25",  "r25",  "r25", "r25", "s39", "s40", "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "54",            ""},
+            {"48", "",    "",    "",     "",    "r25", "",     "",     "",      "",    "",    "r25", "r25", "r25", "r25",  "r25",  "r25",  "r25", "r25", "s39", "s40", "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "55",            ""},
+            {"49", "",    "",    "",     "",    "s28", "",     "",     "",      "",    "",    "r28", "r28", "r28", "r28",  "r28",  "r28",  "r28", "r28", "r28", "r28", "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"50", "r10", "r10", "r10",  "",    "",    "",     "r10",  "r10",   "r10", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"51", "",    "",    "",     "",    "",    "",     "s56",  "",      "",    "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"52", "",    "",    "",     "",    "r19", "",     "",     "",      "",    "",    "r19", "r19", "r19", "r19",  "r19",  "r19",  "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"53", "",    "",    "",     "",    "r20", "",     "",     "",      "",    "",    "r20", "r20", "r20", "r20",  "r20",  "r20",  "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"54", "",    "",    "",     "",    "r23", "",     "",     "",      "",    "",    "r23", "r23", "r23", "r23",  "r23",  "r23",  "r23", "r23", "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"55", "",    "",    "",     "",    "r24", "",     "",     "",      "",    "",    "r24", "r24", "r24", "r24",  "r24",  "r24",  "r24", "r24", "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            {"56", "s3",  "",    "s10",  "",    "",    "",     "",     "s11",   "s12", "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "57",   "9",            "",      "6",      "7",         "8",        "",         "",       "",          "",               "",         "",              ""},
+            {"57", "r9",  "r9",  "r9",   "",    "",    "",     "r9",   "r9",    "r9",  "",    "",    "",    "",    "",     "",     "",     "",    "",    "",    "",    "",     "",    "",        "",     "",             "",      "",       "",          "",         "",         "",       "",          "",               "",         "",              ""},
+            };
+	public static ArrayList<String> outputString = new ArrayList<String>();
+	public int outputCnt = 0;
+
+	public void init() {
+		// 获取产生式
+		for (String e : inputExpression) {
+			String[] str = e.split("->");
+			String notTerminal = str[0].trim();
+			// System.out.println("NT:\n"+notTerminal);
+			ArrayList<String> list = expressionSet.containsKey(notTerminal) ? expressionSet.get(notTerminal)
+					: new ArrayList<>();
+			// for (String s : list) {
+			// System.out.println("s:"+s);
+			// }
+			String[] strToken = str[1].trim().split("\\|");
+			for (String st : strToken) {
+				// System.out.println("strToken:\n" + st.trim());
+				list.add(st.trim());
+			}
+			expressionSet.put(notTerminal, list);
+		}
+//		Iterator iter = expressionSet.entrySet().iterator();
+//		while (iter.hasNext()) {
+//			Entry entry = (Entry) iter.next();
+//			Object key = entry.getKey();
+//			Object value = entry.getValue();
+//			System.out.println(key + ":" + value);
+//		}
+
+		 //构造非终结符的first集
+		for (String nt : NTSet) {
+			getFirst(nt);
+		}
+		for (String nt : NTSet) {
+			for (String str : expressionSet.get(nt)) {
+				getFirst(str.trim());
+			}
+		}
+//		Iterator iter = firstSet.entrySet().iterator();
+//		while (iter.hasNext()) {
+//			Entry entry = (Entry) iter.next();
+//			Object key = entry.getKey();
+//			Object value = entry.getValue();
+//			System.out.println(key + ":" + value);
+//		}
+		
+		//构造开始符的follow集
+		getFollow(S);
+		//构造非终结符的follow集
+		for (String nt : NTSet) {
+			getFollow(nt);
+		}
+//		Iterator iter = followSet.entrySet().iterator();
+//		while (iter.hasNext()) {
+//			Entry entry = (Entry) iter.next();
+//			Object key = entry.getKey();
+//			Object value = entry.getValue();
+//			System.out.println(key + ":" + value);
+//		}
+	}
+
+	/**
+	 * 计算非终结符和终结符
+	 */
+	public void getNTAndT() {
+		// 计算非终结符
+		for (String e : inputExpression) {
+			String[] str = e.split("->");
+			String notTerminal = str[0].trim();
+			NTSet.add(notTerminal);
+		}
+//		System.out.println("NT:" + NTSet.size());
+//		for (String str : NTSet) {
+//			System.out.println(str);
+//		}
+
+		// 计算终结符
+		for (String e : inputExpression) {
+			String[] str = e.split("->");
+			String[] terminals = str[1].trim().split("\\|");
+			for (String terminal : terminals) {
+				String[] t = terminal.trim().split(" ");
+				for (String tmp : t) {
+					if (!NTSet.contains(tmp) && !tmp.equals("E")) {
+						TSet.add(tmp);
+					}
+				}
+			}
+		}
+//		System.out.println("\n\nT:" + TSet.size());
+//		for (String str : TSet) {
+//			System.out.println(str);
+//		}
+	}
+
+	/**
+	 * 计算FIRST函数
+	 * @param s
+	 */
+	public void getFirst(String s) {
+		if (firstSet.containsKey(s)) {
+			return;
+		}
+		HashSet<String> set = new HashSet<>();
+		// 若s为终结符(不包括空串),直接添加
+		if (TSet.contains(s)) {
+			set.add(s);
+			firstSet.put(s, set);
+			return;
+		}
+		if (s.equals("E")) {
+			set.add(s);
+			firstSet.put(s, set);
+			return;
+		}
+		// 若s为非终结符，处理其每条产生式
+		if (expressionSet.get(s) != null) { //s是一个非终结符
+			for (String str : expressionSet.get(s)) {
+				// 若s->E是一个产生式，那么E属于FIRST(S)
+				String[] t = str.trim().split(" ");
+				for (String cur : t) {
+					if (cur.equals("E")) {
+						set.add("E");
+					}
+					if (!firstSet.containsKey(cur)) {
+						getFirst(cur);
+					}
+					HashSet<String> curFirst = firstSet.get(cur);
+					set.addAll(curFirst);
+					if (!curFirst.contains("E")) {
+						break;
+					}
+				}
+			}
+			firstSet.put(s, set);
+		} else { //s是终结符和非终结符组合成的串
+			if (!firstSet.containsKey(s)) {
+				String[] t = s.trim().split(" ");
+				for (int i = 0; i < t.length; i++) {
+					HashSet<String> curFirst = firstSet.get(t[i]);
+					set.addAll(curFirst);
+					if (!curFirst.contains("E")) {
+						break;
+					}
+				}
+			}
+			firstSet.put(s, set);
+		}
+	}	
+	
+	public void getFollow(String s) {
+		HashSet<String> leftFollowSet = followSet.containsKey(s) ? followSet.get(s) : new HashSet<>();
+		// 如果是起始符，添加$
+		if (s == S) {
+			leftFollowSet.add("$");
+		}
+		// 查找输入的所有产生式，添加s后的终结符
+		for (String nt : NTSet) {
+			for (String str : expressionSet.get(nt)) {
+				String[] t = str.trim().split(" ");
+				String cur;
+				for (int i = 0; i < t.length; i++) {
+					if (t[i].equals(s)) {
+						if ((i + 1) < t.length) {
+							cur = t[i + 1]; // β
+							if (TSet.contains(cur)) { // A->αBβ,其中β为终止符
+								leftFollowSet.add(cur);
+							} else if (NTSet.contains(cur)) { // A->αBβ,其中β为非终止符,把β的非空first集加入follow(B)								
+								for (String first : firstSet.get(cur)) {
+									if (!first.equals("E")) {
+										leftFollowSet.add(first);
+									}
+								}
+								// first(β)中有空,将follow(A)加入follow(B)
+								if (firstSet.get(cur).contains("E")) {
+									if (!followSet.containsKey(nt)) {
+										getFollow(nt);
+									}
+									leftFollowSet.addAll(followSet.get(nt));
+								}
+							}
+						} else { //A->αB，将follow(A)加入follow(B)
+							if (nt.equals(t[i])) {
+								break;
+							}
+							if (!followSet.containsKey(nt)) {
+								boolean flag = true;
+								ArrayList<String> temp = expressionSet.get(t[i]);
+								for (String tmpStr : temp) {
+									String[] tmp = tmpStr.trim().split(" ");
+									if (tmp[tmp.length-1].equals(nt)) {
+										flag = false;
+										break;
+									}
+								}
+								if (flag) {
+									getFollow(nt);
+									leftFollowSet.addAll(followSet.get(nt));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		followSet.put(s, leftFollowSet);
+	}
+	
+	public void insert(String token, String terminal, String s) {
+//		if (terminal.equals("E")) {
+//			terminal = "$";
+//		}
+		for (int i = 0; i < NTSet.size() + 1; i++) {
+			if (table[i][0].equals(token)) {
+				for (int j = 0; j < TSet.size() + 1; j++) {
+					if (table[0][j].equals(terminal)) {
+						table[i][j] = s;
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	public void createTable() {
+		Object[] VtArray = TSet.toArray();
+		Object[] VnArray = NTSet.toArray();
+		// 预测分析表初始化
+		table = new String[VnArray.length + 1][VtArray.length + 2];
+		table[0][0] = "NT/T";
+		// 初始化首行首列
+		int cnt = 1;
+		for (String t : TSet) {
+			table[0][cnt] = t;
+			cnt++;
+		}
+		table[0][cnt] = "$";
+		cnt = 1;
+		for (String nt : NTSet) {
+			table[cnt][0] = nt;
+			cnt++;
+		}
+		// 全部置error
+		for (int i = 0; i < VnArray.length; i++) {
+			for (int j = 0; j < VtArray.length + 1; j++) {
+				table[i + 1][j + 1] = "error";
+			}
+		}
+		// 插入生成式
+		for (String nt : NTSet) {
+			for (String s : expressionSet.get(nt)) {
+				HashSet<String> set = firstSet.get(s);
+				for (String a : set) {
+					insert(nt, a, s);
+				}
+				if (set.contains("E")) {
+					HashSet<String> setFollow = followSet.get(nt);
+					for (String b : setFollow) {
+						insert(nt, b, s);
+					}
+					if (setFollow.contains("$")) {
+						insert(nt, "$", s);
+					}
+				}
+			}
+		}
+		
+//		System.out.println("**********LL1预测分析表********");
+//		for (int i = 0; i < NTSet.size() + 1; i++) {
+//			for (int j = 0; j < TSet.size() + 2; j++) {
+//				System.out.printf("%30s", table[i][j] + " ");
+//			}
+//			System.out.println();
+//		}
+//		System.out.println("**********LL1预测分析表********");
+	}
+	
+	public void displayLL() {
+		// 输出 LL1
+		Stack<String> s = analyzeStack;
+		System.out.printf("%100s", s);
+		if (index < inputString.size()) {
+			System.out.printf("%10s", inputString.get(index));
+		} else {
+			System.out.printf("%10s", "$");
+		}
+		System.out.printf("%40s", action);
+		System.out.println();
+	}
+	
+	public String find(String stackTop, String terminal) {
+		for (int i = 1; i < NTSet.size() + 1; i++) {
+			if (table[i][0].equals(stackTop)) {
+				for (int j = 0; j < TSet.size() + 1; j++) {
+					if (table[0][j].equals(terminal))
+						return table[i][j];
+				}
+			}
+		}
+		return "";
+	}
+	
+	public void analyzeLL() {
+		System.out.println("****************LL分析过程**********");
+		System.out.printf("%100s", "Stack");
+		System.out.printf("%10s", "Input");
+		System.out.printf("%40s", "Action");
+		analyzeStack.push("$");
+		analyzeStack.push(S);
+		displayLL();
+		String stackTop = analyzeStack.peek();
+		while (!stackTop.equals("$")) {
+			String a = inputString.get(index);
+			if (stackTop.equals(a)) {
+				action = "match " + analyzeStack.peek();
+				analyzeStack.pop();
+				index++;
+			} else if (TSet.contains(stackTop)) { // 栈顶是终结符，说明prog有错
+				return;
+			} else if (find(stackTop, a).equals("error")) { //到达错误状态，说明prog有错
+				return;
+			} else if (find(stackTop, a).equals("E")) {
+				analyzeStack.pop();
+				action = stackTop + "->E";
+			} else {
+				String str = find(stackTop, a);
+				if (str != "") {
+					action = stackTop + "->" + str;
+					analyzeStack.pop();
+					String[] token = str.trim().split(" ");
+					for (int i = token.length - 1; i >= 0; i--) {
+						analyzeStack.push(token[i]);
+					}
+				} else {
+					System.out.println("error at " + inputString.get(index) + " in " + index);
+					return;
+				}
+			}
+			stackTop = analyzeStack.peek();
+			displayLL();
+		}
+		System.out.println("analyze LL1 successfully");
+		System.out.println("****************LL分析过程**********");
+	}
+	
+	void judge() {
+		int tabCnt = 0;
+		int pushCnt[] = new int[500];
+		boolean flag[] = new boolean[500];
+		for (int i = 0; i < pushCnt.length; i++) {
+			pushCnt[i] = 0;
+			flag[i] = false;
+		}
+		analyzeStack.push("$");
+		analyzeStack.push(S);
+		pushCnt[tabCnt]++;
+//		System.out.println(analyzeStack.peek());
+		String stackTop = analyzeStack.peek();
+		while (!stackTop.equals("$")) {
+			String a = inputString.get(index);
+			if (stackTop.equals(a)) {
+				action = "match " + analyzeStack.peek();
+				analyzeStack.pop();
+				pushCnt[tabCnt]--;
+				while (pushCnt[tabCnt] == 0 && flag[tabCnt]) {
+					tabCnt--;
+				}
+				index++;
+				if (rowContentCnt[rowCnt] > 0) {
+					rowContentCnt[rowCnt]--;
+				}
+				if (rowContentCnt[rowCnt] == 0) {
+					rowCnt++;
+				}
+			} else if (TSet.contains(stackTop)) { // 栈顶是终结符，说明prog有错
+				errorInfo = "stackTop is in TSet";
+				return;
+			} else if (find(stackTop, a).equals("error")) { //到达错误状态，说明prog有错
+				errorInfo = stackTop;
+				// 将a及a后的字符后移一位
+				if (!errorFlag) {
+					System.out.print("语法错误，第" + (rowCnt-1) + "行，缺少\"");
+					inputString.add(inputString.get(inputString.size()-1));
+					for (int k = inputString.size()-2; k > index; k--) {
+						inputString.set(k, inputString.get(k-1));
+					}
+					inputString.set(index, null);
+					errorNum = index;
+					errorFlag = true;
+				} else {
+					index = errorNum;
+				}
+//				for (int k = 0; k < inputString.size(); k++) {
+//					System.out.println("inputString["+k+"]=="+inputString.get(k));
+//				}
+				return;
+			} else if (find(stackTop, a).equals("E")) {
+//				for (int i = 0; i < tabCnt+1; i++) {
+//					System.out.print("\t");
+//				}
+//				System.out.println("E");
+				pushCnt[tabCnt]--;
+				for (int j = tabCnt; j < 500; j++) {
+					if (flag[tabCnt]) {
+						tabCnt++;
+					}
+					if (!flag[tabCnt]) {
+						flag[tabCnt] = true;
+						break;
+					}
+				}
+				pushCnt[tabCnt]++;
+				analyzeStack.pop();
+				pushCnt[tabCnt]--;
+				while (pushCnt[tabCnt] == 0 && flag[tabCnt]) {
+					tabCnt--;
+				}
+				action = stackTop + "->E";
+			} else {
+				String str = find(stackTop, a);
+				if (str != "") {
+					action = stackTop + "->" + str;
+					analyzeStack.pop();
+					pushCnt[tabCnt]--;
+					tabCnt++;
+					flag[tabCnt] = true;
+					String[] token = str.trim().split(" ");
+					for (int i = token.length - 1; i >= 0; i--) {
+						analyzeStack.push(token[i]);
+						pushCnt[tabCnt]++;
+					}
+				} else {
+//					System.out.println("2.ERROR!!!!!!!!");
+					return;
+				}
+			}
+			stackTop = analyzeStack.peek();
+//			if (!analyzeStack.peek().equals("$")) {
+//				for (int i = 0; i < tabCnt; i++) {
+//					System.out.print("\t");
+//				}
+//				System.out.println(analyzeStack.peek());
+//			}
+		}
+	}
+	
+	void correct () {
+		judge();
+		String terminal = null;
+		while (errorInfo != null) {
+			for (int i = 1; i < NTSet.size() + 1; i++) {
+				if (table[i][0].equals(errorInfo)) {
+					for (int j = 1; j < TSet.size() + 1; j++) {
+						if (!table[i][j].equals("error")) {
+							terminal = table[0][j];
+//							System.out.println("terminal=="+terminal);
+							inputString.set(index, terminal);
+							// init
+							errorInfo = null;
+							index = 0;
+							action = "";
+							rowCnt = 1;
+							analyzeStack.clear();
+							for (int k = 0; k < recordRowContentCnt.length; k++) {
+								rowContentCnt[k] = recordRowContentCnt[k];
+							}
+							judge();
+//							System.out.println("errorInfo      "+errorInfo);
+							if (errorInfo == null) {
+								System.out.println(terminal+"\"");
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	void output() {
+		int tabCnt = 0;
+		int pushCnt[] = new int[500];
+		boolean flag[] = new boolean[500];
+		for (int i = 0; i < pushCnt.length; i++) {
+			pushCnt[i] = 0;
+			flag[i] = false;
+		}
+		analyzeStack.push("$");
+		analyzeStack.push(S);
+		pushCnt[tabCnt]++;
+		System.out.println(analyzeStack.peek());
+		String stackTop = analyzeStack.peek();
+		while (!stackTop.equals("$")) {
+			String a = inputString.get(index);
+			if (stackTop.equals(a)) {
+				action = "match " + analyzeStack.peek();
+				analyzeStack.pop();
+				pushCnt[tabCnt]--;
+				while (pushCnt[tabCnt] == 0 && flag[tabCnt]) {
+					tabCnt--;
+				}
+				index++;
+				if (rowContentCnt[rowCnt] > 0) {
+					rowContentCnt[rowCnt]--;
+				}
+				if (rowContentCnt[rowCnt] == 0) {
+					rowCnt++;
+				}
+			} else if (TSet.contains(stackTop)) { // 栈顶是终结符，说明prog有错
+//				System.out.println("TSet.contains(stackTop)");
+                return;
+			} else if (find(stackTop, a).equals("error")) { //到达错误状态，说明prog有错
+//				System.out.println("find(stackTop, a)==error");
+                return;
+			} else if (find(stackTop, a).equals("E")) {
+				for (int i = 0; i < tabCnt+1; i++) {
+					System.out.print("\t");
+				}
+				System.out.println("E");
+				pushCnt[tabCnt]--;
+				for (int j = tabCnt; j < 500; j++) {
+					if (flag[tabCnt]) {
+						tabCnt++;
+					}
+					if (!flag[tabCnt]) {
+						flag[tabCnt] = true;
+						break;
+					}
+				}
+				pushCnt[tabCnt]++;
+				analyzeStack.pop();
+				pushCnt[tabCnt]--;
+				while (pushCnt[tabCnt] == 0 && flag[tabCnt]) {
+					tabCnt--;
+				}
+				action = stackTop + "->E";
+			} else {
+				String str = find(stackTop, a);
+				if (str != "") {
+					action = stackTop + "->" + str;
+					analyzeStack.pop();
+					pushCnt[tabCnt]--;
+					tabCnt++;
+					flag[tabCnt] = true;
+					String[] token = str.trim().split(" ");
+					for (int i = token.length - 1; i >= 0; i--) {
+						analyzeStack.push(token[i]);
+						pushCnt[tabCnt]++;
+					}
+				} else {
+//                    System.out.println("String str = kong");
+					return;
+				}
+			}
+			stackTop = analyzeStack.peek();
+			if (!analyzeStack.peek().equals("$")) {
+				for (int i = 0; i < tabCnt; i++) {
+					System.out.print("\t");
+				}
+				System.out.print(analyzeStack.peek());
+                int count = 0;
+                for (int i = 0; i < tmpString.length; i++) {
+                    if (!tmpString[i].equals("")) {
+                        count++;
+                    }
+                }
+                //if (analyzeStack.peek().equals("}")) {
+                //    System.out.println(count+"  "+tmpString.length+"  "+(index+1));
+                //}
+				String tmpTop = analyzeStack.peek();
+				analyzeStack.pop();
+                //System.out.println(analyzeStack.peek()+"  "+(index+1));
+				if (!analyzeStack.peek().equals("$") || (index+1) < count) {
+					System.out.print("\n");
+				}
+				analyzeStack.push(tmpTop);
+			}
+		}
+	}
+	
+	
+	public String Action(String stackTop, String terminal) {
+		for (int i = 1; i < 59; i++) {
+			if (tableSLR[i][0].equals(stackTop)) {
+				for (int j = 0; j < 37; j++) {
+					if (tableSLR[0][j].equals(terminal))
+						return tableSLR[i][j];
+				}
+			}
+		}
+		return "";
+	}
+	
+	
+	void LRAnalysis() {
+		int tabCnt = 0;
+		int pushCnt[] = new int[500];
+		boolean flag[] = new boolean[500];
+		for (int i = 0; i < pushCnt.length; i++) {
+			pushCnt[i] = 0;
+			flag[i] = false;
+		}
+		analyzeStack.push("$");
+		analyzeStack.push("0");
+		pushCnt[tabCnt]++;
+		String previousNT = new String();
+		boolean placeFlag = true;
+		int place = 0;
+		while (true) {
+			String stackTop = analyzeStack.peek();
+			String a = inputString.get(index);
+			// 查表为移进
+			if (Action(stackTop, a).substring(0, 1).equals("s")) {
+				analyzeStack.push(a);
+				analyzeStack.push(Action(stackTop, a).substring(1));
+//				System.out.println(stackTop+"   "+a+"   shift:"+Action(stackTop,a));
+				index++;
+				if (!placeFlag) {
+					place++;
+				}
+				a = inputString.get(index);
+			}
+			// 查表为归约
+			else if (Action(stackTop, a).substring(0, 1).equals("r")) {
+				if (placeFlag) {
+					place = index;
+					placeFlag = false;
+				}
+				String[] stringSet = outputString.get(outputCnt).split(" ");
+//				System.out.println(":::::      "+outputString.get(outputCnt));
+				// 获取文法串
+				String str = productions[Integer.parseInt(Action(stackTop, a).substring(1))];
+				String[] leftAndRight = str.split("->");
+//				System.out.println(stackTop+"   "+a+"   reduce:"+Action(stackTop,a));
+				Stack<String> stackSymbol = new Stack<>();
+				if (!leftAndRight[1].trim().equals("E")) {
+					String[] tokens = leftAndRight[1].trim().split(" ");
+					// 弹出右部长度的符号和状态
+					for (int i = 0; i < tokens.length; i++) {
+//						System.out.println("   pop:"+analyzeStack.peek());
+						analyzeStack.pop(); // 弹出状态
+//						System.out.println("   pop:"+analyzeStack.peek());
+						stackSymbol.push(analyzeStack.peek());
+						analyzeStack.pop(); // 弹出符号
+						place--;
+					}
+				}
+				// goto的值进栈
+				String t = analyzeStack.peek();
+				analyzeStack.push(leftAndRight[0].trim()); // 压入符号
+//				System.out.println("   push:"+analyzeStack.peek());
+				place++;
+				String nonTerminal = leftAndRight[0].trim();
+				analyzeStack.push(Action(t, nonTerminal)); // 压入状态
+//				System.out.println("   push:"+analyzeStack.peek());
+				String tempString = new String();
+//				System.out.println("stackSymbol.size()  ==  "+stackSymbol.size() +"    place  ==  "+place+"    index  ==  "+index);
+				for (int k = 0; k < place-1; k++) {
+					tempString += stringSet[k] + " ";
+				}
+//				System.out.println(">>>  "+tempString);
+				tempString += nonTerminal + " ";
+				previousNT = nonTerminal;
+//				System.out.println(">>>>>>>  "+tempString);
+				for (int k = index; k < inputString.size()-1; k++) {
+					tempString += inputString.get(k) + " ";
+				}
+//				System.out.println(">>>>>>>>>>>>>  "+tempString);
+				outputString.add(tempString);
+				outputCnt++;
+			} else if (Action(stackTop, a).equals("acc")) {
+//				System.out.println("accept");
+				break;
+			} else {
+				System.out.println("???????????");
+				return;
+			}
+		}
+		for (int j = outputString.size()-1; j >=0 ; j--) {
+			System.out.print(outputString.get(j));
+			if (j > 0) {
+				System.out.print("=> \n");
+			} else {
+				System.out.print(" ");
+			}
+		}
+	}
+	
+	/**
+	 * you should add some code in this method to achieve this lab
+	 */
+	private static void analysis() {
+		read_prog();
+		tmpString = prog.trim().split(" ");
+		for (int i = 0; i < tmpString.length; i++) {
+			if (!tmpString[i].equals("")) {
+				inputString.add(tmpString[i]);
+			}
+		}
+		rowCnt = 1;
+		Java_LRParserAnalysis llp = new Java_LRParserAnalysis();
+		llp.getNTAndT();
+		llp.init();
+		llp.createTable();
+//		llp.analyzeLL();
+		llp.correct();
+//		errorInfo = null;
+//		index = 0;
+//		action = "";
+//		rowCnt = 1;
+//		analyzeStack.clear();
+//		for (int k = 0; k < recordRowContentCnt.length; k++) {
+//			rowContentCnt[k] = recordRowContentCnt[k];
+//		}
+//		llp.output();
+		errorInfo = null;
+		index = 0;
+		action = "";
+		rowCnt = 1;
+		analyzeStack.clear();
+		for (int k = 0; k < recordRowContentCnt.length; k++) {
+			rowContentCnt[k] = recordRowContentCnt[k];
+		}
+		String tempString = new String();
+		for (int i = 0; i < inputString.size(); i++) {
+			tempString += inputString.get(i)+" ";
+		}
+		outputString.add(tempString.trim());
+//		for (int i = 0; i < outputString.size(); i++) {
+//			System.out.println(outputString.get(i));
+//		}
+		inputString.add("$");
+		llp.LRAnalysis();
+	}
+	
+
+	/**
+	 * this is the main method
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		analysis();
+		
+	}
+}

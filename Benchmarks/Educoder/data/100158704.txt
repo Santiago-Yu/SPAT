@@ -1,0 +1,33 @@
+#include<iostream>
+int main(){
+	int k,s,m,n;
+	int a[1000],sum[1000]={0};
+	int g=1;
+	scanf("%d",&k);
+	if(k==1)
+	 printf("0");
+	if(k==2)
+	  printf("1");
+	for(int i=3;i<=k;i++){
+		sum[g]=1;
+		s=k/i;
+		int q=i;
+		for(int j=0;j<i;j++){
+			a[j]=s;
+		}
+		n=k-s*i;
+		for(int f=0;n>0;f++){
+			a[f]++;
+			n--;
+		}
+		for(int j=0;j<i;j++){
+			sum[g]*=a[j];
+		}
+		if(sum[g]<sum[g-1]){
+			sum[0]=sum[g-1];
+			break;
+		}
+		g+=1;
+	}
+	printf("%d",sum[0]);
+}

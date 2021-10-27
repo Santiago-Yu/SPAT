@@ -1,0 +1,28 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread t=new MyThread();
+        int total=t.fum(num);
+        System.out.println("子线程计算结果为："+total);
+	}
+}
+
+
+class MyThread {
+    int total;
+    public int fum(int num){
+        if(num==1||num==2){
+            total=1;
+        }else {
+            total=fum(num-2)+fum(num-1);
+        }
+        return total;
+}
+    }
+    

@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+int main(int argc, char *argv[]) {
+	int arr[1000];
+	int i;
+	for(i=0;;i++)
+	{
+		scanf("%d",&arr[i]);
+		if(getchar()=='\n')
+			break;
+	}
+	int x;
+	scanf("%d",&x);
+	int o,p,q;
+	int sum = 0;
+	int temp = 0;
+	for(o=0;o<=i-2;o++)
+	{
+		temp = 0;
+		temp += arr[o];
+
+			for(p=o+1;p<=i-1;p++)
+			{
+				temp = arr[o];
+				temp+=arr[p];
+
+					for(q=p+1;q<=i;q++)
+					{
+						temp = arr[o] + arr[p];
+						temp += arr[q];
+						if(temp < x)
+							sum++;
+						else
+							continue;
+					}
+			}
+	}
+	printf("%d",sum);
+	return 0;
+}

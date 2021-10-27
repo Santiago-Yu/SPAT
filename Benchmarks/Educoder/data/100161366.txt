@@ -1,0 +1,38 @@
+package step1;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File file = new File(filePath);
+		Document doc =Jsoup.parse(file,"UTF-8");
+		return doc;
+        /**********   End   **********/
+	}
+
+	/**
+	 * 获取清理后的信息
+	 * @param doc
+	 * @return
+	 */
+	public List<String> cleanHTML(Document doc){
+        /**********   Begin   **********/
+        List<String> list =new ArrayList<String>();
+        String safeHtm1= Jsoup.clean(doc.toString(), Whitelist.basic());
+		String safeHtm2= Jsoup.clean(doc.toString(), Whitelist.simpleText());
+		list.add(safeHtm1);
+		list.add(safeHtm2);
+		return list;
+        
+		
+        /**********   End   **********/
+	}
+	
+}

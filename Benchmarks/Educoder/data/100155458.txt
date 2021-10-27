@@ -1,0 +1,39 @@
+package task4;
+
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+
+    int boxType;
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+    
+    public Box(int boxType) 
+    { this.boxType=boxType; }
+    
+    public double volume() {
+        //TODO your code
+        double vol;
+        if (this.boxType==RECTANGLE)
+            vol=width*height*depth;
+          else
+          { if (this.boxType==CYLINDER)
+              vol=width*width*3.14*height;
+             else
+             {vol=0;
+              System.out.println("parameter is wrong");}
+          }
+         return vol;
+    }
+
+}

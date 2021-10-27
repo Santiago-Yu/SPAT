@@ -1,0 +1,40 @@
+package step4;
+import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		/*BufferedReader br = new BufferedReader(new FileReader("src//step4//input//input.txt"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("src//step4//output//output.txt"));
+		String str = null;
+        while((str = br.readLine())!= null){
+         bw.write(str);   
+        }*/
+        FileReader br = new FileReader("src//step4//input//input.txt"); //定义FileReader读取文件
+        int len = 0;    //每次读取的字符数量
+        char[] cbuf = new char[1024];    //每次读取数据的缓冲区
+        FileWriter bw = new FileWriter("src//step4//output//output.txt"); //定义FileWriter写文件
+        while((len = br.read(cbuf)) != -1){
+         bw.write(cbuf,0,len);
+        }
+        br.close();
+        bw.close();
+        /***********************/
+        BufferedReader br1 = new BufferedReader(new FileReader("src//step4//input//input.jpg"));
+		BufferedWriter bw1 = new BufferedWriter(new FileWriter("src//step4//output//output.jpg"));
+		String str1 = null;
+        while((str1 = br1.readLine())!= null){
+         bw1.write(str1);   
+        }
+        br1.close();
+        bw1.close();
+		/********* End *********/		
+	}
+}

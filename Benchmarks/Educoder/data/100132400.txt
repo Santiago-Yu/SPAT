@@ -1,0 +1,89 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int[]lengthArray=new int[length];
+		int[]widthArray=new int[width];
+		int maxBorder=0;
+		for(int i=1,j=0;i<=length;i++)
+		{
+			if(length%i==0)
+			{
+				lengthArray[j]=i;
+				j++;
+			}
+		}
+		for(int i=1,j=0;i<=width;i++)
+		{
+			if(width%i==0)
+			{
+				widthArray[j]=i;
+				j++;
+			}
+		}
+		int[]togetherArrayOfLength=new int[length];
+		int[]togetherArrayOfWidth=new int[width];
+		if(length>width)
+		{
+	label1:for(int i=0;i<width;i++)
+			{
+				for(int j=0;j<length;j++)
+				{
+					if(lengthArray[j]==widthArray[i])
+					{
+						togetherArrayOfLength[i]=widthArray[i];
+						continue label1;
+					}
+				}
+			}
+		}
+		else
+		{
+	label2:for(int i=0;i<length;i++)
+			{
+				for(int j=0;j<width;j++)
+				{
+					if(lengthArray[i]==widthArray[j])
+					{
+						togetherArrayOfWidth[i]=lengthArray[i];
+						continue label2;
+					}
+				}
+			}
+		}
+		if(togetherArrayOfLength[0]!=0)
+		{
+			for(int i=0;i<length;i++)
+			{
+				if(togetherArrayOfLength[i]>maxBorder)
+				{
+					maxBorder=togetherArrayOfLength[i];
+				}
+			}
+		}
+		else
+		{
+			for(int i=0;i<width;i++)
+			{
+				if(togetherArrayOfWidth[i]>maxBorder)
+				{
+					maxBorder=togetherArrayOfWidth[i];
+				}
+			}
+		}
+		System.out.println(maxBorder+"\n"+length*width/maxBorder/maxBorder);
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

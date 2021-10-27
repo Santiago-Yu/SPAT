@@ -1,0 +1,71 @@
+package step4;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+       String[] s=releaseDate.split("-");
+		int year=Integer.parseInt(s[0]);
+		int month=Integer.parseInt(s[1]);
+		int md=Integer.parseInt(s[2]);
+		LocalDateTime date=LocalDateTime.of(year, month, md, md, 0);
+		date=date.plusDays(day);
+		StringBuffer m = new StringBuffer();
+		if(date.getMonth().toString().equals("JANUARY")) {
+			m.append("01");
+		}
+		if(date.getMonth().toString().equals("FEBRUARY")) {
+			m.append("02");
+		}
+		if(date.getMonth().toString().equals("MARCH")) {
+			m.append("03");
+		}
+		if(date.getMonth().toString().equals("APRIL")) {
+			m.append("04");
+		}
+		if(date.getMonth().toString().equals("MAY")) {
+			m.append("05");
+		}
+		if(date.getMonth().toString().equals("JUNE")) {
+			m.append("06");
+		}
+		if(date.getMonth().toString().equals("JULY")) {
+			m.append("07");
+		}
+		if(date.getMonth().toString().equals("AUGUST")) {
+			m.append("08");
+		}
+		if(date.getMonth().toString().equals("SEPTEMBER")) {
+			m.append("09");
+		}
+		if(date.getMonth().toString().equals("OCTOBER")) {
+			m.append("10");
+		}
+		if(date.getMonth().toString().equals("NOVEMBER")) {
+			m.append("11");
+		}
+		if(date.getMonth().toString().equals("DECEMBER")) {
+			m.append("12");
+		}
+//		SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd",Locale.CHINESE);
+//		String s1=df.format(date);
+		int d1=date.getDayOfMonth();
+		String ans=date.getYear()+"-"+m.toString()+"-"+String.format("%02d", d1);
+		return ans;
+		
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

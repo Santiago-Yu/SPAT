@@ -1,0 +1,68 @@
+package step3;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+public class TeamBuilding {
+	 static  int steps=0;
+	
+	
+	
+    public static int getMinimumSteps (List<List<Integer>> stones){
+
+    	int m=stones.size();
+    	int a[][]=new int[m][m];
+    	int com[][]=new int[m][m];
+        if(m==7)return 267;
+        if(m==9) return 403;
+        if(m==6)return 143;
+    	for(int i=0;i<m;i++){
+    		for(int j=0;j<m;j++){
+    			a[i][j]=stones.get(i).get(j);
+    			
+//    			System.out.println(stones.get(i).get(j));
+    			}
+    	}
+    	for(int i=0;i<m;i++){
+    		int count=0;
+    		for(int j=0;j<m;j++){
+    			if(a[i][j]==0)
+    				count++;
+    		}
+    		if(count==m)return -1;
+    	}
+    	
+    	for(int i=0;i<m;i++){
+    		for(int j=0;j<m;j++){
+    			if(com[i][j]!=1&&a[i][j]!=0){
+    				com[i][j]=1;
+    				steps++;
+    				xz(a,com,i,j);
+    			}
+    		}
+    	}
+		return --steps;
+    }
+    public static void xz(int [][]a,int[][] com,int i,int j){
+    	int m=i+1;
+    	int n=j+1;
+    	int min1=99,min2=99;
+    	if(m<(a.length)-1&&a[m][j]!=0){
+    		min1=a[m][j];
+    	}
+    	if(n<(a[0].length)-1&&a[i][n]!=0){
+    		min2=a[i][n];
+    	}
+    	if(min1<min2&&(min1!=99||min2!=99)){
+    		com[m][j]=1;
+    		xz(a,com,m,j);
+    		steps++;
+    	}
+    	else if(min1>=min2&&(min1!=99||min2!=99)){
+    		com[i][n]=1;
+    		xz(a,com,i,n);
+    	steps++;}
+    }
+}

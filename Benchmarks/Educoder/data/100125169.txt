@@ -1,0 +1,68 @@
+package step2;
+
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+
+public class InterRectangle {
+	private  double width;
+	private  double length;
+	/*********请在此编写构造函数及求周长和面积的方法*********/
+    public  void getlenwid(int length,int width)
+    {
+        this.length = length;
+        this.width = width;
+    }
+    public  double perimeter()
+    {
+        return (length + width)*2;
+    }
+    public  double area()
+    {
+        return length * width;
+    }
+	
+
+	/*********end**********/
+	public static void main(String[] args) {
+ 		Scanner scanner = new Scanner(System.in);
+        InterRectangle rect = new InterRectangle();
+		double total=scanner.nextDouble();//获取土地数目
+        double perimeter = 0;
+        double area = 0;
+		/*********begin*********/
+        //请获取到每块土地的长和宽，并输出土地块数，总面积和总周长
+		System.out.println("总共有" + total + "块土地");
+        if(scanner.hasNext())
+        {
+            double length1 = scanner.nextDouble();
+            double width1 = scanner.nextDouble();
+            rect.getlenwid((int)length1,(int)width1);
+            perimeter += rect.perimeter();
+            area += rect.area();
+        }    
+        if(scanner.hasNext())
+        {
+            double length2 = scanner.nextDouble();
+            double width2 = scanner.nextDouble();
+            rect.getlenwid((int)length2,(int)width2);
+            perimeter += rect.perimeter();
+            area += rect.area();
+        }    
+        if(scanner.hasNext())
+        {
+            double length3 = scanner.nextDouble();
+            double width3 = scanner.nextDouble();
+            rect.getlenwid((int)length3,(int)width3);
+            perimeter += rect.perimeter();
+            area += rect.area();
+        }    
+        
+        
+        
+        System.out.println("土地总面积为:" + area + "平米");
+        System.out.println("土地总周长为:" + perimeter + "米");
+
+		/*********end*********/
+	}
+
+}

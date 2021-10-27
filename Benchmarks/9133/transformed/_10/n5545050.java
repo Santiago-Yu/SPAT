@@ -1,0 +1,21 @@
+class n5545050 {
+	public void sendFile(File file, String filename, String contentType) throws SearchLibException {
+		response.setContentType(contentType);
+		response.addHeader("Content-Disposition", "attachment; filename=" + filename);
+		FileInputStream inputStream = null;
+		try {
+			ServletOutputStream outputStream = getOutputStream();
+			inputStream = new FileInputStream(file);
+			IOUtils.copy(inputStream, outputStream);
+			outputStream.close();
+		} catch (FileNotFoundException e) {
+			throw new SearchLibException(e);
+		} catch (IOException e) {
+			throw new SearchLibException(e);
+		} finally {
+			if (inputStream != null)
+				IOUtils.closeQuietly(inputStream);
+		}
+	}
+
+}

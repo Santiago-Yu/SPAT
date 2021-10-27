@@ -1,0 +1,38 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+int sum=0,i,j;
+		for(i=0;i<n;i++)
+			for(j=0;j<m;j++){
+				if(area[i][j]=='o'){
+					sum++;
+					cazhao(i,j,area,n,m);
+				}
+			}
+		return sum;
+		
+		/********* End *********/	
+	}
+    public void cazhao(int i,int j,char[][] area,int n,int m){
+		if(i>=0&&j>=0&&i<n&&j<m){
+		if(area[i][j]=='o')
+		{
+			area[i][j]=' ';
+			cazhao(i+1,j,area,n,m);
+			cazhao(i,j+1,area,n,m);
+			cazhao(i-1,j,area,n,m);
+			cazhao(i,j-1,area,n,m);
+		}
+		else return;
+}
+		else return;
+	
+
+
+		
+		/********* End *********/	
+	}
+}

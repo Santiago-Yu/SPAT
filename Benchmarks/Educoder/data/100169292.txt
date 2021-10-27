@@ -1,0 +1,67 @@
+package step1;
+import java.util.*;
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuilder sb = new StringBuilder(s);
+
+		Iterator<Operation> iterator = ops.iterator();
+		while (iterator.hasNext()) {
+			Operation operation = iterator.next();
+			//System.out.println(sb.toString());
+			//System.out.println(operation.t + ":" + operation.s + ":p=" + p);
+
+			switch (operation.t) {
+			case "I":
+				sb.insert(p, operation.s);
+				p = p + operation.s.length();
+				break;
+			case "B":
+				int bn = p - operation.l;
+				if (bn > 0) {
+					sb.delete(bn, p);
+					p = p - operation.l;
+				} else {
+					sb.delete(0, p);
+					p = 0;
+				}
+				break;
+			case "D":
+				int dn = sb.length() - p - operation.l;
+				if (dn > 0) {
+					sb.delete(p, operation.l + p);
+				} else {
+					sb.delete(p, sb.length());
+				}
+				break;
+			case "L":
+				int ln = p - operation.l;
+				if (ln > 0) {
+					p = p - operation.l;
+				} else {
+					p = 0;
+				}
+				break;
+			case "R":
+				int rn = sb.length() - p - operation.l;
+				if (rn > 0) {
+					p = p + operation.l;
+				} else {
+					p = sb.length();
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return sb.toString();
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

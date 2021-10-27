@@ -1,0 +1,55 @@
+package case4;
+
+public class overridingTest {
+	public static void main(String[] args) {
+		// 实例化子类对象s，调用talk()方法打印信息
+		/********* begin *********/
+		Student s = new Student("张三",18, "哈佛大学");
+        s.talk();
+		/********* end *********/
+		
+	}
+}
+
+class Person {
+	/********* begin *********/
+		private String name;
+    	private int age;
+        public Person(String name,int age) {
+            this.name = name; 
+            this.age = age;
+        }
+        public String getName(){
+            return name;
+        }
+        public int getAge(){
+            return age;
+        }
+
+        public void setName(String name){
+            this.name = name;
+        }
+
+        public void setAge(int age){
+            this.age = age;
+        }
+    
+    	public void talk(){
+    		System.out.println("我是："+this.getName() + "，今年：" + this.getAge() + "岁");       
+        }
+	/********* end *********/
+}
+
+class Student extends Person {
+	/********* begin *********/
+	String school;
+    public Student( String name,int age,String school) {
+    	super(name,age);
+        this.school = school;
+    }
+	
+    public void talk(){
+        System.out.println("我是："+this.getName() + "，今年：" + this.getAge() + "岁" + "，我在"+this.school+"上学"); 
+   	}
+	/********* end *********/
+}

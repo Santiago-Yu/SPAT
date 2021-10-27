@@ -1,0 +1,95 @@
+package step4;
+
+public class Task {
+	
+		
+		public static String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String[] tokens = releaseDate.split("-");
+		int[] months = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+	    int y = Integer.parseInt(tokens[0]);
+        int m = Integer.parseInt(tokens[1]);
+        int d = Integer.parseInt(tokens[2]);
+        int x = 365;
+        if(is(y))
+        {
+        	months[2] = 29;
+        	x = 366;
+        }
+        int sum = d+day;
+        if((m>2||(m==2&&d==29))&&is(y+1))
+     		 x=366;
+     	 else if(((d<29&&m==2)||m<2)&&is(y))
+     		 x=366;
+     	 else
+     		 x=365;    	 
+         while(sum>=x)
+         {   	 
+          	 sum-=x;
+          	 y++; 
+          	if((m>2||(m==2&&d==29))&&is(y+1))
+        		 x=366;
+       	 else if(((d<29&&m==2)||m<2)&&is(y))
+        		 x=366;
+        	 else
+        		 x=365;    
+          }
+         
+         //System.out.println(""+sum);
+         if(is(y))
+         {
+         	months[2] = 29;
+         	x = 366;
+         }
+        	while(sum > months[m]) {
+        		sum -= months[m];
+        		m++;
+        		if(m>12) {
+        			m=1;
+        			y++;
+               		if(is(y)) {
+               			months[2] = 29;
+               		}
+               		else {
+               			months[2] = 28;
+               		}
+        		}
+        	}
+        
+        String s;
+        if(m < 10 && sum <10) {
+            s = y + "-0" + m + "-0" + sum;
+            return s;
+        }
+        else if(m<10&&sum>=10) {
+        	s = y + "-0" + m + "-" + sum;
+        	return s;
+        }
+        else if(m>=10&&sum<10) {
+        	s = y + "-" + m + "-0" + sum;
+        	return s;
+        }
+        else {
+        	s = y + "-" + m + "-" + sum;
+        	return s;
+        }
+        /********* End ****** ***/
+	}
+	public static boolean is(int year)
+	{
+		return (year % 400 ==0)||(year % 4 == 0 && year % 100 !=0);
+	}
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	
+	
+	
+}

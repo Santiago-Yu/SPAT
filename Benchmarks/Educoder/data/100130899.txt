@@ -1,0 +1,54 @@
+package step4;
+
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public int[] sumArray(int[][] arr) {
+        int[] sumArr = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            int sum = 0;
+            for (int k : arr[i]) {
+                sum += k;
+            }
+            sumArr[i] = sum;
+        }
+        return sumArr;
+    }
+    
+    public void sortArray(int[] arr) {
+        for (int i = 0; i < arr.length - 1; i++) {
+            for (int j = 0; j < arr.length - 1 - i; j++) {
+                if (arr[j] < arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+    
+    public void sortArray(int[][] arr){
+		int[] sumArr = sumArray(arr);
+        for (int i = 0; i < sumArr.length - 1; i++) {
+            for (int j = 0; j < sumArr.length - 1 - i; j++) {
+                if (sumArr[j] < sumArr[j + 1]) {
+                    int temp = sumArr[j];
+                    sumArr[j] = sumArr[j + 1];
+                    sumArr[j + 1] = temp;
+
+                    int[] tempArr = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = tempArr;
+                }
+            }
+        }
+        for (int[] anArr : arr) {
+            sortArray(anArr);
+            System.out.println(Arrays.toString(anArr));
+        }
+    }
+    /********** END **********/
+}
+	

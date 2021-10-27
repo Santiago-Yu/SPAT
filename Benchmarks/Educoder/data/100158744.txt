@@ -1,0 +1,114 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+using namespace std;
+const int N = 100;
+char map2[N][N];
+char map[N][N];
+bool vis[N][N] = {0};
+int path[N][N];
+int dirx[4] = {-1,1,0,0};
+int diry[4] = {0,0,-1,1};
+int m,n;
+struct node{
+	int x,y;
+	int cnt;
+	node():cnt(0) {}
+	node(int xx,int yy,int c = 0) :x(xx),y(yy),cnt(c){}
+};
+/*void dfs(node s,node& t){
+	vis[s.x][s.y] = 1;
+	if(s.x == t.x&&s.y == t.y){
+		t.cnt = s.cnt;
+		return;
+	}
+	for(int i = 0;i<4;++i){
+		int nx = s.x + dirx[i];
+		int ny = s.y + diry[i];
+		if(nx < 0||nx >= m||ny < 0||ny >=n||map[nx][ny] == '0' || vis [nx][ny] == 1)
+			continue;
+		vis[nx][ny] = 1;
+		path[nx][ny] = i;
+		dfs(node(nx,ny,s.cnt+1),t);
+	}
+}*/
+int bfs(node s,node t){
+	queue<node> q;
+	q.push(s);
+	vis[s.x][s.y]=1;
+	while(!q.empty()){
+		node now = q.front();
+		q.pop();
+		if(now.x==t.x&&now.y==t.y)
+			return now.cnt;
+		for(int i =0;i<4;++i){
+			int nx=now.x+dirx[i];
+			int ny=now.y+diry[i];
+			if(nx<0||nx>=m||ny<0||ny>=n||map[nx][ny]=='1'||vis[nx][ny]==1)
+				continue;
+			q.push(node(nx,ny,now.cnt+1));
+			vis[nx][ny] = 1;
+			path[nx][ny] = i;
+		}
+	}
+	return -1;
+}
+void printPath(node s,node t){
+	stack<node> tmp;
+	tmp.push(t);
+	int x = t.x,y = t.y;
+	while(!(x == s.x&&y == s.y)){
+		int i = path[x][y];
+		x = x - dirx[i];
+		y = y - diry[i];
+		tmp.push(node(x,y));
+	}
+	tmp.pop();
+	cout <<"("<<s.x<<","<<s.y<<")";
+	while(!tmp.empty()){
+		node k = tmp.top();
+		tmp.pop();
+		cout<<endl;
+		cout <<"("<<k.x<<","<<k.y<<")";
+	}
+	cout << endl;
+}
+int main()
+{
+	m=5;
+	n=5;
+/*	for(int i = 0;i < m;++i){
+			cin >> map2[i];
+		}
+	for(int i = 0;i<5;i++)
+	{
+		for(int j =0;j<5;j++)
+		{
+			if(map2[i][j]=='0')map[i][j]='1';
+			else if(map2[i][j]=='1')map[i][j]='0';
+		}
+	}*/
+    int ddd ;
+	for(int i = 0;i < m;++i){
+        	for(int j = 0;j<n;j++){
+                scanf("%d",&ddd);
+                if(ddd==1) map[i][j]='1';
+                else map[i][j]='0';
+            }
+		}
+ /*   for(int i = 0;i < m;++i){
+        	for(int j = 0;j<n;j++){
+                printf("%c",map[i][j]);
+            }
+    }*/
+		node s,t;
+		s.x=0;
+		s.y=0;
+		t.x=4;
+		t.y=4;
+		bfs(s,t);
+		printPath(s,t);
+		
+	return 0;
+}

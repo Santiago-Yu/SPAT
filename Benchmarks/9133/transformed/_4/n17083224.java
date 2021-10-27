@@ -1,0 +1,23 @@
+class n17083224 {
+	public List<String> extractUrlList(String url) throws IOException, XPathExpressionException {
+		LinkedList<String> list = new LinkedList<String>();
+		HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+		Tidy tidy = new Tidy();
+		tidy.setErrout(new NullPrintWriter());
+		Document doc = tidy.parseDOM(conn.getInputStream(), null);
+		int len = conn.getContentLength();
+		len = (len <= 0) ? 32000 : len;
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(len);
+		PrintStream ps = new PrintStream(bout);
+		tidy.pprint(doc, ps);
+		ps.flush();
+		String content = bout.toString();
+		Pattern p = Pattern.compile("(http://[\\w\\\\\\./=&?;-]+)");
+		Matcher m = p.matcher(content);
+		while (m.find()) {
+			list.add(m.group());
+		}
+		return list;
+	}
+
+}

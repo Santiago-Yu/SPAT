@@ -1,0 +1,70 @@
+package step1;
+
+public class Task {
+    static boolean judge = true;
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        boolean running = true;
+        int temp = 0;
+
+        while(running){
+            new Task().shun(arr);
+            new Task().ni(arr);
+            temp++;
+
+            if(temp == 5){
+                running = false;
+            }
+        }
+        if(judge){
+            for(int i = 0;i<arr.length;i++){
+                System.out.print(arr[i]+" ");
+            }
+            System.out.print("\n");
+        }
+
+		
+		/********* End *********/
+	}
+       public void shun(Integer []arr){
+
+        int temp = 0;
+        for(int i = 0;i<arr.length-1;i++){
+
+            if(arr[i]>arr[i+1]){
+
+                temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
+
+                for(int m = 0;m<arr.length;m++) {
+                    System.out.print(arr[m]+" ");
+                }
+                System.out.print("\n");
+                judge = false;
+            }
+        }
+
+    }
+
+    public void ni(Integer arr[]){
+        int temp = 0;
+        for(int i = arr.length-1;i>0;i--){
+            if(arr[i]<arr[i-1]){
+                temp = arr[i];
+                arr[i] = arr[i-1];
+                arr[i-1] = temp;
+                for(int m = 0;m<arr.length;m++) {
+                    System.out.print(arr[m]+" ");
+                }
+                System.out.print("\n");
+
+                judge = false;
+
+            }
+        }
+
+
+    }
+}

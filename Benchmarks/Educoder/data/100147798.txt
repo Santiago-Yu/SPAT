@@ -1,0 +1,25 @@
+package step4;
+
+//注意文件名，这里应该写MyThread类
+/***begin your code here***/
+class MyThread extends Thread {
+	private int a;
+	public MyThread(int a){
+		this.a=a;
+	}
+	public void run(){
+		try{
+		//new Thread(new MyRunnable()).join();
+		Thread.sleep(1000);}
+		catch(InterruptedException e){
+			e.printStackTrace();
+		}
+
+		int result=1;
+		for(int i=1;i<=a;i++)
+		result*=i;
+		System.out.println(result);
+	}
+}
+/***end your code***/
+

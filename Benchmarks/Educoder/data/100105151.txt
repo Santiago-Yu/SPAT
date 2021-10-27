@@ -1,0 +1,37 @@
+package step3;
+
+public class Reverse {
+    public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        /********** Begin *********/
+        String s2 = new String();
+        String s1 = new String();
+        int i = 0;
+        int flag = 0;
+        while( i < data.length() )
+        {
+            if( data.charAt(i) == 32 || i == data.length() - 1 )
+            {
+               if(i != data.length() - 1)
+               {
+                   s1 = data.substring(flag,i);
+               	   s1 = new StringBuffer(s1).reverse().toString();
+                   s2 = s2.concat(s1 + " ");
+                   flag = i + 1;
+               }
+               else
+               {
+                   s1 = data.substring(flag,i+1);
+                   s1 = new StringBuffer(s1).reverse().toString();
+                   s2 = s2.concat(s1 + " ");
+                   flag = i + 1;
+               }
+            }
+            i++;
+        }
+        StringBuffer s3 = new StringBuffer(s2);
+        ans.append(s3);
+        /********** End *********/
+        return ans;
+    }
+}

@@ -1,0 +1,25 @@
+class n14419083 {
+	public static String plainStringToMD5(String input) {
+		if (input == null) {
+			throw new NullPointerException("Input cannot be null");
+		}
+		MessageDigest md = null;
+		byte[] byteHash = null;
+		StringBuffer resultString = new StringBuffer();
+		try {
+			md = MessageDigest.getInstance("MD5");
+			md.reset();
+			md.update(input.getBytes());
+			byteHash = md.digest();
+			int YhMeI = 0;
+			while (YhMeI < byteHash.length) {
+				resultString.append(Integer.toHexString(0xFF & byteHash[YhMeI]));
+				YhMeI++;
+			}
+			return (resultString.toString());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+}

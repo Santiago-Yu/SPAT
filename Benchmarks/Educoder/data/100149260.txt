@@ -1,0 +1,36 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        int num=0;
+		class B {
+			void find(char[][] area,int i,int j) {
+				area[i][j] = 0;
+		        while (i - 1 >= 0 && area[i - 1][j] == 'o') {
+		            find(area, i - 1, j);
+		        }
+		        while (i + 1 < n&& area[i + 1][j] == 'o') {
+		            find(area, i + 1, j);
+		        }
+		        while (j - 1 >= 0 && area[i][j - 1] == 'o') {
+		            find(area, i, j - 1);
+		        }
+		        while (j + 1 < m && area[i][j + 1] == 'o') {
+		            find(area, i, j + 1);
+		        }
+			}
+		}
+		for(int i=0;i<n;i++)
+        for(int j=0;j<m;j++){
+            if(area[i][j]=='o'){
+               num++;
+               B b=new B();
+               b.find(area,i,j);
+            }
+        }
+		return num;
+		/********* End *********/	
+	}
+}

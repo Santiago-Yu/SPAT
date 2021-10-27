@@ -1,0 +1,26 @@
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		int q = 1;
+		int w = 1;
+
+		int x = scanner.nextInt();
+		if (x == 1) {
+			System.out.print(x);
+		}
+
+		int ans = 0;
+		for (int i = 1; i < x; i++) {
+			ans = q + w;
+			w = q;
+			q = ans;
+		}
+		System.out.print(ans);
+		scanner.close();
+
+	}
+
+}

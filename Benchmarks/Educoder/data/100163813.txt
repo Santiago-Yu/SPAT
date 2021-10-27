@@ -1,0 +1,25 @@
+package step2;
+import java.util.Scanner;
+public class SumOfDigit {
+		public static void main(String[] args) {
+			int number;
+			int sum=0;
+			Scanner scan1=new Scanner(System.in);
+	        number=scan1.nextInt();
+			/******Begin******/
+			int a = number%10;
+			int b = (number%100-a)/10;
+			int c = (number%1000 - b*10 - a)/100;
+			int d = (number%10000 - c*100-b*10 -a )/1000;
+			int e = number/10000;
+
+			
+			System.out.print(a+b+c+d+e);
+
+
+	         
+	        
+	                    
+			/******End******/
+		}
+}

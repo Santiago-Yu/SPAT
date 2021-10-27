@@ -1,0 +1,36 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		int re = feibo(num);
+		System.out.println("子线程计算结果为："+re);
+		sc.close();
+		
+		
+	}
+    public static int feibo(int num){
+		if(num==1||num==2)
+			return 1;
+		else if(num==3)
+			return 2;
+		else 
+			return feibo(num-1)+feibo(num-2);
+	}
+}
+
+
+class MyThread  implements Runnable   {
+
+    public void run(){
+    	
+    
+    }
+	
+	
+
+}

@@ -1,0 +1,58 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int feb=28;
+        if((((year%4)==0)&&((year%100)!=0))||((year&400)==0))
+        {
+            feb=29;
+        }
+        int daycount=0;
+        switch(month)
+        {	
+            	case 1:
+                daycount=day;
+                break;
+            	case 2:
+                daycount=31+day;
+                break;
+            	case 3:
+                daycount=31+feb+day;   
+                break;
+        	 	case 4:
+                daycount=31+feb+31+day;
+                break;
+                 case 5:
+                daycount=31+feb+31+30+day;
+                break;
+                 case 6:
+                daycount=31+feb+31+30+31+day;
+                break;
+                 case 7:
+                daycount=31+feb+31+30+31+30+day;
+                break;
+                 case 8:
+                daycount=31+feb+31+30+31+30+31+day;
+                break;
+                 case 9:
+                daycount=31+feb+31+30+31+30+31+31+day;
+                break;
+                 case 10:
+                daycount=31+feb+31+30+31+30+31+31+30+day;
+                break;
+                 case 11:
+                daycount=31+feb+31+30+31+30+31+31+30+31+day;
+                break;
+                 case 12:
+                daycount=31+feb+31+30+31+30+31+31+30+31+30+day;
+                break;
+            default:
+                System.out.print("请输入1-12月份");
+                
+        }
+		System.out.print(daycount);
+
+		/********** End *********/
+	}
+}

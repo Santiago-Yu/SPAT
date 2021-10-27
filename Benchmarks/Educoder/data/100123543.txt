@@ -1,0 +1,32 @@
+package step5;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class HelloWorld {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		//动态创建数组
+		int[] arr = new int[sc.nextInt()];
+		for(int i = 0 ; i< arr.length ; i++){
+			arr[i] = sc.nextInt();
+		}
+		/********** Begin **********/
+		boolean flag=true;          //flag用来判断是否数组已经有序
+        for(int i=arr.length-1;i>0&&flag;i--) {
+        	for(int j=0;j<i;j++) {
+        		flag=false;
+        		if(arr[j+1]<arr[j]) {
+        			int t=arr[j];
+        			arr[j]=arr[j+1];
+        			arr[j+1]=t;
+        			flag=true;
+        		}
+        	}
+        }
+        	System.out.println(Arrays.toString(arr));;
+ 
+		/********** End **********/
+	}
+}	
+

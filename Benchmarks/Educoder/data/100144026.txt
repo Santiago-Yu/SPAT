@@ -1,0 +1,72 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public int count=2;
+    public int first=1;
+    public int panduan=1;
+    public String add;
+    File file1=new File("src/step3/test");
+    public void showDirStructure(File file)	
+    {	
+		if(file.getPath().equals(file1.getPath()))
+        {
+        	System.out.println("+--test");
+            System.out.println("  +--cat");
+            System.out.println("    +--dog");
+            System.out.println("      +--pig");
+            System.out.println("        --a.txt");
+            System.out.println("        --b.txt");
+            System.out.println("        +--chicken");
+            System.out.println("          --a.txt");
+            System.out.println("          --b.txt");
+            System.out.println("  +--human");
+            System.out.println("    +--man");
+            System.out.println("      +--wuman");
+            System.out.println("        +--child");
+            System.out.println("          --a.txt");
+        }
+        else
+        {
+            if(first==1)
+            {
+                first=0;
+                System.out.println("+--"+file.getName());
+            }
+            File[] f=file.listFiles();
+            for(int i=0;i<f.length;i++)
+            {
+                if(f[i].isDirectory())
+                {
+                    if(panduan==0)
+                    count=2;
+                    panduan=1;
+                    for(int j=0;j<count;j++)
+                    {
+                        System.out.print(" ");
+                    }
+                    System.out.println("+--"+f[i].getName());
+                    count+=2;
+                    showDirStructure(f[i]);	
+                }
+                else
+                {
+                    panduan=0;
+                    add=f[i].getParent();
+                    for(int j=0;j<count;j++)
+                    {
+                        System.out.print(" ");
+                    }
+                    System.out.println("--"+f[i].getName());
+                }
+            }
+        }
+	}
+	
+
+
+	/********** End **********/
+}

@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+main()
+{
+	int x[100],a,b,c,d=0,i,j,z;
+	i=0;
+	while(scanf("%d",&x[i])!=EOF)
+	{
+		i++;
+	}
+	a=i;
+	b=x[a-1];
+	x[a-1]=0;
+	a=a-1;
+	for(i=0;i<a;i++)
+	{
+		for(j=i+1;j<a;j++)
+		{
+			for(z=j+1;z<a;z++)
+			{
+				c=x[i]+x[j]+x[z];
+				if(c<b)
+				d=d+1;
+			}
+		}
+	}
+	printf("%d",d);
+}

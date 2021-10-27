@@ -1,0 +1,31 @@
+
+package step3;
+import java.util.Scanner;
+public class TestJava22KJ_2 {
+	public static void main(String[] args) {		
+			Scanner sc=new Scanner(System.in);
+	        
+			int n=sc.nextInt();
+			//此处调用JudgeEven方法，判断n是否能被2整除，输出相应的信息
+			int sum=0;
+			sum=TestJava22KJ_2.JudgeEven(n);			
+			if(sum%2==0){
+		    	System.out.println(n+"能被2整除！");
+		    }else{System.out.println(n+"不能被2整除！");}
+		}
+		/*******Start*********/
+		//此处定义一个方法，名为JudgeEven，实现判断某个整数的各位数字之和是否能被2整除的功能，如果能被2整除返回true，否则返回false
+		public static int JudgeEven(int a){
+			int sum=0;
+	    for(int y=0;y>=0;y++){
+	    	int b=(int) ((a/Math.pow(10,y))%10);
+	    if(b==0){break;}
+	    sum+=b;	    
+	    }	    
+	    return sum;
+	    }
+		
+		/*******End*********/
+	
+
+	}

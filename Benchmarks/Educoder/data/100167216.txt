@@ -1,0 +1,41 @@
+package jdbcTest;
+
+import jdbc.jdbcConn;
+import java.sql.*;
+
+public class Test1 {
+    public static void main(String[] args) throws SQLException {
+        jdbcConn.getConn();
+        try {
+            Class.forName("com.mysql.jdbc.Driver" );
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        String url = "jdbc:mysql://localhost:3306/mysql_db";
+        Connection conn = DriverManager.getConnection (url,"root","123123" );
+
+        PreparedStatement pst = null;
+        try {
+            pst = conn.prepareStatement("select * from student");
+            ResultSetMetaData rsd = pst.executeQuery().getMetaData();
+            for(int i = 1; i <= rsd.getColumnCount(); i++) {
+                String columnTypeName = rsd.getColumnTypeName(i);
+                String columnName = rsd.getColumnName(i);
+                int columnDisplaySize = rsd.getColumnDisplaySize(i);
+                System.out.println(columnName+" "+columnTypeName+"("+columnDisplaySize+")");
+            }
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (pst!=null)
+                    pst.close();
+                if (conn != null)
+                    conn.close();
+            } catch(SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+}

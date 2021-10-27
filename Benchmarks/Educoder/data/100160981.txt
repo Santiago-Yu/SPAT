@@ -1,0 +1,57 @@
+package step2;
+import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+	//获取“http://www.ctrip.com”的Docment对象
+	public Document getDoc1(String url) throws IOException{
+//    Document doc1=Jsoup.parse(new File(".backups/www.ctrip.com.txt"),"UTF-8","ctrip");//从本地去访问	
+   File file=new File("./backups/www.ctrip.com.txt");
+   Document doc1=Jsoup.parse(file,"UTF-8","http://www.ctrip.com");
+		return doc1;
+	}
+
+	//获取“http://you.ctrip.com/”的Docment对象
+	public Document getDoc2(String url) throws IOException{
+ File file=new File("./backups/you.ctrip.com.txt");
+ Document doc2=Jsoup.parse(file,"UTF-8","http://you.ctrip.com/");//从本地去访问	
+        
+return doc2;
+	}
+
+	//获取所有链接
+	public Elements getLinks(Document doc){
+    Elements links=doc.select("link[href]");
+		return links;
+	}
+	
+	//获取第一个class为“pop_attention”的div
+	public Element getDiv(Document doc){
+ /*for (Element link : links) {
+		 System.out.println(link);
+		 }*/
+         Element masthead=doc.select("div.pop_attention").first();
+		return masthead;
+	}
+	
+	//获取所有li之后的i标签
+	public Elements getI(Document doc){
+  Elements resultLinks=doc.select("li>i");
+       /* for(int i=0;i<2;i++) {
+		System.out.println(links.get(i));
+            
+        //输出结果，第一次出现class为pop_attention的div
+		if(masthead!=null) 
+		System.out.println(masthead.toString());
+            
+            for(int j=0;j<2;j++)
+		System.out.println(resultLinks.get(j));
+	    }*/
+		return resultLinks;
+	}
+	
+}

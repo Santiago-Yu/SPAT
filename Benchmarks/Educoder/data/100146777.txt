@@ -1,0 +1,38 @@
+package step1;
+
+import java.util.Arrays;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+        Arrays.sort(nums);
+		StringBuffer strbf = new StringBuffer();
+		if(nums[0] != 1)
+		{
+			for(int j = 1 ; j < nums[0] ; j ++)
+			{
+					strbf.append(j);
+			}
+		}
+		for(int i = 0 ; i < nums.length - 1 ; i ++)
+		{
+			for(int j = 1 ; j < nums[i+1]-nums[i] ; j ++)
+			{
+					strbf.append(nums[i]+j);
+			}
+		}
+		if(nums[nums.length-1] != 10000)
+		{
+			for(int j = 1 ; j < 10000-nums[nums.length-2] ; j ++)
+			{
+					strbf.append(nums[nums.length-2]+j);
+			}
+		}
+		String str = strbf.toString();
+		long temp = Long.parseLong(str);
+		return (int) (temp%11);
+    }
+	/********* End *********/
+}

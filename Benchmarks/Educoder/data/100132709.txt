@@ -1,0 +1,29 @@
+package step3;
+
+public class Task {
+
+	public int countOfShips(char[][] ferry) {
+		int num=0;
+    	for(int i=0;i<ferry.length;i++) {
+			for(int j=0;j<ferry[0].length;j++) {
+				if(ferry[i][j]=='+') {
+					num++;
+					eraseShip(ferry, i, j);
+				}
+			}
+		}
+    
+	return num;
+	}
+	public void eraseShip(char[][] ferry,int m,int n) {
+		if(ferry[m][n]=='+') {
+			ferry[m][n]='o';
+			if(m<ferry.length-1) {
+				eraseShip(ferry, m+1, n);
+			}
+			if(n<ferry[0].length-1) {
+				eraseShip(ferry, m, n+1);
+			}
+		}
+	}
+}

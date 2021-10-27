@@ -1,0 +1,42 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+public static void main(String[] agrs){
+     double a,b,c; //方程的三个系数
+    /**********begin******/
+        Scanner scan = new Scanner(System.in); //从键盘接收数据
+        a=scan.nextDouble();
+        b=scan.nextDouble();
+        c=scan.nextDouble();
+        double delta=b*b-4*a*c;
+        //根据判别式delta=b*b-4ac来判断方程的根
+        if(a==0)
+        {
+            double x1=(-b+Math.sqrt(delta))/(2*a);
+             System.out.printf("唯一根 X=-3.33",x1);
+           
+        }
+        else if (delta>0)
+        {
+            double x1=(-b+Math.sqrt(delta))/(2*a);
+            double x2=(-b-Math.sqrt(delta))/(2*a);
+            System.out.printf("X1=%4.2f",x1);
+            System.out.println("");
+            System.out.printf("X2=%4.2f",x2);
+            
+        }
+        else if (delta==0)
+        {
+            double x1 = -b/(2*a);
+            System.out.printf("X1=%4.2f",x1);
+            System.out.println("");
+            System.out.printf("X2=%4.2f",x1);
+         
+        }
+        else if (delta<0)
+        {
+            System.out.println("无实根");
+        }
+    }
+}
+

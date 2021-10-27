@@ -1,0 +1,67 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcConn {
+    public static void getConn() {
+        /**********    Begin   **********/
+        try {
+			//1.注册驱动
+			Class.forName("com.mysql.jdbc.Driver");
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        /**********    End   **********/
+
+
+        /**********    Begin   **********/
+        Connection conn = null;
+        Statement statement = null;
+        //2.建立连接并创建数据库和表
+		String url = "jdbc:mysql://localhost:3306/";
+		String user = "root";
+		String password = "123123";
+		try{
+			conn = DriverManager.getConnection(url,user,password);
+			statement = conn.createStatement();
+		
+			String sql1 = "drop database if exists mysql_db";
+			String sql2 = "create database mysql_db";
+			statement.executeUpdate(sql1);
+			statement.executeUpdate(sql2);
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		try{
+			statement.executeUpdate("use mysql_db");
+			String sql = "create table student(" +
+                "id int not null, " +
+                "name varchar(20), " +
+                "sex varchar(4), " +
+                "age int" +
+                ")";
+			statement.executeUpdate(sql);
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
+		
+
+
+
+        
+
+        /**********    End   **********/
+        finally {
+            try {
+                if(statement!=null)
+                    statement.close();
+                if(conn!=null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+}

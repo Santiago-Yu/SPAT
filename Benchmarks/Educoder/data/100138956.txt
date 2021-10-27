@@ -1,0 +1,23 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+        int FeB[] =new int[100];
+        FeB[0]=FeB[1]=1;
+        for(int x=2; x<100 ;x++)
+        {
+          FeB[x]=FeB[x-1]+FeB[x-2];
+        }
+         System.out.println("子线程计算结果为："+FeB[num-1]);    
+	}
+}
+
+
+class MyThread extends Thread{
+
+}

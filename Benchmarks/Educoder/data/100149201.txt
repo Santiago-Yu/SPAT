@@ -1,0 +1,42 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int count = 0;
+		
+		for(int i=0; i<n; i++) {
+			for(int j=0; j<m; j++) {
+				if(area[i][j] == 'o') {
+					dg(i, j, area);
+					count++;
+				}
+			}
+		}
+		
+		return count;
+
+		
+		/********* End *********/	
+	}
+    void dg(int x, int y, char[][] area) {
+		int n = area.length;
+		int m = area[0].length;
+		area[x][y] = 'x';
+		
+		if(x-1>=0 && area[x-1][y] == 'o') {
+			dg(x-1, y, area);
+		}
+		if(x+1<n && area[x+1][y] == 'o') {
+			dg(x+1, y, area);
+		}
+		if(y-1>=0 && area[x][y-1] == 'o') {
+			dg(x, y-1, area);
+		}
+		if(y+1<m && area[x][y+1] == 'o') {
+			dg(x, y+1, area);
+		}
+	}
+
+}

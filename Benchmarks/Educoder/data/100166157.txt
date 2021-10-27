@@ -1,0 +1,47 @@
+package step1;
+import java.util.*;
+public class Person {
+    private String name; 
+    private String number; //身份证号
+    private Date birthday; //出生日期
+    public Person(){
+        
+        name="null";
+        number="null";
+            birthday=new Date(1999,9,9);
+    }
+    public String getnum(){
+     return number;     
+    }
+     public Date getd(){
+     return birthday;     
+    }
+     public String getname(){
+     return name;     
+    } 
+    public int gety(){
+     return birthday.getYear();     
+    }
+    public int getm(){
+     return birthday.getMonth();     
+    }
+    public int getdd(){
+     return birthday.getDay();     
+    }
+public Person(String name,String num,Date birthday){
+this.name=name;
+    this.number=num;
+    this.birthday=new Date(birthday);
+}
+public Person(String name,String num,int year,int month,int day){
+this.name=name;
+    this.number=num;
+birthday=new Date(year,month,day);
+}
+   public String toString(){
+      return  "name="+name+" number="+number+" birthday:"+birthday.getYear()+"."+birthday.getMonth()+"."+birthday.getDay();
+         
+   }
+     
+   /************End*************/
+}

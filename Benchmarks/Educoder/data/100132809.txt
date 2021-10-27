@@ -1,0 +1,62 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+         if(ferry.length == 0)
+             return 0;
+	 	int count = 0;
+		for(int i = 0; i < ferry.length ; i ++ ) {
+			for(int j = 0; j < ferry[i].length; j ++) {
+				if(ferry[i][j] == '+') {
+					//判断上下是否有点，如果有则推出
+					if( i > 0) {
+						if(ferry[i-1][j] =='+') {
+							break;
+						}
+					}
+					if( i < ferry.length -1) {
+						if(ferry[i + 1][j] == '+') {
+							break;
+						}
+					}
+					while(j < ferry[i].length - 1 && ferry[i][j+1] == '+') {
+						j ++;
+					}
+					count ++;
+				}
+			}
+            
+        }
+        for(int i = 0; i < ferry[0].length; i ++) {
+			for(int j = 0; j < ferry.length; j ++) {
+				if(ferry[j][i] == '+') {
+//					判断左右是否有点
+					if( i > 0) {
+						if(ferry[j][i - 1] =='+') {
+							break;
+						}
+					}
+					if( i < ferry[0].length -1) {
+						if(ferry[j][i + 1] == '+') {
+							break;
+						}
+					}
+                    boolean flag = false;
+					while(j < ferry.length - 1 && ferry[j + 1][i] == '+') {
+                        flag =true;
+						j ++;
+					}
+                    if(flag)
+						count ++;
+				}
+			}
+		}
+        
+        return count;
+	 
+         
+      /***********END ***************/
+	 }
+}

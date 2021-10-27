@@ -1,0 +1,42 @@
+package Q201;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+		int n = 0;
+		String s = sc.nextLine();
+		char[] c1 = s.toCharArray();
+		int[] a1 = new int[c1.length];
+		for(int i=0;i<c1.length;i++)
+		{
+			a1[i] = Integer.parseInt(c1[i]+"");
+			n = n+a1[i]*a1[i];
+		}
+		if(n==1) {
+			System.out.print("YES");
+		}else {
+			int sum = 0;
+			for(;sum<1000;sum++)
+			{
+				s = n+"";
+				n = 0;
+				char[] c = s.toCharArray();
+				int[] a = new int[c.length];
+				for(int i=0;i<c.length;i++)
+				{
+					a[i] = Integer.parseInt(c[i]+"");
+					n = n+a[i]*a[i];
+				}
+				if(n==1) {
+					System.out.print("YES");
+					break;
+				}
+			}
+			if(sum>=1000)
+				System.out.print("NO");
+		}
+	}
+
+}

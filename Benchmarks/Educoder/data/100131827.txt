@@ -1,0 +1,39 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    public  boolean testSuffix(String suffix) {
+        return suffix.equals(".jpg") ||
+                suffix.equals(".png") ||
+                suffix.equals(".bmp");
+    }
+
+    public  void dfs(File dir, int tab) {
+        if (dir.isDirectory()) {
+            for (int i = 0; i < tab; i++) {
+                System.out.print(" ");
+            }
+            System.out.println("+--" + dir.getName());
+            for (File file : dir.listFiles()) {
+                dfs(file, tab + 2);
+            }
+        } else {
+            if (testSuffix(dir.getName().substring(dir.getName().length() - 4, dir.getName().length()))){
+                for (int i = 0; i < tab; i++) {
+                    System.out.print(" ");
+                }
+                System.out.println("--" + dir.getName());
+            }
+        }
+
+    }
+
+    public  void showDirStructure(File dir) {
+        dfs(dir, 0);
+    }
+
+	/********** END **********/
+}

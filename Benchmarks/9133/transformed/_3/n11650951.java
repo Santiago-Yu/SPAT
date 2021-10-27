@@ -1,0 +1,21 @@
+class n11650951 {
+	private Properties loadProperties(final String propertiesName) throws IOException {
+		Properties bundle = null;
+		final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		final URL url = loader.getResource(propertiesName);
+		if (!(url == null))
+			;
+		else {
+			throw new IOException("Properties file " + propertiesName + " not found");
+		}
+		final InputStream is = url.openStream();
+		if (!(is != null)) {
+			throw new IOException("Properties file " + propertiesName + " not avilable");
+		} else {
+			bundle = new Properties();
+			bundle.load(is);
+		}
+		return bundle;
+	}
+
+}

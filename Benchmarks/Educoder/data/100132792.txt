@@ -1,0 +1,79 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+         char flag=' ';
+	  for(int i=0;i<ferry.length;i++)
+      {
+          for(int j=0;j<ferry[i].length-1;j++)
+          {
+              if(ferry[i][j] == '+' && ferry[i][j+1]=='+')
+              {
+                  flag = 'h';
+                  break;
+              }
+              if(flag == 'h') break;
+          }
+      }
+      if(flag != 'h' && ferry.length != 0) flag ='s';
+      if(ferry.length == 1)
+      {
+          for(int i=0;i<ferry[0].length;i++)
+          {
+              if(ferry[0][i] == 'o') 
+              {
+                  flag ='s';
+                  break;
+              }
+          }
+          if(flag != 's') return 1;
+      }
+      else if(ferry.length != 0 && ferry[0].length == 1)
+      {
+          for(int i=0;i<ferry.length;i++)
+          {
+              if(ferry[i][0] == 'o') 
+              {
+                  flag ='h';
+                  break;
+              }
+          }
+          if(flag != 'h') return 1;
+      }
+         
+      int nums=0;
+      if(flag == 'h')
+      {
+          for(int i=0;i<ferry.length;i++)
+          {
+              for(int j=0;j<ferry[i].length;j++)
+              {
+                  if(ferry[i][j] =='+')
+                  {
+                      nums++;
+                      break;
+                  }
+              }
+          }
+      }
+      else if(flag == 's')
+      {
+          for(int i=0;i<ferry[0].length;i++)
+          {
+              for(int j=0;j<ferry.length;j++)
+              {
+                  if(ferry[j][i] =='+')
+                  {
+                      nums++;
+                      break;
+                  }
+              }
+          }
+      }
+      return nums;
+   
+      /***********END ***************/
+	 }
+}

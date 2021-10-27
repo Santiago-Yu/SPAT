@@ -1,0 +1,53 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static int[] ifRepeat(int[] arr){
+		int t=0;//用来记录去重后的数组长度
+		int[] tempArr = new int[arr.length];
+		//遍历原数组
+		for(int i=0;i<arr.length;i++){
+			boolean isTrue = true;
+			for(int j=i+1;j<arr.length;j++){
+				if(arr[i]==arr[j]){
+					isTrue = false;
+					break;
+				}
+			}
+			if(isTrue){
+				tempArr[t] = arr[i];
+				t++;
+			}
+		}
+		int[] recordRecovery = new int[t];
+		System.arraycopy(tempArr, 0, recordRecovery, 0, t);
+		return recordRecovery;
+	}
+    
+    public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		//int count = 0;
+        int[] record = new int[10];
+        //int[] recordRecovery = new int[count];
+        
+        /********** Begin *********/
+        //获取键盘输入的值
+        for(int i=0;i<10;i++){
+        	int x = scanner.nextInt();
+        	record[i] = x;
+        }
+        
+        int[] recordRecovery = ifRepeat(record);
+        
+        Arrays.sort(recordRecovery);
+        /********** End *********/
+        for (int i = 0; i < recordRecovery.length; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i != recordRecovery.length - 1) {
+                System.out.print(' ');
+            }
+        }
+	}
+}

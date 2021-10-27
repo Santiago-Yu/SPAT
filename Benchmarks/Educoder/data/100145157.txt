@@ -1,0 +1,36 @@
+package step2;
+
+public class Task {
+
+	 public int getNum(int n){
+		/********* Begin *********/
+                
+		   int i=0;
+                while(n>0){
+                 
+                    if(n%2==1)
+                    {i++;
+                       // System.out.println(n);
+                    }
+                
+                     n=n/2;   
+                    getNum(n);
+                
+                
+                }
+		
+		
+		return i;
+		/********* End *********/
+	}
+        
+        public static void main(String[] args) {
+            Task task=new Task();
+            int n=0;
+            n=task.getNum(1544);
+            System.out.println(n);
+            
+            
+        
+    }
+}

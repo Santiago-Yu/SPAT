@@ -1,0 +1,62 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        String filePath1="backups/hotels.ctrip.com_domestic-city-hotel.txt";
+	Document doc = Jsoup.parse(new File(filePath1),"UTF-8");
+                 return doc;
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+		File file=new File("C:\\Users\\lzh\\eclipse-workspace\\大数据应用开发3182\\DATE\\新建文本文档 .txt");//设置本地文件路径
+		//Document doc = Jsoup.parse(file, "UTF-8");//取文件中的html，并指定编码集
+		 List<HotelCity> cities = new ArrayList<HotelCity>();
+		Element e1 = doc.getElementsByClass("pinyin_filter_detail layoutfix").first();
+		Elements e2 = e1.getElementsByTag("dt");
+		int i=1;
+	  for (Element element : e2) {
+		Element dd = element.nextElementSibling();
+		  Elements tage = dd.children();
+		 
+		  for (Element element2 : tage) {
+			
+			  String pinyin=element.text();
+			  String text = element2.text();
+			  String city=element2.attr("href").replace("/hotel/", "").replaceAll("[a-z]*", "");
+			  String city2=element2.attr("href").replace("/hotel/", "").replaceAll("[0-9]*", "");
+			  HotelCity city3 = new HotelCity();
+			  city3.setCityId(city);
+			  city3.setCityName(text);
+			  city3.setHeadPinyin(pinyin);
+			  city3.setPinyin(city2);
+			  cities.add(city3);
+			
+			
+		}
+		  
+		 
+		
+	}
+
+
+		return cities;
+		/**********   End   **********/
+	}
+}

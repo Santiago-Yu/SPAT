@@ -1,0 +1,42 @@
+package step2;
+import java.io.File;
+import java.io.IOException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+//获取“  http://www.ctrip.com”的Docment对象
+public Document getDoc1(String url) throws IOException{
+        File f1=new File("backups/www.ctrip.com.txt");
+     	Document doc  = Jsoup.parse(f1,"UTF-8","url");
+return doc;
+}
+
+//获取“http://you.ctrip.com/”的Docment对象
+public Document getDoc2(String url) throws IOException{
+        File f1=new File("backups/you.ctrip.com.txt");
+     	Document doc  = Jsoup.parse(f1,"UTF-8","url");
+return doc;
+}
+
+//获取所有链接
+public Elements getLinks(Document doc){
+Elements links = doc.select("link[href]");
+return links;
+}
+
+//获取第一个class为“pop_attention”的div
+public Element getDiv(Document doc){
+Element masthead = doc.select("div.pop_attention").first();
+return masthead;
+}
+
+//获取所有li之后的i标签
+public Elements getI(Document doc){
+Elements resultLinks = doc.select("li > i");
+return resultLinks;
+}
+
+}

@@ -1,0 +1,19 @@
+package step1;
+
+public class Task {
+    public static void main(String args[]){
+        Task task = new Task();
+        task.inversion("hello world");
+        task.inversion("hello");
+        task.inversion("www.educoder.net");
+    }
+	public String inversion(String str){
+		/********* Begin *********/
+		char[] array = str.toCharArray();
+        String reverse = "";
+        for (int i = array.length - 1; i >= 0; i--)
+            reverse += array[i];
+        return reverse;
+		/********* End *********/
+	}
+}

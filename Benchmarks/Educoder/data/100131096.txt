@@ -1,0 +1,33 @@
+package step1;
+
+public class Task {
+
+	int [] value = new int[1005];
+	
+	public int getSum(int num1, int num2) {
+        
+		/********** BEGIN **********/
+		
+		for(int i=1; i<=999; i++) {
+			getValue(i);
+		}
+		
+		int sum = 0;
+		for(int i=num1; i<=num2; i++) {
+			sum += value[i];
+		}
+		
+		return sum;
+		
+		/********** END **********/
+	}
+	
+	public void getValue(int n) {
+		int sum = 0;
+		String num = n + "";
+		for(int i=0; i<num.length(); i++) {
+			sum += num.charAt(i) - '0';
+		}
+		value[n] = sum;
+	}
+}

@@ -1,0 +1,47 @@
+package step2;
+
+public class BestTeam {
+
+    /********* Begin *********/
+
+    public static long currentMax = 0;
+    public static int k;
+    public static int d;
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance) {
+        int curNum = 0;
+        int curIndex = 0;
+        int preSumValue = 1;
+        int preIndex = -1;
+        d = distance;
+        k = selectedNum;
+
+        findMax(curNum, curIndex, preIndex, preSumValue, abilities);
+        return currentMax;
+    }
+
+    public static void findMax(int curNum, int curIndex, int preIndex, long preSumValue, int[] arr) {
+        if (curNum == k) {
+            if (preSumValue > currentMax) {
+                currentMax = preSumValue;
+            }
+            return;
+        }
+        if (curNum + arr.length - curIndex < k) {
+            return;
+        }
+        if (curIndex >= arr.length) {
+            return;
+        }
+        if (curNum < k) {
+            if (curIndex - preIndex <= d || preIndex == -1) {
+                findMax(curNum, curIndex + 1, preIndex, preSumValue, arr);
+                findMax(curNum + 1, curIndex + 1, curIndex, preSumValue * arr[curIndex], arr);//当前下标参与运算
+            } else {
+                return;
+            }
+        }
+    }
+
+    /********* End *********/
+}

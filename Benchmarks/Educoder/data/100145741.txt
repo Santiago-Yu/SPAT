@@ -1,0 +1,41 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+           String year = null;
+		String month = null;
+		String dayday = null;
+		java.util.regex.Pattern p = java.util.regex.Pattern.compile("(\\d{4})-(\\d{1,2})-(\\d{1,2})");
+		java.util.regex.Matcher m = p.matcher(releaseDate);
+		if (m.find()) {
+			year = m.group(1);
+			month = m.group(2);
+			dayday = m.group(3);
+			}
+		java.util.Date date = new java.util.Date();
+		java.util.GregorianCalendar gc = new java.util.GregorianCalendar();
+		gc.set(java.util.Calendar.YEAR, Integer.parseInt(year));//设置年
+		gc.set(java.util.Calendar.MONTH, Integer.parseInt(month)-1);//设置月
+		gc.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(dayday));//设置天
+		//System.out.println(year+month+dayday);
+		gc.add(java.util.Calendar.DAY_OF_YEAR, day);
+		date = gc.getTime();
+		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyy-MM-dd");
+		String str = sdf.format(date);
+		return str;
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

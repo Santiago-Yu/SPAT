@@ -1,0 +1,86 @@
+package step1;
+
+import java.util.Scanner;
+
+public class Task {
+
+		public static void main(String[] args) throws Exception{  
+		Scanner sc = new Scanner(System.in);
+		int test[] = new int[6] ; 
+		for (int i = 0;i<test.length ; i++) {
+			test[i] = sc.nextInt();		
+			}
+		String unput = sc.next();
+		int [] a =getArg1s(test);
+		sortArray(a, unput);
+			
+		}		
+    
+    public static int[] getArg1s(int args[]) {
+			int count = 0;
+			int[] recordRecovery = new int[args.length];
+
+			for (int i = 0; i < args.length; i++) {
+				boolean isTrue = true;
+				for (int j = i + 1; j < args.length; j++) {
+					if (args[i] == args[j]) {
+						isTrue = false;
+						break;
+					}
+				}
+				if (isTrue) {
+					// 没有元素就将原数组的元素赋给临时数组
+					recordRecovery[count] = (int) args[i];
+					// 走到这里证明当前元素没有重复，那么记录自增
+					count++;
+				}
+			}
+
+			int[] newArr = new int[count];// 5
+
+			System.arraycopy(recordRecovery, 0, newArr, 0, count);
+
+
+			return newArr;
+
+		}
+
+	public static void sortArray(int[] arr, String sort){
+		/********** BEGIN **********/
+		switch (sort) {
+			case "asc":
+				for (int i = 0; i < arr.length - 1; i++) {
+					for (int j = i + 1; j < arr.length; j++) {
+						if ((int) arr[i] >(int) arr[j]) {
+							int temp = (int) arr[i];
+							arr[i] = arr[j];
+							arr[j] = temp;
+						}
+					}
+				}
+				for (int i : arr) {
+					System.out.println(i);
+				}
+				
+				break;
+
+			case "desc":
+				
+				for (int i = 0; i < arr.length - 1; i++) {
+					for (int j = i + 1; j < arr.length; j++) {
+						if ((int) arr[i] < (int) arr[j]) {
+							int temp = (int) arr[i];
+							arr[i] = arr[j];
+							arr[j] = temp;
+						}
+					}
+				}
+				for (int i : arr) {
+					System.out.println(i);
+				}
+				break;
+			}
+		
+		/********** END **********/
+	}
+}

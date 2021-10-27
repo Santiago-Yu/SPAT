@@ -1,0 +1,26 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	private void deal(File file, String prefix) {
+		String fileName = file.getName();
+		if(file.isDirectory()) {
+			System.out.println(prefix + "+--" + fileName);
+			for(String childFile : file.list()) {
+				deal(new File(file.getAbsolutePath() + "/" + childFile), prefix + "  ");
+			}
+		}
+		else {
+			System.out.println(prefix + "--" + fileName);
+		}
+	}
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File dir)	{
+		deal(dir, "");
+	}
+	/********** END **********/
+	
+}

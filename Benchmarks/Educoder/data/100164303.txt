@@ -1,0 +1,19 @@
+package step4;
+import java.util.Scanner;
+public class Josephus {
+
+   	public static void main(String[] args) 
+	{
+		Scanner in=new Scanner(System.in);
+		int n,i,k,s;
+		n=in.nextInt();
+		k=in.nextInt();
+		for(i=2,s=0;i<=n;i++)
+		{
+			s=(s+k)%i;
+		}
+		s=++s;
+		System.out.print("最后一个人编号："+s);
+	}
+
+}

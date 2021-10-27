@@ -1,0 +1,72 @@
+package step3;
+
+import java.io.File;
+import java.io.IOException;
+
+public class Task {
+	private static int depth=0;
+    String img[] = { "bmp", "jpg", "jpeg", "png", "tiff", "gif", "pcx", "tga", "exif", "fpx", "svg", "psd",
+			"cdr", "pcd", "dxf", "ufo", "eps", "ai", "raw", "wmf" };
+	/********** BEGIN **********/
+	public void showDirStructure(File dir)	{
+		find(dir,depth);
+	}
+    private void find(File dir,int depth){
+		int filecount=0;  
+        //获取pathName的File对象  
+        //File dir = new File(dir1);  
+        //判断该文件或目录是否存在，不存在时在控制台输出提醒  
+        if (!dir.exists()) {  
+            System.out.println("do not exit");  
+            return ;  
+        }  
+        //判断如果不是一个目录，就判断是不是一个文件，时文件则输出文件路径  
+        if (!dir.isDirectory()) {  
+            if (dir.isFile()) {  
+                try {
+					System.out.println(dir.getCanonicalFile());
+				} catch (IOException e) {
+					// TODO 自动生成的 catch 块
+					e.printStackTrace();
+				}  
+            }  
+            return ;  
+        }
+        for (int j = 0; j < depth; j++) {  
+            System.out.print("  ");  
+        } 
+        System.out.print("+--");  
+        System.out.println(dir.getName());  
+        //获取此目录下的所有文件名与目录名  
+        String[] fileList = dir.list();  
+        int currentDepth=depth+1;
+        
+        for (int i = 0; i < fileList.length; i++) {  
+            //遍历文件目录  
+            String string = fileList[i];  
+            //File("documentName","fileName")是File的另一个构造器  
+            File file = new File(dir.getPath(),string);  
+            String name = file.getName();  
+            //如果是一个目录，搜索深度depth++，输出目录名后，进行递归  
+            if (file.isDirectory()) {  
+                //递归  
+                find(file,currentDepth);  
+            }else{  
+            	String fileType = name.substring(name.lastIndexOf(".") + 1, 
+            			name.length()).toLowerCase();
+            	for (int i1 = 0; i1 < img.length; i1++) {
+            		if (img[i1].equals(fileType)) {
+            			for (int j = 0; j < currentDepth; j++) {  
+                            System.out.print("  ");  
+                        }  
+                        System.out.print("--");  
+                        System.out.println(name);
+            		}
+            	}
+            }  
+        } 
+	}
+	
+
+	/********** END **********/
+}

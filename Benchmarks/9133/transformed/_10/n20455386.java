@@ -1,0 +1,47 @@
+class n20455386 {
+	@Override
+	public EntrySet read(EntrySet set) throws ReadFailedException {
+		if (!SourceCache.contains(url)) {
+			SSL.certify(url);
+			try {
+				final PipedInputStream in = new PipedInputStream();
+				super.setParser(Parser.detectParser(url.openStream(), url));
+				final PipedOutputStream forParser = new PipedOutputStream(in);
+				new Thread(new Runnable() {
+
+					public void run() {
+						try {
+							OutputStream out = SourceCache.startCaching(url);
+							byte[] buffer = new byte[100000];
+							InputStream is = url.openStream();
+							while (true) {
+								int amountRead = is.read(buffer);
+								if (amountRead == -1) {
+									break;
+								}
+								forParser.write(buffer, 0, amountRead);
+								out.write(buffer, 0, amountRead);
+							}
+							forParser.close();
+							out.close();
+							SourceCache.finish(url);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+				super.setIos(in);
+			} catch (Exception e) {
+				throw new ReadFailedException(e);
+			}
+			return super.read(set);
+		} else {
+			try {
+				return SourceCache.get(url).read(set);
+			} catch (IOException e) {
+				throw new ReadFailedException(e);
+			}
+		}
+	}
+
+}

@@ -1,0 +1,129 @@
+package step1;
+
+
+
+    class Person{
+	private String name,number;
+	private Date birthday;
+	public Person(){
+		this.name=name;
+		this.number=number;
+		birthday=new Date(1999,9,9);
+	}
+
+	public Person(String name,String number,Date birthday){
+		this.name=name;
+		this.number=number;
+		this.birthday=birthday;
+	}
+	public Person(String name,String number,int year,int month,int day){
+		this.name=name;
+		this.number=number;
+		birthday=new Date(year,month,day);
+	}
+	public void set_info(String name,String number,Date birthday){
+		this.name=name;
+		this.number=number;
+		this.birthday=birthday;
+	}
+	public void set_info(String name,String number,int year,int month,int day){
+		this.name=name;
+		this.number=number;
+		birthday.setDate(year,month,day);
+	}
+	public String get_name(){
+		return name;
+	}
+	public String get_num(){
+		return number;
+	}
+	public Date get_birthday(){
+		return birthday;
+	}
+	public String toString(){
+		return "name="+name+" number="+number+" birthday:"+birthday.toString();
+	}
+}
+
+class Student extends Person{
+	private int reg_Num;
+	 private Date reg_Day;
+	 public Student(){
+		
+		 super();
+		 reg_Day=new Date(1999,9,9);
+			
+		}
+	public Student(String name,String number,Date birthday,int reg_Num,Date reg_Day){
+		super(name,number,birthday);
+		
+		this.reg_Num=reg_Num;
+		this.reg_Day=reg_Day;
+	}
+	public Student(String name,String number,int year,int month,int day,int reg_Num,int reg_year,int reg_month,int reg_day){
+		super(name,number,year,month,day);
+		this.reg_Num=reg_Num;
+	//	reg_Day=new Date(reg_year,reg_month,reg_day);
+		
+	}
+	public void set_info(String name,String number,Date birthday,int reg_Num,Date reg_Day){
+		super.set_info(name, number, birthday);
+		this.reg_Num=reg_Num;
+		this.reg_Day=reg_Day;
+	}
+	
+	
+	public String toString(){
+		return super.toString()+"reg_num:"+reg_Num+"reg_day"+reg_Day;
+		
+	}
+	public int getreg_Num(){return reg_Num;}
+	public Date getreg_day(){return reg_Day;}
+}
+class course{
+	private int code;
+	private String courseName;
+	private Date testTime;
+	private int score;
+	public course(){
+		Date b = new Date(1999,9,9);
+    	testTime=b;
+    	courseName="";
+	}
+	public course(int code,String courseName,Date testTime,int score){
+		this.code=code;
+		this.courseName=courseName;
+		this.testTime=testTime;
+		this.score=score;
+	}
+	public course(int code,String courseName,int  year,int  month,int day,int score){
+		this.code=code;
+		testTime=new Date(year,month,day);
+		this.courseName = courseName;
+		this.score=score;
+	}
+	public void setcourse(int code,String courseName,Date testTime,int score){
+		this.code=code;
+		this.courseName=courseName;
+		this.testTime=testTime;
+		this.score=score;
+	}
+    public String getCourseName(){
+    	return courseName;
+    }
+    public Date testTime(){
+    	return testTime;
+    }
+    public int score(){
+    	return score;
+    }
+    public String toString(){
+    	return code+" "+courseName+" "+testTime+" "+score;
+    }
+}
+
+    
+    
+    
+
+

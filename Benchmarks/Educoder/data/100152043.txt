@@ -1,0 +1,29 @@
+package step1;
+
+public class Task {
+
+	public double solve(double x1, double y1, double r1,
+            double x2, double y2, double r2) {
+		  /********* Begin *********/
+			if(Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2))>=r1+r2)
+			{
+				return Math.PI*r1*r1+Math.PI*r2*r2;
+			}
+			else if(Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2))<=Math.abs(r1-r2))
+			{
+				return r1>r2?Math.PI*r1*r1:Math.PI*r2*r2;
+			}
+			else 
+			{
+				double P=(Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2))+r1+r2)/2;
+				double S=2*Math.sqrt(P*(P-r1)*(P-r2)*(P-Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2))));
+				double cosr1=(r1*r1+Math.pow(x1-x2,2)+Math.pow(y1-y2, 2)-r2*r2)/(2*r1*Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2)));
+				double cosr2=(r2*r2+Math.pow(x1-x2,2)+Math.pow(y1-y2, 2)-r1*r1)/(2*r2*Math.sqrt(Math.pow(x1-x2,2)+Math.pow(y1-y2, 2)));
+				double angle1=Math.abs(2*Math.acos(cosr1));
+				double angle2=Math.abs(2*Math.acos(cosr2));
+				return Math.PI*r1*r1+Math.PI*r2*r2-((angle1*r1*r1)/2+(angle2*r2*r2)/2-S);
+			}
+		
+		  /********* End *********/
+	  }
+}

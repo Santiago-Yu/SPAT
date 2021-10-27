@@ -1,0 +1,64 @@
+package step4;
+import java.util.Scanner;
+public class Josephus {
+	public static int circleRun(int person , int num)
+	{
+	int array[] = new int[person];
+	int flag = 0;
+	 int person_flag=0;
+
+
+	//-----------------初始化数组--------------------
+	for (int i = 0; i < person ; i++ )
+	{
+	array[i] = i+1;
+	}
+	//----------------执行约瑟夫环规则---------------------
+	while(person>1)
+	{
+	for (int i = 1; i <= num ; i++, flag++ )
+	{
+	if (flag == array.length)
+	{
+	flag = 0;
+	}
+	while(array[flag]==0)
+	{
+	flag++;
+	 if (flag == array.length)
+	{
+	flag = 0;
+	}
+	}
+	if (i==num )
+	{
+	array[flag] = 0;
+	person--;
+	}
+	}
+	}
+	//----------------遍历数组，不为零则返回--------------------
+	 for (int i = 0; i<array.length ; i++ )
+	{
+	if (array[i]!=0 )
+	{
+	 person_flag = array[i];
+	}
+	}
+	return person_flag;
+
+	}
+
+
+	public static void main(String[] args)
+
+	{
+		int total,number;
+		   Scanner scan=new Scanner(System.in);
+		   total=scan.nextInt();  //输入参与游戏的总人数
+		   number=scan.nextInt(); //输入要报的数字
+	System.out.print("最后一个人编号："+ circleRun(total,number));
+
+	}
+	}
+

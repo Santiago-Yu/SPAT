@@ -1,0 +1,47 @@
+package step2;
+
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int gyshu = gongy(length,width);  //正方形边长
+		int sum = length * width;     //总面积
+		int mj = gyshu * gyshu;      //正方形面积
+		int gshu = sum/mj;           //正方形个数
+		System.out.println(gyshu);
+		System.out.println(gshu);
+	}
+	static int gongy(int length,int width){
+		int gongyue=0;  
+        if(length < width)  
+        {   //交换a、b的值  
+        	length=length+width;  
+            width=length-width;  
+            length=length-width;  
+        }  
+        if(length%width==0)  
+        {  
+            gongyue = width;  
+        }  
+        while(length % width>0)  
+        {  
+            length=length%width;  
+            if(length<width)  
+            {  
+                length=length+width;  
+                width=length-width;  
+                length=length-width;  
+            }  
+            if(length%width==0)  
+            {  
+                gongyue = width;  
+            }  
+        }  
+        return gongyue;
+	}
+}

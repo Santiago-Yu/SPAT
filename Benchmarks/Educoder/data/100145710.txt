@@ -1,0 +1,49 @@
+package step4;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String outday="";
+		Calendar c = Calendar.getInstance();
+		
+		DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = null;
+		
+		try {
+			date = format1.parse(releaseDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		c.setTime(date);
+		c.add(Calendar.DATE, day);
+		outday=c.get(Calendar.YEAR)+"-";
+		int n=c.get(Calendar.MONTH)+1;
+		if(n<10) outday=outday+"0"+n;
+		else outday=outday+n;
+		
+		n=c.get(Calendar.DAY_OF_MONTH);
+		if(n<10) outday=outday+"-0"+c.get(Calendar.DAY_OF_MONTH);
+		else outday=outday+"-"+c.get(Calendar.DAY_OF_MONTH);
+		return outday;
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,26 @@
+package step3;
+import java.util.Scanner;
+public class GcdAndGcm {
+	public static void main(String[] args) {
+		/********** Begin *********/
+		Scanner sc=new Scanner(System.in);//键盘输入数据
+		int a=sc.nextInt();
+        int b=sc.nextInt();
+        int c;
+        if(a>b){
+         c=b;   
+        }else{
+         c=a;   
+        }
+        while(c>=0){
+         if(a%c==0&&b%c==0){
+          break;   
+         }
+            c--;
+        }
+        int x=a*b/c;
+        System.out.println("最大公约数："+c);
+        System.out.println("最小公倍数："+x);
+        /********** End *********/
+		}
+}

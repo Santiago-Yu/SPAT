@@ -1,0 +1,28 @@
+package task1;
+import java.util.Scanner;
+public class Box {
+
+    double width;
+    double height;
+    double depth;
+    public void sum(double x,double y,double z){
+        width=x;
+        height=y;
+        depth=z;
+    }
+
+    public void volume() {
+        System.out.println("the volumn is:" + width*height*depth);
+    }
+public static void main(String[] args) {
+        Box box = new Box();
+       Scanner scanner =new Scanner(System.in);
+        
+        box.width = scanner.nextDouble();
+        box.height = scanner.nextDouble();
+        box.depth = scanner.nextDouble();
+        box.sum(box.width,box.height,box.depth);
+        box.volume();
+}
+}
+

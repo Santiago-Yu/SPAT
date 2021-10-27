@@ -1,0 +1,42 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+        
+		/********** BEGIN **********/
+		int z_length=0;
+        int z_number=0;
+        int l =length;
+        int w = width;
+        if(length>width){
+				if(length%width==0){
+                	z_length=width;
+                    z_number=length/width;
+                }else{
+					while(w!=0){
+                    	int yushu = l%w;
+                        l=w;
+                        w=yushu;
+                    }
+                    z_length=l;
+                    z_number=(length/l)*(width/l);
+                }
+        }else{
+        	if(width%length==0){
+            	z_length=width;
+                z_number=width/length;
+            }else{
+                z_length=1;
+                z_number=length*width;
+	        }
+        }
+        System.out.println(z_length);
+       	System.out.println(z_number);
+		/********** END **********/
+	}
+}

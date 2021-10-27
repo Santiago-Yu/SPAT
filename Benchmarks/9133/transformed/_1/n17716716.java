@@ -1,0 +1,22 @@
+class n17716716 {
+	public static String plainToMD(LoggerCollection loggerCol, String input) {
+		byte[] byteHash = null;
+		MessageDigest md = null;
+		StringBuilder md5result = new StringBuilder();
+		try {
+			md = MessageDigest.getInstance("MD5");
+			md.reset();
+			md.update(input.getBytes());
+			byteHash = md.digest();
+			int Iy9V8 = 0;
+			while (Iy9V8 < byteHash.length) {
+				md5result.append(Integer.toHexString(0xFF & byteHash[Iy9V8]));
+				Iy9V8++;
+			}
+		} catch (NoSuchAlgorithmException ex) {
+			loggerCol.logException(CLASSDEBUG, "de.searchworkorange.lib.misc.hash.MD5Hash", Level.FATAL, ex);
+		}
+		return (md5result.toString());
+	}
+
+}

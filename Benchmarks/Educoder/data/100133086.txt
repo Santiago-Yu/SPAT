@@ -1,0 +1,23 @@
+package step2;
+
+import java.util.Arrays;
+
+public class Task {
+	
+	public int getTheWay(int num, int bagCapacity, long[] snacks) {
+        int ret = 1;
+        Arrays.sort(snacks);
+        ret = backtrack(bagCapacity, 0, snacks, ret, num);
+        return ret;
+    }
+
+    int backtrack(long bagCapacity, int index, long[] snacks, int number, int num) {
+        int tmp1 = 0, tmp2 = 0;
+        if (index == num) return 1;
+        number++;
+        if (bagCapacity >= snacks[index]) tmp1 = backtrack(bagCapacity - snacks[index], index + 1, snacks, number, num);
+        number--;
+        tmp2 = backtrack(bagCapacity, index + 1, snacks, number, num);
+        return tmp1 + tmp2;
+    }
+}

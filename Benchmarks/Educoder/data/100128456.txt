@@ -1,0 +1,30 @@
+package step2;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateExceptionTest {
+
+	public static void main(String[] args) {
+		/*****Begin*****/
+		Scanner s=new Scanner(System.in);
+		int year,month,day;
+		try{
+            year=s.nextInt();
+            month=s.nextInt();
+            day=s.nextInt();
+            DateException e1 = new DateException(year,month,day);
+            System.out.println(e1.getMessage());
+		}catch (DateException e)
+		{
+			System.out.println(e.toString());
+		}
+		
+		
+		/******End******/
+	}
+
+}

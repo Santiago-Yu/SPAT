@@ -1,0 +1,196 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String date,int day){
+        String[] strs=date.split("-");
+        int Year,Month,Day,num;
+        Year=Integer.valueOf(strs[0]);
+        Month=Integer.valueOf(strs[1]);
+        Day=Integer.valueOf(strs[2]);
+        //System.out.println(Year+Month+Day);
+        //闰年
+        if(Year%4==0){
+            if (Month==1) Day=Day+day+0;
+            if (Month==2) Day=Day+day+31;
+            if (Month==3) Day=Day+day+60;
+            if (Month==4) Day=Day+day+91;
+            if (Month==5) Day=Day+day+121;
+            if (Month==6) Day=Day+day+152;
+            if (Month==7) Day=Day+day+182;
+            if (Month==8) Day=Day+day+213;
+            if (Month==9) Day=Day+day+244;
+            if (Month==10) Day=Day+day+274;
+            if (Month==11) Day=Day+day+305;
+            if (Month==12) Day=Day+day+335;
+        }
+        //平年
+        if(Year%4!=0){
+            if (Month==1) Day=Day+day+0;
+            if (Month==2) Day=Day+day+31;
+            if (Month==3) Day=Day+day+59;
+            if (Month==4) Day=Day+day+90;
+            if (Month==5) Day=Day+day+120;
+            if (Month==6) Day=Day+day+151;
+            if (Month==7) Day=Day+day+181;
+            if (Month==8) Day=Day+day+212;
+            if (Month==9) Day=Day+day+243;
+            if (Month==10) Day=Day+day+273;
+            if (Month==11) Day=Day+day+304;
+            if (Month==12) Day=Day+day+334;
+        }
+        int d=Year,difference=0;
+        //此上，算出日加月的总天数
+       // if((Year%4!=0&&Day>365)||Year%4==0&&Day>366){
+        Year=Year_calculation(Year,Day);
+        difference=Year-d;
+            if(difference>0){
+                for(int i=d;i<Year;i++){
+                    if(i%4==0){
+                        Day=Day-366;
+                    }else Day=Day-365;
+                }
+            }
+            //闰年
+            if(Year%4==0){
+                Month=1;
+                //闰年
+                if(Day>31){
+                    Month=2;
+                    Day=Day-31;
+                    if(Day>29){
+                        Month=3;
+                        Day=Day-29;
+                        if(Day>31){
+                            Month=4;
+                            Day=Day-31;
+                            if(Day>30){
+                                Month=5;
+                                Day=Day-30;
+                                if(Day>31){
+                                    Month=6;
+                                    Day=Day-31;
+                                    if (Day>30){
+                                        Month=7;
+                                        Day=Day-30;
+                                        if(Day>31){
+                                            Month=8;
+                                            Day=Day-31;
+                                            if(Day>31){
+                                                Month=9;
+                                                Day=Day-31;
+                                                if(Day>30){
+                                                    Month=10;
+                                                    Day=Day-30;
+                                                    if(Day>31){
+                                                        Month=11;
+                                                        Day=Day-31;
+                                                        if (Day>30){
+                                                            Month=12;
+                                                            Day=Day-30;
+
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            //平年
+            if(Year%4!=0){
+                Month=1;
+                if(Day>31){
+                    Month=2;
+                    Day=Day-31;
+                    if(Day>28){
+                        Month=3;
+                        Day=Day-28;
+                        if(Day>31){
+                            Month=4;
+                            Day=Day-31;
+                            if(Day>30){
+                                Month=5;
+                                Day=Day-30;
+                                if(Day>31){
+                                    Month=6;
+                                    Day=Day-31;
+                                    if (Day>30){
+                                        Month=7;
+                                        Day=Day-30;
+                                        if(Day>31){
+                                            Month=8;
+                                            Day=Day-31;
+                                            if(Day>31){
+                                                Month=9;
+                                                Day=Day-31;
+                                                if(Day>30){
+                                                    Month=10;
+                                                    Day=Day-30;
+                                                    if(Day>31){
+                                                        Month=11;
+                                                        Day=Day-31;
+                                                        if (Day>30){
+                                                            Month=12;
+                                                            Day=Day-30;
+
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+            String ye=String.valueOf(Year);
+            String mo=String.valueOf(Month);
+            if(Month/10==0){
+                mo="0"+mo;
+            }
+            String da=String.valueOf(Day);
+            if(Day/10==0){
+                da="0"+da;
+            }
+            String total=ye+"-"+mo+"-"+da;
+      return total;
+    }
+    public int Year_calculation(int Year,int Day){
+        //闰年
+        if(Year%4==0&&Day>366){
+            Day=Day-366;
+            Year=Year+1;
+        }
+        if(Year%4==0&&Day<366){
+            return  Year;
+        }
+        //平年
+        if(Year%4!=0&&Day>365){
+            Day=Day-365;
+            Year=Year+1;
+        }
+        if(Year%4!=0&&Day<365){
+            return  Year;
+        }
+        if((Year%4!=0&&Day>365)||Year%4==0&&Day>366){
+            Year=Year_calculation(Year,Day);
+
+        }
+
+        return Year;
+    }
+	
+	
+}

@@ -1,0 +1,68 @@
+package step1;
+
+public class Task {
+	public boolean a_sort(boolean flag1,Integer[] arr){
+        for(int i =0;i<arr.length-1;i++){
+            if(arr[i]>arr[i+1]){
+                flag1 = false;
+                int temp = arr[i];
+                arr[i] = arr[i+1];
+                arr[i+1] = temp;
+                for(int n = 0;n<arr.length;n++){
+                    System.out.print(arr[n]);
+                    System.out.print(" ");
+                }
+            }else{
+                continue;
+            }
+            
+            System.out.println("");
+            
+        }
+        return flag1;
+    }
+    public boolean b_sort(boolean flag2, Integer[] arr){
+        for(int j = arr.length-1;j>=1;j--){
+            
+            if(arr[j]<arr[j-1]){
+                flag2 = false;
+                int temp = arr[j];
+                arr[j]=arr[j-1];
+                arr[j-1] = temp;
+                for(int i = 0;i<arr.length;i++){
+                    System.out.print(arr[i]);
+                    System.out.print(" ");
+                }
+            }else{
+                continue;
+            }
+            
+            System.out.println(""); 
+            
+        }
+        return flag2;
+    }
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        boolean flag1 = false;
+        boolean flag2 = false;
+        int count = 0;
+        while(flag1==false||flag2==false){
+            flag1 = true;
+            flag2 = true;
+            flag1 = a_sort(flag1,arr);
+            flag2 = b_sort(flag2,arr);
+            count++;
+        }
+        
+        if(count==1){
+            for(int i = 0;i<arr.length;i++){
+                    System.out.print(arr[i]);
+                    System.out.print(" ");
+                }
+                System.out.println("");
+        }
+		
+		/********* End *********/
+	}
+}

@@ -1,0 +1,46 @@
+package step3;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+public class Task {
+	public List<Integer> list = new ArrayList<>();
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+		if(isAo(arr)==false) return 0;
+		else{
+			for(int i=1;i<arr.length-1;i++){
+				if(arr[i]<arr[i-1]&&arr[i]<arr[i+1])
+					list.add(cal(i,arr));
+			}		
+			return Collections.max(list);
+		}
+	
+		
+		/********* End *********/
+		
+	}
+
+	public int cal(int index,Integer[] arr){
+		int count = 1;
+		for(int i=index;i>0;i--){
+			if(arr[i]<arr[i-1]) count++;
+			else break;
+		}
+		for(int i=index;i<arr.length-1;i++){
+			if(arr[i]<arr[i+1]) count++;
+			else break;
+		}
+		return count;
+	}
+	
+	public boolean isAo(Integer[] arr){
+		for(int i=1;i<arr.length;i++){
+			if(arr[i]<arr[i-1]&&arr[i]<arr[i+1])
+				return true;
+		}
+		return false;
+	}
+	
+}
+

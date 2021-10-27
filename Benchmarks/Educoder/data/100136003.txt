@@ -1,0 +1,59 @@
+package case1;
+
+import java.util.Scanner;
+
+public class Task1 {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String dogName = sc.next();
+		String dogSex = sc.next();
+		String dogColor = sc.next();
+		String catName = sc.next();
+		String catSex = sc.next();
+		double catWeight = sc.nextDouble();
+		Dog d=new Dog(dogName,dogSex,dogColor);
+        d.talk();
+        d.eat();
+		Cat c=new Cat(catName,catSex,catWeight);
+        c.talk();
+        c.eat();
+	}
+}
+abstract class Pet {
+    protected String name;
+    protected String sex;
+    void talk(){
+        System.out.println("talking");
+    }
+    void eat(){
+        System.out.println("eating");
+    }
+}
+class Dog extends Pet {
+	protected String color;
+    public Dog(String name,String sex,String color){
+    this.name=name;
+    this.sex=sex;
+    this.color=color;
+    }
+    void talk(){
+        System.out.println("名称："+name+"，性别："+sex+"，颜色："+color+"，汪汪叫");
+    }
+    void eat(){
+        System.out.println(name+"吃骨头！");
+    }
+}
+class Cat extends Pet {
+    protected double weight;
+    public Cat(String name,String sex,double weight){
+    this.name=name;
+    this.sex=sex;
+    this.weight=weight;
+    }
+    void talk(){
+        System.out.println("名称："+name+"，性别："+sex+"，体重："+weight+"kg，喵喵叫");
+    }
+    void eat(){
+        System.out.println(name+"吃鱼！");
+    }
+}

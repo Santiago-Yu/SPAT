@@ -1,0 +1,84 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+
+
+
+ String result = "";
+        String[] date = releaseDate.split("-");
+        int year = Integer.valueOf(date[0]);
+        int month = Integer.valueOf(date[1].substring(0, 1).equals("0") ? date[1].substring(1, 2) : date[1]);
+        int days = Integer.valueOf(date[2].substring(0, 1).equals("0") ? date[2].substring(1, 2) : date[2]);
+        int sum = 0;
+        if ((getMonthDays(year, month) - days) >= day) {
+            //不到这个月就过期
+            String newmonth = month <= 9 ? "0" + month : String.valueOf(month);
+            String newday = (day + days) <= 9 ? "0" + (day + days) : String.valueOf((day + days));
+            return year + "-" + newmonth + "-" + newday;
+        } else {
+            //补齐第一个月的剩余天数
+            day -= (getMonthDays(year, month) - days);
+        }
+        while (day != 0) {
+            if (day > getMonthDays(year, ++month)) {
+                //跨月
+                day -= getMonthDays(year, month);
+            } else {
+                //不跨月
+                sum += day;
+                day = 0;
+
+            }
+            if (month > 12) {
+                //跨年
+                month = 0;
+                year++;
+            }
+        }
+        String newmonth = month <= 9 ? "0" + month : String.valueOf(month);
+        String newday = sum <= 9 ? "0" + sum : String.valueOf(sum);
+        return year + "-" + newmonth + "-" + newday;
+
+
+
+
+
+
+        /********* End *********/
+	}
+	 //获得某月天数
+    public static int getMonthDays(int year, int month) {
+        int days = 0;
+        if (month == 2) {
+            if ((year % 4 == 0 && year % 400 != 0) || year % 400 == 0)
+                //闰年
+                days = 29;
+            else
+                days = 28;
+        } else {
+            switch (month) {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    days = 31;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    days = 30;
+                    break;
+            }
+        }
+        return days;
+    }
+	
+}

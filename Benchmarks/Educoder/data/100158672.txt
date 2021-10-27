@@ -1,0 +1,32 @@
+#include<stdio.h>
+int main()
+{
+	int n,T,i;
+	n=0;
+	int a[1000];
+	for(i=0;;i++)
+	{
+		scanf("%d",&a[i]);
+		n++;
+		if(getchar()=='\n')
+		break;
+	}
+	scanf("%d",&T);
+	int count =0;
+	for(i=0;i<n;i++)
+	{
+		for(int j=i+1;j<n;j++)
+		{
+			for(int k=j+1;k<n;k++)
+			{
+				if(a[i]+a[j]+a[k]<T)
+				{
+					count++;
+				}
+				
+			}
+		}
+	}
+	printf("%d",count);
+	return 0;
+}

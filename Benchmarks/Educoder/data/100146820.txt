@@ -1,0 +1,50 @@
+package step1;
+import java.util.ArrayList;
+public class GetScores {
+
+	/********* Begin *********/
+	public int getLostScores(int[] nums){
+		int all = 10001;
+		int[] is = new int[all];// 被赋值的对比数组
+		int[] orderIn = bubbleSort(nums);//对输入的乱序 int型数组 排序
+ 
+		ArrayList <Integer> iList = new ArrayList<Integer>(3);//装3个损失数
+		
+		for (int i = 0; i < nums.length; i++) {
+			
+			is[orderIn[i]] = 1;//把遗漏的数组 中的每个数字作为新数组下标 赋值为1
+ 
+		}
+		is[0]=1;//第一个默认为1
+	
+		for (int i = 0; i < is.length; i++) {//循环判断数组中未赋值为1的就是遗漏数据
+			if (is[i] == 0) {
+				iList.add(i);
+				
+				//把遗漏的数据加入动态数组
+			}
+
+		}
+		String link = "" + iList.get(0) + iList.get(1) + iList.get(2);//拼接3个数字
+		if(Long.parseLong(link)%11 == 9||Long.parseLong(link)%11 == 10){
+        	System.out.print(Long.parseLong(link)%11);
+        }      
+        return Integer.parseInt(link)%11;
+	}
+ 
+	public int[] bubbleSort(int[] a) {
+		int temp;
+		for (int i = a.length - 1; i > 0; --i) {
+			for (int j = 0; j < i; ++j) {
+				if (a[j + 1] < a[j]) {
+					temp = a[j];
+					a[j] = a[j + 1];
+					a[j + 1] = temp;
+				}
+			}
+		}
+		return a;
+	}
+
+	/********* End *********/
+}

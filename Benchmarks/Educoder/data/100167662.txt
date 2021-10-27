@@ -1,0 +1,263 @@
+import java.util.*;
+
+public class Java_LLParserAnalysis
+{
+	//预备数据
+    private static StringBuffer prog = new StringBuffer();
+    private static String[] cfgs = new String[] {
+    		"program -> compoundstmt",
+    		"stmt -> ifstmt", 
+    		"stmt -> whilestmt",
+    		"stmt -> assgstmt", 
+    		"stmt -> compoundstmt",
+    		"compoundstmt -> { stmts }", 
+    		"stmts -> stmt stmts",
+    		"stmts -> E",
+    		"ifstmt -> if ( boolexpr ) then stmt else stmt",
+    		"whilestmt -> while ( boolexpr ) stmt",
+    		"assgstmt -> ID = arithexpr ;",
+    		"boolexpr -> arithexpr boolop arithexpr",
+    		"boolop -> <", 
+    		"boolop -> >", 
+    		"boolop -> <=",
+    		"boolop -> >=",
+    		"boolop -> ==", 
+    		"arithexpr -> multexpr arithexprprime",
+    		"arithexprprime -> + multexpr arithexprprime",
+    		"arithexprprime -> - multexpr arithexprprime",
+    		"arithexprprime -> E",
+    		"multexpr -> simpleexpr multexprprime",
+    		"multexprprime -> * simpleexpr multexprprime",
+    		"multexprprime -> / simpleexpr multexprprime",
+    		"multexprprime -> E",
+    		"simpleexpr -> ID",
+    		"simpleexpr -> NUM", 
+    		"simpleexpr -> ( arithexpr )"
+    };
+    private static String[] symbol = new String[] {
+    	"{","}","if","(",")","then","else","while","ID","=",">","<",">=","<=","==","+","-","*","/","NUM",";"	
+    };
+    private static String[] state = new String[] {
+    		"program","stmt","compoundstmt",
+    		"stmts","ifstmt","whilestmt",
+    		"assgstmt","boolexpr","boolop",
+    		"arithexpr","arithexprprime","multexpr",
+    		"multexprprime","simpleexpr"
+    };
+	private static int[][] table = new int[][] {
+    	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    	{5,0,2,0,0,0,0,3,4,0,0,0,0,0,0,0,0,0,0,0,0},
+    	{6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    	{7,8,7,0,0,0,0,7,7,0,0,0,0,0,0,0,0,0,0,0,0},
+    	{0,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    	{0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    	{0,0,0,0,0,0,0,0,11,0,0,0,0,0,0,0,0,0,0,0,0},
+    	{0,0,0,12,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,12,0},
+    	{0,0,0,0,0,0,0,0,0,0,14,13,16,15,17,0,0,0,0,0,0},
+    	{0,0,0,18,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,18,0},
+    	{0,0,0,0,21,0,0,0,0,0,21,21,21,21,21,19,20,0,0,0,21},
+    	{0,0,0,22,0,0,0,0,22,0,0,0,0,0,0,0,0,0,0,22,0},
+    	{0,0,0,0,25,0,0,0,0,0,25,25,25,25,25,25,25,23,24,0,25},
+    	{0,0,0,28,0,0,0,0,26,0,0,0,0,0,0,0,0,0,0,27,0}
+    };
+
+    //处理
+    private static List<String> input = new ArrayList<String>();
+    private static Stack<Node> process = new Stack<Node>();
+    
+    //错误处理
+    private static int line=0;
+    private static int[] symbol_line;
+    
+    //输出结果
+    private static List<Node> result = new ArrayList<Node>();
+    private static void printresult() {
+    	Node tmp;
+    	for(int i=0;i<result.size();i++)
+    	{
+    		tmp = result.get(i);
+    		for(int j=0;j<tmp.level;j++)
+    			System.out.print('\t');
+    		if(i!=result.size()-1)
+    			System.out.println(tmp.state);
+    		else
+    			System.out.print(tmp.state);
+    	}
+   
+    }
+    
+    
+    
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine()+'\n');
+            line++;
+        }
+        symbol_line = new int[line];
+    }
+
+    //输入字符分割处理
+    private static void initial() {
+    	int current_line=1;
+    	for(int i=0;i<prog.length();i++)
+    	{
+    		int ahead;
+    		boolean success=false;
+    		if(prog.charAt(i)=='\n')current_line++;
+    		if(prog.charAt(i)!=' '&&prog.charAt(i)!='\t'&&prog.charAt(i)!='\n')
+    		{
+    			String tmp = null;
+    			for(ahead=i+1;ahead<=prog.length();ahead++)
+    			{
+    				tmp = prog.substring(i, ahead);
+    				for(int j=0;j<symbol.length;j++)
+    				{
+    					if(symbol[j].equals(tmp))
+    					{
+    						success=true;
+    						break;
+    					}	
+    				}	
+    				if(success)
+    				{
+    					break;
+    				}
+    					
+    			}
+    			if((tmp.equals("=")&&prog.charAt(ahead)=='=')||(tmp.equals(">")&&prog.charAt(ahead)=='=')||(tmp.equals("<")&&prog.charAt(ahead)=='='))//==
+    			{
+    				ahead++;
+    				tmp=prog.substring(i,ahead);
+    			}
+    			i=ahead-1;
+    			input.add(tmp);
+    			symbol_line[current_line-1]++;
+    		}	
+    	}
+    	input.add("$");
+    	process.push(new Node("$",-1));
+    	process.push(new Node("program",0));
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        initial();
+        
+        List<String> prompt_symbol = new ArrayList<String>();//提高检索速度
+        for(int i=0;i<symbol.length;i++)
+        {
+        	prompt_symbol.add(symbol[i]);
+        }
+        
+        Node parent = process.lastElement();//父节点
+        int begin = 0;
+        
+        while(true)
+        {
+        	String current_state = process.lastElement().state;
+        	String current_input = input.get(begin);
+        	//printtest();
+        	
+        	int x=0,y=0;//定位表
+        	for(x=0;x<state.length;x++)
+        	{
+        		if(state[x].equals(current_state))
+        			break;
+        	}
+        	for(y=0;y<symbol.length;y++)
+        	{
+        		if(symbol[y].equals(current_input))
+        			break;
+        	}
+        	if(table[x][y]==0)//发现错误
+        	{
+                int sum=0;
+                int tmp_line=0;
+                for(tmp_line=0;tmp_line<symbol_line.length;tmp_line++)
+                {
+                    sum += symbol_line[tmp_line];
+                    if(sum >= begin)
+                    	break;
+                }
+                tmp_line++;
+                System.out.println("语法错误,第"+tmp_line+"行,缺少\";\"");
+        		input.add(begin, ";");
+        		result.clear();
+        		process.clear();
+        		process.add(new Node("$",-1));
+        		process.add(new Node("program",0));
+        		begin=0;
+        		continue;
+        	}
+        	int length = 0;
+        	String cfg = cfgs[table[x][y]-1];
+        	String[] produce = cfg.split(" -> ");
+        	produce = produce[1].split(" ");
+        	if(produce[0].equals("E"))
+        	{
+        		length=0;
+        	}
+        	else
+        		length=produce.length;
+        	
+        	parent = process.pop();
+        	result.add(parent);
+        	
+        	if(produce[0].equals("E"))
+        	{
+        		result.add(new Node("E",parent.level+1));
+        	}
+        	
+        	while(length>0)//产生式压栈
+        	{
+        		process.push(new Node(produce[length-1],parent.level+1));
+        		length--;
+        	}
+        	
+        	
+        	while(process.size()!=1&&begin!=input.size()-1)//匹配字符
+        	{
+        		if(process.lastElement().state.equals(input.get(begin)))
+        		{
+        			result.add(process.pop());
+        			begin++;
+        		}
+        		else
+        			break;
+        	}
+        	if(process.size()==1&&begin==input.size()-1)
+        		break;
+        	
+        }
+        printresult();
+        
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+
+class Node{
+	String state;
+	int level;
+	public Node(String s,int l){
+		state = s;
+		level = l;
+	}
+}

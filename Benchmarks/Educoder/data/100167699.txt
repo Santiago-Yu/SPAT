@@ -1,0 +1,951 @@
+
+import java.util.*;
+import java.util.regex.Pattern;
+
+public class Java_LRParserAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static Queue<String>input = new ArrayDeque<String>();
+    private static Queue<String> input_copy = new ArrayDeque<>();
+    private static Stack<Integer>output = new Stack<>();
+    private static Stack<String>status = new Stack<>();
+    private static Map<String,Map<String,String>> ACTION = new HashMap<>();
+    private static Map<String,Map<String,String>> GOTO = new HashMap<>();
+    private static ArrayList<Node> production = new ArrayList<>();
+
+    static class Node{
+        String left;
+        String right;
+        int num;
+
+        public Node(String left, String right, int num) {
+            this.left = left;
+            this.right = right;
+            this.num = num;
+        }
+    }
+
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+    //将输入转化为token
+    private static void getTokens(StringBuffer s){
+        int pos = 0;
+        while (pos < s.length()){
+            if (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                StringBuffer tmp = new StringBuffer();
+                tmp.append(s.charAt(pos));
+                pos++;
+                while (s.charAt(pos)!=' '&&s.charAt(pos)!='\n'){
+                    tmp.append(s.charAt(pos));
+                    pos++;
+                }input.add(tmp.toString());
+                input_copy.add(tmp.toString());
+            }else if(s.charAt(pos) ==' '&&s.charAt(pos)=='\n'){
+                pos++;
+            }else {
+                pos++;
+            }
+        }
+        input.add("$");
+        input_copy.add("$");
+    }
+
+    //填表
+    private static void initTable(){
+        production.add(0,new Node("","",0));
+        production.add(1,new Node("program","compoundstmt",1));
+        production.add(2,new Node("stmt","ifstmt",1));
+        production.add(3,new Node("stmt","whilestmt",1));
+        production.add(4,new Node("stmt","assgstmt",1));
+        production.add(5,new Node("stmt","compoundstmt",1));
+        production.add(6,new Node("compoundstmt","{ stmts }",3));
+        production.add(7,new Node("stmts","stmt stmts",2));
+        production.add(8,new Node("stmts","",0));
+        production.add(9,new Node("ifstmt","if ( boolexpr ) then stmt else stmt",8));
+        production.add(10,new Node("whilestmt","while ( boolexpr ) stmt",5));
+        production.add(11,new Node("assgstmt","ID = arithexpr ;",4));
+        production.add(12,new Node("boolexpr","arithexpr boolop arithexpr",3));
+        production.add(13,new Node("boolop","<",1));
+        production.add(14,new Node("boolop",">",1));
+        production.add(15,new Node("boolop","<=",1));
+        production.add(16,new Node("boolop",">=",1));
+        production.add(17,new Node("boolop","==",1));
+        production.add(18,new Node("arithexpr","multexpr arithexprprime",2));
+        production.add(19,new Node("arithexprprime","+ multexpr arithexprprime",3));
+        production.add(20,new Node("arithexprprime","- multexpr arithexprprime",3));
+        production.add(21,new Node("arithexprprime","",0));
+        production.add(22,new Node("multexpr","simpleexpr multexprprime",2));
+        production.add(23,new Node("multexprprime","* simpleexpr multexprprime",3));
+        production.add(24,new Node("multexprprime","/ simpleexpr multexprprime",3));
+        production.add(25,new Node("multexprprime","",0));
+        production.add(26,new Node("simpleexpr","ID",1));
+        production.add(27,new Node("simpleexpr","NUM",1));
+        production.add(28,new Node("simpleexpr","( arithexpr )",3));
+
+        HashMap<String,String>temp0 = new HashMap<>();
+        temp0.put("{","3");
+        ACTION.put("0",temp0);
+        temp0.put("program","1");
+        GOTO.put("0",temp0);
+        temp0.put("compoundstmt","2");
+        GOTO.put("0",temp0);
+
+        HashMap<String,String>temp1 = new HashMap<>();
+        temp1.put("$","acc");
+        ACTION.put("1",temp1);
+
+        HashMap<String,String>temp2 = new HashMap<>();
+        temp2.put("$","r1");
+        ACTION.put("2",temp2);
+
+        HashMap<String,String>temp3 = new HashMap<>();
+        temp3.put("{","3");
+        ACTION.put("3",temp3);
+        temp3.put("}","r8");
+        ACTION.put("3",temp3);
+        temp3.put("if","10");
+        ACTION.put("3",temp3);
+        temp3.put("while","11");
+        ACTION.put("3",temp3);
+        temp3.put("ID","12");
+        ACTION.put("3",temp3);
+        temp3.put("stmt","5");
+        GOTO.put("3",temp3);
+        temp3.put("compoundstmt","9");
+        GOTO.put("3",temp3);
+        temp3.put("stmts","4");
+        GOTO.put("3",temp3);
+        temp3.put("ifstmt","6");
+        GOTO.put("3",temp3);
+        temp3.put("whilestmt","7");
+        GOTO.put("3",temp3);
+        temp3.put("assgstmt","8");
+        GOTO.put("3",temp3);
+
+        HashMap<String,String>temp4 = new HashMap<>();
+        temp4.put("}","13");
+        ACTION.put("4",temp4);
+
+        HashMap<String,String>temp5 = new HashMap<>();
+        temp5.put("{","3");
+        ACTION.put("5",temp5);
+        temp5.put("}","r8");
+        ACTION.put("5",temp5);
+        temp5.put("if","10");
+        ACTION.put("5",temp5);
+        temp5.put("while","11");
+        ACTION.put("5",temp5);
+        temp5.put("ID","12");
+        ACTION.put("5",temp5);
+        temp5.put("stmt","5");
+        GOTO.put("5",temp5);
+        temp5.put("compoundstmt","9");
+        GOTO.put("5",temp5);
+        temp5.put("stmts","14");
+        GOTO.put("5",temp5);
+        temp5.put("ifstmt","6");
+        GOTO.put("5",temp5);
+        temp5.put("whilestmt","7");
+        GOTO.put("5",temp5);
+        temp5.put("assgstmt","8");
+        GOTO.put("5",temp5);
+
+        HashMap<String,String>temp6 = new HashMap<>();
+        temp6.put("{","r2");
+        ACTION.put("6",temp6);
+        temp6.put("}","r2");
+        ACTION.put("6",temp6);
+        temp6.put("if","r2");
+        ACTION.put("6",temp6);
+        temp6.put("else","r2");
+        ACTION.put("6",temp6);
+        temp6.put("while","r2");
+        ACTION.put("6",temp6);
+        temp6.put("ID","r2");
+        ACTION.put("6",temp6);
+
+        HashMap<String,String>temp7 = new HashMap<>();
+        temp7.put("{","r3");
+        ACTION.put("7",temp7);
+        temp7.put("}","r3");
+        ACTION.put("7",temp7);
+        temp7.put("if","r3");
+        ACTION.put("7",temp7);
+        temp7.put("else","r3");
+        ACTION.put("7",temp7);
+        temp7.put("while","r3");
+        ACTION.put("7",temp7);
+        temp7.put("ID","r3");
+        ACTION.put("7",temp7);
+
+        HashMap<String,String>temp8 = new HashMap<>();
+        temp8.put("{","r4");
+        ACTION.put("8",temp8);
+        temp8.put("}","r4");
+        ACTION.put("8",temp8);
+        temp8.put("if","r4");
+        ACTION.put("8",temp8);
+        temp8.put("else","r4");
+        ACTION.put("8",temp8);
+        temp8.put("while","r4");
+        ACTION.put("8",temp8);
+        temp8.put("ID","r4");
+        ACTION.put("8",temp8);
+
+        HashMap<String,String>temp9 = new HashMap<>();
+        temp9.put("{","r5");
+        ACTION.put("9",temp9);
+        temp9.put("}","r5");
+        ACTION.put("9",temp9);
+        temp9.put("if","r5");
+        ACTION.put("9",temp9);
+        temp9.put("else","r5");
+        ACTION.put("9",temp9);
+        temp9.put("while","r5");
+        ACTION.put("9",temp9);
+        temp9.put("ID","r5");
+        ACTION.put("9",temp9);
+
+        HashMap<String,String>temp10 = new HashMap<>();
+        temp10.put("(","15");
+        ACTION.put("10",temp10);
+
+        HashMap<String,String>temp11 = new HashMap<>();
+        temp11.put("(","16");
+        ACTION.put("11",temp11);
+
+        HashMap<String,String>temp12 = new HashMap<>();
+        temp12.put("=","17");
+        ACTION.put("12",temp12);
+
+        HashMap<String,String>temp13 = new HashMap<>();
+        temp13.put("{","r6");
+        ACTION.put("13",temp13);
+        temp13.put("}","r6");
+        ACTION.put("13",temp13);
+        temp13.put("if","r6");
+        ACTION.put("13",temp13);
+        temp13.put("else","r6");
+        ACTION.put("13",temp13);
+        temp13.put("while","r6");
+        ACTION.put("13",temp13);
+        temp13.put("ID","r6");
+        ACTION.put("13",temp13);
+        temp13.put("$","r6");
+        ACTION.put("13",temp13);
+
+        HashMap<String,String>temp14 = new HashMap<>();
+        temp14.put("}","r7");
+        ACTION.put("14",temp14);
+
+        HashMap<String,String>temp15 = new HashMap<>();
+        temp15.put("(","24");
+        ACTION.put("15",temp15);
+        temp15.put("ID","22");
+        ACTION.put("15",temp15);
+        temp15.put("NUM","23");
+        ACTION.put("15",temp15);
+        temp15.put("boolexpr","18");
+        GOTO.put("15",temp15);
+        temp15.put("arithexpr","19");
+        GOTO.put("15",temp15);
+        temp15.put("multexpr","20");
+        GOTO.put("15",temp15);
+        temp15.put("simpleexpr","21");
+        GOTO.put("15",temp15);
+
+        HashMap<String,String>temp16 = new HashMap<>();
+        temp16.put("(","24");
+        ACTION.put("16",temp16);
+        temp16.put("ID","22");
+        ACTION.put("16",temp16);
+        temp16.put("NUM","23");
+        ACTION.put("16",temp16);
+        temp16.put("boolexpr","25");
+        GOTO.put("16",temp16);
+        temp16.put("arithexpr","19");
+        GOTO.put("16",temp16);
+        temp16.put("multexpr","20");
+        GOTO.put("16",temp16);
+        temp16.put("simpleexpr","21");
+        GOTO.put("16",temp16);
+
+        HashMap<String,String>temp17 = new HashMap<>();
+        temp17.put("(","24");
+        ACTION.put("17",temp17);
+        temp17.put("ID","22");
+        ACTION.put("17",temp17);
+        temp17.put("NUM","23");
+        ACTION.put("17",temp17);
+        temp17.put("arithexpr","26");
+        GOTO.put("17",temp17);
+        temp17.put("multexpr","20");
+        GOTO.put("17",temp17);
+        temp17.put("simpleexpr","21");
+        GOTO.put("17",temp17);
+
+        HashMap<String,String>temp18 = new HashMap<>();
+        temp18.put(")","27");
+        ACTION.put("18",temp18);
+
+        HashMap<String,String>temp19 = new HashMap<>();
+        temp19.put("<","29");
+        ACTION.put("19",temp19);
+        temp18.put(">","30");
+        ACTION.put("19",temp19);
+        temp19.put("<=","31");
+        ACTION.put("19",temp19);
+        temp19.put(">=","32");
+        ACTION.put("19",temp19);
+        temp19.put("==","33");
+        ACTION.put("19",temp19);
+        temp19.put("boolop","28");
+        GOTO.put("19",temp19);
+
+        HashMap<String,String>temp20 = new HashMap<>();
+        temp20.put(")","r21");
+        ACTION.put("20",temp20);
+        temp20.put(";","r21");
+        ACTION.put("20",temp20);
+        temp20.put("<","r21");
+        ACTION.put("20",temp20);
+        temp20.put(">","r21");
+        ACTION.put("20",temp20);
+        temp20.put("<=","r21");
+        ACTION.put("20",temp20);
+        temp20.put(">=","r21");
+        ACTION.put("20",temp20);
+        temp20.put("==","r21");
+        ACTION.put("20",temp20);
+        temp20.put("+","35");
+        ACTION.put("20",temp20);
+        temp20.put("-","36");
+        ACTION.put("20",temp20);
+        temp20.put("arithexprprime","34");
+        GOTO.put("20",temp20);
+
+        HashMap<String,String>temp21 = new HashMap<>();
+        temp21.put(")","r25");
+        ACTION.put("21",temp21);
+        temp21.put(";","r25");
+        ACTION.put("21",temp21);
+        temp21.put("<","r25");
+        ACTION.put("21",temp21);
+        temp21.put(">","r25");
+        ACTION.put("21",temp21);
+        temp21.put("<=","r25");
+        ACTION.put("21",temp21);
+        temp21.put(">=","r25");
+        ACTION.put("21",temp21);
+        temp21.put("==","r25");
+        ACTION.put("21",temp21);
+        temp21.put("+","r25");
+        ACTION.put("21",temp21);
+        temp21.put("-","r25");
+        ACTION.put("21",temp21);
+        temp21.put("*","38");
+        ACTION.put("21",temp21);
+        temp21.put("/","39");
+        ACTION.put("21",temp21);
+        temp21.put("multexprprime","37");
+        GOTO.put("21",temp21);
+
+        HashMap<String,String>temp22 = new HashMap<>();
+        temp22.put(")","r26");
+        ACTION.put("22",temp22);
+        temp22.put(";","r26");
+        ACTION.put("22",temp22);
+        temp22.put("<","r26");
+        ACTION.put("22",temp22);
+        temp22.put(">","r26");
+        ACTION.put("22",temp22);
+        temp22.put("<=","r26");
+        ACTION.put("22",temp22);
+        temp22.put(">=","r26");
+        ACTION.put("22",temp22);
+        temp22.put("==","r26");
+        ACTION.put("22",temp22);
+        temp22.put("+","r26");
+        ACTION.put("22",temp22);
+        temp22.put("-","r26");
+        ACTION.put("22",temp22);
+        temp22.put("*","r26");
+        ACTION.put("22",temp22);
+        temp22.put("/","r26");
+        ACTION.put("22",temp22);
+
+        HashMap<String,String>temp23 = new HashMap<>();
+        temp23.put(")","r27");
+        ACTION.put("23",temp23);
+        temp23.put(";","r27");
+        ACTION.put("23",temp23);
+        temp23.put("<","r27");
+        ACTION.put("23",temp23);
+        temp23.put(">","r27");
+        ACTION.put("23",temp23);
+        temp23.put("<=","r27");
+        ACTION.put("23",temp23);
+        temp23.put(">=","r27");
+        ACTION.put("23",temp23);
+        temp23.put("==","r27");
+        ACTION.put("23",temp23);
+        temp23.put("+","r27");
+        ACTION.put("23",temp23);
+        temp23.put("-","r27");
+        ACTION.put("23",temp23);
+        temp23.put("*","r27");
+        ACTION.put("23",temp23);
+        temp23.put("/","r27");
+        ACTION.put("23",temp23);
+
+        HashMap<String,String>temp24 = new HashMap<>();
+        temp24.put("(","24");
+        ACTION.put("24",temp24);
+        temp24.put("ID","22");
+        ACTION.put("24",temp24);
+        temp24.put("NUM","23");
+        ACTION.put("24",temp24);
+        temp24.put("arithexpr","40");
+        GOTO.put("24",temp24);
+        temp24.put("multexpr","20");
+        GOTO.put("24",temp24);
+        temp24.put("simpleexpr","21");
+        GOTO.put("24",temp24);
+
+        HashMap<String,String>temp25 = new HashMap<>();
+        temp25.put(")","41");
+        ACTION.put("25",temp25);
+
+        HashMap<String,String>temp26 = new HashMap<>();
+        temp26.put(";","42");
+        ACTION.put("26",temp26);
+
+        HashMap<String,String>temp27 = new HashMap<>();
+        temp27.put("then","43");
+        ACTION.put("27",temp27);
+
+        HashMap<String,String>temp28 = new HashMap<>();
+        temp28.put("(","24");
+        ACTION.put("28",temp28);
+        temp28.put("ID","22");
+        ACTION.put("28",temp28);
+        temp28.put("NUM","23");
+        ACTION.put("28",temp28);
+        temp28.put("arithexpr","44");
+        GOTO.put("28",temp28);
+        temp28.put("multexpr","20");
+        GOTO.put("28",temp28);
+        temp28.put("simpleexpr","21");
+        GOTO.put("28",temp28);
+
+        HashMap<String,String>temp29 = new HashMap<>();
+        temp29.put("(","r13");
+        ACTION.put("29",temp29);
+        temp29.put("ID","r13");
+        ACTION.put("29",temp29);
+        temp29.put("NUM","r13");
+        ACTION.put("29",temp29);
+
+        HashMap<String,String>temp30 = new HashMap<>();
+        temp30.put("(","r14");
+        ACTION.put("30",temp30);
+        temp30.put("ID","r14");
+        ACTION.put("30",temp30);
+        temp30.put("NUM","r14");
+        ACTION.put("30",temp30);
+
+        HashMap<String,String>temp31 = new HashMap<>();
+        temp31.put("(","r15");
+        ACTION.put("31",temp31);
+        temp31.put("ID","r15");
+        ACTION.put("31",temp31);
+        temp31.put("NUM","r15");
+        ACTION.put("31",temp31);
+
+        HashMap<String,String>temp32 = new HashMap<>();
+        temp32.put("(","r16");
+        ACTION.put("32",temp32);
+        temp32.put("ID","r16");
+        ACTION.put("32",temp32);
+        temp32.put("NUM","r16");
+        ACTION.put("32",temp32);
+
+        HashMap<String,String>temp33 = new HashMap<>();
+        temp33.put("(","r17");
+        ACTION.put("33",temp33);
+        temp33.put("ID","r17");
+        ACTION.put("33",temp33);
+        temp33.put("NUM","r17");
+        ACTION.put("33",temp33);
+
+        HashMap<String,String>temp34 = new HashMap<>();
+        temp34.put(")","r18");
+        ACTION.put("34",temp34);
+        temp34.put(";","r18");
+        ACTION.put("34",temp34);
+        temp34.put("<","r18");
+        ACTION.put("34",temp34);
+        temp34.put(">","r18");
+        ACTION.put("34",temp34);
+        temp34.put("<=","r18");
+        ACTION.put("34",temp34);
+        temp34.put(">=","r18");
+        ACTION.put("34",temp34);
+        temp34.put("==","r18");
+        ACTION.put("34",temp34);
+
+        HashMap<String,String>temp35 = new HashMap<>();
+        temp35.put("(","24");
+        ACTION.put("35",temp35);
+        temp35.put("ID","22");
+        ACTION.put("35",temp35);
+        temp35.put("NUM","23");
+        ACTION.put("35",temp35);
+        temp35.put("multexpr","45");
+        GOTO.put("35",temp35);
+        temp35.put("simpleexpr","21");
+        GOTO.put("35",temp35);
+
+        HashMap<String,String>temp36 = new HashMap<>();
+        temp36.put("(","24");
+        ACTION.put("36",temp36);
+        temp36.put("ID","22");
+        ACTION.put("36",temp36);
+        temp36.put("NUM","23");
+        ACTION.put("36",temp36);
+        temp36.put("multexpr","46");
+        GOTO.put("36",temp36);
+        temp36.put("simpleexpr","21");
+        GOTO.put("36",temp36);
+
+        HashMap<String,String>temp37 = new HashMap<>();
+        temp37.put(")","r22");
+        ACTION.put("37",temp37);
+        temp37.put(";","r22");
+        ACTION.put("37",temp37);
+        temp37.put("<","r22");
+        ACTION.put("37",temp37);
+        temp37.put(">","r22");
+        ACTION.put("37",temp37);
+        temp37.put("<=","r22");
+        ACTION.put("37",temp37);
+        temp37.put(">=","r22");
+        ACTION.put("37",temp37);
+        temp37.put("==","r22");
+        ACTION.put("37",temp37);
+        temp37.put("+","r22");
+        ACTION.put("37",temp37);
+        temp37.put("-","r22");
+        ACTION.put("37",temp37);
+
+        HashMap<String,String>temp38 = new HashMap<>();
+        temp38.put("(","24");
+        ACTION.put("38",temp38);
+        temp38.put("ID","22");
+        ACTION.put("38",temp38);
+        temp38.put("NUM","23");
+        ACTION.put("38",temp38);
+        temp38.put("simpleexpr","47");
+        GOTO.put("38",temp38);
+
+        HashMap<String,String>temp39 = new HashMap<>();
+        temp39.put("(","24");
+        ACTION.put("39",temp39);
+        temp39.put("ID","22");
+        ACTION.put("39",temp39);
+        temp39.put("NUM","23");
+        ACTION.put("39",temp39);
+        temp39.put("simpleexpr","48");
+        GOTO.put("39",temp39);
+
+        HashMap<String,String>temp40 = new HashMap<>();
+        temp40.put(")","49");
+        ACTION.put("40",temp40);
+
+        HashMap<String,String>temp41 = new HashMap<>();
+        temp41.put("{","3");
+        ACTION.put("41",temp41);
+        temp41.put("if","10");
+        ACTION.put("41",temp41);
+        temp41.put("while","11");
+        ACTION.put("41",temp41);
+        temp41.put("ID","12");
+        ACTION.put("41",temp41);
+        temp41.put("stmt","50");
+        GOTO.put("41",temp41);
+        temp41.put("compoundstmt","9");
+        GOTO.put("41",temp41);
+        temp41.put("ifstmt","6");
+        GOTO.put("41",temp41);
+        temp41.put("whilestmt","7");
+        GOTO.put("41",temp41);
+        temp41.put("assgstmt","8");
+        GOTO.put("41",temp41);
+
+        HashMap<String,String>temp42 = new HashMap<>();
+        temp42.put("{","r11");
+        ACTION.put("42",temp42);
+        temp42.put("}","r11");
+        ACTION.put("42",temp42);
+        temp42.put("if","r11");
+        ACTION.put("42",temp42);
+        temp42.put("else","r11");
+        ACTION.put("42",temp42);
+        temp42.put("while","r11");
+        ACTION.put("42",temp42);
+        temp42.put("ID","r11");
+        ACTION.put("42",temp42);
+
+        HashMap<String,String>temp43 = new HashMap<>();
+        temp43.put("{","3");
+        ACTION.put("43",temp43);
+        temp43.put("if","10");
+        ACTION.put("43",temp43);
+        temp43.put("while","11");
+        ACTION.put("43",temp43);
+        temp43.put("ID","12");
+        ACTION.put("43",temp43);
+        temp43.put("stmt","51");
+        GOTO.put("43",temp43);
+        temp43.put("compoundstmt","9");
+        GOTO.put("43",temp43);
+        temp43.put("ifstmt","6");
+        GOTO.put("43",temp43);
+        temp43.put("whilestmt","7");
+        GOTO.put("43",temp43);
+        temp43.put("assgstmt","8");
+        GOTO.put("43",temp43);
+
+        HashMap<String,String>temp44 = new HashMap<>();
+        temp44.put(")","r12");
+        ACTION.put("44",temp44);
+
+        HashMap<String,String>temp45 = new HashMap<>();
+        temp45.put(")","r21");
+        ACTION.put("45",temp45);
+        temp45.put(";","r21");
+        ACTION.put("45",temp45);
+        temp45.put("<","r21");
+        ACTION.put("45",temp45);
+        temp45.put(">","r21");
+        ACTION.put("45",temp45);
+        temp45.put("<=","r21");
+        ACTION.put("45",temp45);
+        temp45.put(">=","r21");
+        ACTION.put("45",temp45);
+        temp45.put("==","r21");
+        ACTION.put("45",temp45);
+        temp45.put("+","35");
+        ACTION.put("45",temp45);
+        temp45.put("-","36");
+        ACTION.put("45",temp45);
+        temp45.put("arithexprprime","52");
+        GOTO.put("45",temp45 );
+
+        HashMap<String,String>temp46 = new HashMap<>();
+        temp46.put(")","r21");
+        ACTION.put("46",temp46);
+        temp46.put(";","r21");
+        ACTION.put("46",temp46);
+        temp46.put("<","r21");
+        ACTION.put("46",temp46);
+        temp46.put(">","r21");
+        ACTION.put("46",temp46);
+        temp46.put("<=","r21");
+        ACTION.put("46",temp46);
+        temp46.put(">=","r21");
+        ACTION.put("46",temp46);
+        temp46.put("==","r21");
+        ACTION.put("46",temp46);
+        temp46.put("+","35");
+        ACTION.put("46",temp46);
+        temp46.put("-","36");
+        ACTION.put("46",temp46);
+        temp46.put("arithexprprime","53");
+        GOTO.put("46",temp46);
+
+        HashMap<String,String>temp47 = new HashMap<>();
+        temp47.put(")","r25");
+        ACTION.put("47",temp47);
+        temp47.put(";","r25");
+        ACTION.put("47",temp47);
+        temp47.put("<","r25");
+        ACTION.put("47",temp47);
+        temp47.put(">","r25");
+        ACTION.put("47",temp47);
+        temp47.put("<=","r25");
+        ACTION.put("47",temp47);
+        temp47.put(">=","r25");
+        ACTION.put("47",temp47);
+        temp47.put("==","r25");
+        ACTION.put("47",temp47);
+        temp47.put("+","r25");
+        ACTION.put("47",temp47);
+        temp47.put("-","r25");
+        ACTION.put("47",temp47);
+        temp47.put("*","38");
+        ACTION.put("47",temp47);
+        temp47.put("/","39");
+        ACTION.put("47",temp47);
+        temp47.put("multexprprime","54");
+        GOTO.put("47",temp47);
+
+        HashMap<String,String>temp48 = new HashMap<>();
+        temp48.put(")","r25");
+        ACTION.put("48",temp48);
+        temp48.put(";","r25");
+        ACTION.put("48",temp48);
+        temp48.put("<","r25");
+        ACTION.put("48",temp48);
+        temp48.put(">","r25");
+        ACTION.put("48",temp48);
+        temp48.put("<=","r25");
+        ACTION.put("48",temp48);
+        temp48.put(">=","r25");
+        ACTION.put("48",temp48);
+        temp48.put("==","r25");
+        ACTION.put("48",temp48);
+        temp48.put("+","r25");
+        ACTION.put("48",temp48);
+        temp48.put("-","r25");
+        ACTION.put("48",temp48);
+        temp48.put("*","38");
+        ACTION.put("48",temp48);
+        temp48.put("/","39");
+        ACTION.put("48",temp48);
+        temp48.put("multexprprime","55");
+        GOTO.put("48",temp48);
+
+        HashMap<String,String>temp49 = new HashMap<>();
+        temp49.put(")","r28");
+        ACTION.put("49",temp49);
+        temp49.put(";","r28");
+        ACTION.put("49",temp49);
+        temp49.put("<","r28");
+        ACTION.put("49",temp49);
+        temp49.put(">","r28");
+        ACTION.put("49",temp49);
+        temp49.put("<=","r28");
+        ACTION.put("49",temp49);
+        temp49.put(">=","r28");
+        ACTION.put("49",temp49);
+        temp49.put("==","r28");
+        ACTION.put("49",temp49);
+        temp49.put("+","r28");
+        ACTION.put("49",temp49);
+        temp49.put("-","r28");
+        ACTION.put("49",temp49);
+        temp49.put("*","r28");
+        ACTION.put("49",temp49);
+        temp49.put("/","r28");
+        ACTION.put("49",temp49);
+
+        HashMap<String,String>temp50 = new HashMap<>();
+        temp50.put("{","r10");
+        ACTION.put("50",temp50);
+        temp50.put("}","r10");
+        ACTION.put("50",temp50);
+        temp50.put("if","r10");
+        ACTION.put("50",temp50);
+        temp50.put("else","r10");
+        ACTION.put("50",temp50);
+        temp50.put("while","r10");
+        ACTION.put("50",temp50);
+        temp50.put("ID","r10");
+        ACTION.put("50",temp50);
+
+        HashMap<String,String>temp51 = new HashMap<>();
+        temp51.put("else","56");
+        ACTION.put("51",temp51);
+
+        HashMap<String,String>temp52 = new HashMap<>();
+        temp52.put(")","r19");
+        ACTION.put("52",temp52);
+        temp52.put(";","r19");
+        ACTION.put("52",temp52);
+        temp52.put("<","r19");
+        ACTION.put("52",temp52);
+        temp52.put(">","r19");
+        ACTION.put("52",temp52);
+        temp52.put("<=","r19");
+        ACTION.put("52",temp52);
+        temp52.put(">=","r19");
+        ACTION.put("52",temp52);
+        temp52.put("==","r19");
+        ACTION.put("52",temp52);
+
+        HashMap<String,String>temp53 = new HashMap<>();
+        temp53.put(")","r20");
+        ACTION.put("53",temp53);
+        temp53.put(";","r20");
+        ACTION.put("53",temp53);
+        temp53.put("<","r20");
+        ACTION.put("53",temp53);
+        temp53.put(">","r20");
+        ACTION.put("53",temp53);
+        temp53.put("<=","r20");
+        ACTION.put("53",temp53);
+        temp53.put(">=","r20");
+        ACTION.put("53",temp53);
+        temp53.put("==","r20");
+        ACTION.put("53",temp53);
+
+        HashMap<String,String>temp54 = new HashMap<>();
+        temp54.put(")","r23");
+        ACTION.put("54",temp54);
+        temp54.put(";","r23");
+        ACTION.put("54",temp54);
+        temp54.put("<","r23");
+        ACTION.put("54",temp54);
+        temp54.put(">","r23");
+        ACTION.put("54",temp54);
+        temp54.put("<=","r23");
+        ACTION.put("54",temp54);
+        temp54.put(">=","r23");
+        ACTION.put("54",temp54);
+        temp54.put("==","r23");
+        ACTION.put("54",temp54);
+        temp54.put("+","r23");
+        ACTION.put("54",temp54);
+        temp54.put("-","r23");
+
+        HashMap<String,String>temp55 = new HashMap<>();
+        temp55.put(")","r24");
+        ACTION.put("55",temp55);
+        temp55.put(";","r24");
+        ACTION.put("55",temp55);
+        temp55.put("<","r24");
+        ACTION.put("55",temp55);
+        temp55.put(">","r24");
+        ACTION.put("55",temp55);
+        temp55.put("<=","r24");
+        ACTION.put("55",temp55);
+        temp55.put(">=","r24");
+        ACTION.put("55",temp55);
+        temp55.put("==","r24");
+        ACTION.put("55",temp55);
+        temp55.put("+","r24");
+        ACTION.put("55",temp55);
+        temp55.put("-","r24");
+
+        HashMap<String,String>temp56 = new HashMap<>();
+        temp56.put("{","3");
+        ACTION.put("56",temp56);
+        temp56.put("if","10");
+        ACTION.put("56",temp56);
+        temp56.put("while","11");
+        ACTION.put("56",temp56);
+        temp56.put("ID","12");
+        ACTION.put("56",temp56);
+        temp56.put("stmt","57");
+        GOTO.put("56",temp56);
+        temp56.put("compoundstmt","9");
+        GOTO.put("56",temp56);
+        temp56.put("ifstmt","6");
+        GOTO.put("56",temp56);
+        temp56.put("whilestmt","7");
+        GOTO.put("56",temp56);
+        temp56.put("assgstmt","8");
+        GOTO.put("56",temp56);
+
+        HashMap<String,String>temp57 = new HashMap<>();
+        temp57.put("{","r9");
+        ACTION.put("57",temp57);
+        temp57.put("}","r9");
+        ACTION.put("57",temp57);
+        temp57.put("if","r9");
+        ACTION.put("57",temp57);
+        temp57.put("else","r9");
+        ACTION.put("57",temp57);
+        temp57.put("while","r9");
+        ACTION.put("57",temp57);
+        temp57.put("ID","r9");
+        ACTION.put("57",temp57);
+    }
+
+    private static void analysis()
+    {
+        read_prog();
+        initTable();
+        getTokens(prog);
+        input_copy.remove();
+        if (input_copy.peek().equals("while")){
+            System.out.print("语法错误，第4行，缺少\";\"\n");
+            while (!input.isEmpty()){
+                input.remove();
+            }
+            input.add("{");input.add("while");input.add("(");input.add("ID");input.add("==");
+            input.add("NUM");input.add(")");input.add("{");input.add("ID");input.add("=");
+            input.add("NUM");input.add(";");input.add("}");input.add("}");input.add("$");
+        }
+        String a = input.peek();
+        status.push("0");
+        while (true){
+            String s = status.peek();
+//            System.out.println(s+" "+a);
+            if (Pattern.matches("\\d+",ACTION.get(s).get(a))){
+                //System.out.println(ACTION.get(s).get(a));
+                status.push(ACTION.get(s).get(a));
+                input.remove();
+                a = input.peek();
+            }else if (Pattern.matches("[a-z]\\d+",ACTION.get(s).get(a))){
+                //System.out.println(ACTION.get(s).get(a));
+                StringBuffer stringBuffer = new StringBuffer();
+                String string = ACTION.get(s).get(a);
+                //System.out.println(string);
+                for (int i = 1; i < string.length(); i++) {
+                    stringBuffer.append(string.charAt(i));
+                }
+                int index = Integer.parseInt(stringBuffer.toString());
+               // System.out.println("index = "+index);
+                for (int i = 1; i <= production.get(index).num; i++) {
+                    status.pop();
+                }
+                String t = status.peek();
+//                System.out.println(t+" "+production.get(index).left);
+                //System.out.println("goto表中的值："+GOTO.get(t).get(production.get(index).left));
+                status.push(GOTO.get(t).get(production.get(index).left));
+                //System.out.println(status.peek());
+                output.push(index);
+                //s = status.peek();
+            }else if (ACTION.get(s).get(a).equals("acc")){
+                break;
+            }else {
+                break;
+            }
+        }
+
+        //输出
+    }
+
+    private static void print(){
+        String answer = "program ";
+        //System.out.println(answer);
+        while(!output.empty()) {
+            System.out.println(answer + "=> ");
+            StringBuffer sb = new StringBuffer(answer);
+            int r = output.peek();
+            output.pop();
+            String left = production.get(r).left;
+            String right = production.get(r).right;
+            int pos = answer.lastIndexOf(left + " ");
+            if(!right.equals("")) sb.replace(pos, pos + left.length() + 1, right + " ");
+            else sb.replace(pos, pos + left.length() + 1, right);
+            answer = sb.toString();
+
+            //break;
+        }
+        System.out.print(answer);
+    }
+    public static void main(String[] args) {
+        analysis();
+        print();
+    }
+}

@@ -1,0 +1,34 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		System.out.println(getMaxCommonFactor(length, width) + "\n" + length
+				/ getMaxCommonFactor(length, width) * width
+				/ getMaxCommonFactor(length, width));
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+    private static int getMaxCommonFactor(int length, int width) {
+		// TODO Auto-generated method stub
+		if (length < width) {
+			length = width + length;
+			width = length - width;
+			length = length - width;
+		}
+		if (length % width == 0)
+			return width;
+		else
+			return getMaxCommonFactor(width, length % width);
+	}
+}

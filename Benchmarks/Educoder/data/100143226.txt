@@ -1,0 +1,29 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		FileReader fr=new FileReader("src/step4/input/input.txt");
+        FileWriter fw=new FileWriter("src/step4/output/output.txt");
+        char a [] =new char[10];
+        int n = -1;
+        while((n=fr.read(a))!=-1){
+        	fw.write(a,0,n);
+        }
+        fr.close();
+        fw.close();
+		
+		
+		
+		
+		/********* End *********/		
+	}
+}

@@ -1,0 +1,29 @@
+package step1;
+import java.util.Arrays;
+public class GetScores {
+ public int getLostScores(int[] nums) {
+
+	/********* Begin *********/
+   int[] arr = new int[10001];
+    int[] res = new int[3];
+    for(int i = 0; i < nums.length; i++) {
+      arr[nums[i]] = 1;
+    }
+    int j = 0;
+    for (int i = 1; i < 10001; i++) {
+      if (arr[i] == 0) {
+        res[j++] = i;
+      }
+    }
+
+    Arrays.sort(res);
+    String s = "";
+    for (int i = 0; i < res.length; i++) {
+      s += res[i];
+    }
+    long i = Long.parseLong(s);
+    return (int) (i % 11);
+
+	/********* End *********/
+}
+}

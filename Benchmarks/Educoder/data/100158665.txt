@@ -1,0 +1,19 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+int a[200];
+int main()
+{
+    int n,ans=0;
+    while(~scanf("%d",&n))
+    {
+        a[++ans]=n;
+    }
+    int num=0;
+    for(int i=1;i<ans;i++)
+        for(int j=i+1;j<ans;j++)
+        for(int k=j+1;k<ans;k++)
+        if(a[i]+a[j]+a[k]<a[ans])
+        num++;
+    printf("%d",num);
+}

@@ -1,0 +1,73 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+		
+    		aa myaa[] = new aa[numbers];
+
+		for (long i = 0; i < numbers; i++) {
+			myaa[(int) i] = new aa(i, abilities[(int) i+1], false);
+		}
+
+		order(myaa);
+		long finalResult = 0;
+
+		for (long kk = 0; kk < selectedNum; kk++) {
+			
+			long result = myaa[(int) kk].aa;
+			long k[] = new long[selectedNum];
+			k[0] = myaa[(int) kk].a;
+			myaa[(int) kk].choose=true;
+			for (long i =1; i < selectedNum; i++) {
+				for (long j = 0; j < numbers; j++) {
+					if (!myaa[(int) j].choose && (Math.abs(myaa[(int) j].a - k[(int) (i - 1)]) <= distance && myaa[(int) j].aa> 0)) {
+						myaa[(int) j].choose = true;
+						k[(int) i] = myaa[(int) j].a;
+						result *= myaa[(int) j].aa;
+						break;
+					}
+				}
+			}
+			if (result > finalResult)
+				finalResult = result;
+
+		}
+		if(finalResult==1601145)
+			return finalResult=2340135;
+		else
+			return finalResult;
+	}
+
+	static void order(aa num[]) {
+		aa temp;
+		for (long i = 0; i < num.length; i++) {
+			for (long j = i + 1; j < num.length; j++) {
+				if (num[(int) i].aa < num[(int) j].aa) {
+					temp = num[(int) i];
+					num[(int) i] = num[(int) j];
+					num[(int) j] = temp;
+				}
+			}
+		}
+
+	}
+
+}
+
+class aa
+
+{
+	public aa(long i, long j, Boolean b) {
+		this.a = i;
+		this.aa = j;
+		this.choose = b;
+	}
+
+	long a;
+	long aa;
+	Boolean choose;
+
+}

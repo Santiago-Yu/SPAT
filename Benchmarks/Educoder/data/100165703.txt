@@ -1,0 +1,70 @@
+package step3;
+import step1.Date;
+public class Course {
+    private int code; //课程编号
+    private String courseName; //课程名称
+    private Date testTime;//考试日期
+    private int score;//考试成绩
+   /******Begin**************/
+	public Course()
+    {
+        code=0;
+        testTime=new Date(1999,9,9);
+        courseName="";
+        score = 0;
+    }
+    
+    public Course(int c1,String s,int d1,int d2,int d3,int d4)
+    {
+        code=c1;
+        testTime=new Date (d1,d2,d3);
+        courseName=s;
+        score = d4;
+    }
+	public Course(int c1,String s,Date d,int d4)
+    {
+        code=c1;
+        testTime=d;
+        courseName=s;
+        score = d4;
+    }
+	
+    public void setCorse(int c1,String s,int d1,int d2,int d3,int d4)
+    {
+        code=c1;
+        testTime=new Date (d1,d2,d3);
+        courseName=s;
+        score = d4;
+    }
+	public void setCorse(int c1,String s,Date d,int d4)
+    {
+        code=c1;
+        testTime=d;
+        courseName=s;
+        score = d4;
+    }
+
+	public int getcode()
+    {
+        return code;
+    }
+    
+    public String  getCourseName( ){
+		return courseName;
+    }
+    
+    public Date  getTestTime( ){
+		return testTime;
+    }
+    
+	public int getscore( ){
+		return score;
+    }
+    
+    public String toString( ){
+		return code+" "+courseName+" "+testTime+" "+score;
+    }
+   /******End************/
+
+}
+

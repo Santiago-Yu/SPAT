@@ -1,0 +1,17 @@
+    @SuppressWarnings("unchecked")
+    public static <T extends Date> T parse(String dateString, String dateFormat, Class<T> targetResultType) {
+        if (StringUtil.isEmpty(dateString)) {
+            return null;
+        }
+        DateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        try {
+            long time = simpleDateFormat.parse(dateString).getTime();
+            Date tempDate = targetResultType.getConstructor(long.class).newInstance(time);
+            return (T) tempDate;
+        } catch (ParseException parseException) {
+            String errorInfo = "鏃犳硶浣跨敤鏍煎紡锛歔" + dateFormat + "]瑙ｆ瀽鏃ユ湡瀛楃涓诧細[" + dateString + "]";
+            throw new IllegalArgumentException(errorInfo, parseException);
+        } catch (Exception exception) {
+            throw new IllegalArgumentException("鐩爣缁撴灉绫诲瀷锛歔" + targetResultType.getName() + "]閿欒", exception);
+        }
+    }

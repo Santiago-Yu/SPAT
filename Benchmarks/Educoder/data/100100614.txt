@@ -1,0 +1,35 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str=null;
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+        try {
+            str=reader.readLine();
+        }
+        catch(IOException e) {
+			e.printStackTrace();
+        }
+        int letter=0;
+        int space=0;
+        int number=0;
+        int other=0;
+        for(int i=0;i<str.length();i++){
+        	char c=str.charAt(i);
+            if((c<='z'&&c>='a')||c<='Z'&&c>='A')
+                letter++;
+            else if(c<='9'&&c>='0')
+                number++;
+            else if(c==' ')
+                space++;
+            else
+                other++;
+        }
+        System.out.print("letter="+letter+",space="+space+",number="+number+",other="+other);
+        /********** End *********/
+    }
+}

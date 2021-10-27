@@ -1,0 +1,30 @@
+package step1;
+
+public class GetScores {
+
+    public int getLostScores(int[] nums){
+        int a[] = new int[10001];
+        int b[] = new int[3];
+        for (int i = 0; i < nums.length; i++) {
+            a[nums[i]] = nums[i];
+        }
+
+        int j = 0;
+        for (int i = 1; i < a.length; i++) {
+            if (a[i] == 0){
+                b[j] = i;
+                j++;
+                if (j>=3){
+                    break;
+                }
+            }
+        }
+
+        b[0] = b[0]% 11;
+        String v = String.valueOf(b[0]) + String.valueOf(b[1]) + String.valueOf(b[2]);
+        return Integer.valueOf(v)%11;
+
+	
+	}
+
+}

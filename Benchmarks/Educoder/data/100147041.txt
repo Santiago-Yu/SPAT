@@ -1,0 +1,31 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+public static long getBestTeam(int n, int[] a, int k, int d) {
+        long[][] dmax = new long[k + 1][n + 1];// 记录最大乘积
+        long[][] dmin = new long[k + 1][n + 1];// 记录最大乘积
+        // dmax[k][i]表示 : 当选中了k个学生，并且以第i个学生为结尾，所产生的最大乘积；
+        // dmin[k][i]表示 : 当选中了k个学生，并且以第i个学生为结尾，所产生的最小乘积；
+        long maxPower = Integer.MIN_VALUE;
+        for (int i = 1; i <= n; i++) {
+            //// 初始化 选取了一个学生后
+            dmax[1][i] = a[i];
+            dmin[1][i] = a[i];
+            for (int stuNum = 2; stuNum <= k; stuNum++) {
+                for (int j = i - 1; j > 0 && i - j <= d; j--) {
+                    // 选择下一个学生的时候，有可能是负数乘以最小的值变成了最大的数。因为负负得正。
+                    dmax[stuNum][i] = Math.max(dmax[stuNum][i],
+                            Math.max(dmax[stuNum - 1][j] * a[i], dmin[stuNum - 1][j] * a[i]));
+                    dmin[stuNum][i] = Math.min(dmin[stuNum][i],
+                            Math.min(dmin[stuNum - 1][j] * a[i], dmax[stuNum - 1][j] * a[i]));
+                }
+            }
+            maxPower = Math.max(dmax[k][i], maxPower);
+        }
+        return maxPower;
+    }
+    
+	/********* End *********/
+}

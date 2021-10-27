@@ -1,0 +1,87 @@
+package case8;
+
+public class TestPolymorphism {
+	public static void main(String[] args) {
+		// 以多态方式分别实例化子类对象并调用eat()方法
+		/********* begin *********/
+		Dog d=new Dog();
+        d.seteat("bread");
+        d.eat();
+        Cat c=new Cat();
+        c.seteat("rat");
+        c.eat();
+        Lion l=new Lion();
+        l.seteat("meat");
+        l.eat();
+		/********* end *********/
+	}
+}
+
+// Animal类中定义eat()方法
+class Animal {
+	/********* begin *********/
+    public String eat; 
+	public String geteat()
+    {
+        return eat;
+    }
+    public void seteat(String eat)
+    {
+        this.eat=eat;
+    }
+	/********* end *********/
+}
+
+// Dog类继承Animal类 复写eat()方法
+class Dog extends Animal {
+	/********* begin *********/
+	public String eat; 
+	public String geteat()
+    {
+        return eat;
+    }
+    public void seteat(String eat)
+    {
+        this.eat=eat;
+    }
+    public void eat(){
+        System.out.println("eating "+this.eat+"...");
+    }
+	/********* end *********/
+}
+
+// Cat类继承Animal类 复写eat()方法
+class Cat extends Animal {
+	/********* begin *********/
+	public String eat; 
+	public String geteat()
+    {
+        return eat;
+    }
+    public void seteat(String eat)
+    {
+        this.eat=eat;
+    }
+    public void eat(){
+        System.out.println("eating "+this.eat+"...");
+    }
+	/********* end *********/
+}
+
+// Lion类继承Animal类 复写eat()方法
+class Lion extends Animal {
+	/********* begin *********/
+		public String eat; 
+	public String geteat()
+    {
+        return eat;
+    }
+    public void seteat(String eat)
+    {
+        this.eat=eat;
+    }
+    public void eat(){
+        System.out.println("eating "+this.eat+"...");
+    }
+	/********* end *********/
+}

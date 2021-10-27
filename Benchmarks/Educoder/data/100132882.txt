@@ -1,0 +1,22 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	  /**************BEGIN************/
+	 int count = 0;
+		for(int i = 0; i < ferry.length; i++) {
+			for(int j = 0; j < ferry[0].length; j++) {
+				if(ferry[i][j] == '+' && (i == 0 || ferry[i - 1][j] == 'o')
+						&& (j == 0 || ferry[i][j-1] == 'o')) {
+					count++;
+				}
+			}
+		}
+		
+		return count;
+	 
+         
+      /***********END ***************/
+	 }
+}

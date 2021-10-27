@@ -1,0 +1,22 @@
+package step3;
+//定义一个数组，数组一共有10个元素，接收用户输入的值，求出下标为偶数的元素值之和。
+import java.util.Scanner;
+public class QiuHe {
+public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int i, sum = 0;
+        int[] num = new int[10];//声明并创建数组num，数组长度为10
+        // 开始循环，接收用户输入的数字
+        for (i = 0; i < 10; i++) {
+            System.out.println("请输入第" + (i + 1) + "个数字：");    // 提示用户输入第n个数字    
+            num[i] = sc.nextInt();// 接收用户输入的数字
+            // 判断下标是否为偶数
+            if (i % 2 == 0) {
+                sum += num[i];// 如果下标是偶数则累加
+            }
+        }
+        // 循环结束,输出和
+        System.out.println("下标为偶数的元素值之和是：" + sum);
+}
+}
+

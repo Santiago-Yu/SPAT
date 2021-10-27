@@ -1,0 +1,66 @@
+package Q102;
+import java.util.*;
+public class Main {
+	public int money[] = new int[2];
+	public boolean getMoney(int a){
+		if(a==5){
+			this.money[0]++;
+		}
+		if(a==10){
+			if(this.money[0]==0){
+				return false;
+			}
+			else{
+				this.money[0]--;
+				this.money[1]++;
+			}
+		}
+		if(a==20){
+			if(this.money[0]==0||(this.money[0]==2&&this.money[1]==0)){
+				return false;
+			}
+			else if(this.money[0]==1&&this.money[1]==0){
+				return false;
+			}
+			else{
+				this.money[0]--;
+				this.money[1]--;				
+			}
+		}
+		return true;
+	}
+	public static void main(String[] args) {
+		Main test = new Main();
+		Scanner in = new Scanner(System.in);
+		int a;
+		String sh = in.nextLine();
+		int i=0;
+		while(i<=sh.length()) {
+			if(sh.charAt(i) == '5') {
+				a=Integer.valueOf(sh.charAt(i)+"");
+				i+=2;
+				if(test.getMoney(a)==false) {
+					System.out.print("false");
+					return;
+				}
+			}
+			else if(sh.charAt(i) == '1') {
+				a=Integer.valueOf(""+sh.charAt(i)+sh.charAt(i+1));
+				i+=3;
+				if(test.getMoney(a)==false) {
+					System.out.print("false");
+					return;
+				}
+			}
+			else if(sh.charAt(i) == '2') {
+				a=Integer.valueOf(""+sh.charAt(i)+sh.charAt(i+1));
+				i+=3;
+				if(test.getMoney(a)==false) {
+					System.out.print("false");
+					return;
+				}
+			}
+		}
+		System.out.print("true");
+	}
+}

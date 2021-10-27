@@ -1,0 +1,65 @@
+package step4;
+import java.util.Scanner;
+public class Josephus {
+
+   public static void main(String args[]){
+	   /**
+		* 数组解决约瑟夫环问题
+		* @param total   总人数（如41）
+		* @param number  要报的数（如3）
+		* Josecount()算法，显示最后一个的编号
+		*/
+		   int total,number;
+		   Scanner scan=new Scanner(System.in);
+		   total=scan.nextInt();  //输入参与游戏的总人数
+		   number=scan.nextInt(); //输入要报的数字
+	       Josecount(total,number);
+
+   }
+    
+	public static void Josecount(int personNumber ,int number) { //显示最后那个人的原始编号
+		    //显示最后那个人的原始编号
+        	int k=0;//最后一人编号
+        	int[] persons = new int[personNumber]; //建立数组，存放所有人的原始编号，从1开始.....personNumber最后一人
+        	for (int i = 0; i < personNumber; i++) {
+            	persons[i] = i+1;
+        	}
+	 
+	        /*************begin***************/
+			 int index = 0;//从0开始
+        int dunNumbers = 0;//记录已经蹲下的人数，跳过几个人
+        int duns = 0;//记录蹲下人的个数
+        while (duns!=personNumber-1){
+            //留一个人，即蹲下的人数比总人数少1，停止操作。即最后一人数组元素不赋值为0
+            //还有2人以上没有蹲下 
+            //判段当前位置是否是蹲下
+            if (persons[index%persons.length] == 0) {
+                //蹲下,继续数数
+                dunNumbers++;
+                index++;
+            }else {
+                //2.没有蹲下,判读数的数是否是number的数
+                if ((index + 1 -dunNumbers)%number == 0) {
+                    //是,用0标识蹲下
+                    persons[index%persons.length] = 0;
+                    duns++;//蹲下的人数++
+                    index++;//继续数数
+                }else {
+                    //否
+                    //继续数数
+                    index++;
+                }
+            }
+        }
+        for (int i=0;i<persons.length;i++)
+            if (persons[i]!=0) k=persons[i];
+
+        System.out.print("最后一个人编号："+k);
+                
+
+
+
+	        /*************end***************/
+	}
+
+}

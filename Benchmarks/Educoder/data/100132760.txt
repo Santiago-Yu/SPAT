@@ -1,0 +1,50 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+	 	int row = ferry.length;	
+        if(row < 1){
+        	return 0;
+        }
+		int column = ferry[0].length;
+        if(column < 1){
+        	return 0;
+        }
+		int totalShips = 0;
+		boolean rowJudge = false;
+		boolean columnJudge = false;
+		
+		for(int i = 0; i < row; ++i) {
+			for(int j = 0; j < column; ++j) {
+				if(ferry[i][j] == '+') {
+					//往行判断
+					for(int temp = j + 1; temp < column; ++temp) {
+						if(ferry[i][temp] == '+') {
+							ferry[i][temp] = 'o';
+							rowJudge = true;
+						}else{
+							break;
+						}
+					}
+					//假如不是行方向，往列方向判断船的方向
+					if(!rowJudge) {
+						for(int temp = i + 1; temp < row; ++temp) {
+							if(ferry[temp][j] == '+') {
+								ferry[temp][j] = 'o';
+								columnJudge = true;
+							}else{
+								break;
+							}
+						}
+					}
+					
+					ferry[i][j] = 'o';
+					++totalShips;
+				}
+			}
+		}
+		return totalShips;
+	 
+	 }
+}

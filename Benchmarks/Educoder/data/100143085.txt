@@ -1,0 +1,32 @@
+package step4;
+
+import java.io.*;
+
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		  BufferedReader reder=new BufferedReader(new FileReader("src/step4/input/input.txt"));
+     BufferedWriter writer=new BufferedWriter(new FileWriter("src/step4/output/output.txt"));
+     String lang=null;
+     while((lang=reder.readLine())!=null) {
+    	 writer.write(lang);
+         writer.newLine();
+     }
+         
+     BufferedInputStream input=new BufferedInputStream(new FileInputStream("src/step4/input/input.jpg"));
+     BufferedOutputStream output=new BufferedOutputStream(new FileOutputStream("src/step4/output/output.jpg"));
+     int a=0;
+     while ((a=input.read())!=-1) {
+		output.write(a);
+	}
+    reder.close();
+     writer.close();
+     input.close();
+     output.close();
+		
+		
+		/********* End *********/		
+	}
+}

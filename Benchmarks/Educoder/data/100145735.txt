@@ -1,0 +1,51 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+	
+		String[] date = releaseDate.split("-");
+        int year = Integer.parseInt(date[0]);
+        int month = Integer.parseInt(date[1]);
+        int days = Integer.parseInt(date[2]);
+
+        int[] monthDay = {31,28,31,30,31,30,31,31,30,31,30,31};
+        if((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+            monthDay[1] = 29;
+
+        for(int i = 1; i <= day; i++){
+            if(days == monthDay[month-1]){
+                month++;
+                days = 0;
+            }
+
+            if(month == 13){
+                month = 1;
+                year++;
+                if((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+                    monthDay[1] = 29;
+                else
+                    monthDay[1] = 28;
+            }
+
+            days++;
+        }
+
+        return year+"-"+String.format("%02d", month)+"-"+String.format("%02d", days);
+	
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,33 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+           java.util.Arrays.sort(nums);//对数组进行排序
+	    	        String t = "";//将丢失的数字统一以字符串形式存储
+	    	        int count = 0;
+	    	        for (int i = 1, j = 0; i <= nums.length + 3 && j < nums.length;) {//相当于两个指针i,j一个用来遍历1~10000数字，一个用来遍历数组元素
+	    	            if (count == 3)//(情况1、2一定会跳出来)
+	    	                break;
+	    	            if (nums[j] == i) {
+	    	                i++;
+	    	                j++;
+	    	            } else {
+	    	                t += i;//记录下丢失的元素
+	    	                i++;
+	    	                count++;
+	    	            }
+	    	        }
+	    	        int end = nums[nums.length - 1] + 1;
+	    	        for (int i = count; i < 3; i++) {//如果丢书的数在末尾的处理方法（例如情况3、4）
+	    	            t += end++;
+	    	        }
+	    	        //System.out.println(t);
+	    	        return (int) (Long.valueOf(t) % 11);
+	
+	}
+
+	/********* End *********/
+}

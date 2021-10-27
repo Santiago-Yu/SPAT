@@ -1,0 +1,62 @@
+package Q202;
+import java.util.Arrays;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+		int x = sc.nextInt();
+		int data = x;
+		int n = 0;
+		int[] result = new int[100];
+		String ss = "";
+		if(x<10) {
+			ss = x+"";
+		}else {
+			for(int i=9,j=0;i>0;i--)
+			{
+				if(data<10) {
+					result[j] = data;
+					break;
+				}else if(isZhiNumber(data)) {
+					System.out.print(0);
+					break;
+				}else {
+					if(data%i==0) {
+						result[j] = i;
+						data = data/i;
+						i = 10;//回到起点
+						j++;
+					}
+				}
+			}
+			Arrays.sort(result);
+			for(int i=0;i<result.length;i++)
+			{
+				if(result[i]!=0) {
+					n = i;
+					break;
+				}
+			}
+			for(int i=n;i<result.length;i++)
+			{
+				ss = ss+result[i]+"";
+			}	
+		}
+		System.out.print(ss);
+	}
+	public static boolean isZhiNumber(int n) {
+		int a = 0;
+		for(int i=2;i<=Math.sqrt(n);i++)
+		{
+			if(n%i==0) {
+				a = a+2;
+			}
+		}
+		if(a==0)
+			return true;
+		else
+			return false;
+	}
+}

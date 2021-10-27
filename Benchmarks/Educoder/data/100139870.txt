@@ -1,0 +1,20 @@
+package step2;
+
+import java.util.Scanner;
+
+public class NameSearch {
+    public static void main(String[] args)
+	 {
+	        Scanner scanner = new Scanner(System.in);
+	        /********** Begin *********/
+			String str = scanner.nextLine();
+			String key = "李四";
+			int a = str.indexOf(key);//*第一个出现的索引位置
+	        while (a != -1) 
+	        {
+	            System.out.println(a);
+	            a = str.indexOf(key, a + 1);//*从这个索引往后开始第一个出现的位置
+	        }  	
+	        /********** End *********/
+	    }
+}

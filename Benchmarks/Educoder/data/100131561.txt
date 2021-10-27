@@ -1,0 +1,43 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		int time = 0;
+		showDirStructure2(file, time);
+	}
+	public static void showDirStructure2(File file, int time) {
+		if (file.isDirectory()) {// 是文件夹
+			for (int k = 0; k < time ; k++) {
+				System.out.print("  ");
+			}
+			System.out.println("+--" + file.getName());
+			File[] tempList = file.listFiles();
+			if (tempList.length > 0) {// 不为空目录
+				for (int i = 0; i < tempList.length; i++) {
+					if (tempList[i].isDirectory()) {// 是文件夹
+						File file1 = new File(file + "/" + tempList[i].getName());
+						showDirStructure2(file1, time + 1);
+					}
+					if(tempList[i].isFile()){
+						for (int k = 0; k < time+1; k++) {
+							System.out.print("  ");
+						}
+						System.out.println("--" + tempList[i].getName());
+					}
+				}
+			}
+		}
+		if (file.isFile()) {// 是文件
+			for (int k = 0; k < time; k++) {
+				System.out.print("  ");
+			}
+			System.out.println("--" + file.getName());
+		}
+	}// showDirStructure2
+    
+	/********** END **********/
+}

@@ -1,0 +1,61 @@
+package step3;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
+public class Task {
+    public static int i = 0;
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		if (file.isDirectory()) {
+			String s = file.getName();
+			System.out.println("+--" + s);
+		}
+		else{
+			String s1 = file.getName();
+			System.out.println("--"+s1);
+		}
+		file2(file);
+	}
+
+	public static void file2(File file) {
+		File[] files = file.listFiles();
+		i++;
+		for (File f : files) {
+			if (f.isDirectory()) {
+				for(int j = 0;j<i;j++){
+					System.out.print("  ");
+				}
+				String s = f.getName();
+				System.out.println("+--" + s);
+				file2(f);
+			}
+			else{
+				String s1 = f.getName();
+				// System.out.print("  ");
+				if (accept(s1)) {
+					for (int j = 0; j < i; j++) {
+						System.out.print("  ");
+					}
+					System.out.println("--" + s1);
+				}
+			}
+		}
+		i--;
+	}
+    public static boolean accept(String name) {
+		// String name = pathname.getName();
+		if (name.endsWith(".jpg")) {
+			return true;
+		} else if (name.endsWith(".png")) {
+			return true;
+		} else if (name.endsWith(".bmp")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	/********** END **********/
+}
+

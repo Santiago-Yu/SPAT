@@ -1,0 +1,34 @@
+package step3;
+
+public class Task {
+	public void rotate(int[][] matrix){
+		/********* Begin *********/
+        //转置
+	    for (int i = 0; i < matrix.length; ++i)
+	    {
+	        for (int j = 0; j < i; ++j)
+	        {
+	            int temp = 0;
+	            //沿主对角线对称位置上的元素进行交换
+	            temp = matrix[i][j];
+	            matrix[i][j] = matrix[j][i];
+	            matrix[j][i] = temp;
+	        }
+	    }
+        //逆序
+		for (int i = 0; i < matrix.length; ++i)
+	    {
+	        for (int j = matrix.length - 1; j >= matrix.length / 2; --j) //注意j循环的条件为 j>=N/2
+	        {
+	            int temp = 0;
+	            temp = matrix[i][j];   //第i行末元素
+	            matrix[i][j] = matrix[i][matrix.length - j - 1];
+	            matrix[i][matrix.length - j - 1] = temp;
+	        }
+	    }
+		/********* End *********/
+	}
+}
+
+
+

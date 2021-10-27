@@ -1,0 +1,28 @@
+package step1;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+/**
+ * Created by liqiankun on 2018/11/10 0010
+ * Description：
+ */
+public class ElevatorTest {
+    /**
+     *请在下面的Begin/End内写一个测试函数来验证Elevator中的各方法的编写是否正确编写是否正确
+     */
+    /***********************Begin**************************/
+
+    @Test
+	public void test() throws Throwable {
+		int highLevel = 10;
+		int lowLevel = 1;
+		Query curStatus = new Query(1, 0);
+		
+		Elevator elevator = new Elevator(highLevel, lowLevel);
+		assertEquals(true, elevator.moveUP());
+		elevator.moveForQuery();
+		elevator.pickupQuery(curStatus);
+		assertEquals(true, elevator.checkFinishedQuery());
+	}
+
+    /************************End***************************/
+}

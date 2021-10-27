@@ -1,0 +1,533 @@
+import java.util.*;
+
+
+class GrammarTree{
+     private Vector<GrammarTree> son;
+     private String name;
+     private String value;
+     private String opcode;
+     private int production;
+     private String type;
+     private int line;
+
+     public GrammarTree(String name){
+         this.name = name;
+         son = new Vector<GrammarTree>();
+     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getOpcode() {
+        return opcode;
+    }
+
+    public void setOpcode(String opcode) {
+        this.opcode = opcode;
+    }
+
+    public int getProduction() {
+        return production;
+    }
+
+    public void setProduction(int production) {
+        this.production = production;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    public void insertSon(int index, GrammarTree node){
+        son.add(index,node);
+    }
+
+    public GrammarTree getSon(int index){
+        return son.get(index);
+    }
+
+    public int getSize(){
+        return son.size();
+    }
+}
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static String lexicalResult;
+    private static String lexical_sequence;
+    private static Vector<Integer> ans = new Vector<Integer>();
+    private static Stack<GrammarTree> grammar_tree = new Stack<GrammarTree>();
+    private static Stack<String> mystack = new Stack<String>();
+    private static Queue<String> ID_List = new LinkedList<String>();
+    private static Queue<String> NUM_List = new LinkedList<String>();
+    private static Map<String, String> map = new HashMap<String, String >();
+    private static Map<String,String> IDtable = new HashMap<String, String>();
+    private static Map<String,String> typeTable = new HashMap<String, String>();
+
+    private static  GrammarTree root;
+    private static boolean error;
+    private static final String nonterminals[] = {"program","decls","decl","stmt","compoundstmt","stmts","ifstmt",
+            "assgstmt","boolexpr","boolop","arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"};
+    private static final String terminals[] = {"int","ID","=","INTNUM","real","REALNUM","{","}","if","(",")","then","else",
+            ";","<",">","<=",">=","==","+","-","*","/","$","E"};
+
+    private static final String left[] = {"program","decls","decls","decl","decl","stmt","stmt","stmt",
+            "compoundstmt","stmts","stmts", "ifstmt","assgstmt","boolexpr","boolop","boolop",
+            "boolop","boolop","boolop","arithexpr", "arithexprprime","arithexprprime","arithexprprime","multexpr",
+            "multexprprime","multexprprime", "multexprprime","simpleexpr","simpleexpr","simpleexpr","simpleexpr"};
+
+    private static final String right[][] = {{"decls","compoundstmt"},
+            {"decl",";","decls"},{"E"},{"int","ID","=","INTNUM"},
+            {"real","ID","=","REALNUM"}, {"ifstmt"},{"assgstmt"},{"compoundstmt"},
+            {"{","stmts","}"},{"stmt", "stmts"},{"E"},
+            {"if","(","boolexpr",")","then","stmt","else","stmt"},
+            {"ID","=","arithexpr",";"},{"arithexpr","boolop","arithexpr"},
+            {"<"},{">"},{"<="},{">="},{"=="},{"multexpr","arithexprprime"},{"+","multexpr","arithexprprime"},
+            {"-","multexpr","arithexprprime"},{"E"},
+            {"simpleexpr" ,"multexprprime"},{"*","simpleexpr","multexprprime"},
+            {"/","simpleexpr","multexprprime"},{"E"},
+            {"ID"},{"INTNUM"},{"REALNUM"},{"(","arithexpr",")"}};
+
+    private static final int predictTable[][] = {
+            {1,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {2,0,0,0,2,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {4,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,7,0,0,0,0,8,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,10,0,0,0,0,10,11,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,13,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,14,0,14,0,14,0,0,0,14,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,15,16,17,18,19,0,0,0,0,0},
+            {0,20,0,20,0,20,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,23,0,0,23,23,23,23,23,23,21,22,0,0,0},
+            {0,24,0,24,0,24,0,0,0,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,27,0,0,27,27,27,27,27,27,27,27,25,26,0},
+            {0,28,0,29,0,30,0,0,0,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            prog.append("\n");
+        }
+    }
+
+    private static boolean isLetter(char x){
+        if ((x >= 'A' && x <= 'Z') || (x >= 'a' && x <= 'z') || x == '_')return true;
+        else return false;
+    }
+
+    private static boolean isDigit(char x){
+        if (x >= '0' && x <= '9')return true;
+        else return false;
+    }
+
+    private static boolean isSymbol(char x){
+        if (x == '(' || x ==')' || x == ';' || x == '{' || x == '}' || x == '+' || x == '-' || x == '*' || x == '/')return true;
+        else return false;
+    }
+
+    private static boolean maybeDoubleSymbol(char x){
+        if  (x == '<' || x == '=' || x == '>')return true;
+        else return false;
+    }
+
+    // add your method here!!
+    private static String LexicalAnalysis(){
+        lexicalResult = "";
+        while(i < prog.length() && (prog.charAt(i) == ' ' || prog.charAt(i) == '\t'))
+            i++;
+        if(i >= prog.length())
+            return "$";
+        if(isLetter(prog.charAt(i))){
+            while(isLetter(prog.charAt(i))){
+                lexicalResult += prog.charAt(i);
+                i++;
+            }
+            if(map.get(lexicalResult) == null){
+                ID_List.add(lexicalResult);
+                return map.get("ID");
+            }
+            return map.get(lexicalResult);
+        }else if(isDigit(prog.charAt(i))){
+            while(isDigit(prog.charAt(i))){
+                lexicalResult += prog.charAt(i);
+                i++;
+            }
+            if(prog.charAt(i) == '.'){
+                lexicalResult += prog.charAt(i);
+                i++;
+                while(isDigit(prog.charAt(i))){
+                    lexicalResult += prog.charAt(i);
+                    i++;
+                }
+                NUM_List.add(lexicalResult);
+                return map.get("REALNUM");
+            }else{
+                NUM_List.add(lexicalResult);
+                return map.get("INTNUM");
+            }
+        } else if(isSymbol(prog.charAt(i))){
+            lexicalResult += prog.charAt(i);
+            i++;
+            return map.get(lexicalResult);
+        }else if(maybeDoubleSymbol(prog.charAt(i))){
+            if(prog.charAt(i) == '<'){
+                if(prog.charAt(i+1) == '='){
+                    lexicalResult = "<=";
+                    i += 2;
+                }else{
+                    lexicalResult = "<";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '='){
+                if(prog.charAt(i+1) == '='){
+                    lexicalResult = "==";
+                    i += 2;
+                }else{
+                    lexicalResult = "=";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '>'){
+                if(prog.charAt(i+1) == '='){
+                    lexicalResult = ">=";
+                    i += 2;
+                }else{
+                    lexicalResult = ">";
+                    i++;
+                }
+            }
+            return map.get(lexicalResult);
+        }else if(prog.charAt(i) == '\n'){
+            i++;
+            return "\n";
+        }
+        else{
+            i++;
+            return "$";
+        }
+    }
+    private static int i;
+    private static int line;
+    private static void SemanticAnalysis(){
+        mystack.push("$");
+        mystack.push("A");
+        grammar_tree.push(root);
+        i = 0;
+        line = 1;
+        while(!mystack.peek().equals("$")){
+            if(lexical_sequence.charAt(i) == '\n'){
+                line++;
+                i++;
+                continue;
+            }
+            char topElement = mystack.peek().charAt(0);
+            char start = lexical_sequence.charAt(i);
+            if(topElement == start){
+                int x = topElement - 'a';
+                if(terminals[x].equals("ID")){
+                    grammar_tree.peek().setValue(ID_List.poll());
+                }else if(terminals[x].equals("INTNUM")){
+                    grammar_tree.peek().setValue(NUM_List.poll());
+                    grammar_tree.peek().setType("int");
+                }else if(terminals[x].equals("REALNUM")){
+                    grammar_tree.peek().setValue(NUM_List.poll());
+                    grammar_tree.peek().setType("real");
+                }
+                mystack.pop();
+                grammar_tree.peek().setLine(line);
+                grammar_tree.pop();
+                i++;
+            }else if(topElement >= 'a' && topElement <= 'z'){
+                int x = topElement - 'a';
+                if(terminals[x].equals("INTNUM")){
+                    grammar_tree.peek().setValue(NUM_List.poll());
+                    System.out.print("error message:line " + line + ",realnum can not be translated into int type");
+                    error=true;
+                }
+                mystack.pop();
+                grammar_tree.peek().setLine(line);
+                grammar_tree.pop();
+                i++;
+            }else{
+                int produnction = predictTable[topElement-'A'][start-'a'];
+                produnction -= 1;
+                ans.add(produnction);
+                GrammarTree parent = grammar_tree.peek();
+                parent.setProduction(produnction);
+                parent.setLine(line);
+                grammar_tree.pop();
+                mystack.pop();
+                for(int index = right[produnction].length - 1; index >= 0; index--){
+                    if(!right[produnction][index].equals("E")){
+                        GrammarTree son = new GrammarTree(right[produnction][index]);
+                        parent.insertSon(0,son);
+                        grammar_tree.push(son);
+                        mystack.push(map.get(right[produnction][index]));
+                    }
+                }
+            }
+        }
+    }
+
+    private static void Preorder(GrammarTree root){
+        String parent = root.getName();
+        if (parent.equals("decl")){
+            String ID_string = root.getSon(1).getValue();
+            String Val_string = root.getSon(3).getValue();
+            String type1 = root.getSon(0).getName();
+            String type2 = root.getSon(3).getType();
+            if(!type1.equals(type2)){
+                if(type1.equals("int")){
+                    double temp = Double.parseDouble(Val_string);
+                    int val = (int) temp;
+                    Val_string = String.valueOf(val);
+                }else{
+                    int temp = Integer.parseInt(Val_string);
+                    double val = temp;
+                    Val_string = String.valueOf(val);
+                }
+            }
+            IDtable.put(ID_string,Val_string);
+            typeTable.put(ID_string,type1);
+        } else if (parent.equals("assgstmt")){
+            String ID_string = root.getSon(0).getValue();
+            Preorder(root.getSon(2));
+            String Val_string = root.getSon(2).getValue();
+            IDtable.replace(ID_string,Val_string);
+        }else if (parent.equals("ifstmt")){
+            Preorder(root.getSon(2));
+            if(root.getSon(2).getValue().equals("true")){
+                Preorder(root.getSon(5));
+            }else{
+                Preorder(root.getSon(7));
+            }
+        }else if(parent.equals("boolexpr")){
+            for(int j = 0; j < root.getSize(); j++){
+                Preorder(root.getSon(j));
+            }
+            root.setValue(comparison(root.getSon(0),root.getSon(2),root.getSon(1).getValue()));
+        }else if(parent.equals("boolop")){
+            root.setValue(root.getSon(0).getName());
+        } else if(parent.equals("arithexpr") || parent.equals("multexpr")){
+            GrammarTree left_node = root.getSon(0);
+            GrammarTree right_node = root.getSon(1);
+            Preorder(left_node);
+            Preorder(right_node);
+            if(right_node.getType().equals("real")||left_node.getType().equals("real")){
+                root.setType("real");
+            }else{
+                root.setType("int");
+            }
+            
+            root.setValue(calculation(left_node,right_node,right_node.getOpcode()));
+        }else if(parent.equals("arithexprprime") || parent.equals("multexprprime")){
+            if(root.getProduction() == 22){
+                root.setType("int");
+                root.setValue("0");
+                root.setOpcode("+");
+            }else if(root.getProduction() == 26){
+                root.setType("int");
+                root.setValue("1");
+                root.setOpcode("*");
+            }else{
+                root.setOpcode(root.getSon(0).getName());
+                GrammarTree left_node = root.getSon(1);
+                GrammarTree right_node = root.getSon(2);
+                Preorder(left_node);
+                Preorder(right_node);
+                if(left_node.getType().equals("real")||right_node.getType().equals("real")){
+                    root.setType("real");
+                }else{
+                    root.setType("int");
+                }
+                root.setValue(calculation(left_node,right_node,right_node.getOpcode()));
+            }
+        }else if(parent.equals("simpleexpr")){
+            if(root.getProduction() == 27){
+                String ID_string = root.getSon(0).getValue();
+                root.setType(typeTable.get(ID_string));
+                root.setValue(IDtable.get(ID_string));
+            }else if(root.getProduction() == 30){
+                Preorder(root.getSon(1));
+                root.setType(root.getSon(1).getType());
+                root.setValue(root.getSon(1).getValue());
+            }else{
+                root.setType(root.getSon(0).getType());
+                root.setValue(root.getSon(0).getValue());
+            }
+        } else{
+            for(int j = 0; j < root.getSize(); j++){
+                Preorder(root.getSon(j));
+            }
+        }
+    }
+
+    private static String calculation(GrammarTree left, GrammarTree right, String opcode){
+        String leftType = left.getType();
+        String rightType = right.getType();
+        String leftVal = left.getValue();
+        String rightVal = right.getValue();
+        boolean flag = false;
+        double left_val,right_val;
+        if (leftType.equals("int")) {
+            int tmp = Integer.parseInt(leftVal);
+            left_val = tmp;
+            if (rightType.equals("int"))flag=true;
+        } else {
+            left_val = Double.parseDouble(leftVal);
+        }
+
+        if (rightType.equals("int")) {
+            int tmp = Integer.parseInt(rightVal);
+            right_val = tmp;
+        } else {
+            right_val = Double.parseDouble(rightVal);
+        }
+        double result;
+        if (opcode.equals("+")) {
+            result = left_val + right_val;
+        }else if(opcode.equals("-")){
+            result = left_val - right_val;
+        }else if(opcode.equals("*")){
+            result = left_val * right_val;
+        }else{
+            if(right_val  == 0){
+                System.out.println();
+                System.out.print("error message:line " +left.getLine() + ",division by zero");
+                error = true;
+                return "1";
+            }
+            result = left_val / right_val;
+        }
+        if(flag){
+            int tmp = (int)result;
+            return String.valueOf(tmp);
+        }
+        return String.valueOf(result);
+    }
+
+    private static String comparison(GrammarTree left, GrammarTree right, String opcode) {
+        String leftType = left.getType();
+        String rightType = right.getType();
+        String leftVal = left.getValue();
+        String rightVal = right.getValue();
+
+        double left_val,right_val;
+        if (leftType.equals("int")) {
+            int tmp = Integer.parseInt(leftVal);
+            left_val = tmp;
+        } else {
+            left_val = Double.parseDouble(leftVal);
+        }
+
+        if (rightType.equals("int")) {
+            int tmp = Integer.parseInt(rightVal);
+            right_val = tmp;
+        } else {
+            right_val = Double.parseDouble(rightVal);
+        }
+
+        boolean result = false;
+        if (opcode.equals("<")) {
+            result = (left_val < right_val);
+        }else if(opcode.equals("<=")){
+            result = (left_val <= right_val);
+        }else if(opcode.equals(">=")){
+            result = (left_val >= right_val);
+        }else if(opcode.equals(">")){
+            result = (left_val > right_val);
+        }else{
+            result = (left_val == right_val);
+        }
+
+        if (result) {
+            return "true";
+        }
+        return "false";
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        for(int i = 0; i < 15;i++){
+            char c = (char) ('A' + i);
+            map.put(nonterminals[i],""+c);
+        }
+        for(int i = 0; i < 25; i++){
+            char c = (char) ('a'+i);
+            map.put(terminals[i],"" + c);
+        }
+        root = new GrammarTree("program");
+        
+        i = 0;
+        lexical_sequence = "";
+        while(i <= prog.length()){
+            String code = LexicalAnalysis();
+            lexical_sequence += code;
+            if(code.equals("$")){
+                break;
+            }
+        }
+
+        SemanticAnalysis();
+
+        Preorder(root);
+
+        if(error){
+            return;
+        }
+        boolean mark = true;
+        for (Map.Entry<String, String> entry : IDtable.entrySet()) {
+            if(mark){
+                mark = false;
+            }else{
+                System.out.println();
+            }
+            System.out.print(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

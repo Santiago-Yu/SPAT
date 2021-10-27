@@ -1,0 +1,21 @@
+#include <iostream>
+using namespace std;
+
+int main(){
+	int a[1000],n=0,T;
+	cin >> a[0];
+	int num=0;
+	while(cin.peek()!='\n'){
+		n++;
+		cin >> a[n];
+	}
+	cin >> T;
+	for(int i=0;i<n-1;i++){
+		for(int j=i+1;j<n;j++){
+			for(int k=j+1;k<n+1;k++){
+				if(a[i]+a[j]+a[k]<T) num++;
+			}
+		}
+	}
+	cout << num;
+}

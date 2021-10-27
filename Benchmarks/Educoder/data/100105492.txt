@@ -1,0 +1,40 @@
+package step1;
+import java.util.Scanner;
+public class Yard {
+
+    private double width;
+	private double length;
+	
+
+	public Yard(){
+    }
+    
+    public Yard(double wd,double lt){
+        this.width = wd;
+        this.length = lt;
+        
+    }
+    
+    
+    public double getPerimeter(){
+        return 2*(width+length);
+    }
+    
+    public double getAcreage(){
+     	return (width*length);
+    }
+  public static void main(String[] args) {
+   Scanner scanner = new Scanner(System.in);
+        Yard a1;
+        double sum1 =0;
+        double sum2 =0;
+		a1 = new Yard(scanner.nextDouble(),scanner.nextDouble());
+        sum1=(a1.getPerimeter());
+        sum2=(a1.getAcreage());
+
+        System.out.println(sum1);
+      System.out.println(" ");
+      System.out.println(sum2);
+   
+   }
+}

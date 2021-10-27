@@ -1,0 +1,27 @@
+package step3;
+
+public class Task {
+    
+	public boolean isPowerCut(String date){
+		String[] dates = date.split("-");
+		int day = Integer.parseInt(dates[0]) * 100 + Integer.parseInt(dates[1]);
+		int m= 7;
+		int interval = 1;
+		for(int i=1; ; i+=interval) {
+			if(m != 9 && i >31) {
+				m++;
+				i %=31;
+			}
+			if(m == 9 && i > 30) {
+				break;
+			}
+			int value = m * 100 + i;
+			if(value > day)
+				break;
+			if(value == day)
+				return true;
+			interval++;
+		}
+		return false;
+	}
+}

@@ -1,0 +1,29 @@
+class n20735941 {
+	protected File getFile() throws IOException {
+		File home = new File(System.getProperty("user.dir"));
+		String fileName = String.format("%s.txt", getFilePrefix());
+		File file = new File(home, fileName);
+		if (!(file.exists())) {
+			URL url = LocalNameGenerator.class.getResource("/" + fileName);
+			if (url == null) {
+				throw new IllegalStateException(String.format("Cannot find resource at %s", fileName));
+			} else {
+				InputStream in = url.openStream();
+				try {
+					BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
+					try {
+						IOUtils.copy(in, out);
+					} finally {
+						out.close();
+					}
+				} finally {
+					in.close();
+				}
+				return file;
+			}
+		} else {
+			return file;
+		}
+	}
+
+}

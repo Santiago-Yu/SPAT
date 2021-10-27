@@ -1,0 +1,36 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+
+	public void showDirStructure(File file)	{
+		boolean isDir=file.isDirectory();
+        int deep=1;
+        System.out.println("+--"+file.getName());
+        getdeep(file,deep);
+
+
+
+
+	}
+	public static void getdeep (File file,int deep){
+    File[] p=file.listFiles();
+    for(int i=0;i<p.length;i++){
+    if(p[i].isDirectory()){
+    for(int l=0;l<deep;l++){
+    System.out.print("  ");}
+    System.out.println("+--"+p[i].getName());
+    getdeep(p[i],deep+1);}
+    if(p[i].isFile()){
+    for(int j=0;j<deep;j++){
+    System.out.print("  ");}
+    System.out.println("--"+p[i].getName());}
+    }
+    }
+
+
+	/********** End **********/
+}

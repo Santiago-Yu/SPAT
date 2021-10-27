@@ -1,0 +1,34 @@
+package step3;
+
+public class Task {
+    
+    
+    public void test(char[][] arr,int [][]temp,int r,int c,int id,int n,int m){
+     	if(r<0||r>=n||c<0||c>=m) return;//不满足条件
+		if(temp[r][c]>0 || arr[r][c]!='x') return;
+        temp[r][c]=id;
+		  for(int dr=-1; dr<=1; dr++) {//8个方位寻找
+			  for(int dc=-1;dc<=1;dc++) {
+				  if(dr!=0||dc!=0) test(arr,temp,r+dr, c+dc, id,n,m);
+			  }
+		  }
+    }
+    
+	public int getBlockNum(int n,int m,char[][] arr){
+		int [][]temp = new int[n][m];//是否访问
+        
+        int count=0;
+        for(int i=0;i<n;i++){
+        	for(int j=0;j<m;j++){
+             	if(temp[i][j]==0&&arr[i][j]=='x'){
+               		test(arr,temp,i,j,++count,n,m);
+                    
+                }
+                
+            }
+        }
+        return count;
+        
+		
+	}
+}

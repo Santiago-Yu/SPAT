@@ -1,0 +1,45 @@
+package task1;
+
+import java.util.*;
+
+public class Task1 {
+	public static void main(String[] args) {
+		int day = 0;
+		int month = 0;
+		int year = 0;
+		int sum = 0;
+		int leap;
+		Scanner input = new Scanner(System.in);
+		year = input.nextInt();
+		month = input.nextInt();
+		day = input.nextInt();
+		
+		/********* Begin *********/
+		int[]a = {31,28,31,30,31,30,31,31,30,31,30,31};
+		int[]b = {31,29,31,30,31,30,31,31,30,31,30,31};
+		int days = 0;
+		if(year % 4 ==0||year % 400 == 0) 
+		{
+			for(int i = 0;i < month - 1;i++) {
+				days = days + b[i];
+				
+			}
+			days = days +day;
+			System.out.println(year+"年"+month+"月"+day+"日是这一年的第"+days+"天");
+		}
+		else 
+		{
+			for(int i = 0;i < month - 1;i++) {
+				days = days + a[i];
+				
+		}
+			days = days +day;
+			System.out.println(year+"年"+month+"月"+day+"日是这一年的第"+days+"天");
+			
+
+	}
+
+
+		/********* End *********/
+	}
+}

@@ -1,0 +1,63 @@
+package jdbc;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class jdbcInsert {
+    public static void insert(){
+		/**********   Begin  **********/
+        try {
+            //加载驱动
+            Class.forName("com.mysql.jdbc.Driver");
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+
+
+
+		Connection conn = null;
+		PreparedStatement statement = null;
+		/**********   Begin  **********/
+        //连接并插入数据
+		try{
+            conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/mysql_db","root","123123");
+            statement = conn.prepareStatement("insert into student(id,name,sex,age) values(1,'张三','男',19),(2,'李四','女',18),(3,'王五','男',20)");
+            statement.executeUpdate();
+
+            statement = conn.prepareStatement("select * from student");
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()){
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                String sex = resultSet.getString(3);
+                int age = resultSet.getInt(4);
+                System.out.print(id+" ");
+                System.out.print(name+" ");
+                System.out.print(sex+" ");
+                System.out.print(age);
+                System.out.println();
+            }
+
+
+
+		
+		
+		} catch (SQLException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+		finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

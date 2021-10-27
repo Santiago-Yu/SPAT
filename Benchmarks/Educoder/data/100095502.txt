@@ -1,0 +1,96 @@
+package step4;
+import java.util.Scanner;
+public class DayCount {
+	public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+		int year = input.nextInt();
+		int month = input.nextInt();
+		int day = input.nextInt();
+		dayCount(year,month,day);
+	}
+	public static void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int monthday;
+		if(year%4==0|year%100==0&year%400==0) {
+			switch(month) {
+			case 1:
+				monthday=day;
+				break;
+			case 2:
+				monthday=day+31;
+				break;
+			case 3:
+				monthday=day+60;
+				break;
+			case 4:
+				monthday=day+91;
+				break;
+			case 5:
+				monthday=day+121;
+				break;
+			case 6:
+				monthday=day+152;
+				break;
+			case 7:
+				monthday=day+182;
+				break;
+			case 8:
+				monthday=day+213;
+				break;
+			case 9:
+				monthday=day+243;
+				break;
+			case 10:
+				monthday=day+274;
+				break;
+			case 11:
+				monthday=day+304;
+				break;
+			default:
+				monthday=day+335;
+				break;
+			}
+		}else {
+			switch(month) {
+			case 1:
+				monthday=day;
+				break;
+			case 2:
+				monthday=day+31;
+				break;
+			case 3:
+				monthday=day+59;
+				break;
+			case 4:
+				monthday=day+90;
+				break;
+			case 5:
+				monthday=day+120;
+				break;
+			case 6:
+				monthday=day+151;
+				break;
+			case 7:
+				monthday=day+181;
+				break;
+			case 8:
+				monthday=day+212;
+				break;
+			case 9:
+				monthday=day+242;
+				break;
+			case 10:
+				monthday=day+273;
+				break;
+			case 11:
+				monthday=day+303;
+				break;
+			default:
+				monthday=day+334;
+				break;
+			}
+		}
+		System.out.print(monthday);
+		/********** End *********/
+	}
+}

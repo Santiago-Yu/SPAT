@@ -1,0 +1,54 @@
+package step3;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class RecordRecovery {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] record = new int[10];
+        int[] recordRecovery = new int[10];
+        for(int i=0;i<10;i++)
+      {
+         record[i]=scanner.nextInt();
+       }
+        Arrays.sort(record); 
+       recordRecovery[0]=record[0];
+       int num=1;
+       for(int i=0;i<10;i++)
+       {
+            int flag=1;
+        for(int x=0;x<num;x++)
+        {
+            if(record[i]==recordRecovery[x])
+             {
+                 flag=0;
+                 break;
+              }
+        }
+       if(flag==1)
+      {
+          
+          recordRecovery[num]=record[i];
+          num++;
+        }
+}
+       /* for (int i = 0; i < num; i++){//这里的i控制循环比较的次数
+             for (int j = 0; j < num-i; j++){
+      
+        if (recordRecovery[j] > recordRecovery[j + 1]){
+          int temp = recordRecovery[j + 1];
+          recordRecovery[j + 1] = recordRecovery[j];
+          recordRecovery[j] = temp;
+                                                       }
+                                               }
+                                           }
+        */
+        for (int i = 0; i < num; i++) {
+            System.out.print(recordRecovery[i]);
+            if (i != num-1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

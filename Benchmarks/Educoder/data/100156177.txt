@@ -1,0 +1,39 @@
+package step3;
+import java.util.Scanner;
+
+//编写一个方法，实现输入一个n位整数，判断各位数字之和是否能被2整除
+public class TestJava22KJ_2 {
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+        System.out.println("请输入一个正整数：");
+		int n=sc.nextInt();
+		//此处调用JudgeEven方法，判断n是否能被2整除，输出相应的信息
+		boolean a=TestJava22KJ_2.JudgeEven(n);
+        if(a==true){
+        System.out.println(n+"能被2整除！");
+        }
+        if(a==false){
+        System.out.println(n+"不能被2整除！");
+        }
+		
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为JudgeEven，实现判断某个整数的各位数字之和是否能被2整除的功能，如果能被2整除返回true，否则返回false
+	public static boolean JudgeEven(int a){
+        int sum=0,c;
+        for(;a>0;){
+            c=a%10;
+            a/=10;
+        sum+=c;
+        }
+        if(sum%2==0){
+        return true;
+        }else{
+        return false;
+        }
+    }
+	
+	
+	
+	/*******End*********/
+}

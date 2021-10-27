@@ -1,0 +1,27 @@
+#include <iostream> 
+#include <cstring>
+using namespace std;
+
+int main (void) {
+    char s1[100];
+    char s2[100];
+    cin >> s1;
+    cin >> s2;
+    int arr[strlen(s1) + 1][strlen(s2) + 1] = {0};
+    int maxlen = 0;
+    
+    for (int i = 0; i <= strlen(s1); ++i) {
+        for (int j = 0; j <= strlen(s2); ++j) {
+            if (i == 0 || j == 0) {
+                arr[i][j] = 0;
+            } else if (s1[i - 1] == s2[j - 1]) {
+                arr[i][j] = arr[i - 1][j - 1] + 1;
+                maxlen = max(maxlen, arr[i][j]);
+            } 
+        }
+    }
+    
+    cout << maxlen;
+    
+    return 0;
+}

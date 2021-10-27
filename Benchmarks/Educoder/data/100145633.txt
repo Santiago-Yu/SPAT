@@ -1,0 +1,96 @@
+package step4;
+import java.lang.*;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+	String year =releaseDate.substring(0,4);
+    String month=releaseDate.substring(5,7);
+    String day1=releaseDate.substring(8,10);
+     int   inyear=Integer.parseInt(year);
+     int   inmonth=Integer.parseInt(month);
+     int   inday=Integer.parseInt(day1);
+   int  restdate=day+inday; 
+   while(restdate>31)
+   {
+    if(inmonth==1||inmonth==3||inmonth==5||inmonth==7||inmonth==8||inmonth==10
+      ||inmonth==12)   
+    {
+        restdate=restdate-31;
+    }
+    else if(inmonth==2)
+    {    
+        if (inyear%4==0&&inyear%100!=0||inyear%400==0)
+        {
+        restdate=restdate-29;
+        }
+        else
+        {
+        restdate=restdate-28; 
+        } 
+    }
+    else
+    {
+        restdate=restdate-30;
+    }
+       
+       
+       
+        if(inmonth!=12)
+        {
+          inmonth++;
+        }
+        else
+        {
+        inmonth=1;
+            inyear++;
+        }
+       
+   }
+        
+        
+        
+   if(restdate>29&&inmonth==2&&(inyear%4==0&&inyear%100!=0||inyear%400==0))
+   {
+   restdate=restdate-29;
+   inmonth++;
+   }
+   if(restdate>28&&inmonth==2&&!(inyear%4==0&&inyear%100!=0||inyear%400==0))
+   {
+   restdate=restdate-28;
+   inmonth++;
+   }
+   if(restdate>30&&(inmonth==4||inmonth==6||inmonth==9||inmonth==11))
+   {
+    restdate=restdate-30;
+    inmonth++;
+   }
+   if(restdate<10)
+   {
+     day1="0"+restdate+"";
+   }else
+   {
+        day1=restdate+"";
+   }
+   if(inmonth<10)
+   {
+     month="0"+inmonth+"";
+   }
+        else{
+        month=inmonth+"";
+        }
+      
+    String  lastresult=inyear+"-"+month+"-"+day1;
+        return  lastresult;
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

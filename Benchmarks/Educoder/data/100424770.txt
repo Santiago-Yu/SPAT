@@ -1,0 +1,18 @@
+    public void testDigest() {
+        try {
+            String myinfo = "鎴戠殑娴嬭瘯淇℃伅";
+            MessageDigest alga = MessageDigest.getInstance("SHA-1");
+            alga.update(myinfo.getBytes());
+            byte[] digesta = alga.digest();
+            System.out.println("鏈俊鎭憳瑕佹槸:" + byte2hex(digesta));
+            MessageDigest algb = MessageDigest.getInstance("SHA-1");
+            algb.update(myinfo.getBytes());
+            if (MessageDigest.isEqual(digesta, algb.digest())) {
+                System.out.println("淇℃伅妫�鏌ユ甯�");
+            } else {
+                System.out.println("鎽樿涓嶇浉鍚�");
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println("闈炴硶鎽樿绠楁硶");
+        }
+    }

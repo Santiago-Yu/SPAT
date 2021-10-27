@@ -1,0 +1,118 @@
+package step2;
+
+public class Task {
+    
+	public class Block{
+		public char value;
+		public int flag;
+		public int x;
+		public int y;
+		
+		public Block(int x,int y,char value){
+			super();
+			this.x = x;
+			this.y = y;
+			this.value = value;
+			this.flag = 0;
+		}
+		
+	}
+	
+	public int virusArea(int n,int m,char[][] area){
+		int count = 0;
+		
+		Block[][] tmp = new Block[n][m];
+		for(int i=0;i<area.length;i++){
+			for(int j=0;j<area[0].length;j++){
+				tmp[i][j] = new Block(i,j,area[i][j]);
+			}
+		}
+		
+		for(int i=0;i<area.length;i++){
+			for(int j=0;j<area[0].length;j++){
+				if(tmp[i][j].value == 'o'&&tmp[i][j].flag == 0){
+//					System.out.println("找到了一个区域:");
+//					for(int a=0;a<area.length;a++){
+//						for(int b=0;b<area[0].length;b++){
+//							System.out.print(tmp[a][b].flag+" ");
+//						}
+//						System.out.println();
+//					}
+//					System.out.println(count);
+					count += 1;
+					this.setVirusArea(i, j, tmp);
+				}
+			}
+		}
+		
+		return count;
+	}
+	
+	public void setVirusArea(int n,int m,Block[][] tmp){
+		Block[] tmp2 = new Block[tmp.length*tmp[0].length];
+		tmp[n][m].flag = 1;
+		tmp2[0] = new Block(n,m,'o');	
+		while(true){
+			Block now = tmp2[0];
+//			System.out.println("这个区域的一个点"+"now.x:"+now.x+"now.y:"+now.y+"now.value:"+now.value);
+			if(now.x-1>=0&&tmp[now.x-1][now.y].value=='o'&&tmp[now.x-1][now.y].flag==0){
+				Block left = new Block(now.x-1,now.y,'o');
+				tmp[now.x-1][now.y].flag = 1;
+				for(int i=1;i<tmp2.length;i++){
+					if(tmp2[i] == null){
+						tmp2[i] = left;
+						break;
+					}
+				}
+			}
+			if(now.x+1<tmp.length&&tmp[now.x+1][now.y].value=='o'&&tmp[now.x+1][now.y].flag==0){
+				
+				Block right = new Block(now.x+1,now.y,'o');
+				tmp[now.x+1][now.y].flag = 1;
+				for(int i=1;i<tmp2.length;i++){
+					if(tmp2[i] == null){
+						tmp2[i] = right;
+						break;
+					}
+				}
+			}
+			if(now.y-1>=0&&tmp[now.x][now.y-1].value=='o'&&tmp[now.x][now.y-1].flag==0){
+				Block down = new Block(now.x,now.y-1,'o');
+				tmp[now.x][now.y-1].flag = 1;
+				for(int i=1;i<tmp2.length;i++){
+					if(tmp2[i] == null){
+						tmp2[i] = down;
+						break;
+					}
+				}
+			}
+//			System.out.println(now.y+1);
+//			System.out.println(tmp[now.x][now.y+1].value);
+//			System.out.println(tmp[now.x][now.y+1].flag);
+			if(now.y+1<tmp[0].length&&tmp[now.x][now.y+1].value=='o'&&tmp[now.x][now.y+1].flag==0){
+				Block up = new Block(now.x,now.y+1,'o');
+				tmp[now.x][now.y+1].flag = 1;
+				for(int i=1;i<tmp2.length;i++){
+					if(tmp2[i] == null){
+						tmp2[i] = up;
+						break;
+					}
+				}
+			}
+			for(int i=1;i<tmp2.length;i++){
+				if(tmp2[i] != null){
+					tmp2[0].x = tmp2[i].x;
+					tmp2[0].y = tmp2[i].y;
+					tmp2[i] = null;
+					break;
+				}
+				if(i == tmp2.length-1){
+					tmp2[0].flag = -1;
+				}
+			}
+			if(tmp2[0].flag==-1){
+				break;
+			}
+		}
+	}
+}

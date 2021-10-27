@@ -1,0 +1,31 @@
+package step3;
+import java.util.Scanner;
+
+//用户输入一个正整数n，计算并返回1~n的偶数和
+public class TestJava23_6 {
+
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+        System.out.println("请输入一个正整数：");
+		int x=sc.nextInt();
+		TestJava23_6.SumOfEven(x);
+		System.out.println("1到n的偶数和为："+TestJava23_6.SumOfEven(x));
+		
+
+	}
+	/*******Start*********/
+	//此处定义一个方法，名为SumOfEven，实现计算并返回1~n的偶数和的功能
+	public static int SumOfEven(int x){
+		int s=0;
+		for(int a=1;a<=x;a++){
+			if(a%2==0){
+			s+=a;
+			}
+		}
+		return s;
+	}
+	
+	
+	
+	/*******End*********/
+}

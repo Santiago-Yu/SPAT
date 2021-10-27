@@ -1,0 +1,42 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+int main()
+{
+	int n=0;
+	
+    char s1[10005],s2[10005];
+    scanf("%s",s1);
+    scanf("%s",s2);
+    
+    int len1=strlen(s1);
+    int len2=strlen(s2);
+	
+	int max=0;
+	
+	for(int i=0;i<len1;i++)
+	{
+
+		for(int j=0;j<len2;j++)
+		{
+			int count=0;
+			if(s1[i]==s2[j])
+			{
+				for(int k=0;k<len2;k++)
+				{
+					if(s1[i+k]==s2[j+k])
+					{				
+						count++;
+						if(max<count)
+						max=count;
+						if(i+k==len1-1||j+k==len2-1)
+						break;
+					}
+					else					
+					break;
+				}
+			}	
+		}	
+	}	
+	printf("%d",max);
+}

@@ -1,0 +1,22 @@
+package step1;
+import java.util.*;
+public class Task {
+	public  int[] dailyTemps(Integer[] temperatures){
+		/********** BEGIN **********/
+        int shuzu[] =new int [temperatures.length];
+		for(int i=0;i<temperatures.length-1;i++){
+            for(int j=i+1;j<temperatures.length;j++){
+                if(temperatures[i]<temperatures[j]){
+                    shuzu[i]=j-i;
+                    break;
+                }
+            }
+        }
+        //System.out.println(Arrays.toString(shuzu));
+		
+		
+
+		return shuzu;
+		/********** END **********/
+    }
+}

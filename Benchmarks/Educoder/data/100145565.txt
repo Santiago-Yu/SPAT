@@ -1,0 +1,168 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		StringBuffer resultStr=new StringBuffer();
+			for(int i =0;i<releaseDate.length();i++)
+			{
+				char getchar = releaseDate.charAt(i);
+			if(getchar == '-') {
+				continue;
+			}
+			else
+				resultStr.append(getchar);
+			
+			}
+			String STR=resultStr.toString();
+			
+			
+			
+			int data=Integer.parseInt(STR);
+			int year = data/10000;
+			data= data -year*10000;
+			int mouth = data/100;
+			data = data-mouth*100;
+			int days = data;
+        
+        if(((year%4==0&&year%100!=0)||year%400==0)&&(mouth>2))
+        {
+            day++;
+        }
+			for(;day>365;) {
+				if((year%4==0&&year%100!=0)||year%400==0) {
+					{
+					day=day-366;
+					year++;
+                 
+					}
+				}
+				else {
+					day=day-365;
+					year++;
+				}
+				}
+        
+        if(((year%4==0&&year%100!=0)||year%400==0)&&(mouth>2))
+        {
+            day--;
+        }
+        
+        
+        
+        
+        
+        
+			while(day>31) {
+				switch(mouth) 
+				{
+				case 1  :mouth++;day=day-31;break;
+				case 2  :
+					if(((year%4==0&&year%100!=0)||year%400==0)) 
+					    {mouth++;day=day-29;}
+					else{mouth++;day=day-28;}break;
+				case 3  :mouth++;day=day-31; break;
+				case 4  :mouth++;day=day-30; break;
+				case 5  :mouth++;day=day-31; break;
+				case 6  :mouth++;day=day-30; break;
+				case 7  :mouth++;day=day-31; break;
+				case 8  :mouth++;day=day-31; break;
+				case 9  :mouth++;day=day-30; break;
+				case 10 :mouth++;day=day-31; break;
+				case 11 :mouth++;day=day-30; break;
+				case 12 :mouth=1;year++;day=day-31;break;
+				}
+				}
+					
+			
+				
+				switch(mouth) 
+				{case 1 :
+					if(days+day>31) {mouth++;days= day+days-31;}
+					else {days=day+days;}
+					break;
+				case 2 :
+					if((year%4==0&&year%100!=0)||year%400==0) {
+						if(days+day>29){mouth++;days=day+days-29;}
+						else {days=day+days;}
+					}
+					else {
+						if(days+day>28){mouth++;days=day+days-28;}
+						else {days=day+days;}
+					}break;
+				case 3 :
+					if(days+day>31) {mouth++;days= day+days-31;}
+				    else {days=day+days;}
+				    break;
+				case 4 :
+					if(days+day>30) {mouth++;days= day+days-30;}
+				    else {days=day+days;}
+				    break;
+				case 5 :
+					if(days+day>31) {mouth++;days= day+days-31;}
+				    else {days=day+days;}
+				    break;
+				case 6:
+					if(days+day>30) {mouth++;days= day+days-30;}
+				    else {days=day+days;}
+				    break;
+				case 7 :
+					if(days+day>31) {mouth++;days= day+days-31;}
+				    else {days=day+days;}
+				    break;
+				case 8 :
+					if(days+day>31) {mouth++;days= day+days-31;}
+				    else {days=day+days;}
+				    break;
+				case 9 :
+					if(days+day>30) {mouth++;days= day+days-30;}
+				    else {days=day+days;}
+				    break;
+				case 10 :
+					if(days+day>31) {mouth++;days= day+days-31;}
+				    else {days=day+days;}
+				    break;
+				case 11 :
+					if(days+day>30) {mouth++;days= day+days-30;}
+				    else {days=day+days;}
+				    break;
+				case 12:
+					if(days+day>31) {mouth=1;year++;days= day+days-31;}
+			        else {days=day+days;}
+			        break;
+				}
+				int falg;
+				falg= year*10000+mouth*100+days;
+				
+				String reseult=String.valueOf(falg);
+				StringBuffer reseults=new StringBuffer();
+				reseults.append(reseult);
+				for(int i=0;i<reseults.length();i++)
+				{
+					if(i==3)
+					{
+						reseults.insert(4,'-');
+					}
+					if(i==5)
+					{
+						reseults.insert(7,'-');
+					}	
+				}
+				String reseultss=reseults.toString();
+				return reseultss;
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

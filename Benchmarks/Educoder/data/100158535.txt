@@ -1,0 +1,39 @@
+package Pid_104;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+     Scanner sc=new Scanner(System.in);
+	 int a[]=new int[100];
+	 int i=0;
+	while(sc.hasNext())
+	{
+		a[i]=sc.nextInt();
+		i++;
+	}
+	int p=0;
+	int m=a[i-1];
+	for(int j=0;j<i-1;j++)
+	{
+			for(int k=j+1;k<i-1;k++)
+			{
+					for(int h=k+1;h<i-1;h++)
+					{
+						if(a[j]+a[k]+a[h]<m)
+						{
+							p++;
+							
+						}
+					}
+				
+			}
+		
+	}
+	System.out.print(p);
+	
+    }
+}

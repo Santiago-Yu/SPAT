@@ -1,0 +1,55 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  
+		   double PI = 3.141592653;
+         
+            double sumarea = PI*r1*r1 + PI*r2*r2;
+		    double inarea = 0;
+			double change = 0;
+			double diatance = 0;
+			double p = 0;
+			double sum = 0;
+         
+         diatance=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+         
+         
+         if(diatance>r1+r2){
+				inarea = 0;
+			}else if(diatance<Math.abs((r1-r2))){
+				if(r1<=r2)  {inarea = PI*r1*r1;}
+				else {inarea = PI*r2*r2;}
+			}else{
+				p=(1+r1+r2)/2;
+				sum=2*Math.sqrt(p*(p-1)*(p-r1)*(p-r2));
+             
+				if(r1<r2){
+					change=x1;
+                    x1=x2;
+                    x2=change;
+                    
+                    
+					change=y1;
+                    y1=y2;
+                    y2=change;
+                    
+                    
+					change=r1;
+                    r1=r2;
+                    r2=change;
+				}
+				inarea=Math.acos((r2*r2+diatance*diatance-r1*r1)/(2*r2*diatance))*r2*r2+Math.acos((r1*r1+diatance*diatance-r2*r2)/(2*r1*diatance))*r1*r1-sum;
+			}
+			
+			double factarea = sumarea - inarea;
+         
+         	return factarea;
+         
+         
+		  /********* End *********/
+	  }
+}

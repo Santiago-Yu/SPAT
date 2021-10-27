@@ -1,0 +1,57 @@
+package Q102;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) 
+	{
+		Scanner in=new Scanner(System.in);
+		int n,flag=1,sum5=0,sum10=0,sum20=0;
+        while(in.hasNext())
+        {
+        	n=in.nextInt();
+        	if(n==5)
+        	{
+        		sum5++;
+        	}
+        	else if(n==10)
+        	{
+        		if(sum5>0)
+        		{
+        			sum10++;
+        			sum5--;
+        		}
+        		else
+        		{
+        			flag=0;
+        			break;
+        		}
+        			
+        	}
+        	else if(n==20)
+        	{
+        		if(sum10>0&&sum5>0)
+        		{
+        			sum20++;
+        			sum10--;
+        			sum5--;
+        		}
+        		else if(sum5>=3)
+        		{
+        			sum20++;
+        			sum5=sum5-3;
+        		}
+        		else
+        		{
+        			flag=0;
+        			break;
+        		}
+        			
+        	}
+        }
+        if(flag==1)
+        	System.out.print("true");
+        else
+        	System.out.print("false");
+	}
+
+}

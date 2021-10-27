@@ -1,0 +1,35 @@
+package step2;
+import java.util.Stack;
+
+public class Task {
+    
+public int virusArea(int n,int m,char[][] area){
+        /********* Begin *********/
+        int num=0;
+
+        for (int i = 0; i < n; i++) {
+            for (int i1 = 0; i1 < m; i1++) {
+                if ('o'==area[i][i1]){
+                    num++;
+                    Stack<String> position=new Stack<>();
+                    position.push(i+","+i1);
+                    while (!position.empty()){
+                        String []p=position.pop().split(",");
+                        if (Integer.parseInt(p[1])+1<m&&area[Integer.parseInt(p[0])][Integer.parseInt(p[1])+1]=='o')
+                            position.push(p[0]+","+(Integer.parseInt(p[1])+1));
+                        if (Integer.parseInt(p[0])+1<n&&area[Integer.parseInt(p[0])+1][Integer.parseInt(p[1])]=='o')
+                            position.push((Integer.parseInt(p[0])+1)+","+Integer.parseInt(p[1]));
+                        if (Integer.parseInt(p[1])-1>-1&&area[Integer.parseInt(p[0])][Integer.parseInt(p[1])-1]=='o')
+                            position.push(Integer.parseInt(p[0])+","+(Integer.parseInt(p[1])-1));
+                        if (Integer.parseInt(p[0])-1>-1&&area[Integer.parseInt(p[0])-1][Integer.parseInt(p[1])]=='o')
+                            position.push((Integer.parseInt(p[0])-1)+","+Integer.parseInt(p[1]));
+
+                        area[Integer.parseInt(p[0])][Integer.parseInt(p[1])]='x';
+                    }
+                }
+            }
+        }
+        return num;
+        /********* End *********/
+    }
+}

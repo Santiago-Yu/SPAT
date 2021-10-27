@@ -1,0 +1,48 @@
+package step2;
+import java.util.Scanner;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+public class Task {
+	public static void main(String[] args) throws ExecutionException  {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		Task t1=new Task();
+		t1.runThread(num);}
+	
+	public void runThread(int num1)   {
+		// 在这里开启线程 获取线程执行的结果
+        if(num1==1||num1==2) System.out.println("线程的返回值为：1");
+        ThreadCallable t=new ThreadCallable();
+        t.number=num1;
+        FutureTask<Integer> result=new FutureTask<Integer>(t);
+        new Thread(result).start();
+        if(num1>=3) {
+        try {
+   	     int sum=0;
+		try {
+			sum = result.get();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+   	     System.out.println("线程的返回值为："+sum);
+   	}catch(InterruptedException e) {
+   		e.printStackTrace();
+   	}
+	}	}
+	
+}
+//在这里实现Callable接口及方法 
+class ThreadCallable  implements Callable<Integer>  {
+	public int number;
+    public Integer call() throws Exception{
+    int i=1;
+   int j=1;int t=0;
+      for(int count=3;count<=number;count++){
+            t=i+j;i=j;j=t;
+            }
+      return t;
+      }
+}

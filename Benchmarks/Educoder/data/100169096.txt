@@ -1,0 +1,62 @@
+package step4;
+
+ 
+public class LianXi_Sort {
+
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		/*
+		 * 定义三个整数x,y,z，将这三个整数由小到大排序并输出。
+		 * 例如定义 int x = 9; int y = 10; int z = 8;   -- > x的值改成8  y的值改成9 z的值改成10
+		 * 
+		 * 实现思路：通过if语句对x y z 的值进行匹配，比如x大于y则x和y进行数据交换
+		 * */
+		 java.util.Scanner sc = new java.util.Scanner(System.in);
+		//获取平台分配的x的值
+		int x = sc.nextInt();
+		//获取平台分配的y的值
+		int y = sc.nextInt();;
+		//获取平台分配的z的值
+		int z = sc.nextInt();;
+
+		/**********begin**********/
+	   if(x>y){
+		   if(x>z){
+			   if(y>z){
+				   int i=z;
+				   z=x;
+					x=i;
+			   }else{
+				   int i=z;
+				   z=x;
+				   x=y;
+				   y=i;
+			   }
+		   }else{
+			   int i=y;
+			   y=x;
+			   x=i;
+		   }
+	   }else{
+		   if(y>z){
+			   if(x>z){
+				   int i=z;
+				   z=y;
+				   y=x;
+				   x=i;
+			   }else{
+				   int i=z;
+				   z=y;
+				   y=i;
+			   }
+		   }
+	   }
+
+
+	    /**********end**********/
+		System.out.print("x:"+x+" y:"+y+" z:"+z);
+		
+	}
+
+}

@@ -1,0 +1,73 @@
+package task3;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class Task3 {
+	// 封装属性学号、姓名和年龄
+	/********* Begin *********/
+	private long studentid;
+    private String name;
+    private int age;
+    Task3(long studentid,String name,int age){
+        this.studentid=studentid;
+        this.name=name;
+        this.age=age;
+    }
+    long getstudentid(){
+        return studentid;
+    }
+    void setage(){
+        this.age+=1;
+    }
+    int getage(){
+        return age;
+    }
+	/********* End *********/
+	// 重写 toString 方法
+	/********* Begin *********/
+	public String toString(){
+        return "studentID:"+studentid+",name="+name+",age:"+age;
+    }
+	
+	
+	
+	/********* End *********/
+	public static void main(String[] args) {
+		// 创建5 个学生对象，并赋给一个学生数组 分别实现子任务1、子任务2和子任务3
+		/********* Begin *********/
+         Task3[] as=new Task3[5];
+		 as[0]=new Task3(201801,"zhangsan",20);
+         as[1]=new Task3(201803,"lisi",21);
+         as[2]=new Task3(201802,"zhaoliu",19);
+         as[3]=new Task3(201807,"wangwu",23);
+         as[4]=new Task3(201809,"sunqi",18);
+       	 for(int a=0;a<as.length-1;a++)
+             for(int b=a+1;b<as.length;b++)
+                 if(as[a].getstudentid()>as[b].getstudentid())
+                 {
+                     Task3 c=as[a];
+                     as[a]=as[b];
+                     as[b]=c;
+                 }
+        System.out.println("*********按学号顺序打印出来*********");
+       for(int a=0;a<as.length;a++)
+           System.out.println(as[a]);
+        System.out.println("*********所有学生年龄加1*********");
+        for(int a=0;a<as.length;a++)
+            as[a].setage();
+        for(int a=0;a<as.length;a++)
+            System.out.println(as[a]);
+		int ko=0;
+        for(int a=0;a<as.length;a++)
+            if(as[a].getage()>20) ko++;
+        System.out.println("*********统计所有大于20的人*********");
+        System.out.println("Count:"+ko);
+		
+		
+		/********* End *********/
+	}
+
+}

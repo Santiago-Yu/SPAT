@@ -1,0 +1,64 @@
+package step1;
+import java.util.*;
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        int[] a = new int[arr.length];
+        int j = 0;
+        for(Integer k:arr){
+          a[j]=k.intValue();
+            j++;
+        }
+        int s = 0;
+       while(true){
+       int m = sort1(a);
+           if(m == 0)
+               break;
+           sort2(a);
+          s++;
+       }
+      if(s == 0){
+           for(int c:a)
+            System.out.print(c+" ");
+           System.out.println(); 
+           }
+        
+    }
+    public int sort1(int a[]){
+        int i = 0;
+        int m = 0;
+        for(;i<a.length-1;i++){
+        	if(a[i]>a[i+1]){
+                m = a[i];
+                a[i]=a[i+1];
+                a[i+1]=m;
+               for(int c:a)
+                  System.out.print(c+" ");
+                System.out.println();
+            }
+        }
+
+        return m;
+    }
+
+    public void sort2(int a[]){
+        int i = 0;
+        int m = 0;
+              for(i=a.length-1;i>0;i--){
+            if(a[i]<a[i-1]){
+            
+                m = a[i];
+                a[i]=a[i-1];
+                a[i-1]=m;
+                for(int c:a)
+                  System.out.print(c+" ");
+                System.out.println();
+            }
+        }
+  }
+
+        
+		
+		/********* End *********/
+}

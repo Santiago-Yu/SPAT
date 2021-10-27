@@ -1,0 +1,26 @@
+package step4;
+
+public class DayCount {
+	public static void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int sum = 0;
+		int []md = new int[13];
+		for(int i = 1 ;i<=12;i++) {
+			if(i%2==1&&i<=7||i%2==0&&i>=8) {
+				md[i] = 31;
+			}else {
+				md[i] = 30;
+			}
+			md[2] = 28;
+		}
+		//if(year%4==0&&year%100!=0||year%400==0) {
+		//	md[2] = 29;
+		//}
+		for(int i = 1 ;i<month;i++) {
+			sum+=md[i];
+		}
+		sum+= day;
+		System.out.print(sum);
+		/********** End *********/
+	}
+}

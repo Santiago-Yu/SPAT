@@ -1,0 +1,39 @@
+package step3;
+
+public class Task {
+
+	 public int countOfShips(char[][] ferry) {
+     if(ferry.length == 0) {
+     	return 0;
+     }
+	 char[][] c = ferry;
+	 int sum = 0;
+        char [][] f = new char[c.length + 2][c[0].length + 2];
+        for(int i = 0; i < f.length; i++) {
+            for(int j = 0; j < f[0].length; j++) {
+                f[i][j] = 'o';
+            }
+        }
+        for(int i = 0; i < c.length; i++) {
+            for (int j = 0; j < c[0].length; j++) {
+                f[i + 1][j + 1] = c[i][j];
+            }
+        }
+
+        for(int i = 1; i < f.length -1; i++) {
+            for(int j = 1; j < f[0].length -1; j++) {
+                if(f[i][j] == '+') {
+                    if(f[i - 1][j] != '+'
+                        && f[i + 1][j] != '+'
+                        && f[i][j - 1] != '+'
+                        && f[i][j + 1] != '+') {
+                        sum ++;
+                    } else {
+                        f[i][j] = 'o';
+                    }
+                }
+            }
+        }
+	 	return sum;
+	 }
+}

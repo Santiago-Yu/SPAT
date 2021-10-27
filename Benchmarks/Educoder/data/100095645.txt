@@ -1,0 +1,53 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int a,b,s;
+        b=year%4;
+        a=month%2;
+        s=0;
+		switch(b){
+            case 1:
+                switch(a){
+                    case 1:
+                        if(month==1)
+                            s=day;
+                        if(month>=3){
+                        s=(month-1)/2*61+day-2;
+                        }
+                        System.out.print(+s);
+                        break;
+                    case 0:
+                        if(month==2)
+                            s=31+day;
+                        if(month>2)
+                        s=month/2*31+(month-1)/2*30+day-2;
+                        System.out.print(+s);
+                        break;
+                        }
+            	break;
+            case 0: 
+                  switch(a){
+                    case 1:
+                        if(month==1)
+                            s=day;
+                        if(month>=3){
+                        s=(month-1)/2*61+day-1;
+                        }
+                        System.out.print(+s);
+                        break;
+                    case 0:
+                        if(month==2)
+                            s=31+day;
+                        if(month>2)
+                        s=month/2*31+(month-1)/2*30+day-1;
+                        System.out.print(+s);
+                        break;
+                        }
+            	break;
+
+                }
+		/********** End *********/
+	}
+}

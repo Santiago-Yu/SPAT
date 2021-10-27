@@ -1,0 +1,61 @@
+package step1;
+
+public class Task {
+	public static void sort(Integer[] arr){
+		/********* Begin *********/
+		if(isSort(arr)){
+            out(arr);
+        }
+
+        while(!isSort(arr)){
+            arrSortLR(arr);
+            arrSortRL(arr);
+        }
+		
+		/********* End *********/
+	}
+    
+    public static void arrSortLR(Integer[] arr){
+        //从左到右比较
+        for(int x=0,y=x+1; y<arr.length && x<arr.length-1; y++,x++){
+            if(arr[x]>arr[y]){
+                int temp = arr[x];
+                arr[x]=arr[y];
+                arr[y]=temp;
+
+                out(arr);
+            }
+        }
+    }
+
+    public static void arrSortRL(Integer[] arr){
+        //从右到左比较
+        for(int y=arr.length-1,x=y-1; y>0&&x>=0; y--,x--){
+            if(arr[x]>arr[y]){
+                int temp = arr[x];
+                arr[x]=arr[y];
+                arr[y]=temp;
+
+                out(arr);
+            }
+
+        }
+    }
+    
+    public static boolean isSort(Integer[] arr){
+        if (arr.length < 2)
+            return true;
+        boolean b =arr[0] < arr[1] ? true : false;
+        for (int i = 1; i < arr.length; i++)
+            if (b == true && arr[i] < arr[i - 1]) return false;
+        return b;
+
+    }
+
+    public static void out(Integer[] arr){
+        for(int i=0;i<arr.length;i++)
+            System.out.print(arr[i]+" ");
+        System.out.println();
+    }
+   
+}

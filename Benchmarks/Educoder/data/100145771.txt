@@ -1,0 +1,63 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+
+
+
+String date[] = releaseDate.split("-");
+		int day1 = Integer.parseInt(date[2]);
+		int year = Integer.parseInt(date[0]);
+		int month = Integer.parseInt(date[1]);
+		int status = day;
+		int Month1[] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
+		int Month2[] = {0,31,29,31,30,31,30,31,31,30,31,30,31};
+		int Month[];
+		while(status!=0) {
+			if(year%4==0||year%400==0&&year%100!=0) 
+				Month = Month2;
+			else
+				Month = Month1;
+			if(status>Month[month]-day1) {
+				status = status-Month[month]+day1-1;
+				day1 = 1;
+				if(month<12) 
+					month++;
+				else {
+					month = 1;
+					year++;}
+			}
+			else {
+				day1 = day1 + status;
+				status = 0;
+			}
+			
+			
+		}
+		StringBuffer stb = new StringBuffer();
+		stb.append(String.valueOf(year));
+		stb.append("-");
+		if(month<10)
+			{stb.append(String.valueOf(0));
+		    stb.append(String.valueOf(month));}
+		else
+			stb.append(String.valueOf(month));
+		stb.append("-");
+		if(day1<10)
+			stb.append(String.valueOf(0));
+		stb.append(String.valueOf(day1));
+		return stb.toString();
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

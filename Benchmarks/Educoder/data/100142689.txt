@@ -1,0 +1,38 @@
+package step2;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.*;
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		File file=new File("src//step2//input//task.txt");
+		InputStream fs=new FileInputStream(file);
+		byte[] b=new byte[8];
+        fs.read(b);
+        String str=new String(b,"UTF-8");
+        System.out.println(str);
+  File dir = new File("src/step2/output/");
+        if(!dir.exists()){
+            dir.mkdir();
+        }
+        FileOutputStream fos = new FileOutputStream("src/step2/output/output.txt");
+        String out = "learning practice";
+        byte[] outByte = out.getBytes();    //将字符串转换成字节
+        fos.write(outByte);                    //写数据
+        //释放资源
+        fs.close();
+        fos.close();
+   
+   
+
+		/********* End *********/
+	}
+	
+}

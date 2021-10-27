@@ -1,0 +1,55 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+    int filenum = 0;
+	public void showDirStructure(File file)	{
+		
+		 for (int j=0; j<filenum; j++){
+			System.out.print("  ");
+		}
+        System.out.println("+--"+file.getName());
+        if (file.exists())
+        {
+            File[] files = file.listFiles();
+            if (files.length == 0){
+                System.out.println("文件夹是空的!");
+                return;
+            }
+            else {
+            	for(int i=0; i<files.length; i++){
+            		 if (files[i].isDirectory()){
+            			 filenum++;
+                         showDirStructure(files[i]);
+                     } 
+                     else{
+                    	 if(files[i].getName().endsWith("jpg")||files[i].getName().endsWith("png")||files[i].getName().endsWith("bmp")){
+                    		 filenum++;
+                        	 for (int j=0; j<filenum; j++){
+                     			System.out.print("  ");
+                     		}
+                             System.out.println("--" + files[i].getName());
+                         	filenum--;
+                    	 }
+                     }
+            	}
+            	filenum--;
+            }
+        }
+        else {
+            System.out.println("文件不存在!");
+        }
+
+
+
+
+
+
+	}
+	
+
+	/********** END **********/
+}

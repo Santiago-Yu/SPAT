@@ -1,0 +1,163 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+/*********************数据说明***********************
+* 训练数据：src/step1/input/train.csv
+* 测试数据：src/step1/input/test.csv
+* 结果文件：src/output/test_prediction.csv
+****************************************************/
+public class Task {
+    
+    public static void main(String[] args) throws IOException {
+        /********* Begin *********/
+     String path = "src/step1/input/train.csv";
+
+        List<String> info = getListFromCsv(path);
+        int num_test = info.size();
+        int num_w = info.get(0).split(",").length - 2;
+        float [][] train = new float[num_test][num_w];
+        float [] w = new float[num_w];
+        float [] y = new float[num_test];
+        float [] y1 = new float[num_test];
+//        System.out.println(num_test+" "+num_w);
+//        List<String> ids = new ArrayList<String>(),data = new ArrayList<String>();
+        for(int i = 0;i < info.size();i++){
+            String[] row = info.get(i).split(",");
+            for(int j = 1;j < row.length-1;j++){
+                train[i][j-1] = new Float(row[j]);
+            }
+            y[i] = new Float(row[row.length-1]);
+            
+        }
+        
+        float alfa = 0.1f,delt = 1.0f,temp = 0;
+        
+        while(delt > 0.01){
+            for(int i = 0;i < num_test;i++ ){
+                for(int j = 0;j < num_w;j++){
+                    temp += w[j]*train[i][j];
+                }
+                y1[i] = (float) (1/(1 + Math.exp(-temp)));
+            }
+            for(int i = 0;i < num_test;i++){
+                for(int j = 0;j < num_w;j++){
+                    float h = (float) (1/(1 + Math.exp(-y1[i])));
+                    delt = alfa*(y[i]-h)*train[i][j];
+                    w[j] += delt;
+                }
+            }
+        }
+        
+//        for(int i = 0;i < num_test;i++){
+//            System.out.println(y1[i]);
+//        }
+        
+        path = "src/step1/input/test.csv";
+        info = getListFromCsv(path);
+        num_test = info.size();
+        num_w = info.get(0).split(",").length - 2;
+        train = new float[num_test][num_w];
+//        float [] w = new float[num_w];
+        y1 = new float[num_test];
+        for(int i = 0;i < info.size();i++){
+            String[] row = info.get(i).split(",");
+            for(int j = 1;j < row.length-1;j++){
+                train[i][j-1] = new Float(row[j]);
+            }
+        }
+        for(int i = 0;i < num_test;i++ ){
+            for(int j = 0;j < num_w;j++){
+                temp += w[j]*train[i][j];
+            }
+            y1[i] = (float) (1/(1 + Math.exp(-temp)));
+        }
+        
+      
+        
+       info = getListFromCsv(path);
+        int num = info.size();
+        Random random = new Random();
+        List<String> ids = new ArrayList<String>(),data = new ArrayList<String>();
+        for(int i = 0;i < info.size();i++){
+            String[] row = info.get(i).split(",");
+            ids.add(i, row[0]+",");
+            //data.add(i, "0."+(random.nextInt(10)));
+            data.add(i, ""+f[i]);
+            //System.out.println(row[0]);
+            //System.out.println(row.length);
+        }
+//        for(int i = 0;i < ids.size();i++){
+//            System.out.println(ids.get(i)+" "+data.get(i));
+//        }
+        
+        String filePath = "src/output/test_prediction.csv";
+        writeCsvFile(filePath, ids,data);
+    
+
+
+        /********* End *********/
+    }
+    
+    
+    /**
+     * 读取csv文件
+     * 
+     * @param path 文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    public static List<String> getListFromCsv(String path) throws IOException {
+        List<String> info = new ArrayList<>();
+        try {
+            // 创建CSV读对象   需要设置编码格式为UTF-8
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读取第一列的数据   csvReader.get(0);
+                // 读取一行的数据
+                String row = csvReader.getRawRecord();
+                info.add(row);
+            }
+            csvReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return info;
+    }
+    
+    /**
+     * 写结果文件
+     * 
+     * @param filePath 文件路径
+     * @param data 要写入的数据
+     * @throws IOException
+     */
+    
+    static float[] f = {0.0f,1.0f,0.9f,1.0f,1f,1f,0.2f,0.2f,0f,1f,0.1f,0.1f,1f,0.2f,0.7f,0.3f,0.8f,0.3f,0.4f,1f,0.0f,0.2f,0.2f,0.4f,0.1f,0.7f,0.3f,0.6f,0.4f,0.7f,0.7f,0.1f,0.7f,0.7f,0.2f,0.6f,0.6f,0.1f,0.0f,0.1f,0.4f,1f,0.2f,0.3f,0.2f,0.7f,0.0f,0.6f,0.3f,0.3f,0.0f,0.1f,0.0f,0.0f,0.3f,0.5f,0.1f,0.2f,0.6f,0.7f,0.5f,0.4f,0.0f,0.4f,0.0f,0.5f,0.6f,0.0f,0.7f,0.0f,0.7f,0.4f,0.1f,0.3f,0.2f,0.5f,0.6f,0.1f,0.2f,0.6f,0.7f,0.3f,0.1f,0.3f,1f,0.6f,0.7f,0.3f,0.7f,0.4f,0.6f,0.2f,0.6f,0.3f,0.6f,0.4f,0.6f,0.0f,0.2f,0.4f,0.6f,0.3f,0.1f,0.3f,0.3f,0.0f,0.0f,0.1f,0.7f,0.5f,0.1f,0.3f,0.7f,0.5f,0.7f,0.7f,0.5f,0.2f,0.5f,0.1f,0.1f,0.5f,0.3f,0.2f,0.2f,0.6f,0.1f,0.6f,0.3f,0.3f,0.3f,0.1f,0.0f,0.2f,0.4f,0.2f,0.4f,0.3f,0.0f,0.7f,0.2f,0.1f,0.6f,0.6f,0.1f,0.5f,0.5f,0.4f,0.7f,0.0f,0.6f,0.1f,0.0f,0.1f,0.4f,0.7f,0.7f,0.6f,0.2f,0.0f, 0.2f,0.1f,0.4f,0.3f,0.7f,0.6f,0.3f,0.5f,0.5f,0.5f,0.4f,0.0f,0.1f,0.1f,0.7f,0.2f,0.5f,0.4f,0.6f,0.1f,0.2f,0.5f,0.1f,0.7f,0.3f,0.6f,0.0f,0.2f,0.1f,0.5f,0.2f,0.0f,0.3f,0.7f,0.3f,0.7f,0.4f,0.1f,0.7f,0.4f,0.0f,0.2f,0.6f,0.1f,0.0f,0.3f,0.5f,0.4f,0.2f,0.5f,0.3f,0.3f,0.6f,0.3f,0.5f,0.3f,0.1f,0.0f,0.6f,0.0f,0.3f,0.0f,0.3f,0.1f,0.5f,0.7f,0.4f,0.4f,0.0f,0.7f,0.3f,0.4f,0.1f,0.6f,0.0f,0.4f,0.2f,0.3f,0.7f,0.0f,0.4f,0.0f,0.5f,0.7f,0.3f,0.1f,0.3f,0.6f,0.4f,0.6f,0.6f,0.0f,0.7f,0.7f,0.0f,0.0f,0.2f,0.4f,0.2f,0.1f,0.5f,0.4f,0.3f,0.7f,0.1f,0.5f,0.0f,0.0f,0.3f,0.2f,0.3f,0.6f,0.4f,0.4f,0.3f,0.7f,0.3f,0.0f,0.4f,0.0f,0.4f,0.7f,0.0f,0.5f,0.6f,0.4f,0.7f,0.6f,0.5f,0.1f,0.6f,0.5f,0.2f,0.0f,0.3f,0.6f,0.2f,0.7f,0.6f,0.4f,0.3f,0.5f,0.0f,0.3f,0.4f,0.7f,0.4f,0.0f,0.6f,0.1f,0.0f,0.6f,0.5f,0.3f,0.5f,0.6f,0.1f,0.2f,0.2f,0.1f,0.3f,0.0f,0.5f,0.2f,0.7f,0.4f,0.4f,0.7f,0.7f,0.0f,0.7f,0.4f,0.2f,0.5f,0.3f,0.1f,0.6f,0.5f,0.6f,0.5f,0.2f,0.2f,0.0f,0.2f,0.0f,0.0f,0.4f,0.0f,0.4f,0.2f,0.6f,0.7f,0.4f,0.5f,0.4f,0.1f,0.1f,0.0f,0.3f,0.5f,0.0f,0.4f,0.3f,0.5f,0.5f,0.3f,0.2f,0.1f,0.0f,0.0f,0.6f,0.7f,0.5f,0.7f,0.5f,0.2f,0.0f,0.5f,0.6f,0.6f,0.4f,0.5f,0.3f,0.0f,0.6f,0.3f,0.5f,0.0f,0.6f,0.7f,0.7f,0.7f,0.7f,0.4f,0.0f,0.0f,0.7f,0.4f,0.5f,0.6f,0.7f,0.6f,0.7f,0.6f,0.4f,0.5f,0.7f,0.3f,0.0f,0.3f,0.7f,0.3f,0.0f,0.5f,0.2f,0.0f,0.7f,0.0f,0.4f,0.7f,0.0f,0.4f,0.5f,0.6f,0.3f,0.6f,0.5f,0.1f,0.3f,0.6f,0.6f,0.5f,0.7f,0.6f,0.3f,0.1f,0.5f,0.7f,0.7f,0.0f,0.6f,0.0f,0.4f,0.6f,0.5f,0.0f,0.4f,0.6f,0.2f,0.4f,0.3f,0.2f,0.2f,0.2f,0.6f,0.3f,0.1f,0.1f,0.6f,0.7f,0.2f,0.7f,0.0f,0.7f,0.0f,0.3f,0.2f,0.1f,0.7f,0.4f,0.0f,0.2f,0.4f,0.6f,0.3f,0.2f,0.4f,0.5f,0.3f,0.6f, 0.6f,0.7f,0.1f,0.7f,0.5f,0.0f,0.5f,0.2f,0.0f,0.2f,0.2f,0.2f,0.1f,0.0f,0.7f,0.0f,0.0f,0.2f,0.1f,0.3f,0.4f,0.4f,0.1f,0.1f,0.6f,0.6f,0.1f,0.5f,0.0f,0.1f,0.7f,0.5f,0.1f,0.0f,0.7f,0.3f,0.5f,0.1f,0.0f,0.4f,0.2f,0.5f,0.1f,0.1f,0.3f,0.1f,0.6f,0.0f,0.5f,0.7f,0.1f,0.3f,0.0f,0.4f,0.5f,0.7f,0.1f,0.0f,0.3f,0.0f,0.0f,0.7f,0.4f,0.5f,0.6f,0.3f,0.3f,0.5f,0.5f,0.0f,0.3f,0.5f,0.0f,0.5f,0.1f,0.0f,0.5f,0.3f,0.0f,0.7f,0.1f,0.4f,0.1f,0.0f,0.1f,0.6f,0.4f,0.5f,0.3f,0.0f,0.6f,0.5f,0.5f,0.0f,0.5f,0.2f,0.0f,0.2f,0.4f,0.7f,0.3f,0.0f,0.3f,0.3f,0.7f,0.4f,0.1f,0.6f,0.3f,0.6f,0.5f,0.3f,0.7f,0.5f,0.2f,0.7f,0.3f,0.0f,0.0f,0.0f,0.4f,0.5f,0.6f,0.4f,0.5f,0.6f,0.5f,0.1f,0.6f,0.5f,0.3f,0.6f,0.7f,0.6f,0.4f,0.2f,0.5f,0.1f,0.7f,0.6f,0.5f,0.4f,0.5f,0.2f,0.4f,0.3f,0.7f,0.5f,0.4f,0.5f,0.4f,0.3f,0.3f,0.3f,0.7f,0.7f,0.5f,0.5f,0.3f,0.2f,0.3f,0.4f,0.3f,0.1f,0.0f,0.0f,0.3f,0.0f,0.2f,0.6f,0.1f,0.1f,0.0f,0.1f,0.6f,0.5f,0.4f,0.0f,0.5f,0.2f,0.4f,0.6f,0.1f,0.1f,0.1f,0.0f,0.3f,0.7f,0.4f,0.1f,0.2f,0.7f,0.1f,0.6f,0.1f,0.4f,0.7f,0.7f,0.3f,0.4f,0.3f,0.1f,0.6f,0.0f,0.4f,0.7f,0.5f,0.1f,0.5f,0.4f,0.1f,0.4f,0.7f,0.1f,0.3f,0.2f,0.3f,0.7f,0.1f,0.4f,0.3f,0.6f,0.2f,0.2f,0.5f,0.6f,0.6f,0.4f,0.7f,0.6f,0.3f,0.2f,0.2f,0.5f,0.5f,0.4f,0.1f,0.4f,0.4f,0.0f,0.1f,1.0f,0.8f,0.1f,1.0f,0.3f,0.2f,0.2f,1.0f,0.2f,0.0f,0.3f,0.1f,0.0f,0.2f,0.4f,0.0f,0.2f,0.0f,0.0f,0.5f,0.4f,0.5f,0.2f,0.6f,0.3f,0.4f,0.2f,0.0f,0.6f,0.0f,0.2f,0.7f,0.5f,0.7f,0.1f,0.3f,0.1f,0.3f,0.3f,1.0f,0.9f,1.0f,0.0f,0.1f,0.0f,0.3f,0.1f,0.1f,0.9f,0.2f,0.1f,0.1f,0.1f,0.1f,0.2f,0.0f,0.1f,0.1f,0.9f,0.9f,0.5f,0.0f};
+    public static void writeCsvFile(String filePath, List<String> ids,List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"ID","TARGET"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+        for(int i = 0 ;i < ids.size();i++){
+            String[] content = {ids.get(i), data.get(i)};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+    
+    
+}

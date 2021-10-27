@@ -1,0 +1,432 @@
+import java.util.*;
+
+public class Java_LLParserAnalysis
+{
+    private static StringBuilder prog = new StringBuilder();
+    private static List<Integer> lineCnt = new ArrayList<>();
+    private static Map<String, List<List<String>>> grammer = new HashMap<>();
+    private static Map<String, List<String>> first = new HashMap<>();
+    private static Map<String, List<String>> follow = new HashMap<>();
+    private static Map<Map<String, String>, List<String>> table = new HashMap<>();
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        int cnt = 0;
+        while(sc.hasNextLine())
+        {
+            String s = sc.nextLine();
+            prog.append(s);
+            cnt += s.length();
+            lineCnt.add(cnt);
+        }
+//        for (int i=0; i<lineCnt.size(); i++) {
+//            System.out.println(lineCnt.get(i));
+//        }
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        initGrammer();
+        getFirst();
+        getFollow();
+        getTable();
+        read_prog();
+        LL_parse();
+//        System.out.print(prog);
+    }
+
+    private static void LL_parse() {
+        StringBuilder errorMsg=new StringBuilder(""), outputMsg=new StringBuilder("");
+        Stack<String> stack = new Stack<>();
+        stack.push("$");
+        stack.push("program");
+        Stack<Integer> stack2 = new Stack<>();
+        stack2.push(0);
+        prog.append("$");
+        int start = 0;
+        while (stack.size() > 1 && start < prog.length()-1) {
+            int len = prog.length()-1-start;
+            if (len>5) len=5;
+            while (len>=2) {
+                if (first.containsKey(prog.substring(start, start+len))) {
+                    break;
+                }
+                len--;
+            }
+            String s = stack.pop();
+            int n = stack2.pop();
+            if (!s.equals("program")) {
+                outputMsg.append("\n");
+            }
+            for (int i=0; i<n; i++) {
+                outputMsg.append("\t");
+            }
+            outputMsg.append(s);
+            if (s.equals("E")) {
+                continue;
+            }
+            if (s.equals(prog.substring(start, start+len))) {
+                start = start+len;
+                while (prog.charAt(start)==' ' || prog.charAt(start)=='\n') start++;
+            }
+            else if (grammer.containsKey(s)) {
+                Map<String, String> m = new HashMap<>();
+                m.put(s, prog.substring(start, start+len));
+                List<String> l = table.get(m);
+                if (l!=null) {
+                    if (!(l.size()==1 && l.get(0).equals("E"))) {
+                        for (int i=l.size()-1; i>=0; i--) {
+                            stack.push(l.get(i));
+                            stack2.push(n+1);
+                        }
+                    }
+                    else {
+                        stack.push("E");
+                        stack2.push(n+1);
+                    }
+                }
+                else {
+                    //发生语法错误
+                    int cnt = 0;
+                    while (lineCnt.get(cnt) <= start) cnt++;
+                    String lostString = "";
+                    if (prog.charAt(start)=='}') lostString=";";
+                    errorMsg.append("语法错误,第" + cnt + "行,缺少\"" + lostString + "\"\n");
+                    prog.replace(start-lostString.length(), start, lostString);
+                    start -= lostString.length();
+                    stack.push(s);
+                    stack2.push(n);
+                    while (outputMsg.charAt(outputMsg.length()-1)!='\n') {
+                        outputMsg.deleteCharAt(outputMsg.length()-1);
+                    }
+                    outputMsg.deleteCharAt(outputMsg.length()-1);
+                }
+            }
+        }
+        System.out.print(errorMsg);
+        System.out.print(outputMsg);
+    }
+
+    private static void getTable() {
+        for (String s1 : grammer.keySet()) {
+            for (List<String> l : grammer.get(s1)) {
+                for (String s2 : first.get(l.get(0))) {
+                    table.put(new HashMap<String, String>() {{
+                        put(s1, s2);
+                    }}, l);
+                }
+                boolean flag = true;
+                for (int i=0; i<l.size(); i++) {
+                    if (!first.get(l.get(i)).contains("E")) {
+                        flag=false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    for (String s2 : follow.get(s1)) {
+                        table.put(new HashMap<String, String>() {{
+                            put(s1, s2);
+                        }}, l);
+                    }
+                }
+            }
+        }
+//        for (Map<String, String> m : table.keySet()) {
+//            for (Map.Entry<String, String> entry : m.entrySet()) {
+//                System.out.println(entry.getKey()+"   "+entry.getValue());
+//                System.out.println(table.get(new HashMap<String, String>() {{put(entry.getKey(), entry.getValue());}}));
+//                System.out.println("********************************");
+//            }
+//        }
+    }
+
+    private static void getFollow() {
+        for (String s : grammer.keySet()) {
+            follow.put(s, new ArrayList<>());
+        }
+        follow.get("program").add("$");
+        boolean flag = true;
+        while (flag) {
+            flag = false;
+            for (Map.Entry<String, List<List<String>>> entry : grammer.entrySet()) {
+                String s1 = entry.getKey();
+                for (int i=0; i<entry.getValue().size(); i++) {
+                    List<String> l = entry.getValue().get(i);
+                    for (int j=0; j+1<l.size(); j++) {
+                        if (!grammer.containsKey(l.get(j))) continue;
+                        if (!follow.get(l.get(j)).contains(first.get(l.get(j+1)).get(0))) {
+                            for (int k=0; k<first.get(l.get(j+1)).size(); k++) {
+                                follow.get(l.get(j)).add(first.get(l.get(j+1)).get(k));
+                            }
+                            flag = true;
+                        }
+                    }
+                    int index = l.size()-1;
+                    for (int j=0; j<follow.get(s1).size(); j++) {
+                        if (grammer.containsKey(l.get(index)) && !follow.get(l.get(index)).contains(follow.get(s1).get(j))) {
+                            follow.get(l.get(index)).add(follow.get(s1).get(j));
+                            flag = true;
+                        }
+                    }
+                    while (index>0) {
+                        boolean flag1 = false;
+                        for (int j=0; j<first.get(l.get(index)).size(); j++) {
+                            if (first.get(l.get(index)).get(j).equals("E")) {
+                                flag1 = true;
+                            }
+                        }
+                        if (flag1) {
+                            index--;
+                            for (int j=0; j<follow.get(s1).size(); j++) {
+                                if (grammer.containsKey(l.get(index)) && !follow.get(l.get(index)).contains(follow.get(s1).get(j))) {
+                                    follow.get(l.get(index)).add(follow.get(s1).get(j));
+                                    flag = true;
+                                }
+                            }
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+//        for (String s : follow.keySet()) {
+//            System.out.println(s);
+//            System.out.println(follow.get(s));
+//            System.out.println("*********************************");
+//        }
+    }
+
+    private static void getFirst() {
+        first.put("{", new ArrayList<>());
+        first.get("{").add("{");
+        first.put("}", new ArrayList<>());
+        first.get("}").add("}");
+        first.put("(", new ArrayList<>());
+        first.get("(").add("(");
+        first.put(")", new ArrayList<>());
+        first.get(")").add(")");
+        first.put("=", new ArrayList<>());
+        first.get("=").add("=");
+        first.put(";", new ArrayList<>());
+        first.get(";").add(";");
+        first.put(">", new ArrayList<>());
+        first.get(">").add(">");
+        first.put("<", new ArrayList<>());
+        first.get("<").add("<");
+        first.put(">=", new ArrayList<>());
+        first.get(">=").add(">=");
+        first.put("<=", new ArrayList<>());
+        first.get("<=").add("<=");
+        first.put("==", new ArrayList<>());
+        first.get("==").add("==");
+        first.put("+", new ArrayList<>());
+        first.get("+").add("+");
+        first.put("-", new ArrayList<>());
+        first.get("-").add("-");
+        first.put("*", new ArrayList<>());
+        first.get("*").add("*");
+        first.put("/", new ArrayList<>());
+        first.get("/").add("/");
+        first.put("if", new ArrayList<>());
+        first.get("if").add("if");
+        first.put("then", new ArrayList<>());
+        first.get("then").add("then");
+        first.put("else", new ArrayList<>());
+        first.get("else").add("else");
+        first.put("while", new ArrayList<>());
+        first.get("while").add("while");
+        first.put("ID", new ArrayList<>());
+        first.get("ID").add("ID");
+        first.put("NUM", new ArrayList<>());
+        first.get("NUM").add("NUM");
+        first.put("E", new ArrayList<>());
+        first.get("E").add("E");
+        first.put("$", new ArrayList<>());
+        first.get("$").add("$");
+//        //1
+//        first.put("c", new ArrayList<>());
+//        first.get("c").add("c");
+//        first.put("d", new ArrayList<>());
+//        first.get("d").add("d");
+//        first.put("$", new ArrayList<>());
+//        first.get("$").add("$");
+//        //2
+//        first.put("a", new ArrayList<>());
+//        first.get("a").add("a");
+//        first.put("b", new ArrayList<>());
+//        first.get("b").add("b");
+//        first.put("E", new ArrayList<>());
+//        first.get("E").add("E");
+        for (Map.Entry<String, List<List<String>>> entry : grammer.entrySet()) {
+//            System.out.println(entry.getKey());
+//            System.out.println(entry.getValue());
+            getFirstRecursively(entry.getKey(), entry.getValue());
+        }
+//        for (String s : first.keySet()) {
+//            System.out.println(s);
+//            System.out.println(first.get(s));
+//            System.out.println("*********************************");
+//        }
+    }
+
+    private static void getFirstRecursively(String k, List<List<String>> l) {
+        if (first.containsKey(k)) return;
+        first.put(k, new ArrayList<>());
+        for (int i=0; i<l.size(); i++) {
+            if (l.get(i).size()==0) continue;
+            int index = 0;
+            boolean flag = true;
+            while (flag && index<=l.get(i).size()-1) {
+                flag = false;
+                String s = l.get(i).get(index);
+//            System.out.println(s);
+                if (first.containsKey(s)) {
+                    for (int j=0; j<first.get(s).size(); j++) {
+                        first.get(k).add(first.get(s).get(j));
+                    }
+                }
+                else {
+                    if (grammer.containsKey(s)) {
+                        getFirstRecursively(s, grammer.get(s));
+                        for (int j=0; j<first.get(s).size(); j++) {
+                            first.get(k).add(first.get(s).get(j));
+                        }
+                    }
+                    else {
+                        first.get(k).add(s);
+                    }
+                }
+                if (first.get(s).contains("E")) flag = true;
+                if (flag) {
+                    index++;
+                }
+            }
+        }
+    }
+
+    private static void initGrammer() {
+        grammer.put("program", new ArrayList<>());
+        grammer.get("program").add(new ArrayList<>());
+        grammer.get("program").get(0).add("compoundstmt");
+        grammer.put("stmt", new ArrayList<>());
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(0).add("ifstmt");
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(1).add("whilestmt");
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(2).add("assgstmt");
+        grammer.get("stmt").add(new ArrayList<>());
+        grammer.get("stmt").get(3).add("compoundstmt");
+        grammer.put("compoundstmt", new ArrayList<>());
+        grammer.get("compoundstmt").add(new ArrayList<>());
+        grammer.get("compoundstmt").get(0).add("{");
+        grammer.get("compoundstmt").get(0).add("stmts");
+        grammer.get("compoundstmt").get(0).add("}");
+        grammer.put("stmts", new ArrayList<>());
+        grammer.get("stmts").add(new ArrayList<>());
+        grammer.get("stmts").get(0).add("stmt");
+        grammer.get("stmts").get(0).add("stmts");
+        grammer.get("stmts").add(new ArrayList<>());
+        grammer.get("stmts").get(1).add("E");
+        grammer.put("ifstmt", new ArrayList<>());
+        grammer.get("ifstmt").add(new ArrayList<>());
+        grammer.get("ifstmt").get(0).add("if");
+        grammer.get("ifstmt").get(0).add("(");
+        grammer.get("ifstmt").get(0).add("boolexpr");
+        grammer.get("ifstmt").get(0).add(")");
+        grammer.get("ifstmt").get(0).add("then");
+        grammer.get("ifstmt").get(0).add("stmt");
+        grammer.get("ifstmt").get(0).add("else");
+        grammer.get("ifstmt").get(0).add("stmt");
+        grammer.put("whilestmt", new ArrayList<>());
+        grammer.get("whilestmt").add(new ArrayList<>());
+        grammer.get("whilestmt").get(0).add("while");
+        grammer.get("whilestmt").get(0).add("(");
+        grammer.get("whilestmt").get(0).add("boolexpr");
+        grammer.get("whilestmt").get(0).add(")");
+        grammer.get("whilestmt").get(0).add("stmt");
+        grammer.put("assgstmt", new ArrayList<>());
+        grammer.get("assgstmt").add(new ArrayList<>());
+        grammer.get("assgstmt").get(0).add("ID");
+        grammer.get("assgstmt").get(0).add("=");
+        grammer.get("assgstmt").get(0).add("arithexpr");
+        grammer.get("assgstmt").get(0).add(";");
+        grammer.put("boolexpr", new ArrayList<>());
+        grammer.get("boolexpr").add(new ArrayList<>());
+        grammer.get("boolexpr").get(0).add("arithexpr");
+        grammer.get("boolexpr").get(0).add("boolop");
+        grammer.get("boolexpr").get(0).add("arithexpr");
+        grammer.put("boolop", new ArrayList<>());
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(0).add("<");
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(1).add(">");
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(2).add("<=");
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(3).add(">=");
+        grammer.get("boolop").add(new ArrayList<>());
+        grammer.get("boolop").get(4).add("==");
+        grammer.put("arithexpr", new ArrayList<>());
+        grammer.get("arithexpr").add(new ArrayList<>());
+        grammer.get("arithexpr").get(0).add("multexpr");
+        grammer.get("arithexpr").get(0).add("arithexprprime");
+        grammer.put("arithexprprime", new ArrayList<>());
+        grammer.get("arithexprprime").add(new ArrayList<>());
+        grammer.get("arithexprprime").get(0).add("+");
+        grammer.get("arithexprprime").get(0).add("multexpr");
+        grammer.get("arithexprprime").get(0).add("arithexprprime");
+        grammer.get("arithexprprime").add(new ArrayList<>());
+        grammer.get("arithexprprime").get(1).add("-");
+        grammer.get("arithexprprime").get(1).add("multexpr");
+        grammer.get("arithexprprime").get(1).add("arithexprprime");
+        grammer.get("arithexprprime").add(new ArrayList<>());
+        grammer.get("arithexprprime").get(2).add("E");
+        grammer.put("multexpr", new ArrayList<>());
+        grammer.get("multexpr").add(new ArrayList<>());
+        grammer.get("multexpr").get(0).add("simpleexpr");
+        grammer.get("multexpr").get(0).add("multexprprime");
+        grammer.put("multexprprime", new ArrayList<>());
+        grammer.get("multexprprime").add(new ArrayList<>());
+        grammer.get("multexprprime").get(0).add("*");
+        grammer.get("multexprprime").get(0).add("simpleexpr");
+        grammer.get("multexprprime").get(0).add("multexprprime");
+        grammer.get("multexprprime").add(new ArrayList<>());
+        grammer.get("multexprprime").get(1).add("/");
+        grammer.get("multexprprime").get(1).add("simpleexpr");
+        grammer.get("multexprprime").get(1).add("multexprprime");
+        grammer.get("multexprprime").add(new ArrayList<>());
+        grammer.get("multexprprime").get(2).add("E");
+        grammer.put("simpleexpr", new ArrayList<>());
+        grammer.get("simpleexpr").add(new ArrayList<>());
+        grammer.get("simpleexpr").get(0).add("ID");
+        grammer.get("simpleexpr").add(new ArrayList<>());
+        grammer.get("simpleexpr").get(1).add("NUM");
+        grammer.get("simpleexpr").add(new ArrayList<>());
+        grammer.get("simpleexpr").get(2).add("(");
+        grammer.get("simpleexpr").get(2).add("arithexpr");
+        grammer.get("simpleexpr").get(2).add(")");
+//        for (String g : grammer.keySet()) {
+//            System.out.println(g);
+//            System.out.println(grammer.get(g));
+//        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+
+}

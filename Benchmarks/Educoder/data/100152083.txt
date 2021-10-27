@@ -1,0 +1,44 @@
+package step1;
+
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		   double p=Math.PI;
+		 //判断两者之间的距离，有三种情况
+		 double l =Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+		 
+		 if(l>=(r1+r2)) {
+			 return p*r1*r1+p*r2*r2;
+		 }else {
+			 if(l+r1<=r2) {
+				 return p*r2*r2;
+			 }
+			 if(l+r2<=r1) {
+				 return p*r1*r1;
+			 }
+			 
+			 double a3 = (l*l+r1*r1-r2*r2)/2/l;//另一条边是r1
+			 double b3 = l-a3;
+			 double a4 =Math.sqrt(r1*r1-a3*a3);
+			 double b4 =Math.sqrt(r2*r2-b3*b3);
+			 //三角形面积
+			 double Sa1 = a3*a4;
+			 double Sb1 = b3*b4;
+			 //求角度
+			 double a5 =p- Math.acos(a3/r1);
+			 double b5 =p- Math.acos(b3/r2);
+			 //总面积
+			 double Sa = p*r1*r1*a5/p;
+			 double Sb = p*r2*r2*b5/p;
+			 
+			 double S = Sa+Sb+Sa1+Sb1;
+			 return S;
+		 }	
+
+		  
+		  
+		  /********* End *********/
+	  }
+}

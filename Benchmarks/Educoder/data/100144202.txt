@@ -1,0 +1,57 @@
+package step3;
+import java.io.*;
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+        File dir =file;
+        int deep = 0;
+        for(int i=0;i<deep;i++)
+           {
+            System.out.print("  ");
+        }
+        System.out.println("+--"+dir.getName());
+        deep++;
+        show(dir,deep);
+    }
+public void show(File dir,int deep)
+      { 
+         File[] files = dir.listFiles();
+        
+        for(File folder : files)
+        {
+            if(folder.isFile())
+            {
+                 for(int i=0;i<deep;i++)
+                {
+                     System.out.print("  ");
+                 }
+                 System.out.println("--"+folder.getName());
+            }
+            else
+            {
+                for(int i=0;i<deep;i++)
+                {
+                    System.out.print("  ");
+                }
+                System.out.println("+--"+folder.getName());
+                deep++;
+                File stra = new File(folder.getAbsolutePath());
+                 show(stra,deep);
+                deep--;
+            }
+        }
+      
+
+      }
+}
+	
+    
+    
+    	
+
+
+	/********** End **********/
+

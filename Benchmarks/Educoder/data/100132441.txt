@@ -1,0 +1,32 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	 public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int length = sc.nextInt();	//长
+        int width = sc.nextInt();	//宽
+        /********** BEGIN **********/
+        int oa=length;
+        int ob=width;
+        while(ob!=0){
+            int r=oa%ob;
+            oa=ob;
+            ob=r;
+        }
+        int oc=length*width/(oa*oa);
+        System.out.println(oa);
+        System.out.println(oc);
+
+
+
+
+
+
+
+
+        /********** END **********/
+    }
+
+}

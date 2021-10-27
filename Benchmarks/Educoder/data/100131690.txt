@@ -1,0 +1,28 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	int count = 1;
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		File[] list = file.listFiles();
+        System.out.println("+--"+list[0].getParentFile().getName());   
+        for (File f : list) {
+            for(int i = 0 ; i < count; i++) {
+                System.out.print("  ");
+            }
+            if(f.isDirectory()) {
+                count++;
+                showDirStructure(f); 
+            } else {
+                System.out.println("--"+f.getName());
+            }
+        }
+        count--;
+	}
+	
+
+
+	/********** END **********/
+}

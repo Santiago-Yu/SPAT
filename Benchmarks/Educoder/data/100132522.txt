@@ -1,0 +1,31 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	private static int maxGongBei(int a, int b) {
+		int c = a % b;
+		if(c != 0) {
+			return maxGongBei(b, c);
+		}
+		return b;
+	}
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		if(length < width) {
+			int t = length;
+			length = width;
+			width = t;
+		}
+		int bian = maxGongBei(length, width);
+		int num = (length / bian) * (width / bian);
+		System.out.println(bian);
+		System.out.println(num);
+		sc.close();
+		/********** END **********/
+	}
+}

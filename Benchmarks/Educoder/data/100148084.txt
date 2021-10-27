@@ -1,0 +1,29 @@
+package task1;
+
+public class Task1 {
+	
+	public static void main(String[] args) {
+		/********* Begin *********/
+		int a2=103;
+		for(int a1=101;a1<1000;a1+=2,a2+=2)
+        {
+            if(Task1.panduan(a1)&&Task1.panduan(a2))
+                System.out.println(a1+"和"+a2+"是姐妹素数");
+        }
+		
+		
+		/********* End *********/
+	}
+
+	// 判断一个数是否为素数的方法：返回true表示是素数，返回false表示不是素数
+	/********* Begin *********/
+	public static boolean panduan(int a){
+        for(int b=3;b<a;b++)
+            if(a%b==0) return false;
+        return true;
+    }
+	
+	
+	
+	/********* End *********/
+}

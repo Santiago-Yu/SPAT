@@ -1,0 +1,19 @@
+#include<stdio.h>
+#include<math.h>
+int main(){
+	int k,n2,n3;
+	int maxime;
+	scanf("%d",&k);
+	if(k%3 == 0) n3=k/3;
+	if(k%3==1) {
+		n3=k/3-1;
+		n2=2;
+	}
+	if(k%3==2){
+		n3=k/3;
+		n2=1;
+	}
+	maxime = pow(2,n2)*pow(3,n3);
+	printf("%d",maxime);
+	return 0;
+}

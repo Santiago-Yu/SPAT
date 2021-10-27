@@ -1,0 +1,37 @@
+package step2;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+public class Task {
+
+	public void runThread(int aa) {
+        int a = 1,b = 1,sum = 1;
+        for (int i = 3;i <= aa;i++ ){
+            sum = a + b;
+            a = b;
+            b = sum;
+        }
+		System.out.println("线程的返回值为：" + sum);
+
+	}
+}
+
+/* 在这里实现Callable接口及方法 */
+class ThreadCallable implements Callable<Integer>{
+    public static int aa;
+    
+	public Integer call(){
+     	if (aa == 1 || aa == 2)
+            return 1;
+        int a = 1,b = 1,sum = 2;
+        for (int i = 3;i <= aa;i++ ){
+            sum = a + b;
+            a = b;
+            b = sum;
+        }
+        return sum;
+    }
+
+
+}

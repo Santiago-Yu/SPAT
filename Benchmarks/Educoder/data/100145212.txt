@@ -1,0 +1,24 @@
+package step2;
+
+public class Task {
+
+public int getNum(int n){
+		/********* Begin *********/
+		
+		return getpeach(n,0);
+
+		/********* End *********/
+	}
+
+	public static int getpeach(int remain, int drop) {
+		if (remain == 1) {
+			return drop+1;
+		}
+		if (remain % 2 == 0) {
+			return getpeach(remain / 2, drop);
+		} else {
+			return getpeach((remain - 1) / 2, drop + 1);
+		}
+	}
+	
+}

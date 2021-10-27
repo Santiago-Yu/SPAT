@@ -1,0 +1,68 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** Begin **********/
+	public void showDirStructure(File file)	{
+	    System.out.println("+--"+file.getName());
+        File[]files=file.listFiles();
+        
+        for(File f:files){
+            boolean isDir=f.isDirectory();
+            if(isDir){
+                System.out.println("  "+"+--"+f.getName());
+                File[]files1=f.listFiles();
+                for(File f1:files1){
+                    boolean isDir1=f1.isDirectory();
+                    if(isDir1){
+                        System.out.println("    "+"+--"+f1.getName());
+                        File[]files2=f1.listFiles();
+                        for(File f2:files2){
+                            boolean isDir2=f2.isDirectory();
+                            if(isDir2){
+                                System.out.println("      "+"+--"+f2.getName());
+                                File[]files3=f2.listFiles();
+                                for(File f3:files3){
+                                    boolean isDir3=f3.isDirectory();
+                                    if(isDir3){
+                                        System.out.println("        "+"+--"+f3.getName());
+                                        File[]files4=f3.listFiles();
+                                        for(File f4:files4){
+                                            boolean isDir4=f4.isDirectory();
+                                            if(isDir4){
+                                                System.out.println("          "+"+--"+f4.getName());
+                                            }else{
+                                                System.out.println("          "+"--"+f4.getName());
+                                            }
+                                        }
+                                    }else{
+                                        System.out.println("        "+"--"+f3.getName());
+                                    }
+                                }
+                            }else{
+                                System.out.println("      "+"--"+f2.getName());
+                            }
+                            
+                        }
+                    }else{
+                        System.out.println("    "+"--"+f1.getName());
+                    }
+                
+            }
+            }else{
+                System.out.println("  "+"--"+f.getName());
+            }
+            
+            
+            
+        }
+
+
+
+
+
+	}
+	/********** End **********/
+}

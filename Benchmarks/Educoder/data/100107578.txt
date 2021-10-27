@@ -1,0 +1,78 @@
+package step3;
+
+/**
+ * Created by sykus on 2018/1/15.
+ */
+public class MyDoubleLinkedList {
+
+    private Node head;//头结点
+    private Node tail;//指向链表的尾结点
+    private int size;
+
+    public MyDoubleLinkedList() {
+        head = new Node(null, Integer.MIN_VALUE, null);
+        head.next = head.prev = head;
+        tail = head;
+        size = 0;
+    }
+
+    /**
+     * 添加元素到表尾
+     *
+     * @param item
+     */
+    public void add(int item) {
+
+        /********** Begin *********/
+ Node newNode = new Node(null, item, null);
+         tail.next = newNode;
+         newNode.prev  = tail;
+         newNode.next = head;
+         head.prev = newNode;
+         tail = newNode;
+         ++size;
+        
+
+
+
+        /********** End *********/
+
+    }
+
+    /**
+     * 打印双向链表
+     *
+     * @param flag true从左向右顺序打印, false从右向左顺序打印
+     */
+    public void printList(boolean flag) {
+        Node f = head;
+        if (flag) {//向右
+            while (f.next != head) {
+                f = f.next;
+                System.out.print(f.item + " ");
+            }
+        } else {//向左
+            while (f.prev != head) {
+                f = f.prev;
+                System.out.print(f.item + " ");
+            }
+        }
+    }
+
+    public int size() {
+        return size;
+    }
+
+    //结点内部类
+    private static class Node {
+        int item;
+        Node next;//直接后继引用
+        Node prev;//直接前驱引用
+
+        Node(Node prev, int item, Node next) {
+            this.prev = prev;
+            this.item = item;
+            this.next = next;
+        }
+    }
+}

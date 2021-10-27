@@ -1,0 +1,71 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+int year=Integer.parseInt(releaseDate.substring(0,4));
+		int month=Integer.parseInt(releaseDate.substring(5,6));
+		if(month==0){
+			month=Integer.parseInt(releaseDate.substring(6,7));
+		}else{
+			month=Integer.parseInt(releaseDate.substring(5,7));
+		}
+		int Day=Integer.parseInt(releaseDate.substring(8,9));
+		if(Day==0){
+			Day=Integer.parseInt(releaseDate.substring(9,10));
+		}else{
+			Day=Integer.parseInt(releaseDate.substring(8,10));
+		}
+		int[]data={0,31,28,31,30,31,30,31,31,30,31,30,31};
+		int n=day+Day;
+
+		if(n<=data[month]){ Day=day+Day;}
+		else{
+			try{
+			while(n>data[month]){
+				if(year%4==0&&year%100!=0&&month==2||year%100==0&&month==2){
+					if(n>29){n-=29;month++;}
+					else{Day=29;break;}
+				}
+				else{n-=data[month++];}
+				if(month>12){
+					year++;
+					month=1;
+				}
+			}
+			 Day=n;
+		}catch(Exception ex){
+			ex.getStackTrace();
+		}
+		
+      
+	}
+        String s=null;
+    if(month<10){
+	s=new String(year+"-0"+month+"-"+Day);
+    }
+    if(Day<10){
+	 s=new String(year+"-"+month+"-0"+Day);
+    }
+        if(month<10&&Day<10){
+	 s=new String(year+"-0"+month+"-0"+Day);
+    }
+        if(month>10&&Day>10){
+	 s=new String(year+"-"+month+"-"+Day);
+    }
+	return s;
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

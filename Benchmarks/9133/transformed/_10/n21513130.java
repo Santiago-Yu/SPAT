@@ -1,0 +1,20 @@
+class n21513130 {
+	public static String hashMD5(String passw) {
+		String passwHash = "";
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(passw.getBytes());
+			StringBuffer sb = new StringBuffer();
+			byte[] result = md.digest();
+			for (int i = 0; i < result.length; i++) {
+				String tmpStr = "0" + Integer.toHexString((0xff & result[i]));
+				sb.append(tmpStr.substring(tmpStr.length() - 2));
+			}
+			passwHash = sb.toString();
+		} catch (NoSuchAlgorithmException ecc) {
+			log.error("Errore algoritmo " + ecc);
+		}
+		return passwHash;
+	}
+
+}

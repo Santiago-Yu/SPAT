@@ -1,0 +1,63 @@
+package step1;
+import java.util.List;
+
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        int j = p;
+        StringBuilder ns = new StringBuilder(s);
+        for(int i = 0;i<ops.size();i++){
+
+            if(ops.get(i).t.equals("I")){
+                ns.insert(j,ops.get(i).s);
+                j = j+ops.get(i).s.length();
+            }
+
+            else if(ops.get(i).t.equals("B")){
+                if(j-ops.get(i).l >= 0){
+                    ns.delete(j - ops.get(i).l, j);
+                    j = j-ops.get(i).l;
+                }
+                else{
+                    ns.delete(0, j);
+                    j = 0;
+                }
+                    
+            }
+            else if(ops.get(i).t.equals("D")){
+                if(j+ops.get(i).l <= ns.length()){
+                    ns.delete(j, j+ops.get(i).l);
+                }
+                else{
+                    ns.delete(j, ns.length());
+                }
+                    
+            }
+
+            else if(ops.get(i).t.equals("L")){
+                if(j-ops.get(i).l >= 0){
+                    j = j-ops.get(i).l;
+                }
+                else
+                    j = 0;
+            }
+
+            else if(ops.get(i).t.equals("R")){
+                if(j+ops.get(i).l <= ns.length()){
+                    j = j+ops.get(i).l;
+                }
+                else
+                    j = ns.length();
+            }
+        }
+
+        return ns.toString();	
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}

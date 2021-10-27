@@ -1,0 +1,35 @@
+package step1;
+
+public class Task {
+
+	public int oneSum(int num){
+        int sum = 0;
+        for(;num>0;){
+            sum = sum + num%10;
+            num = num/10;
+        }
+        return sum;
+    }
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int min = 1;
+        int count = 0;
+        int sum = 0;
+        if(num1 < num2){
+            min = num1;
+            count = num2-num1;
+        }
+        else {
+            min = num2;
+            count = num1-num2;
+        }
+     
+		for(int i = 0;i<=count; i++){
+            sum = oneSum(min) + sum;
+            min = min+1;
+        }
+		
+        return sum;
+		/********** END **********/
+	}
+}

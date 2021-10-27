@@ -1,0 +1,29 @@
+package Pid_106;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc = new Scanner(System.in);
+		String ss = sc.nextLine();
+		String[] s = ss.split(" ");
+		String s2[] = new String[s.length*2-1];
+		for(int i=0;i<s2.length;i++)
+		{
+			for(int j=0;j<s.length;j++)
+			{
+				if(i==j*2){
+					s2[i] = s[j];
+					break;
+				}else{
+					s2[i] = "%10";
+				}
+			}
+		}
+		for(int i=0;i<s2.length;i++)
+		{
+			System.out.print(s2[i]);
+		}
+	}
+
+}

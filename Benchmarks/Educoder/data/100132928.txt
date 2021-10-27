@@ -1,0 +1,388 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+@SuppressWarnings("unchecked")
+public class Task{
+    /**
+    同现标签数据：src/step1/tag_cooccurrence.csv
+    开发者标签数据：src/step1/user_tag.csv
+    推荐结果文件：src/step1/user_recommand.csv
+    **/
+    public static void main(String[] args) throws IOException {
+        //读取文件内容至list集合中
+        List<User> userlist = getUserTagsFromCsv("src/step1/user_tag.csv");
+        List<List<Tag>> resources = getTagFromCsv("src/step1/tag_cooccurrence.csv");
+        List<String> data = getResult(userlist,resources);
+        //将数据写到user_recommand.csv中
+        writeCsvFile("src/step1/user_recommand.csv",data);
+    }
+    static int num_of_Tags=8;
+    
+    static int select_num=0;
+    
+    static int num_of_groups=0;
+    
+    public static List<String> getResult(List<User> userlist, List<List<Tag>> resources){
+        List<String> data = new ArrayList<>();
+        
+        //Way1
+        //List<Tag> tags=myWay1(resources);
+        //List<User> ul = myWay1_(userlist,tags);
+        //way2
+        List<Tag> tags=myWay1(resources);
+        List<Group> groups=getRelat(tags,resources);
+        for(int i=num_of_groups;i<groups.size();i++){
+                groups.remove(i);
+        }
+        List<User> ul = myWay2(userlist,groups);
+        myWay_(userlist,ul,tags);
+        for (User user : ul) {
+            data.add(user.getTagStr());
+        }
+        return data;
+    }
+    
+    private static void myWay_(List<User> userlist,List<User> ul, List<Tag> tags) {
+        
+        for(int u=0;u<ul.size();u++) {
+            int i=ul.get(u).getTags().size();
+            for(Tag tag:tags) {
+                if(i>=num_of_Tags) break;
+                if(tag.check(ul.get(u).getTags())||tag.check(userlist.get(u).getTags())) {
+                    continue;
+                }else {
+                    i++;
+                    ul.get(u).getTags().add(new Tag(tag.getName()));
+                }
+            }
+        }
+    }
+
+    private static List<User> myWay2(List<User> userlist, List<Group> groups) {
+        
+        List<User> ul =new ArrayList<>();
+        
+        for(User user:userlist) {
+            User u = new User();
+            u.setUserId(user.getUserId());
+            List<Tag> ts =new ArrayList<>();
+            for(Tag t:user.getTags()) {
+                Tag t_=t.getOther(groups);
+                if(t_==null) continue;
+                ts.add(t_);
+            }
+            u.setTags(ts);
+            ul.add(u);
+        }
+        return ul;
+    }
+
+    public static List<Group> getRelat(List<Tag> tags, List<List<Tag>> resources) {
+        List<Group> groups = new ArrayList<>();
+        for(int i=0;i<select_num;i++) {
+            for(int j=i+1;j<select_num;j++) {
+                Group group=new Group();
+                List<Tag> ts = new ArrayList<>();
+                ts.add(tags.get(i));
+                ts.add(tags.get(j));
+                group.setTags(ts);
+                setGroupWeight(group,resources);
+                groups.add(group);
+            }
+        }
+        sortGroups(groups);
+        return groups;
+    }
+
+    private static void sortGroups(List<Group> groups) {
+        for(int i=1;i<groups.size();i++) {
+            for(int j=0;j<i;j++) {
+                if(groups.get(i).getWeight()<=groups.get(j).getWeight()) {
+                    continue;
+                }else {
+                    groups.add(j, groups.remove(i));
+                    break;
+                }
+            }
+        }
+        
+    }
+
+    public static void setGroupWeight(Group group, List<List<Tag>> resources) {
+        Tag t0=group.getTags().get(0);
+        Tag t1=group.getTags().get(1);
+        int weight=0;
+        for(List<Tag> tags:resources) {
+            if(t0.check(tags)) {
+                if(t1.check(tags)) {
+                    weight+=1;
+                }
+            }
+        }
+        group.setWeight(weight);
+    }
+
+    public static List<User> myWay1_(List<User> userlist, List<Tag> tags) {
+        List<User> ul =new ArrayList<>();
+        
+        for(User user:userlist) {
+            User u = new User();
+            u.setUserId(user.getUserId());
+            List<Tag> ts =new ArrayList<>();
+            int i=0,j=0;
+            for(Tag tag:tags) {
+                if(i>=num_of_Tags) break;
+                if(tag.check(user.getTags())) {
+                    continue;
+                }else {
+                    i++;
+                    ts.add(new Tag(tag.getName()));
+                }
+            }
+            u.setTags(ts);
+            ul.add(u);
+        }
+        return ul;
+    }
+
+    public static List<Tag> myWay1(List<List<Tag>> res){
+        List<Tag> tags=new ArrayList<>();
+        for(List<Tag> ts: res) {
+            for(Tag t:ts) {
+                Boolean flag=false;
+                for(Tag tag: tags) {
+                    if(tag.getName().equals(t.getName())) {
+                        tag.weightAdd();
+                        flag=true;
+                    }
+                }
+                if(!flag) {
+                    Tag tag = new Tag(t.getName());
+                    tag.setWeight(1);
+                    tags.add(tag);
+                }
+            }
+        }
+        Mysort1(tags);
+        return tags;
+    }
+
+    public static void Mysort1(List<Tag> tags) {
+        for(int i=1;i<tags.size();i++) {
+            for(int j=0;j<i;j++) {
+                if(tags.get(i).getWeight()<=tags.get(j).getWeight()) {
+                    continue;
+                }else {
+                    tags.add(j, tags.remove(i));
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 读取user_tag文件信息至list集合中
+     * 
+     * @param path 文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    public static List<User> getUserTagsFromCsv(String path) throws IOException {
+        // 创建创建用户集合并读取文件数据
+        List<User> userList = new ArrayList<>();
+        try {
+            // 创建CSV读对象   需要设置编码格式为UTF-8
+            CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            boolean readHeaders = csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读这行的第一列
+                String id = csvReader.get(0);
+                //System.out.println(id);
+                String tagName = csvReader.get(1);
+                //System.out.println(tagName);
+                String weight = csvReader.get(2);
+                //System.out.println(weight);
+                String[] tagItems = tagName.split(",");
+                String[] weightItems = weight.split(",");
+                List<Tag> tags = new ArrayList<>();
+                User user = new User();
+                user.setUserId(Integer.valueOf(id));
+                for (int j = 0; j < tagItems.length; j++) {
+                    Tag tag = new Tag(tagItems[j]);
+                    tag.setWeight(Double.valueOf(weightItems[j].replace("[", "").replace("]", "")));
+                    tags.add(tag);
+                }
+                user.setTags(tags);
+                userList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    /**
+     * 读取tag_coocurrence.csv
+     * @param path 路径
+     * @return 读取后生成map集合
+     * @throws IOException
+     */
+    public static List<List<Tag>> getTagFromCsv(String path) throws IOException {
+        List<List<Tag>> res=new ArrayList();
+        // 创建CSV读对象   需要设置编码格式为UTF-8
+        CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+        // 读表头
+        boolean readHeaders = csvReader.readHeaders();
+        while (csvReader.readRecord()) {
+            String id = csvReader.get(0);
+            //System.out.println(id);
+            String tagName = csvReader.get(1);
+            //System.out.println(tagName);
+            String[] tagItems = tagName.split(",");
+            List<Tag> tags = new ArrayList<>();
+            for(String tagItem:tagItems) {
+                tags.add(new Tag(tagItem));
+            }
+            res.add(tags);
+        }
+            
+        return res;
+    }
+
+    /**
+     * 写结果文件
+     * 
+     * @param filePath 文件路径
+     * @param data 要写入的数据
+     * @throws IOException
+     */
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"id","recommand_tags"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+        int id = 1;
+        for (String tag : data) {
+            String[] content = {id++ +"", tag};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+// 标签
+class Tag {
+    private String name; // 标签名
+    private double weight; // 权重值
+    Tag(String name){
+        this.name=name;
+    }
+    public Tag getOther(List<Group> groups) {
+        for(Group g:groups) {
+            if(this.check(g.getTags())) {
+                if(this.name.equals(g.getTags().get(0))) return g.getTags().get(1);
+                return g.getTags().get(0);
+            }
+        }
+        return null;
+    }
+    public boolean check(List<Tag> tags) {
+        for(Tag tag:tags) {
+            if(tag.getName().equals(this.name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void weightAdd() {
+        this.weight+=1;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void print() {
+        System.out.println(name+"\t"+weight);
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+}
+
+// 用户
+class User {
+    private int userId;
+    private List<Tag> tags;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public String getTagStr() {
+        String tagStr = new String();
+        for(Tag t:tags) {
+            tagStr+= t.getName();
+            tagStr+= ",";
+        }
+        tagStr=tagStr.substring(0, tagStr.length()-1);
+        return tagStr;
+    }
+
+}
+
+class Group{
+    
+    private List<Tag> tags;
+    public List<Tag> getTags() {
+        return tags;
+    }
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+    
+    private int weight;
+    public int getWeight() {
+        return weight;
+    }
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+}

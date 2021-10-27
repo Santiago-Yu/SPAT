@@ -1,0 +1,44 @@
+package step1;
+
+ class ThreadClassOne extends Thread     {
+    
+    public void run(){
+      for(int i=0;i<=10;i++)
+          if(i%2==1)
+            System.out.print(i+" ");
+      // System.out.println();
+    }
+ }
+ class ThreadClassTwo implements Runnable{
+     private Thread mythread;
+   // private String name;
+   // public ThreadClassTwo(String name){
+   // super();
+   //   this.name=name;  
+   // }
+     public void run(){
+       //  System.out.println();
+         for(int i=0;i<=10;i++)
+             if(i%2==0)
+                 System.out.print(i+" ");
+    
+    }
+    public void start(){
+    if(mythread==null)
+       mythread=new Thread(this);
+        start();
+      
+     }
+
+
+}
+//public class Test{
+//   public static void main(String[] args){
+ //  ThreadClassOne t1=new ThreadClassOne();
+ //      t1.start();
+ //  ThreadClassTwo t2=new ThreadClassTwo("t2");
+ //      t2.start();
+  // }
+//}
+
+

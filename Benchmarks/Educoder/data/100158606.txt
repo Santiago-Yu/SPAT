@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+	char q[4000000],w[4000000];
+	scanf("%s %s",q,w);
+	int ans = -100,t,i,j,k,m;
+	for(i=0;q[i]!='\0';i++){
+		k=i;
+		for(j=0;w[j]!='\0';j++){
+            t=0;
+            m=j;
+			while(q[k]!='\0'&&w[m]!='\0'&&q[k]==w[m]){
+				t++;
+				k++;
+				m++;
+			}
+			if(t>ans)
+				ans=t;
+            k=i;
+		}
+	}
+	printf("%d",ans);
+	return 0;
+}

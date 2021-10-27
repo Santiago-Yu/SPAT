@@ -1,0 +1,61 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+    	 public static int gongyue(int x,int y){//最大公约数
+	        if(x>y){
+	            int t = x;
+	            x = y;
+	            y = t;
+	        }
+	        while(x!=0){
+	            int temp = y%x;
+	            y = x;
+	            x = temp;
+	        }
+	        return y;
+	  }
+	public static void main(String[] args) {
+        Task task=new Task();
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+		int y=0;
+		int total=0;
+		int maxbc=0;
+		int temp;
+		if(length==width){
+			maxbc=length;
+			total=1;
+		}
+		if(length>width){
+			y=length%width;
+			if(y==0){
+				maxbc=width;
+				total=length/width;
+				
+			}
+			else{
+                 maxbc=task.gongyue(length, width);
+				 total=(length*width)/(maxbc*maxbc);
+				 
+				
+			}
+		}
+		
+		System.out.println(maxbc);
+		
+		System.out.println(total);
+		
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

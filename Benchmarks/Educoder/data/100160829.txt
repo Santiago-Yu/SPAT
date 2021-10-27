@@ -1,0 +1,56 @@
+package step4;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+		Document doc = Jsoup.parse(new File(filePath),"UTF-8");
+		
+
+		return doc;
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+		Element tagdl = doc.getElementsByClass("pinyin_filter_detail").first();
+		Elements tagsdt = tagdl.select("dt");
+		List<HotelCity> list = new ArrayList<HotelCity>();
+		for(Element tagdt :tagsdt){
+			String pinyinHead = tagdt.text();
+			Element tagdd = tagdt.nextElementSibling();
+			Elements tagsa = tagdd.children();
+			
+			for(Element taga :tagsa) {
+				String city = taga.text();
+				String cityId = taga.attr("href").replace("/hotel/", "").replaceAll("[a-z]*", "");
+				String pinyin = taga.attr("href").replace("/hotel/", "").replaceAll("[0-9]*", "");
+				
+				HotelCity hc = new HotelCity();
+				hc.setCityId(cityId);
+				hc.setCityName(city);
+				hc.setHeadPinyin(pinyinHead);
+				hc.setPinyin(pinyin);
+//				System.out.println(hc);
+				list.add(hc);
+			}
+		}
+        
+        
+		return list;
+		/**********   End   **********/
+	}
+}

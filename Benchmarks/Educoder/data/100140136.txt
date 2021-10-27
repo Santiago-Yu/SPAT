@@ -1,0 +1,28 @@
+package step4;
+import java.util.Scanner;
+
+public class Reverse {
+public static StringBuffer start(String data) {
+        StringBuffer ans = new StringBuffer();
+        StringBuffer sum = new StringBuffer();
+        String aans;
+        /********** Begin *********/
+		ans= new StringBuffer(data);
+		aans=ans.toString();
+		String[] an =aans.split(" ");
+		for(int i=0;i<an.length;i++)
+		{
+			sum =sum.append(new StringBuffer(an[i]).reverse()).append(" ");
+		}
+		ans=sum;
+		return ans;
+        /********** End *********/
+    }
+    	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String Ddate=sc.nextLine();
+		//StringBuffer date = new StringBuffer(Ddate);
+		StringBuffer ans = start(Ddate);
+		System.out.println(ans);
+	}
+}

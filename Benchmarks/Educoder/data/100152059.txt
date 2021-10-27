@@ -1,0 +1,50 @@
+package step1;
+import java.math.BigDecimal;
+public class Task {
+
+	 public double solve(double x1, double y1, double r1,
+              double x2, double y2, double r2) {
+		  /********* Begin *********/
+		  double s,temp,p,l,ans;
+
+	l=Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+
+	if(l>=r1+r2)	ans=0;
+
+	else if(l<=Math.abs(r1-r2)){
+
+		if(r1<=r2)	    ans=Math.PI*r1*r1;
+
+		else			ans=Math.PI*r2*r2;
+
+	}
+
+	else{
+
+		p=(l+r1+r2)/2;
+
+		s=2*Math.sqrt(p*(p-l)*(p-r1)*(p-r2));
+
+		if(r1>r2){
+
+			temp=x1;x1=x2;x2=temp;
+
+			temp=y1;y1=y2;y2=temp;
+
+            temp=r1;r1=r2;r2=temp;
+
+		}
+
+		ans=Math.acos((r1*r1+l*l-r2*r2)/(2*r1*l))*r1*r1+Math.acos((r2*r2+l*l-r1*r1)/(2*r2*l))*r2*r2-s;
+
+	}
+	double S=r1*r1*Math.PI+r2*r2*Math.PI;
+	BigDecimal b = new BigDecimal((S-ans));
+	double sum=b.setScale(6, BigDecimal.ROUND_HALF_UP).doubleValue();
+	//System.out.println(sum);
+	return sum;
+		  
+		  
+		  /********* End *********/
+	  }
+}

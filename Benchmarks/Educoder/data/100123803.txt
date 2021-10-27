@@ -1,0 +1,33 @@
+package step1;
+import java.util.ArrayList;
+public class MaxMin{
+	public static void main(String[] args){
+    	double[] arr = new double[100];
+        ArrayList al=new ArrayList();
+        int s=0;				//定义 统计大于50的整数个数 变量
+        double max=0,min=100;	//定义 最大值 最小值 变量
+        for(int i=0;i<100;i++){
+        double d=100*Math.random();//获取随机数
+	    arr[i] = d;
+        /********* Begin *********/   
+	    if(arr[i]>50)
+	    {
+	    	al.add(arr[i]);
+	    	s++;
+	    }
+        }
+        for(int i=0;i<al.size();i++)
+        {
+        	max=Math.floor(Math.max(max, (double)al.get(i)));
+        }
+        for(int j=0;j<arr.length;j++)
+        {
+        	min=Math.floor(Math.min(min, arr[j]));
+        }     
+        //System.out.println("max="+max);
+        //System.out.println("min="+min);
+        //System.out.println("s="+s);      
+        /********* end *********/
+        judgeRadom.cpm(arr,max,min,s);	//这个方法会判断你的计算是否正确
+    }
+}

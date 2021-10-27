@@ -1,0 +1,23 @@
+package step3;
+import java.io.File;
+import java.io.FileNotFoundException;
+public class SearchFile {
+public static void main(String[] args) throws FileNotFoundException {
+File file=new File("src/step3");
+getDirectory(file);
+}
+public static void getDirectory(File file) {
+File flname[] = file.listFiles();
+for (File f : flname) {
+    if (f.isDirectory()) {
+          //这里将列出所有的文件夹
+    getDirectory(f);
+      } else {
+         //这里将列出所有的文件
+   if(f.getName().contains("Se")){
+   System.out.print(f.getName()+" ");
+   }
+      }
+  }
+}
+}

@@ -1,0 +1,58 @@
+package step3;
+
+public class Task {
+	
+	public int concaveValley(Integer[] arr){
+		/********* Begin *********/
+int maxot = 0;
+		int low = 0;
+		int lowz = 0;
+		for (int i = 1; i < arr.length - 1; i++) {
+			if ((arr[i] < arr[i + 1]) && (arr[i] < arr[i - 1])) {
+				int low1 = i;
+				int low2 = i;
+				int low1z = arr[i];
+				int low2z = arr[i];
+				int maxo=0;
+				low = i;
+				lowz = arr[i];
+				// System.out.println("000000000000000");
+
+				int j = low;
+				 //System.out.println(j);
+				while (true) {
+					//System.out.println(j);
+					
+					maxo++;
+					//System.out.println(maxo);
+					if((j<1)||(arr[j-1]<=arr[j]))
+						break;
+					j--;
+					// System.out.println("000000000000000");
+				}
+				 //System.out.println("000000000000000");
+				j = low;
+				//System.out.println(j);
+				while (true) {
+					
+					//System.out.println(j);
+					maxo++;
+					//System.out.println(maxo);
+					j++;
+					if((j>=arr.length-1)||(arr[j+1]<=arr[j]))
+						break;
+				}
+				if (maxo > maxot) {
+					maxot = maxo;
+				}
+			}
+
+		}
+		// System.out.println(maxot);
+		// System.out.println("000000000000000");
+		return maxot;
+
+		
+		/********* End *********/	
+	}
+}

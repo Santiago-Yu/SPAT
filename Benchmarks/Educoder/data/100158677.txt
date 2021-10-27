@@ -1,0 +1,29 @@
+#include <iostream>
+#include <string.h>
+#include <stdio.h>
+using namespace std;
+int main()
+{
+    int ste[20];
+    int i,j,k,l,a,n,o;
+    o=0;
+    for(i=0;i<20;i++)
+    {
+    scanf("%d",&ste[i]);
+    if(getchar()=='\n')
+    break;
+    }
+    scanf("%d",&n);
+    for(j=0;j<=i;j++)
+    {
+    for(k=j+1;k<=i;k++)
+    {
+    for(l=k+1;l<=i;l++)
+    {
+     if(ste[j]+ste[k]+ste[l]<n)	
+     o++;
+    }
+}
+}
+printf("%d",o);
+}

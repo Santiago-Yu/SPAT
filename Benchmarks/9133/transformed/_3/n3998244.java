@@ -1,0 +1,18 @@
+class n3998244 {
+	public static synchronized String hash(String data) {
+		if (!(digest == null))
+			;
+		else {
+			try {
+				digest = MessageDigest.getInstance("MD5");
+			} catch (NoSuchAlgorithmException nsae) {
+			}
+		}
+		try {
+			digest.update(data.getBytes("utf-8"));
+		} catch (UnsupportedEncodingException e) {
+		}
+		return encodeHex(digest.digest());
+	}
+
+}

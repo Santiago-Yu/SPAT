@@ -1,0 +1,35 @@
+package step4;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		
+
+
+		String[] split = releaseDate.split("-");
+		int rYear = Integer.valueOf(split[0]);
+		int rMouth = Integer.valueOf(split[1]);
+		int rDay = Integer.valueOf(split[2]);
+
+		Calendar cal = Calendar.getInstance();
+		cal.set(rYear, rMouth-1, rDay+day);
+		
+	
+		Date resultDate = cal.getTime(); // 结果
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(resultDate);
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

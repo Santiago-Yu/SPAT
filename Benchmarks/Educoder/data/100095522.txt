@@ -1,0 +1,61 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int sumday=0;
+            int countday=0;    
+                int days=0;
+ 		for(int i =0;i<month;i++)    
+        {
+		switch (i) {
+            case 1:
+       		case 3:
+      		case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                days=31;
+        		break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+            days = 30;
+            break; 
+        
+            case 2:
+        	if( (year % 4 == 0 && year % 100 != 0)||year%400==0)  {
+            days=29;
+            }
+            
+        	else{ 
+                days=28;
+            }
+            break;
+        }
+            countday+=days;
+        }
+            
+   		sumday=countday+day;
+       System.out.print(sumday);
+     /*   int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30};
+        if(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0)){
+            ++days[1];
+        }
+        int count = 0;
+        for(int i = 0; i < month - 1; ++i){
+            count += days[i];
+        }
+        count += day;
+        System.out.print(count);
+        黄家伟数组法
+        
+            */
+       
+
+
+		/********** End *********/
+	}
+}

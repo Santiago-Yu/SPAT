@@ -1,0 +1,32 @@
+package step4;	//在这里添加包名  step4
+class WuMingFen{
+    String theMa;
+    int quantity;
+    boolean likeSoup;
+    int flag;
+    public WuMingFen(String theMa,int quantity,boolean likeSoup){
+        this.theMa=theMa;
+        this.quantity=quantity;
+        this.likeSoup=likeSoup;
+        flag=3;
+    }
+    public WuMingFen(String theMa,int quantity){
+         this.theMa=theMa;
+        this.quantity=quantity;
+        flag=2;
+    }
+    public WuMingFen(){
+        flag=0;
+    }
+    void check(){
+     if(flag==0)
+            System.out.println("面码：酸辣，粉的份量：2两，是否带汤：true");
+        if(flag==2)
+            System.out.println("面码："+theMa+"，粉的份量："+quantity+"两，是否带汤：false");
+        if(flag==3)
+            System.out.println("面码："+theMa+"，粉的份量："+quantity+"两，是否带汤："+likeSoup);
+    }
+}
+
+		//创建类 添加属性和方法
+	

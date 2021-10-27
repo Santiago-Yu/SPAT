@@ -1,0 +1,81 @@
+package step4;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+        /**********   Begin   **********/
+        File input = new File(filePath);
+		Document doc = Jsoup.parse(input,"UTF-8");
+		
+
+		return doc;
+		/**********   End   **********/
+	}
+    
+	/**
+	 * 获取所有城市返回城市信息集合
+	 * @param doc	
+	 * @return
+	 */
+	public List<HotelCity> getAllCitys(Document doc){
+		/**********   Begin   **********/
+       
+        //所有dd的Elements
+        Elements hotelsLinks = doc.getElementsByTag("dd");
+        List<HotelCity> cities = new ArrayList<HotelCity>();
+
+        for (int i = 0; i < hotelsLinks.size(); i++) {
+             //当前dd
+             Element head_hotelsLink = hotelsLinks.get(i);
+             //当前dd下的所有孩子也就是a标签
+             Elements links = head_hotelsLink.select("a");
+       
+            for (Element link : links) {
+                HotelCity city = new HotelCity();
+                city.setCityName(link.html());
+                String Href=link.attr("href");
+                String href=Href.substring(7,Href.length());
+                String name=href.replaceAll("\\d","");
+                String number=href.replaceAll("[a-z]","");
+                
+                String first=Href.substring(7,8).toUpperCase();
+                if(name.equals("macau")){
+                	first="A";
+                }
+                city.setCityId(number);
+                city.setHeadPinyin(first);
+                city.setPinyin(name);
+
+                cities.add(city);
+                
+                
+                
+                
+                
+        	}
+        }
+
+
+                
+
+
+                
+                
+                
+      
+        
+
+        
+        
+		return cities;
+		/**********   End   **********/
+	}
+}

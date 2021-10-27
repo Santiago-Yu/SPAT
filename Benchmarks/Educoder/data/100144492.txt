@@ -1,0 +1,19 @@
+package step1;
+import java.io.*;
+public class Task {
+	public String inversion(String str){
+		/********* Begin *********/
+		char[] cstral;
+        char tmp;
+        cstral=str.toCharArray();
+        for(int i=cstral.length-1;i>=(cstral.length)/2;i--)
+        {
+          tmp=cstral[i];
+           cstral[i]=cstral[cstral.length-1-i];
+          cstral[cstral.length-1-i]=tmp;
+        }
+		str=String.valueOf(cstral);
+		return str;
+		/********* End *********/
+	}
+}

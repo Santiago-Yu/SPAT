@@ -1,0 +1,45 @@
+package step1;
+
+
+public class Task {
+
+	public void sortArray(int[] arr, String sort){
+		/********** BEGIN **********/
+        int temp=0;
+        if(sort.equals("desc")){
+            for(int i=0;i<arr.length;i++){
+            	for(int j=0;j<arr.length;j++)
+                if(arr[j]<arr[i]){
+                    temp=arr[j];
+                    arr[j]=arr[i];
+                    arr[i]=temp;
+                    }
+            }
+        }
+        else if(sort.equals("asc")){
+         for(int i=0;i<arr.length;i++){
+                for(int j=0;j<arr.length;j++)
+                	if(arr[i]<arr[j]){
+                    temp=arr[i];
+                    arr[i]=arr[j];
+                    arr[j]=temp;
+                    }
+            }
+        }
+		
+        for(int i=0;i<arr.length;i++){
+        	System.out.println(arr[i]);
+        }
+       // System.out.println(sort);
+		
+		/********** END **********/
+	}/*
+	public static void main(String[] args) {
+		//Scanner in = new Scanner(System.in);
+		Task t = new Task();
+		int[] arr={1,5,12,,13,123};
+		//int arr2[]= {23,12,2,32,11,125 };
+		t.sortArray(arr, "asc");
+		//t.sortArray(arr2, "asc");
+	}*/
+}

@@ -1,0 +1,239 @@
+import java.util.*;
+
+public class Java_LRParserAnalysis {
+    static List<String> assemble = new ArrayList<>();
+    static Stack<String> queue = new Stack<>();
+    static String[][] bigTable;
+    static StringBuffer prog = new StringBuffer();
+    static String[] r;
+    static String syntax = "program' -> program\n" + "program -> compoundstmt\n" +
+            "stmt -> ifstmt\n" +
+            "stmt -> whilestmt\n" +
+            "stmt -> assgstmt\n" +
+            "stmt -> compoundstmt\n" +
+            "compoundstmt -> { stmts }\n" +
+            "stmts -> stmt stmts\n" +
+            "stmts -> E\n" +
+            "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+            "whilestmt -> while ( boolexpr ) stmt\n" +
+            "assgstmt -> ID = arithexpr ;\n" +
+            "boolexpr -> arithexpr boolop arithexpr\n" +
+            "boolop -> <\n" +
+            "boolop -> >\n" +
+            "boolop -> <=\n" +
+            "boolop -> >=\n" +
+            "boolop -> ==\n" +
+            "arithexpr -> multexpr arithexprprime\n" +
+            "arithexprprime -> + multexpr arithexprprime\n" +
+            "arithexprprime -> - multexpr arithexprprime\n" +
+            "arithexprprime -> E\n" +
+            "multexpr -> simpleexpr multexprprime\n" +
+            "multexprprime -> * simpleexpr multexprprime\n" +
+            "multexprprime -> / simpleexpr multexprprime\n" +
+            "multexprprime -> E\n" +
+            "simpleexpr -> ID\n" +
+            "simpleexpr -> NUM\n" +
+            "simpleexpr -> ( arithexpr )";
+    static String[] productions = syntax.split("\\\n");
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextLine())
+            prog.append(sc.nextLine() + "\n");
+        prog.append("$");
+        r = prog.toString().split("[ \n]+");
+    }
+
+    private static void read_prog(String s) {
+        prog = new StringBuffer(s);
+        prog.append("\n$");
+        r = prog.toString().split("[ \n]+");
+    }
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        /*read_prog("{\n" +
+                "while ( ID == NUM )\n" +
+                "{\n" +
+                "ID = NUM\n" +
+                "}\n" +
+                "}");*/
+        read_prog();
+        //System.out.println(prog);
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+        init();
+        process();
+        printAnswer();
+    }
+
+    private static void printAnswer() {
+        System.out.println("program => ");
+        String[] string = queue.peek().split("->")[1].substring(1).split(" ");
+        List<String> base = new ArrayList<>(Arrays.asList(string));
+        queue.pop();
+        while (!queue.isEmpty()) {
+            String pro = queue.peek();
+            queue.pop();
+            String l = pro.split("->")[0];
+            String left = l.substring(0,l.length()-1);
+
+            System.out.println(String.join(" ",base) + " => ");
+
+            String right = pro.split("->")[1].substring(1);
+
+            if (right.contains("E")) {
+                base.remove(base.lastIndexOf(left));
+
+            } else {
+                int pos = base.lastIndexOf(left);
+                base.remove(pos);
+                for (String s : right.split(" ")) {
+                    base.add(pos++,s);
+                }
+            }
+        }
+        System.out.print(String.join(" ",base)+" ");
+    }
+
+    private static void process() {
+        String[] temp = r;
+        int i = 0;
+        String ip = temp[i];
+        Stack<Integer> stack = new Stack<>();
+        int s = -1;
+        stack.push(0);
+        int time = 999;
+        while (true) {
+            s = stack.peek();
+            if (!bigTable[s][assemble.indexOf(ip)].equals("_")) {
+                String str = bigTable[s][assemble.indexOf(ip)];
+                if(str.equals("e1")){
+                    System.out.println("语法错误，第4行，缺少\";\"");
+                    i--;
+                    ip = ";";
+                    continue;
+                }
+                //移入
+                if (str.contains("s")) {
+                    stack.push(Integer.valueOf(str.substring(1)));
+                    ip = temp[++i];
+                }
+                //规约
+                else if (str.contains("r")) {
+                    String output = productions[Integer.valueOf(str.substring(1))];
+                    String[] production = output.split("->");
+                    String[] pro = production[1].split(" ");
+                    //计算从栈中需要弹出的数目，取决于产生式体
+                    int times = pro.length - 1;
+                    if (pro[1].equals("E"))
+                        times = 0;
+                    while (times-- != 0) {
+                        stack.pop();
+                    }
+                    int t = stack.peek();
+                    String s1 = production[0].substring(0, production[0].length() - 1);
+                    int pushNUm = assemble.indexOf(s1);
+                    stack.push(Integer.valueOf(bigTable[t][pushNUm]));
+                    //System.out.println(Integer.valueOf(str.substring(1)));
+                    //System.out.println(output);
+                    queue.push(output);
+                } else if (str.equals("acc")) {
+                    break;
+                }
+            }
+            time--;
+            if (time < 0) break;
+        }
+
+    }
+
+    private static void init() {
+
+        String tableData = "s3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 _ 2 _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ acc _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ r1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "s3 r8 s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 5 9 4 6 7 8 _ _ _ _ _ _ _\n" +
+                "_ s13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "s3 r8 s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 5 9 14 6 7 8 _ _ _ _ _ _ _\n" +
+                "r2 r2 r2 _ _ _ r2 r2 r2 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r3 r3 r3 _ _ _ r3 r3 r3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r4 r4 r4 _ _ _ r4 r4 r4 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r5 r5 r5 _ _ _ r5 r5 r5 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ s17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r6 r6 r6 _ _ _ r6 r6 r6 _ _ _ _ _ _ _ _ _ _ _ _ r6 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ r7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ 18 _ 19 _ 20 _ 21\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ 25 _ 19 _ 20 _ 21\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 26 _ 20 _ 21\n" +
+                "_ _ _ _ s27 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ s29 s30 s31 s32 s33 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 28 _ _ _ _ _\n" +
+                "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 34 _ _ _\n" +
+                "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 37 _\n" +
+                "_ _ _ _ r26 _ _ _ _ _ r26 r26 r26 r26 r26 r26 r26 r26 r26 r26 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ e1 _ _ r27 _ _ _ _ _ r27 r27 r27 r27 r27 r27 r27 r27 r27 r27 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 40 _ 20 _ 21\n" +
+                "_ _ _ _ s41 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ s42 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ s43 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ 44 _ 20 _ 21\n" +
+                "_ _ _ r13 _ _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ r14 _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ r15 _ _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ r16 _ _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ r17 _ _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ r18 _ _ _ _ _ r18 r18 r18 r18 r18 r18 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ 45 _ 21\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ 46 _ 21\n" +
+                "_ _ _ _ r22 _ _ _ _ _ r22 r22 r22 r22 r22 r22 r22 r22 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 47\n" +
+                "_ _ _ s24 _ _ _ _ s22 _ _ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 48\n" +
+                "_ _ _ _ s49 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 50 9 _ 6 7 8 _ _ _ _ _ _ _\n" +
+                "r11 r11 r11 _ _ _ r11 r11 r11 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 51 9 _ 6 7 8 _ _ _ _ _ _ _\n" +
+                "_ _ _ _ r12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 52 _ _ _\n" +
+                "_ _ _ _ r21 _ _ _ _ _ r21 r21 r21 r21 r21 r21 s35 s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 53 _ _ _\n" +
+                "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 54 _\n" +
+                "_ _ _ _ r25 _ _ _ _ _ r25 r25 r25 r25 r25 r25 r25 r25 s38 s39 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 55 _\n" +
+                "_ _ _ _ r28 _ _ _ _ _ r28 r28 r28 r28 r28 r28 r28 r28 r28 r28 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r10 r10 r10 _ _ _ r10 r10 r10 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ s56 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ r19 _ _ _ _ _ r19 r19 r19 r19 r19 r19 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ r20 _ _ _ _ _ r20 r20 r20 r20 r20 r20 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ r23 _ _ _ _ _ r23 r23 r23 r23 r23 r23 r23 r23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ r24 _ _ _ _ _ r24 r24 r24 r24 r24 r24 r24 r24 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "s3 _ s10 _ _ _ _ s11 s12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 57 9 _ 6 7 8 _ _ _ _ _ _ _\n" +
+                "r9 r9 r9 _ _ _ r9 r9 r9 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
+        assemble = new ArrayList<>(Arrays.asList("{", "}", "if", "(", ")", "then", "else", "while", "ID", "=", ";", "<",
+                ">", "<=", ">=", "==", "+", "-", "*", "/", "NUM", "$", "program\'"));
+        for (String s : productions) {
+            String[] t = s.split(" ");
+            if (!assemble.contains(t[0]))
+                assemble.add(t[0]);
+        }
+        bigTable = new String[58][assemble.size()];
+        String[] temp = tableData.split("\n");
+        for (int i = 0; i < temp.length; i++) {
+            String[] temp2 = temp[i].split(" ");
+            for (int j = 0; j < temp2.length; j++) {
+                bigTable[i][j] = temp2[j];
+            }
+        }
+    }
+}

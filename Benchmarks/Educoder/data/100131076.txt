@@ -1,0 +1,35 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int sum = 0;
+        int i = num1;
+        while(i <= num2){
+        	sum += computnum(i);
+            i++;
+            
+        }
+		return sum;
+		
+		/********** END **********/
+	}
+    public int computnum(int number){
+        
+    	if(number>0&&number<=9){
+            return number;
+        }
+        else if(number>9&&number<=99){
+            return number/10+number%10;
+        }
+        else
+        {
+            int baiwei = number/100;
+            int shiwei = (number%100)/10;
+            int gewei = number-baiwei*100-shiwei*10;
+            return baiwei+shiwei+gewei;
+    }
+    }
+}

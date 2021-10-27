@@ -1,0 +1,38 @@
+package step1;
+
+public class Task {
+	public static void main(String[] args) {
+		Integer[] arr= {4,1,3,5,2};
+//		printArray(arr);
+		sort(arr);
+	}
+	public static void printArray(Integer[] arr) {
+		for (int i = 0; i < arr.length; i++) {
+			System.out.print(arr[i]+" ");
+		}
+		System.out.print("\n");
+	}
+	public static  void sort(Integer[] arr) {
+		boolean c=true;
+		for (int i = 0; i < arr.length-1; i++) {
+			for (int j = 0; j < arr.length-i-1; j++) {
+				if (arr[j]>arr[j+1]) {
+					int temp=arr[j];
+					arr[j]=arr[j+1];
+					arr[j+1]=temp;
+                    printArray(arr);
+                    c=false;}
+			}for(int k=arr.length-1;k>i;k--) {
+				if (arr[k]<arr[k-1]) {
+					int temp=arr[k];
+					arr[k]=arr[k-1];
+					arr[k-1]=temp;
+                    printArray(arr);
+                    c=false;}
+				}
+		}
+		if(c) {
+			printArray(arr);
+		}
+	}
+}

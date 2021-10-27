@@ -1,0 +1,431 @@
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Java_LexAnalysis
+{
+
+    static class Word {
+
+        private String s;
+        private Integer id;
+        private Integer row;
+
+        public Word() {
+        }
+
+        public Word(String s, Integer id,Integer row) {
+            this.s = s;
+            this.id = id;
+            this.row = row;
+        }
+
+        public Integer getId() {
+            return id;
+        }
+
+        public void setId(Integer id) {
+            this.id = id;
+        }
+
+        public String getS() {
+            return s;
+        }
+
+        public void setS(String s) {
+            this.s = s;
+        }
+
+        public Integer getRow() {
+            return row;
+        }
+
+        public void setRow(Integer row) {
+            this.row = row;
+        }
+    }
+    private static List<Word> wordList = new ArrayList<>();
+    private static Map<String,Integer> map = new HashMap<>();
+    private static String prog = "";
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            String line = sc.nextLine();
+            if((line+"").equals("-1")){
+                break;
+            }
+            prog += line;
+            prog += "\n";
+        }
+    }
+
+
+    // add your method here!!
+    /**
+     * 判断是否是数字
+     */
+    public static boolean isDigit(char ch){
+        if(ch>='0'&&ch<='9'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否是字母的函数
+     */
+    public static boolean isLetter(char ch){
+        if((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z')){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    /**
+     * 判断是否由两个运算符组成
+     */
+    public static boolean isTwoOperator(String str, char ch){
+        char lc;
+        int flag=0;
+        if(str.length()>1||str.length()==0){//字符数大于2和无字符的情况
+            return false;
+        }else{//字符数等于2的情况
+            lc=str.charAt(str.length()-1);
+            if(ch=='='&&(lc=='>'||lc=='<'||lc=='='||lc=='!')){
+
+            }else if(ch=='+'&&lc=='+'){
+
+            }else if(ch=='-'&&lc=='-'){
+
+            }else if(ch=='|'&&lc=='|'){
+
+            }else if(ch=='&'&&lc=='&'){
+
+            }else{
+                return false;//否就返回false
+            }
+            return true;//其它符号的情况都返回true
+        }
+    }
+
+
+    /**
+     * 判断是否是注释
+     */
+    public static int isAnnotation(String str){
+        if("//".equals(str))return 1;//单行注释
+        if("/*".equals(str))return 2;//多行注释开头
+        if("*/".equals(str))return 3;//多行注释结尾
+        return 0;
+    }
+
+    /**
+     *
+     * 预处理函数
+     */
+    public static String preFunction(String str){
+        String ts="";
+
+        int i;
+
+        char ch,nc;
+        //这里的i<str.length()-1
+        for(i=0;i<str.length()-1;i++){
+            ch=str.charAt(i);
+            nc=str.charAt(i+1);
+
+            if(ch=='\n'){//如果字符是换行符,将\n换成$
+                ch='$';
+                ts=ts+ch;
+            }else if(ch==' '||ch=='\r'||ch=='\t'){
+                if(nc==' '||nc=='\r'||ch=='\t'){
+                    continue;//连续' '或者'\t'或者'\r'的情况，直接跳过
+                }else{
+                    ch=' ';//一个' '或者'\t'或者'\r'的情况，将这些字符换成' '
+                    ts=ts+ch;
+                }
+            }else{
+                ts=ts+ch;//将字符连起来
+            }
+        }
+        ch=str.charAt(str.length()-1);
+        if(ch!=' '&&ch!='\r'&&ch!='\t'&&ch!='\n'){
+            ts=ts+ch;
+        }
+        return ts;
+    }
+
+
+
+    /**
+     * 将字符串分成一个个单词，存放在数组列表
+     */
+    public static ArrayList<Word> divide(String str){
+        ArrayList<Word> list=new ArrayList<Word>();
+
+        String s="";
+        char ch;
+        int i;
+        int row=1;
+
+        for(i=0;i<str.length();i++){
+            ch=str.charAt(i);
+            if(i==0&&ch==' ')//字符串的第一个字符
+                continue;
+            if(ch==' ' && isAnnotation(s)==0){//' '或者'\t'或者'\r'的情况
+                if(s!=""){
+                    list.add(new Word(s, 0,row));
+                    s="";//置空
+                }else{
+                    continue;
+                }
+            }else if((isDigit(ch)||isLetter(ch)) && isAnnotation(s)==0){
+                if(s==""||isDigit(s.charAt(s.length()-1))||isLetter(s.charAt(s.length()-1))){
+                    s = s + ch;
+                }else{
+                    list.add(new Word(s, 0,row));
+                    s = "";
+                    s=s + ch;
+                }
+            }else{
+                if(isTwoOperator(s, ch)){//两个运算符的情况
+                    s = s + ch;
+                }else{
+                    if(s==""&&ch!='$'){
+                        s = s + ch;
+                    }else if(s==""&&ch=='$'){//若检测到$符号，就换行
+                        row++;//行数加一
+                    }else if(isAnnotation(s)==1){
+                        for(int j=i;j<str.length();j++){
+                            char c = str.charAt(j);
+                            if(c!='$' && j!=str.length()-1){
+                                s+=c;
+                            }else if(j==str.length()-1){
+                                s+=c;
+                                list.add(new Word(s, 79,row));
+                                row++;
+                                s = "";
+                                i=j;
+                            }else{
+                                list.add(new Word(s, 79,row));
+                                row++;
+                                s = "";
+                                i=j;
+                                break;
+                            }
+                        }
+                    }else if(isAnnotation(s)==2){
+                        for(int j=i;j<str.length();j++){
+                            char c = str.charAt(j);
+                            if(c=='$'){
+                                row++;
+                            }
+                            if(!str.substring(j-2,j).equals("*/")){
+                                if(c!='$'){
+                                    s += c;
+                                }
+                                if(j==str.length()-1){
+                                    list.add(new Word(s, 79,row));
+                                    s = "";
+                                    i=j;
+                                    break;
+                                }
+                            }else{
+                                list.add(new Word(s, 79,row));
+                                s = "";
+                                i=j-1;
+                                break;
+                            }
+                        }
+                    } else{
+                        if("/".equals(s)){
+                            s += ch;
+                            continue;
+                        }
+                        list.add(new Word(s, 0, row));
+                        s = "";
+                        if (ch != '$') {
+                            s = s + ch;
+                        } else {
+                            row++;
+                        }
+                    }
+                }
+            }
+        }
+        if(s!=""){
+            list.add(new Word(s, 0,row));
+        }
+        return list;
+    }
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //System.out.println(prog);
+        prog = preFunction(prog);
+//        System.out.println("prog=");
+//        System.out.println(prog);
+//        System.out.println("---------");
+        List<Word> words = divide(prog);
+        for(int i=0;i<words.size();i++){
+            Word word = words.get(i);
+            int id = findWord(word.getS());
+            if(id!=0 && !"%".equals(word.getS())){
+                word = new Word(word.getS(),id,word.getRow());
+                wordList.add(word);
+            }else if(isConstant(word.getS())){
+                word = new Word(word.getS(),80,word.getRow());
+                wordList.add(word);
+            }else if("%".equals(word.getS()) && "\"".equals(words.get(i-1).getS())){
+                i++;
+                String s = "%" + words.get(i).getS();
+                word = new Word(s,81,word.getRow());
+                wordList.add(word);
+            }else {
+                word = new Word(word.getS(),word.getId()==79?79:81,word.getRow());
+                wordList.add(word);
+            }
+        }
+    }
+
+    //如果找到了就返回序号，否则返回0
+    public static int findWord(String s){
+        for(String key:map.keySet()){
+            if((s+"").equals(key)){
+                return map.get(key);
+            }
+        }
+        return 0;
+    }
+
+    //正则匹配常数
+    public static boolean isConstant(String s){
+        if (null==s || "".equals(s)){
+            return false;
+        }
+        String regex = "[0-9]+";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(s);
+        if(m.matches()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        map.put("auto",1);
+        map.put("break",2);
+        map.put("case",3);
+        map.put("char",4);
+        map.put("const",5);
+        map.put("continue",6);
+        map.put("default",7);
+        map.put("do",8);
+        map.put("double",9);
+        map.put("else",10);
+        map.put("enum",11);
+        map.put("extern",12);
+        map.put("float",13);
+        map.put("for",14);
+        map.put("goto",15);
+        map.put("if",16);
+        map.put("int",17);
+        map.put("long",18);
+        map.put("register",19);
+        map.put("return",20);
+        map.put("short",21);
+        map.put("signed",22);
+        map.put("sizeof",23);
+        map.put("static",24);
+        map.put("struct",25);
+        map.put("switch",26);
+        map.put("typedef",27);
+        map.put("union",28);
+        map.put("unsigned",29);
+        map.put("void",30);
+        map.put("volatile",31);
+        map.put("while",32);
+        map.put("-",33);
+        map.put("--",34);
+        map.put("-=",35);
+        map.put("->",36);
+        map.put("!",37);
+        map.put("!=",38);
+        map.put("%",39);
+        map.put("%=",40);
+        map.put("&",41);
+        map.put("&&",42);
+        map.put("&=",43);
+        map.put("(",44);
+        map.put(")",45);
+        map.put("*",46);
+        map.put("*=",47);
+        map.put(",",48);
+        map.put(".",49);
+        map.put("/",50);
+        map.put("/=",51);
+        map.put(":",52);
+        map.put(";",53);
+        map.put("?",54);
+        map.put("[",55);
+        map.put("]",56);
+        map.put("^",57);
+        map.put("^=",58);
+        map.put("{",59);
+        map.put("|",60);
+        map.put("||",61);
+        map.put("|=",62);
+        map.put("}",63);
+        map.put("~",64);
+        map.put("+",65);
+        map.put("++",66);
+        map.put("+=",67);
+        map.put("<",68);
+        map.put("<<",69);
+        map.put("<<=",70);
+        map.put("<=",71);
+        map.put("=",72);
+        map.put("==",73);
+        map.put(">",74);
+        map.put(">=",75);
+        map.put(">>",76);
+        map.put(">>=",77);
+        map.put("\"",78);
+//        map.put("/*注释*/",79);
+//        map.put("//注释",79);
+//        map.put("常数",80);
+//        map.put("标识符",81);
+
+        analysis();
+        for(int i=0;i<wordList.size()-1;i++){
+//            System.out.println("S=" + word.getS() + " | " + "id=" + word.getId()
+//                    + " | " + "row=" + word.getRow());
+            System.out.print((i+1) + ": ");
+            Word word = wordList.get(i);
+            System.out.println("<" + word.getS() + "," + word.getId() + ">");
+        }
+        System.out.print((wordList.size()) + ": ");
+        Word word = wordList.get(wordList.size()-1);
+        System.out.print("<" + word.getS() + "," + word.getId() + ">");
+    }
+}

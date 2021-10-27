@@ -1,0 +1,28 @@
+package Pid_104;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner sc=new Scanner(System.in);
+			String nums[]=sc.nextLine().split(" ");
+		    String arr=sc.nextLine();
+		    int a[]=new int[nums.length];
+		    for(int i=0;i<nums.length;i++){
+		    	a[i]=Integer.valueOf(nums[i]);
+		    }
+		    int b=Integer.valueOf(arr);
+		    int flag=0;
+		    for(int i=0;i<a.length;i++){
+		    	for(int k=i+1;k<a.length;k++){
+		    		for(int l=k+1;l<a.length;l++){
+		    			if(a[i]+a[k]+a[l]<b){
+		    				flag+=1;
+		    			}
+		    		}
+		    	}
+		    }
+		    System.out.print(flag);
+	}
+
+}

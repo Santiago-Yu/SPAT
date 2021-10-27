@@ -1,0 +1,65 @@
+package task6;
+
+public class Box {
+
+    private double width;
+    private double height;
+    private double depth;
+    private int boxType;
+
+    public Box(int boxType) {
+        this.boxType = boxType;
+    }
+
+    /**
+     * 代表长方体
+     */
+    public static final int RECTANGLE = 1;
+
+    /**
+     * 圆柱体
+     */
+    public static final int CYLINDER = 2;
+
+    public double volume() {
+        switch (this.boxType) {
+            case RECTANGLE:
+                return width * height * depth;
+            case CYLINDER:
+                return 3.14 * width * width * height;
+            default:
+                throw new IllegalArgumentException("不支持的几何类型");
+        }
+    }
+    public double getWidth() {
+        return width;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
+    }
+
+    public double getDepth() {
+        return depth;
+    }
+
+    public void setDepth(double depth) {
+        this.depth = depth;
+    }
+
+    public int getBoxType() {
+        return boxType;
+    }
+
+    public void setBoxType(int boxType) {
+        this.boxType = boxType;
+    }
+}

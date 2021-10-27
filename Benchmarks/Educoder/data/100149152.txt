@@ -1,0 +1,56 @@
+package step2;
+
+public class Task {
+    int y,x;
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+        this.y=m;
+        this.x=n;
+        int count=0;
+       for(int x=0;x<this.x;x++)
+           for(int y=0;y<this.y ;y++){
+               if(area[x][y]=='o'){
+                   search(x,y,area);
+                   count++;
+                 
+                      
+                   
+               }
+           }
+		return count;
+		/********* End *********/	
+	}
+    private void search(int x,int y,char[][] area){
+    	if(area[x][y]=='x')
+            return ;
+        area[x][y]='x';
+        if(y+1<this.y&&area[x][y+1]=='o'){
+        	int y_tmp=y+1;
+            int x_tmp=x; 
+            search(x_tmp,y_tmp,area);
+        }
+        
+         if(y-1>=0&&area[x][y-1]=='o'){
+        	int y_tmp=y-1;
+            int x_tmp=x;
+           
+            search(x_tmp,y_tmp,area);
+        }
+        
+         if(x-1>=0&&area[x-1][y]=='o'){
+        	int y_tmp=y;
+            int x_tmp=x-1;
+           
+            search(x_tmp,y_tmp,area);
+        }
+        if(x+1<this.x&&area[x+1][y]=='o'){
+        	int y_tmp=y;
+            int x_tmp=x+1;
+           
+            search(x_tmp,y_tmp,area);
+        }  
+        
+                
+
+    }
+}

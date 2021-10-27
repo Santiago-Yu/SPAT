@@ -1,0 +1,62 @@
+package step2;
+
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+
+public class InterRectangle {
+	private double length;
+	private double width;
+	
+	public double getLength() {
+		return length;
+	}
+
+
+	public void setLength(double length) {
+		this.length = length;
+	}
+
+
+	public double getWidth() {
+		return width;
+	}
+
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+	
+	public double getPerimeter(){
+		double per = 0;
+		per = 2*(this.length+this.width);
+		return per;
+	}
+	
+	public double getArea(){
+		double area = 0;
+		area = this.length*this.width;
+		return area ;
+	}
+	
+	
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		double total=scanner.nextDouble();
+		double area = 0;
+		double per = 0 ;
+		System.out.println("总共有" + total + "块土地");
+		for(int i = 0;i<total;i++){
+			double length=scanner.nextDouble();
+			double width=scanner.nextDouble();
+			InterRectangle ina = new InterRectangle();
+			ina.setLength(length);
+			ina.setWidth(width);
+			area = ina.getArea()+ area ;
+			per = ina.getPerimeter() +per;
+		}
+		System.out.println("土地总面积为:"+area + "平米");
+		System.out.println("土地总周长为:" + per + "米");
+	}
+
+}

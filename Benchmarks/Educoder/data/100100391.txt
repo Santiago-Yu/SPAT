@@ -1,0 +1,41 @@
+package step2;
+
+import java.io.*;
+
+public class CatchException {
+    public static void main(String[] args) {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String str;
+        /********** Begin *********/
+        //补全try/catch块，异常类型为IOException
+        try {
+            str=reader.readLine();
+int number=0;//判断数字
+int space = 0;//判断空格
+int letter = 0;//判断英文
+int other = 0;//判断其他字符
+
+char[] ar= str.toCharArray();
+for(int i= 0;i < ar.length;i++) {
+if(Character.isDigit(ar[i])) {
+//isDigit判断数组中是否有数字
+number++;
+}else if(Character.isSpaceChar(ar[i])) {
+//isSpaceChar判断是否有空格
+space++;
+}else if(Character.isLetter(ar[i])) {
+//isLetter判断是否有字母
+letter++;
+}else{
+other++;
+}
+}
+        
+            System.out.print("letter="+letter+",space="+space+",number="+number+",other="+other);
+        }
+        catch(Exception e) {
+System.out.print("编译失败，请在测试结果中查看具体的错误信息");
+        }
+        /********** End *********/
+    }
+}

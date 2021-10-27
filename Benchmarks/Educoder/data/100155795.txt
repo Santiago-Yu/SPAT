@@ -1,0 +1,20 @@
+package step1;
+
+public class Task {
+	
+		public int search(int n,int[] nums,int T){
+		/********* Begin *********/
+        int start = 0;
+        int end = n - 1;
+        int m = end /2;
+        return recursion(start,end,m,T,nums);	
+		/********* End *********/
+    };
+    public int recursion(int start,int end,int m,int T,int[] nums){
+        if (start > end) return -1;
+        if (nums[m] < T) return recursion(m + 1,end, (m+1 +end)/2 ,T,nums);
+        if (nums[m] > T) return recursion(start ,m-1, (start + m-1)/2 ,T,nums);
+        return m;
+}
+      
+	}

@@ -1,0 +1,31 @@
+package step1;
+
+public class Task {
+	
+	public int search(int n,int[] nums,int T){
+		/********* Begin *********/
+		int low = 0;
+        int high = nums.length - 1;
+        int middle = 0;
+        //定义middle
+        if(T < nums[low] || T > nums[high] || low > high){
+            return -1;
+        }
+        while(low <= high){
+            middle = (low + high) / 2;
+            if(nums[middle] > T){
+                //比关键字大则关键字在左区域
+                high = middle - 1;
+            }else if(nums[middle] < T){
+                //比关键字小则关键字在右区域
+                low = middle + 1;
+            }else{
+                return middle;
+            }
+        }
+        return -1;
+		
+		/********* End *********/
+	}
+	
+}

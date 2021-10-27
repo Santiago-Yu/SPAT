@@ -1,0 +1,17 @@
+package step3;
+public class NarcissisticNumber {
+
+    //判断一个三位数是否是水仙花数
+    public boolean NarcissisticNumber(int n){
+        // 请在此添加实现代码
+        int sum = 0;
+        int origin_n = n;
+        while (n>0) {
+			sum += (n%10) * (n%10) * (n%10);
+            n = n / 10;
+           // System.out.printf("%d %d",n,sum);
+        }
+        if (origin_n == sum) return true;
+        else return false;
+    }
+}

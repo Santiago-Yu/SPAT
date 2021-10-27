@@ -1,0 +1,44 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+        if(num1 > num2){
+        	return -1;
+        }
+        
+        int sum = 0;
+		int x = num1;
+        int y = num2;
+        int length = y - x + 1;
+        int [] arr = new int[length];
+        for(int i = 0; i < length; ++i){
+        	arr[i] = x + i;
+        }
+        int x1 = 0;
+        int x2 = 0;
+        int x3 = 0;
+		for(int j = 0; j < length; ++j){
+            x = arr[j];
+        	x1 = x % 10;
+            x = x / 10;
+            if(x != 0){
+            	x2 = x % 10;
+            	x = x / 10;
+            }else{
+            	x2 = 0;
+            }
+            if(x != 0){
+            	x3 = x % 10;
+            }else{
+            	x3 = 0;
+            }
+            sum +=x1 + x2 + x3;
+        }
+        return sum;
+		
+		/********** END **********/
+	}
+}

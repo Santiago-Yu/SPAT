@@ -1,0 +1,27 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	    public static int gcd(int a, int b) {
+        return b == 0 ? a : gcd( b, a % b);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while (sc.hasNextInt()) {
+            int length = sc.nextInt();    //长
+            int width = sc.nextInt();    //宽
+            /********** BEGIN **********/
+            int j = 0; //正方形边长最大值
+            int k = 0; //正方形个数
+
+            int gcd = gcd(length, width);
+            j = gcd;
+            k = length * width / (gcd * gcd);
+            System.out.println(j);
+            System.out.println(k);
+        }
+        /********** END **********/
+    }
+}

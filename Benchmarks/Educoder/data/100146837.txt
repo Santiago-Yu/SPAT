@@ -1,0 +1,25 @@
+package step1;
+import java.math.BigInteger;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	 int tong[]=new int[10000];
+
+        for(int i=0;i<nums.length;++i){
+            int num=nums[i];
+            tong[num-1]=1;
+        }
+        StringBuilder value=new StringBuilder("");
+        for(int i=0;i<10000;++i){
+            if(tong[i]!=1){
+                value.append((i+1)+"");
+            }
+        }
+        return new BigInteger(value.toString(),10).mod(new BigInteger("11",10)).intValue();
+	
+	}
+
+	/********* End *********/
+}

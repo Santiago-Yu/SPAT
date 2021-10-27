@@ -1,0 +1,56 @@
+package step1;
+
+import java.sql.*;
+
+public class UpdatePass {
+	// 修改数据
+	public static void updateDB() {
+
+		/********* Begin *********/
+
+        Connection conn=null;
+        Statement stmt=null;
+		// 第一步：加载驱动
+        try{
+		Class.forName("com.mysql.jdbc.Driver");
+		
+
+		// 第二步：建立连接, "root"和"123123"是针对MySQL设置了用户名(root)和密码(123123)的情况
+		// 127.0.0.1:3306是mysql服务器地址及端口   数据库编码格式设置为utf-8
+		conn=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/tsgc?characterEncoding=UTF-8","root","123123");
+		
+
+		// 第三步：建立statement对象
+		stmt=conn.createStatement();
+		
+
+		// 第四步：修改数据
+            String str1="update employee set password='hello' where sex='女'";
+			stmt.executeUpdate(str1);
+        }
+        catch(ClassNotFoundException e){
+        e.printStackTrace();
+        }catch(SQLException e){
+        e.printStackTrace();
+        }
+        finally{
+		// 第五步：关闭statement对象和连接对象
+            try{
+            if(stmt!=null){
+                  stmt.close();
+                  stmt=null;
+            }
+        	if(conn!=null){
+                    conn.close();
+		            conn=null;
+            }
+            }catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+		/********* End *********/
+	}
+
+}

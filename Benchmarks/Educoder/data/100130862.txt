@@ -1,0 +1,30 @@
+package step4;
+import java.util.*;
+import java.util.Arrays;
+
+public class Task {
+    
+	/********** BEGIN **********/
+    public void sortArray(int[][] arr){
+		for(int i=arr.length-1;i>=0;i--){
+            int [] temp=new int[arr.length];
+            for(int j=0;j<arr.length;j++){
+                temp[j]=arr[i][j];
+            }
+            Arrays.sort(temp);
+            for(int k=temp.length-1;k>=0;k--){
+                if(k==temp.length-1){
+                      System.out.print("["+temp[k]+", ");
+                }
+                else if(k!=0){
+                      System.out.print(temp[k]+", ");
+                      }
+                      else{
+                        System.out.println(temp[k]+"]");
+                    }
+            }
+        }
+    }
+    /********** END **********/
+}
+	

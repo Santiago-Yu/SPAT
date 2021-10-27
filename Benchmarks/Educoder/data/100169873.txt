@@ -1,0 +1,19 @@
+package step4;
+import java.util.Scanner;
+public class Main{
+    public static void main(String[]args){
+        Scanner cin = new Scanner(System.in);
+        /***Begin your code here***/
+        int n = cin.nextInt();
+        int s = 0;
+        while(n>9){
+            int t = n % 100 / 10;
+            s = s * 10 + t;
+            n = n / 100;
+        }
+        if(0==s%2)System.out.println(s/2);
+        else System.out.println(s/2+" 1");
+        /***End your code here***/
+        cin.close();
+    }
+}

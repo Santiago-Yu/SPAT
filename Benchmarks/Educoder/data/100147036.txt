@@ -1,0 +1,40 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int n, int[] a, int kk, int d){
+    		// dpx[i][j] 在 n 个人的前 j 个人里面，选择 i 个人，并且第 j 个人被选中时的最大值
+    		long[][] dpx = new long[kk + 1][n + 1];
+    		// dpx[i][j] 在 n 个人的前 j 个人里面，选择 i 个人，并且第 j 个人被选中时的最小值
+    		long[][] dpn = new long[kk + 1][n + 1];
+    		for(int i=1; i<=n; i++) {
+    			dpx[1][i] = a[i];
+    			dpn[1][i] = a[i];
+    		}
+    		//选取 k 个人
+    		for(int k=2; k<=kk; k++) {
+    			// 只考虑前 r 个人
+    			for(int r=k; r<=n; r++) {
+    				//left 为选择的人里除了 r 以外的最大序号
+        			for(int left=Math.max(k-1, r-d); left<r; left++) {
+        				long val1 = a[r] * dpx[k - 1][left];
+        				long val2 = a[r] * dpn[k - 1][left];
+        				dpx[k][r] = Math.max(dpx[k][r], val1);
+        				dpx[k][r] = Math.max(dpx[k][r], val2);
+        				dpn[k][r] = Math.min(dpn[k][r], val1);
+        				dpn[k][r] = Math.min(dpn[k][r], val2);
+        			}
+    			}
+    		}
+    		long ans = Long.MIN_VALUE;
+    		for(int i=kk; i<=n; i++) {
+    			if(ans < dpx[kk][i])
+    				ans = dpx[kk][i];
+    		}
+        return ans;
+    }
+
+	/********* End *********/
+}

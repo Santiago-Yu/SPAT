@@ -1,0 +1,27 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+    
+    char a[100],b[100];
+    scanf("%s",a);
+    scanf("%s",b);
+    int est=0;
+    for(int i=0;i<25;i++){
+    	for(int ii=0;ii<25;ii++){
+            int lest=1;
+        	if(a[i]==b[ii]){
+                lest=1;
+            	while(a[i+lest]==b[ii+lest]&&a[i+lest]!=0&&b[ii+lest]!=0){
+                	lest++;
+                }
+            }
+            if(lest>est){
+            	est=lest;
+            }
+        }
+    }
+    printf("%d",est);
+    //cout << "Hello, world!" << endl;
+    return 0;
+}

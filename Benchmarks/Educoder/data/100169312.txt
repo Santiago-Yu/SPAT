@@ -1,0 +1,61 @@
+package step1;
+import java.util.List;
+public class Task {
+
+public static String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuffer s1 = new StringBuffer(s);
+        int lenop = ops.size();
+        Operation tmp;
+        int lens1;
+        for(int i = 0;i < lenop;i++) {
+        	tmp = ops.get(i);
+        	lens1 = s1.length();
+        	if(tmp.t.equals("L")) {
+        		if(p - tmp.l < 0) {
+	        		p = 0;
+        		}
+        		else
+        		    p = p - tmp.l;
+        	}
+        	else if(tmp.t.equals("R")) {
+        		if(p + tmp.l >= lens1) {
+        			p = lens1;
+        		}
+        		else
+        		    p = p + tmp.l;
+        	}
+        	else if(tmp.t.equals("D")) {
+        		if(p + tmp.l >= lens1) {
+        			s1 = s1.delete(p, lens1);
+        		}
+        		else 
+        		    s1 = s1.delete(p, p + tmp.l);
+        		
+        	}
+        	else if(tmp.t.equals("I")) {
+        		s1 = s1.insert(p, tmp.s);
+        		p = p + tmp.s.length();
+        	}
+        	else if(tmp.t.equals("B")) {
+        		if(p - tmp.l < 0) {
+        			s1 = s1.delete(0, p);
+	        		p = 0;
+        		}
+        		else {
+	        		s1 = s1.delete(p - tmp.l, p);
+	        		p = p - tmp.l;
+        		}	
+        	}
+        }
+
+        return s1.toString();	
+        /**********   End  **********/
+    }
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

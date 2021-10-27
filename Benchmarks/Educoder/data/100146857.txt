@@ -1,0 +1,23 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       boolean[] flag = new boolean[10001];
+        for(int i=0;i<nums.length;i++){
+            flag[nums[i]] = true;
+        }
+        String count = "";
+        for(int i=1;i<flag.length;i++){
+            if(!flag[i]){
+                count = count+i;
+            }
+        }
+        long lost = Long.parseLong(count);
+        int result = (int)(lost%11);
+        return result;
+	}
+
+	/********* End *********/
+}

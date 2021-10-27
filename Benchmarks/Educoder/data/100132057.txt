@@ -1,0 +1,119 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+public class BackPack {
+    public static List<String> putThings(int vol, int wei, Map<String, Integer> resMap) {
+        List<String> putResult = new ArrayList<>();
+
+        /********** BEGIN **********/
+      int N[]=new int[7];
+        N[0]=resMap.get("type1");
+        N[1]=resMap.get("type2");
+        N[2]=resMap.get("type3");
+        N[3]=resMap.get("type4");
+        N[4]=resMap.get("type5");
+        N[5]=resMap.get("type6");
+        N[6]=resMap.get("type7");
+        while((N[0]!=0)||(N[1]!=0)||(N[2]!=0)||(N[3]!=0)||(N[4]!=0)||(N[5]!=0)||(N[6]!=0))
+        {
+            int V=vol;
+            int W=wei;
+        	int S=0;
+        	String R="";
+        	for(;N[5]>0&&(V-16)>0;)
+        	{
+        		V=V-16;
+        		W=W-32;
+        		N[5]=N[5]-1;
+        		++S;
+        	}
+        	if(S!=0)
+        	{R=R.concat("type6 ");
+        	R=R.concat(Integer.toString(S));
+        	R=R.concat(" ");
+        	}
+        	S=0;
+        	for(;N[4]>0&&(V-16)>0;)
+        	{
+        		V=V-16;
+        		W=W-16;
+        		N[4]=N[4]-1;
+        		++S;
+        	}
+        	if(S!=0)
+        	{R=R.concat("type5 ");
+        	R=R.concat(Integer.toString(S));
+        	R=R.concat(" ");}
+        	S=0;
+        	for(;N[0]>0&&(V-2)>0;)
+        	{
+        		V=V-2;
+        		W=W-2;
+        		N[0]=N[0]-1;
+        		++S;
+        	}
+        	if(S!=0)
+        	{R=R.concat("type1 ");
+        	R=R.concat(Integer.toString(S));
+        	R=R.concat(" ");}
+        	S=0;
+        	for(;N[6]>0&&(W-64)>0&&(V-16)>0;)
+        	{
+        		V=V-16;
+        		W=W-64;
+        		N[6]=N[6]-1;
+        		++S;
+        	}
+        	if(S!=0)
+        	{R=R.concat("type7 ");
+        	R=R.concat(Integer.toString(S));
+        	R=R.concat(" ");}
+        	S=0;
+        	
+        	for(;N[3]>0&&(W-32)>0&&(V-8)>0;)
+        	{
+        		V=V-8;
+        		W=W-32;
+        		N[3]=N[3]-1;
+        		++S;
+        	}
+        	if(S!=0)
+        	{R=R.concat("type4 ");
+        	R=R.concat(Integer.toString(S));
+        	R=R.concat(" ");}
+        	S=0;
+        	for(;N[2]>0&&(W-16)>0&&(V-4)>0;)
+        	{
+        		V=V-4;
+        		W=W-16;
+        		N[2]=N[2]-1;
+        		++S;
+        	}
+        	if(S!=0)
+        	{R=R.concat("type3 ");
+        	R=R.concat(Integer.toString(S));
+        	R=R.concat(" ");}
+        	S=0;
+        	for(;N[1]>0&&(W-8)>0&&(V-2)>0;)
+        	{
+        		V=V-2;
+        		W=W-8;
+        		N[1]=N[1]-1;
+        		++S;
+        	}
+        	if(S!=0)
+        	{R=R.concat("type2 ");
+        	R=R.concat(Integer.toString(S));
+        	R=R.concat(" ");}
+        	S=0;
+        	putResult.add(R);
+        	R="";
+        	
+        }
+        /*********** END ***********/
+        return putResult;
+    }
+}

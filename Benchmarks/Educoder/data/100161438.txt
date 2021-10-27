@@ -1,0 +1,70 @@
+package step2;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import java.io.*;
+public class Task {
+	/**
+	 * 获取数据并截取所需数据
+	 * @param cityId	城市id（这里使用"1"北京为例）
+	 * @param url	请求路径	
+	 * @return
+	 */
+	public  String getHotelListString(String cityId,String url){
+ HashMap<String, String> params = new HashMap<String, String>();
+   String hotelResult="";
+    try {
+        InputStream is = new FileInputStream(new File("src/step2/hotelResult.txt"));
+        byte[] b=new byte[1024];
+        int len=0;
+        try {
+            while((len=is.read(b))!=-1){
+                String str=new String(b,0,len);
+                hotelResult+=str;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } catch (FileNotFoundException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+    return hotelResult;
+}
+
+	
+	
+	/**
+	 * 使用fastjson解析获取的所需数据
+	 * @param city
+	 * @return
+	 */
+	public List<Hotel> getHotle(String hotelResult){
+	 List<Hotel> hotels = new ArrayList<Hotel>();
+    // 解析酒店数据
+    JSONObject hotelResultObj = JSONObject.parseObject(hotelResult);
+    List<Hotel> pageHotels = JSON.parseArray(hotelResultObj.getString("hotelPositionJSON"), Hotel.class);
+    // 增加价格数据
+    JSONArray hotelsPrice = hotelResultObj.getJSONArray("htllist");
+    if (hotelsPrice != null && !hotelsPrice.isEmpty()) {
+        for (int j = 0; j < pageHotels.size(); j++) {
+            JSONObject priceObj = hotelsPrice.getJSONObject(j);
+            if (priceObj != null && !priceObj.isEmpty()) {
+                Hotel hotel = pageHotels.get(j);
+                String hotelId = priceObj.getString("hotelid");
+                double price = priceObj.getDoubleValue("amount");
+                if (hotel.getId().equals(hotelId)) {
+                    hotel.setPrice(price);
+                }
+            }
+        }
+    }
+    hotels.addAll(pageHotels);
+    return hotels;
+	}
+    
+}
+

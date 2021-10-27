@@ -1,0 +1,40 @@
+package step4;
+
+import java.util.Scanner;
+
+public class ForPractice4{
+	public static void main(String[] args){
+      Scanner input = new Scanner(System.in);
+        System.out.println("欢迎使用中国人民银行ATM取款机");
+        System.out.println("输入取款金额：");
+        int i = input.nextInt();
+        int n = 1000;
+        n = n-i;
+        System.out.println("剩余金额："+n+"，是否继续（'1'：结束，'2'：继续）：");
+        int x = input.nextInt();      
+        for(x=1;x<=4;x++)
+        {                    
+              if (x>1)
+            {
+                System.out.println("输入取款金额：");
+                 i = input.nextInt();                                   
+                  if(i>n)
+                  {                    
+                    System.out.println("目前余额："+n+"无法满足您的取款需求！"); 
+                      continue;
+                  }
+                  if(i<=n)
+                  {                                  
+                     n=n-i;
+                     System.out.println("剩余金额："+n+"，是否继续（'1'：结束，'2'：继续）：");
+                      x = input.nextInt();
+                  }
+                      if(x<=1)
+                      {
+                          System.out.println("取款结束！");
+                           break;
+                      }                                                
+               }
+         }                        						
+	}
+}

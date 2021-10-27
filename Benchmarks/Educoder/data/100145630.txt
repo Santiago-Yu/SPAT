@@ -1,0 +1,27 @@
+package step4;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+  		Calendar c =Calendar.getInstance();
+        String[] s=releaseDate.split("-");
+        int y=Integer.parseInt(s[0]);
+        int m=Integer.parseInt(s[1]);
+        int d=Integer.parseInt(s[2]);
+        c.set(Calendar.YEAR, y); 
+        c.set(Calendar.MONTH, m-1); 
+        c.set(Calendar.DAY_OF_MONTH, d); 
+		c.add(Calendar.DATE, day); 
+        Date date=c.getTime();
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd"); 
+		String result =df.format(date);
+        return result;
+        /********* End *********/
+	}
+	
+	
+}
+

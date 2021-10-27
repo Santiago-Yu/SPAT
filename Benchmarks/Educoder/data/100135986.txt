@@ -1,0 +1,75 @@
+package case1;
+
+import java.util.Scanner;
+
+public class Task1 {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		String dogName = sc.next();
+	
+		String dogSex = sc.next();
+		
+		String dogColor = sc.next();
+		
+		String catName = sc.next();
+		
+		
+		String catSex = sc.next();
+		
+		double catWeight = sc.nextDouble();
+           Dog dog=new Dog(dogName,dogSex,dogColor);
+           dog.talk();
+           dog.eat();
+           Cat cat=new Cat(catName,catSex,catWeight);
+           cat.talk();
+           cat.eat();
+	}
+
+}
+ abstract class pet {
+	 String  name;
+	 String sex;
+	pet(String name ,String sex)
+	{ this.name=name; this.sex=name; }
+	void talk()
+	{}
+	void eat()
+	{}
+}
+class Dog extends pet{
+	 String color;
+	Dog(String name, String sex,String color) {
+		super(name, sex);
+		this.color=color;
+		System.out.print("名称："+name+"，性别："+sex+"，颜色："+color);
+		
+		}
+	     void talk()
+		{System.out.println("，汪汪叫");}
+		 void eat()
+		{   
+			 System.out.println(name+"吃骨头！");}
+	  
+	}
+	
+	class Cat extends pet{
+		double weight;
+		Cat(String name, String sex,double catWeight) {
+			super(name, sex);
+			this.weight=catWeight;
+			System.out.print("名称："+name+"，性别："+sex+"，体重："+catWeight+"kg，");
+			// TODO Auto-generated constructor stub
+		}
+		
+		
+		void talk()
+		{System.out.println("喵喵叫");}
+		void eat()
+		{ 
+		  
+			System.out.println(name+"吃鱼！");}
+	
+	
+}

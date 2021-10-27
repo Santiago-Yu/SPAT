@@ -1,0 +1,39 @@
+package step1;
+
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    	
+		int temp[] = new int[10000];
+		int lost[] = new int[3], t=0;
+        lost[0] = lost[1] = lost[2] = -1;
+		for( int i=0; i<temp.length; i++) {
+			int j = 0;
+			while(j<nums.length) {
+				if(nums[j++] == i+1) {
+					temp[i] = i+1;
+					break;
+				}
+			}
+			if(temp[i]!=i+1) lost[t++] = i+1;
+		}
+        
+        for( int i=0; i<lost.length-1; i++) {
+			for( int j=i+1; j<lost.length-i; j++) {
+				if(lost[i]>lost[j]) {
+					int tv = lost[i];
+					lost[i] = lost[j];
+					lost[j] = tv;
+				}
+			}
+		}
+		//返回余数
+		long sum = Long.parseLong(lost[0]+""+lost[1]+""+lost[2]);
+		return (int)(sum%11);
+	}
+
+	/********* End *********/
+}
+

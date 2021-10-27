@@ -1,0 +1,59 @@
+package step1;
+
+public class Task {
+
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+        int num = 0;
+        boolean flag1 = true;
+        boolean flag2 = true;
+		while(flag1 || flag2){
+            flag1 = sortLeft(arr);
+            flag2 = sortRight(arr);
+            num++;
+        }
+        if((num-1) == 0){
+            printArr(arr);
+        }
+        
+		
+		/********* End *********/
+	}
+    
+    public boolean sortLeft(Integer[] arr){
+    	Integer temp;
+        boolean flag = false;
+        for(int i=0; i<arr.length-1; i++){
+            if(arr[i]>arr[i+1]){
+             	temp = arr[i+1];   
+                arr[i+1] = arr[i];
+                arr[i] = temp;
+                printArr(arr);
+                flag = true;
+            }
+        }
+        return flag;
+    }
+    
+    public boolean sortRight(Integer[] arr){
+    	Integer temp;
+        boolean flag = false;
+        for(int i=arr.length-1; i>0; i--){
+            if(arr[i]<arr[i-1]){
+             	temp = arr[i-1];   
+                arr[i-1] = arr[i];
+                arr[i] = temp;
+                printArr(arr);
+                flag = true;
+            }
+        }
+        return flag;
+    }
+    
+    public void printArr(Integer[] arr){
+        for(int i=0; i<arr.length; i++){
+            System.out.print(arr[i]+" ");
+        }
+        System.out.println();
+    }
+}

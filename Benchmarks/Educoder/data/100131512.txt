@@ -1,0 +1,44 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	static int a = 0;
+		public static void showDirStructure(File file)	{
+				int FileCount = 0;
+				String FilePath = file.getParent();
+				for(int i=0;i<FilePath.length();i++) {
+					if(FilePath.charAt(i)=='/') {
+						FileCount++;
+					}
+				}
+				
+				FileCount --;
+				char[] KongGe = new char[FileCount *2];
+				for(int i = 0;i<KongGe.length;i++) {
+					KongGe[i] = ' ';
+				}
+				String Kg = new String(KongGe);
+			
+			if(a==0) {
+		    String root = Kg + "+--" + file.getName();
+            System.out.println(root);	
+			a++;
+			}
+				
+			File[] fs = file.listFiles();
+			String [] s = file.list();
+			for(int i=0;i<fs.length;i++) {
+				if(fs[i].isDirectory()) {
+					System.out.println(Kg+"  "+"+--"+s[i]);
+					showDirStructure(fs[i]);
+				}
+				if(fs[i].isFile()) {
+					System.out.println(Kg+"  "+"--"+s[i]);
+				}
+			}
+		}
+	/********** END **********/
+}

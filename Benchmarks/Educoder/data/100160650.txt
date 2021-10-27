@@ -1,0 +1,81 @@
+package step3;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+		/**********   Begin   **********/
+              File file = new File(filePath);
+		Document doc= Jsoup.parse(file,"UTF-8","http://hotels.ctrip.com");
+
+        
+		return doc;
+		/**********   End   **********/
+	}
+
+	//获取所有链接
+	public List<String> getLinks(Document doc){
+		/**********   Begin   **********/
+        Element link = doc.select("a").first();
+        Elements w = doc.select("a[href]");
+        List<String> list = new ArrayList<String>();//创建集合
+        for(Element element: w){
+            String wb = element.text();//获取链接文本
+            String lianjie= element.attr("abs:href");//获取链接
+            String  bqm = element.tagName();//获取标签名
+            String shuchu = "a$"+lianjie+ "("+wb+")";//规范输出格式
+            list.add(shuchu);//往集合添加元素
+
+        }
+        return list;
+      
+ 
+        
+		/**********   End   **********/
+	}
+	
+	//获取图片
+	public List<String> getMedia(Document doc){
+		List<String> a =new ArrayList<String>();
+		Elements tagimg =doc.select("img");
+		for(Element e : tagimg){
+		String bqm = e.tagName();
+		String lianjie = e.attr("abs:src");
+        String shuchu = bqm+"$"+lianjie;
+		a.add(shuchu);
+		}
+		/**********   Begin   **********/
+		
+		
+
+		return a;
+		/**********   End   **********/
+	}
+	
+	//获取link[href]链接
+	public List<String> getImports(Document doc){
+		List<String> as =new ArrayList<String>();
+			Elements Links = doc.select("link");
+			for(Element e : Links){
+				String bqm = e.tagName();
+				String lianjie = e.attr("rel");
+				String href = e.attr("abs:href");
+				String shuchu = bqm +"$"+href+"("+lianjie+")";
+				as.add(shuchu);
+			}
+		
+		/**********   Begin   **********/
+        
+		
+		/**********   End   **********/
+
+	   return as;
+	}
+}

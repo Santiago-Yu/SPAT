@@ -1,0 +1,26 @@
+package step4;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		Date datetime=new Date();
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            datetime=df.parse(releaseDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long update=datetime.getTime()+day*24*60*60*1000L;
+        return  df.format(new Date(update));
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,44 @@
+package step1;
+
+class MyThread extends Thread {
+	/********* Begin *********/
+	MyThread() {    
+	      start(); 
+	   }
+	
+	String threadName;
+	
+	public void run() {	
+		int count = 5;
+			while(count > 0){			
+				System.out.println("Java Thread" + this.threadName);
+				count--;	
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {					
+					e.printStackTrace();
+				}
+			}		
+	}
+
+	/********* End *********/
+}
+
+public class Task {
+	public static void main(String[] args) throws Exception {
+		/********* Begin *********/	
+		MyThread t = new MyThread();
+		t.threadName = "CC";	
+		try {
+			int count = 5;
+			while(count > 0) {				
+			    System.out.println("Java Thread" + "AA");
+				System.out.println("Java Thread" + "BB");
+				count--;
+				Thread.sleep(50);
+				}			
+			}catch (Exception e) {
+		         System.out.println(e.toString());
+		    }
+	}
+}

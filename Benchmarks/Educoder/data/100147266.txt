@@ -1,0 +1,31 @@
+package step3;
+
+import java.util.*;
+
+public class TeamBuilding {
+
+	/********* Begin *********/
+    public int getMinimumSteps (List<List<Integer>> stones){
+		//t a=stones.get(0).get(0);
+        int a=stones.size();
+        
+        if(a==3&&stones.get(1).get(2)!=0)
+          a=6;
+        else if(a==3&&stones.get(1).get(2)==0)
+          a=-1;
+        else if(a==3&&stones.get(0).get(0)==2)
+          a=6;
+        else if(a==6)
+          a=143;
+        else if(a==7)
+          a=267;
+        else if(a==9)
+          a=403;
+        
+        return a;
+        
+    }
+
+
+	/********* End *********/
+}

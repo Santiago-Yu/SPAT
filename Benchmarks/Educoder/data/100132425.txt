@@ -1,0 +1,52 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		
+		int j = get_gcd(length,width);
+        int k=length*width/j/j;
+        
+		
+		System.out.println(j);
+        System.out.println(k);
+		
+		
+		
+		/********** END **********/
+	}
+    
+    public static int get_gcd(int n1, int n2) {
+        int gcd = 0;
+        if (n1 < n2) {// 交换n1、n2的值
+            n1 = n1 + n2;
+            n2 = n1 - n2;
+            n1 = n1 - n2;
+        }
+
+        if (n1 % n2 == 0) {
+            gcd = n2;
+        }
+
+        while (n1 % n2 > 0) {
+            n1 = n1 % n2;
+
+            if (n1 < n2) {
+                n1 = n1 + n2;
+                n2 = n1 - n2;
+                n1 = n1 - n2;
+            }
+
+            if (n1 % n2 == 0) {
+                gcd = n2;
+            }
+        }
+        return gcd;
+
+    }
+}

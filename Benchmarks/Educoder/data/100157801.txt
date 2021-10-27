@@ -1,0 +1,41 @@
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+		Scanner in = new Scanner(System.in);
+		
+		if(in.hasNextLine()){
+			int n = in.nextInt();
+			int timeOut = 20;
+			boolean timeIsOut = false;
+			int counter = 0;
+			
+			while(n != 1){
+				//set counter for timeOut
+				if(counter > timeOut){
+					timeIsOut = true;
+					break;
+				}
+				
+				
+				int temp = n;
+				n=0;
+				
+				while(temp!=0){
+					n += (temp%10)*(temp%10);
+					temp /=10;
+				}
+				
+				counter++;
+			}
+			
+			if(timeIsOut == true)
+				System.out.print("NO");
+			else
+				System.out.print("YES");
+		}
+	}
+
+}

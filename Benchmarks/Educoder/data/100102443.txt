@@ -1,0 +1,23 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+        /********** Begin *********/
+        if(file.exists()){//先判断文件是否存在
+            if(files!=null && files.length>0){//判断是否文件下为空
+                for (int i = 0; i < files.length; i++) {//对文件进行遍历
+                    if(files[i].exists()&&files[i].isDirectory())
+                        recursiveSearch(files[i]);
+                   else if (files[i].getName().contains("Search")) {
+        System.out.println(files[i]);
+                    }
+                }
+            }
+
+        }
+  }
+}

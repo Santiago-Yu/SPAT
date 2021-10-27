@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+int main()
+{
+int k;
+	scanf("%d",&k);
+    int max=0;
+    for(int fen=2;fen<=k;fen++){
+    	int yu,mei;
+        mei=k/fen;
+        yu=k%fen;
+        int may=1;
+        for(int iqqq=0;iqqq<fen-1;iqqq++){
+        	may=may*mei;
+        }
+        int may1;
+        may1=may*mei*yu;
+        may*=mei+yu;
+        if(may1>may){
+        	may=may1;
+        }
+        if(may>max){
+        	max=may;
+        }
+    }
+    printf("%d",max);
+    //cout << "Hello, world!" << endl;
+    return 0;
+}

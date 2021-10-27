@@ -1,0 +1,30 @@
+package Q102;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int cnt1 = 0,cnt2 = 0;
+		int n;
+		int flag = 1;
+		while(sc.hasNext()){
+			n = sc.nextInt();
+			if(n == 5)cnt1++;
+			else if(n == 10){
+				if(cnt1==0)flag = 0;
+				else {
+					cnt2++;cnt1--;
+				}
+			}else if(n == 20){
+				if(cnt1>=1&&cnt2>=1){
+					cnt1--;cnt2--;
+				}else if(cnt1>=3){
+					cnt1-=3;
+				}else flag = 0;
+			}
+		}
+		if(flag==1)System.out.print("true");
+		else System.out.print("false");
+	}
+
+}

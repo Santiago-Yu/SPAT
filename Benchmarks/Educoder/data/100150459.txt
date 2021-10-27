@@ -1,0 +1,22 @@
+package step3;
+import java.util.Random;
+import java.util.Scanner;
+import java.text.DecimalFormat;
+public class SumOfDigit {
+	public static void main(String[] args) {
+		/******Begin******/
+		Scanner input=new Scanner(System.in);
+	        System.out.println("请输入一个五位数字：");
+	        int num=input.nextInt();
+	        	int a,b,c,d,e;
+	        	a=num/10000;
+	        	b=num/1000-a*10;	
+	        	c=num/100-a*100-b*10;
+	        	d=num/10-a*1000-b*100-c*10;
+	        	e=num-a*10000-b*1000-c*100-d*10;
+	       int sum=0;
+	        sum=a+b+c+d+e;
+	        System.out.println("85698的各位数字之和是："+sum);
+		/******End******/
+	}
+}

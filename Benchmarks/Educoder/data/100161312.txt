@@ -1,0 +1,38 @@
+package step1;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
+public class Task {
+    
+    //通过filePath文件路径获取Docment对象
+	public Document getDoc(String filePath) throws IOException{
+         File input = new File(filePath);
+		// File file=new File("./backups/hotels.ctrip.com_domestic-city-hotel.txt");
+       Document document =Jsoup.parse(input,"UTF-8","http://www.ctrip.com/");
+    
+       return document ;
+	}
+
+	/**
+	 * 获取清理后的信息
+	 * @param doc
+	 * @return
+	 */
+	public List<String> cleanHTML(Document doc){
+         List<String> aa=new ArrayList<>();
+        String bb =Jsoup.clean(doc.toString() ,Whitelist.basic());
+        String cc =Jsoup.clean(doc.toString() ,Whitelist.simpleText());
+        
+        aa.add(bb);
+        aa.add(cc);
+        
+       
+        
+
+		return aa;
+	}
+}

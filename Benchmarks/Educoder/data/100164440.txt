@@ -1,0 +1,45 @@
+package step1;
+import java.util.*;
+public class Equation_Test {
+  public static void main(String[] agrs){
+     double a,b,c; //方程的三个系数
+    /**********begin******/
+
+      double delat;
+      double r,r1,r2;
+      Scanner scanner=new Scanner(System.in);
+        
+        if(scanner.hasNextDouble()){
+            a=scanner.nextDouble();
+            b=scanner.nextDouble();
+            c=scanner.nextDouble();
+            delat=b*b-4*a*c;
+        
+        	if(a==0||delat<0)
+                
+                System.out.println("无实根");
+            
+            else if(delat==0){
+                
+                r=-b/(2*a);
+                
+                System.out.printf("X1=%4.2f\n",r);
+                System.out.printf("X2=%4.2f",r);
+            }
+            
+            else if(delat>0){
+                
+                r1=(-b+Math.sqrt(delat))/(2*a);
+                r2=(-b-Math.sqrt(delat))/(2*a);
+                System.out.printf("X1=%4.2f\n",r1);
+                System.out.printf("X2=%4.2f",r2);
+            }
+        }
+
+  
+  
+  
+    /**********end*****/
+  }
+  	
+}

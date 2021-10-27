@@ -1,0 +1,65 @@
+package step1;
+
+public class Task {
+	
+	public static void sort(Integer[] arr) {
+		
+		int len = arr.length;
+		//如果是升序数组，直接输出
+		if(isOK(arr)) {
+			print(arr);
+		}
+		while(!isOK(arr)) {
+			for(int i=0; i < len-1; i++) {
+				if(arr[i] > arr[i+1]) {
+					int temp = arr[i];
+					arr[i] = arr[i+1];
+					arr[i+1] = temp;
+					print(arr);
+				}
+				//每一次调换，就判断是不是升序数组
+				if(isOK(arr)) {
+					break;
+				}
+			}
+			
+			for(int i=len-1; i > 0; i--) {
+				if(arr[i] < arr[i-1]) {
+					int temp = arr[i];
+					arr[i] = arr[i-1];
+					arr[i-1] = temp;
+					print(arr);
+				}
+				//每一次调换，就判断是不是升序数组
+				if(isOK(arr)) {
+					break;
+				}
+			}
+		}
+
+	}
+	
+	public static boolean isOK(Integer[] arr) {
+		
+		boolean flag = true;
+		int len = arr.length;
+		for(int i=0; i < len-1; i++) {
+			if(arr[i] > arr[i+1]) {
+				flag = false;
+				break;
+			}
+		}
+		return flag;
+	}
+	
+	public static void print(Integer[] arr) {
+		
+		int len = arr.length;
+		StringBuilder string = new StringBuilder();
+		for(int i=0; i<len; i++) {
+			string.append(arr[i]);
+			string.append(" ");
+		}
+		System.out.println(string);
+	}
+}

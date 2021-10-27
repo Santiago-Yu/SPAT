@@ -1,0 +1,67 @@
+package jdbc;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class jdbcInsert {
+    public static void insert(){
+		/**********   Begin  **********/
+        try {
+            //加载驱动
+			Class.forName("com.mysql.jdbc.Driver" );
+
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+
+
+
+		Connection conn = null;
+		PreparedStatement statement = null;
+		/**********   Begin  **********/
+        //连接并插入数据
+		try{
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/mysql_db", "root", "123123");
+			statement = conn.prepareStatement("insert into student values(?,?,?,?)");
+            statement.setInt(1,1);
+			statement.setString(2, "张三");
+            statement.setString(3, "男");
+            statement.setInt(4,19);
+			statement.executeUpdate();
+            statement.setInt(1,2);
+			statement.setString(2, "李四");
+            statement.setString(3, "女");
+            statement.setInt(4,18);
+			statement.executeUpdate();
+            statement.setInt(1,3);
+			statement.setString(2, "王五");
+            statement.setString(3, "男");
+            statement.setInt(4,20);
+			statement.executeUpdate();
+			statement = conn.prepareStatement("select * from student");
+			ResultSet resultSet = statement.executeQuery();//将执行结果给ResultSet
+			while (resultSet.next()) {//循环判断表中是否还有数据
+    			System.out.print(resultSet.getInt(1)+" ");
+                System.out.print(resultSet.getString(2)+" ");
+                System.out.print(resultSet.getString(3)+" ");
+                System.out.println(resultSet.getInt(4));
+			}
+		} catch (SQLException e) {
+            e.printStackTrace();
+        }
+		/**********   End   **********/
+		finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

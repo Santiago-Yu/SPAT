@@ -1,0 +1,29 @@
+package step2;
+
+import java.io.*;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		BufferedReader bf = new BufferedReader(new FileReader("src/step2/input/task.txt"));
+		String str = bf.readLine();
+		System.out.println(str);
+        
+        File file  = new File("src/step2/output/");
+        file.mkdirs();
+       	File file1  = new File("src/step2/output/output.txt");
+        
+        if (!file1.exists()) {// 如果文件不存在，则创建该文件
+            file1.createNewFile();
+        }
+        String writerContent = "learning practice";
+        FileWriter writer = new FileWriter(file1);// 获取该文件的输出流
+        writer.write(writerContent);// 写内容
+        writer.flush();// 清空缓冲区，立即将输出流里的内容写到文件里
+        writer.close();// 关闭输出流，施放资源
+        
+		/********* End *********/
+	}
+	
+}

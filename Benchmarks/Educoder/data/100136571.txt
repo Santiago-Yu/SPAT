@@ -1,0 +1,44 @@
+mod.sctRowCount(0); 
+//清空表格原有的数据
+//查询并显示当前xs表的数据
+rs= stmt.executeQuery（"select * from xs");
+while(rs.next（）){
+Object[] data = {rs.getInt("id"), rs.getString("name"),rs.getString（"profession")};
+mod,addRow(data); //添加显示新记录
+}
+} catch(SQLException e){
+e.printStackTrace();
+} finally
+try {
+If(rs != null){
+rs.close();  //关闭ResultSet 对象
+rs = null;
+}
+} catch(SQLException e) {
+e.printStackTrace();
+}
+}
+}
+public static void main(String[] args){  StuTabForm that=new StuTabForm();
+that.go();  // 初始化界面
+preview();  /I 数据预览
+}
+class ButtonH implements ActionListener {  //按钮事件监听器ButtonH实现ActionListener
+int sel;
+ButtonH(int select){
+sel = select;
+}
+public void actionPerformed(ActionEvent e){
+if(sel==1){  //当单击了“插入”按钮时
+try {
+String sql = "insert into xs values(" +  tfld.getText()+","+tfName gtText（）+","+ tfPro.gtText()+")";
+stmt.executeUpdate(sql);
+preview();}
+catch(SQLExeption el){
+el.printStackTrace();
+}
+}
+
+if(sel==2){ //当单击了“更新”按钮时
+try{  String sql= “update xs set  profession ="‘+tfPro.getText() +”,name =where id="+ tfld.geText();
+    

@@ -1,0 +1,49 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] k){
+		/********* Begin *********/
+		int s = 0;
+		int h = 0;
+        boolean flag = false;
+		for(int i = 1; i < k.length; i ++) {
+			for( int j = 0; j < k.length-i; j ++) {
+				if(k[j]>k[j+1]) {
+                    flag=true;
+					s = k[j];
+					k[j] = k[j+1];
+					k[j+1] = s;
+					//数组发生变化，输出
+					for(int p = 0; p < k.length; p ++) {
+						System.out.print(k[p]+" ");
+					}
+					System.out.println();
+				}
+				
+			}
+			
+			
+			for(h = k.length - i - 1; h >=1; h-- ) {
+				if(h >= 1 && k[h] < k[h-1]) {
+                    flag = true;
+					s = k[h];
+					k[h] = k[h-1];
+					k[h-1] = s;
+					
+					for(int p = 0; p < k.length; p ++) {
+						System.out.print(k[p]+" ");
+					}
+					System.out.println();
+				}
+			}
+        }
+		if( !flag ) {
+			for(int p = 0; p < k.length; p ++) {
+				System.out.print(k[p]+" ");
+			}
+			System.out.println();
+		}
+		/********* End *********/
+	}
+}

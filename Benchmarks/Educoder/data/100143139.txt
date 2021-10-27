@@ -1,0 +1,32 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		FileInputStream fis=new FileInputStream("src/step4/input/input.txt");
+        FileOutputStream fos=new FileOutputStream("src/step4/output/output.txt");
+        byte[]a=new byte[1024];
+        int len=0;
+        while((len=fis.read(a))!=-1){
+            fos.write(a,0,len);
+        }
+        fis=new FileInputStream("src/step4/input/input.jpg");
+        fos=new FileOutputStream("src/step4/output/output.jpg");
+        byte[]b=new byte[1024];
+        int len2=0;
+        while((len2=fis.read(b))!=-1){
+            fos.write(b,0,len2);
+        }
+		
+		
+		/********* End *********/		
+	}
+}

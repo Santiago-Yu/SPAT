@@ -1,0 +1,62 @@
+package step1;
+
+public class Task {
+	
+	public void sort(Integer[] arr){
+		int temp = 0;
+		boolean flag = false;
+		for (int m = 0; m < arr.length-1; m ++) {
+			if (arr[m]> arr[m+1]) {
+				flag = false;
+				break;
+			}else{
+				flag = true;
+			}
+		}
+		if (flag == true) {
+			for (int m : arr) {
+				System.out.print(m+" ");					
+			}
+			System.out.println();
+		}
+		
+		for (int i = 0; i < arr.length-1; i++) {
+		//	System.out.println("从左到右");			
+			for(int j = 0; j < arr.length-i-2; j++){
+				do {
+					if (arr[j] > arr[j+1]) {
+						temp = arr[j+1];
+						arr[j+1] = arr[j];
+						arr[j] = temp;
+						for (int m : arr) {
+							System.out.print(m+" ");					
+						}
+						System.out.println();
+					} else {
+						j++;
+
+					}					
+				} while ((arr[j] >arr[j+1]) || j == arr.length-1);			
+				
+			}
+		//	System.out.println("从右到左");
+			for(int k = arr.length-i-1; k > 1; k--){
+				do {
+					if (arr[k] < arr[k-1]) {
+						temp = arr[k-1];
+						arr[k-1] = arr[k];
+						arr[k] = temp;
+						for (int m : arr) {
+							System.out.print(m+" ");					
+						}
+						System.out.println();
+					} else {
+						k--;						
+					}					
+				} while ((arr[k] < arr[k-1]) || k == 2);								
+				
+			}
+
+		}
+    }
+}

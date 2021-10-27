@@ -1,0 +1,33 @@
+package step1;
+
+	import java.util.Scanner;
+public class AreaOfRec {
+    private int length;
+	private int width;
+    public void setLength(int length){
+		this.length=length;
+	}
+	public void setWidth(int width){
+		this.width=width;
+	}
+	public AreaOfRec() {
+		
+	}
+    public int area(){
+    	return length*width;
+    }
+    public static void main(String[] args) {
+		/******Begin******/
+    	AreaOfRec rec = new AreaOfRec();
+    	Scanner sc = new Scanner(System.in);
+    	System.out.println("请输入长方形的长：");
+    	int inputlength = sc.nextInt();
+    	System.out.println("请输入长方形的宽：");
+    	int inputwidth = sc.nextInt();
+    	rec.setLength(inputlength);
+    	rec.setWidth(inputwidth);
+    	System.out.println("长方形的面积是："+rec.area());
+		/******End******/
+	}
+
+}	

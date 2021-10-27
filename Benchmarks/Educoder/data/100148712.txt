@@ -1,0 +1,64 @@
+package step1;
+import java.util.Arrays;
+public class Task {
+	
+	public void sort(Integer[] arr){
+boolean sorted1 = true;
+		boolean sorted2 = true;
+		int len = arr.length;
+		for(int j=0; j<len / 2; j++){ //趟数
+			sorted1 = true; //假定有序
+			sorted2 = true; 
+			for(int i=0; i<len - 1; i++){ //次数
+				if(arr[i] > arr[i+1]){
+					int temp = arr[i];
+					arr[i] = arr[i+1];
+					arr[i+1] = temp;
+					sorted1 = false; //假定失败
+					String result =  Arrays.toString(arr);
+					result = result.substring(1, result.length());
+					result = result.substring(0, result.length()-1);
+					result = result.replaceAll(",", "");
+                    StringBuffer sb = new StringBuffer(result);
+					sb.append(' ');
+					System.out.println(sb);
+					
+				}
+			}
+//			System.out.println(sorted1+""+sorted2);
+			for(int i=len-1; i>0; i--){ //次数
+				if(arr[i] < arr[i-1]){
+					int temp = arr[i];
+					arr[i] = arr[i-1];
+					arr[i-1] = temp;
+					sorted2 =false; //假定失败
+					
+					String result =  Arrays.toString(arr);
+					result = result.substring(1, result.length());
+					result = result.substring(0, result.length()-1);
+					result = result.replaceAll(",", "");
+					StringBuffer sb = new StringBuffer(result);
+					sb.append(' ');
+					System.out.println(sb);
+				}
+			}
+			if(j == 0 && sorted1 == true &&  sorted2 == true ) {
+				String result =  Arrays.toString(arr);
+				result = result.substring(1, result.length());
+				result = result.substring(0, result.length()-1);
+				result = result.replaceAll(",", "");
+				
+				StringBuffer sb = new StringBuffer(result);
+				sb.append(' ');
+				System.out.println(sb);
+				return;
+			}
+//			System.out.println(sorted1+""+sorted2);
+			if(sorted1 == true &&  sorted2 == true){ //减少趟数，已有序则结束
+				break ;
+			}
+		}
+		
+		/********* End *********/
+	}
+}

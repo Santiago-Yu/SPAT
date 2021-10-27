@@ -1,0 +1,52 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+	public void showDirStructure(File file)	{
+        int space=2;
+        if(file.isDirectory())
+            System.out.println("+--"+file.getName());
+        digui(file,space);
+	}
+    public static void digui(File file,int space){
+        
+        File [] files=file.listFiles();
+        
+        for(int i=0;i<files.length;i++)
+        {
+            if(!files[i].isDirectory())
+            {
+                String f=files[i].getName().toLowerCase();
+                if(f.endsWith(".jpg")||f.endsWith(".png")||f.endsWith(".bmp"))
+                {
+                for(int j=0;j<space;j++)
+                {
+                    System.out.print(" ");
+                }
+                
+                System.out.println("--"+files[i].getName());
+                }
+            }
+            else 
+            {
+                for(int k=0;k<space;k++)
+                {
+                    System.out.print(" ");
+                }
+                
+                System.out.println("+--"+files[i].getName());
+                
+                digui(files[i],space+2);
+                
+            }
+        }
+    }
+	
+
+
+	/********** End **********/
+}

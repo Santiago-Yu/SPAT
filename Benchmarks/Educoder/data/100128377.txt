@@ -1,0 +1,49 @@
+package step2;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateExceptionTest {
+
+	public static void main(String[] args) {
+		/*****Begin*****/
+		DateException de;
+		Date newdate;
+		Scanner s=new Scanner(System.in);
+		int year,month,day;
+		try{
+			
+			year=s.nextInt();
+			month=s.nextInt();
+			day=s.nextInt();
+			
+			de=new DateException(year,month,day);
+			newdate=de.getDate();
+			
+			//System.out.println(newdate);
+			
+			SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-mm-dd");
+			System.out.println(sdf1.format(newdate)); //格式化输出
+		}		
+		catch(InputMismatchException e){ //处理Scanner对象接收到非整形数据处理
+			System.out.println(e.toString()+":请输入整数");
+		}
+		catch(DateException e){
+			System.out.println(e.toString());
+		}
+		catch(ParseException e){
+			System.out.println(e.toString()+":数据错误，无法转换成日期");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
+}
+		
+		/******End******/
+

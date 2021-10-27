@@ -1,0 +1,21 @@
+package step2;
+import java.util.Scanner;
+public class Task {
+
+	public static int getNum(int n){
+		/********* Begin *********/
+		if (n==0) return 0;
+        else if(n==1) return 1;
+        else if(n%2==1) return 1+getNum((n-1)/2);
+        else if(n%2==0) return getNum(n/2);
+        else return 0;
+    }
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int s = sc.nextInt();
+        int temp=getNum(s);
+        System.out.println(temp);
+		/********* End *********/
+	}
+	
+}

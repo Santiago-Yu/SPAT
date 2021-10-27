@@ -1,0 +1,418 @@
+import java.util.*;
+
+public class Java_LRParserAnalysis
+{
+    //常量
+    private static final int nonterminalSymbolsSize = 14;
+    private static final String nonterminalSymbols[] = {"program","stmt","compoundstmt","stmts","ifstmt","whilestmt",
+            "assgstmt","boolexpr","boolop","arithexpr","arithexprprime","multexpr","multexprprime","simpleexpr"};
+
+    private static final int terminalSymbolsSize = 23;
+    private static final String terminalSymbols[] = {"{","}","if","(",")","then","else","while",
+            "ID","=",";","<",">","<=",">=","==","+","-","*","/","NUM","$","E"};
+
+    private static final int productionNumber = 28;
+    private static final String before[] = {"program","stmt","stmt","stmt","stmt","compoundstmt","stmts","stmts",
+            "ifstmt","whilestmt","assgstmt","boolexpr","boolop","boolop","boolop","boolop","boolop","arithexpr",
+            "arithexprprime","arithexprprime","arithexprprime","multexpr","multexprprime","multexprprime",
+            "multexprprime","simpleexpr","simpleexpr","simpleexpr"};
+
+    private static final String after[][] = {{"compoundstmt"},{"ifstmt"},{"whilestmt"},{"assgstmt"},{"compoundstmt"},
+            {"{","stmts","}"},{"stmt", "stmts"},{"E"},{"if","(","boolexpr",")","then","stmt","else","stmt"},
+            {"while","(","boolexpr",")","stmt"},{"ID","=","arithexpr",";"},{"arithexpr","boolop","arithexpr"},
+            {"<"},{">"},{"<="},{">="},{"=="},{"multexpr","arithexprprime"},{"+","multexpr","arithexprprime"},
+            {"-","multexpr","arithexprprime"},{"E"},{"simpleexpr" ,"multexprprime"},{"*","simpleexpr","multexprprime"},
+            {"/","simpleexpr","multexprprime"},{"E"},{"ID"},{"NUM"},{"(","arithexpr",")"}};
+
+
+    private static final int actionTable[][] = {
+            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},//0
+            {1,108,5,108,108,108,108,6,4,108,108,108,108,108,108,108,108,108,108,108,108,108},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,200},
+            {101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101},
+            {0,0,0,0,0,0,0,0,0,14,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {1,108,5,108,108,108,108,6,4,108,108,108,108,108,108,108,108,108,108,108,108,108},
+            {105,105,105,105,105,105,105,105,105,105,105,105,105,105,105,105,105,105,105,105,105,105},
+            {0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {102,102,102,102,102,102,102,102,102,102,102,102,102,102,102,102,102,102,102,102,102,102},//10
+            {103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103},
+            {104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104,104},
+            {200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200},
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {107,107,107,107,107,107,107,107,107,107,107,107,107,107,107,107,107,107,107,107,107,107},
+            {106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,106},
+            {127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127,127},
+            {126,12,126,126,126,126,126,126,126,126,126,126,126,126,126,126,126,126,126,126,126,126},//20
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {0,0,0,0,0,0,0,0,0,0,29,0,0,0,0,0,0,0,0,0,0,0},
+            {121,121,121,121,121,121,121,121,121,121,121,121,121,121,121,121,30,31,121,121,121,121},
+            {125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,33,34,125,125},
+            {0,0,0,0,36,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,37,38,39,40,41,0,0,0,0,0,0},
+            {0,0,0,0,43,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111,111},
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},//30
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {118,118,118,118,118,118,118,118,118,118,118,118,118,118,118,118,118,118,118,118,118,118},
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122,122},
+            {0,0,0,0,0,49,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113,113},
+            {114,114,114,114,114,114,114,114,114,114,114,114,114,114,114,114,114,114,114,114,114,114},
+            {115,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115,115},
+            {116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116,116},//40
+            {117,117,117,117,117,117,117,117,117,117,117,117,117,117,117,117,117,117,117,117,117,117},
+            {0,0,0,21,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,19,0},
+            {1,0,5,0,0,0,0,6,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128},
+            {121,121,121,121,121,121,121,121,121,121,121,121,121,121,121,121,30,31,121,121,121,121},
+            {121,121,121,121,121,121,121,121,121,121,121,121,121,121,121,121,30,31,121,121,121,121},
+            {125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,33,34,125,125},
+            {125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,125,33,34,125,125},
+            {1,0,5,0,0,0,0,6,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112},//50
+            {110,110,110,110,110,110,110,110,110,110,110,110,110,110,110,110,110,110,110,110,110,110},
+            {119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119},
+            {120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120,120},
+            {123,123,123,123,123,123,123,123,123,123,123,123,123,123,123,123,123,123,123,123,123,123},
+            {124,124,124,124,124,124,124,124,124,124,124,124,124,124,124,124,124,124,124,124,124,124},
+            {0,0,0,0,0,0,57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {1,0,5,0,0,0,0,6,4,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {109,109,109,109,109,109,109,109,109,109,109,109,109,109,109,109,109,109,109,109,109,109}};
+
+    private static final int gotoTable[][] = {
+            {2,0,3,0,0,0,0,0,0,0,0,0,0,0},//0
+            {0,7,8,9,10,11,12,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,7,8,17,10,11,12,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},//10
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,22,0,23,0,24},
+            {0,0,0,0,0,0,0,25,0,26,0,23,0,24},
+            {0,0,0,0,0,0,0,27,0,26,0,23,0,24},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},//20
+            {0,0,0,0,0,0,0,0,0,28,0,23,0,24},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,32,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,35,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,42,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,45,0,24},//30
+            {0,0,0,0,0,0,0,0,0,0,0,46,0,24},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,47},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,48},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},//40
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,50,0,23,0,24},
+            {0,51,8,0,10,11,12,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,52,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,53,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,54,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,55,0},
+            {0,56,8,0,10,11,12,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},//50
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+            {0,58,8,0,10,11,12,0,0,0,0,0,0,0},
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+
+    //变量
+    private static StringBuffer prog = new StringBuffer();
+    private static String target;
+    private static String w;
+    private static int i;
+    private static int line;
+    private static Vector<Integer> ans = new Vector<Integer>();
+    private static Map<String, String> map = new HashMap<String, String >();
+    private static Stack<Integer> stack = new Stack<Integer>();
+
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine());
+            //这里要加一行，否则无法在打印错误时输出错误所在的行号
+            prog.append("\n");
+        }
+    }
+
+
+    // add your method here!!
+
+    //判断字母或下划线
+    private static boolean isLetter(char x){
+        return (x >= 'A' && x <= 'Z') || (x >= 'a' && x <= 'z') || x == '_';
+    }
+
+    //判断无歧义的字符
+    private static boolean isUnambiguousSymbol(char x){
+        return x == '(' || x ==')' || x == ';' || x == '{' || x == '}' || x == '+' || x == '-' || x == '*' || x == '/';
+    }
+
+    //判断有歧义的字符
+    private static boolean isAmbiguousSymbol(char x){
+        return  x == '<' || x == '=' || x == '>';
+    }
+
+    //初始化map
+    private static void init(){
+        for(int i = 0; i < nonterminalSymbolsSize;i++){
+            char X = (char) ('A' + i);
+            map.put(nonterminalSymbols[i],""+X);
+        }
+        for(int i = 0; i < terminalSymbolsSize; i++){
+            char X = (char) ('a'+i);
+            map.put(terminalSymbols[i],"" + X);
+        }
+    }
+
+    //用于词法分析
+    private static String scan(){
+        target = "";
+        while(i < prog.length() && (prog.charAt(i) == ' ' || prog.charAt(i) == '\t'))
+            i++;
+        if(i >= prog.length())
+            return "$";
+        if(isLetter(prog.charAt(i))){
+            while(isLetter(prog.charAt(i))){
+                target += prog.charAt(i);
+                i++;
+            }
+            return map.get(target);
+        }else if(isUnambiguousSymbol(prog.charAt(i))){
+            target += prog.charAt(i);
+            i++;
+            return map.get(target);
+        }else if(isAmbiguousSymbol(prog.charAt(i))){
+            if(prog.charAt(i) == '<'){
+                if(prog.charAt(i+1) == '='){
+                    target = "<=";
+                    i += 2;
+                }else{
+                    target = "<";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '='){
+                if(prog.charAt(i+1) == '='){
+                    target = "==";
+                    i += 2;
+                }else{
+                    target = "=";
+                    i++;
+                }
+            }else if(prog.charAt(i) == '>'){
+                if(prog.charAt(i+1) == '='){
+                    target = ">=";
+                    i += 2;
+                }else{
+                    target = ">";
+                    i++;
+                }
+            }
+            return map.get(target);
+        }else if(prog.charAt(i) == '\n'){
+            i++;
+            return "\n";
+        }
+        else{
+            i++;
+            return "$";
+        }
+    }
+
+
+    //LR（1）语法分析
+    private static void LR1() {
+        stack.push(0);
+        i = 0;
+        line = 1;
+        while(true){
+            if(w.charAt(i) == '\n'){
+                line++;
+                i++;
+                continue;
+            }
+
+            //打印分析过程 1
+//            Stack<Integer> temps = new Stack<Integer>();
+//            while(!stack.empty()){
+//                temps.push(stack.pop());
+//            }
+//            while (!temps.empty()){
+//                System.out.print(temps.peek()+" ");
+//                stack.push(temps.pop());
+//            }
+//            System.out.print("  ");
+//            for(int k = i; k < w.length(); k++){
+//                if(w.charAt(k) != '\n'){
+//                    System.out.print(w.charAt(k));
+//                }
+//            }
+
+
+            int X = stack.peek();
+            char a = w.charAt(i);
+            if(a == '$'){
+                a = map.get("$").charAt(0);
+            }
+            int t = actionTable[X][a-'a'];
+            if(t == 0){
+                for(int j = 0; j < terminalSymbolsSize; j++){
+                    if(actionTable[X][j] != 0){
+                        System.out.println("语法错误，第" + (line-1) + "行，缺少\"" + terminalSymbols[j] + "\"");
+                        stack.push(actionTable[X][j]);
+                        break;
+                    }
+                }
+            }else if(t < 100){
+                i++;
+                stack.push(t);
+
+                //打印分析过程 2
+//                System.out.println("     s"+t);
+
+            }else if(t < 200){
+                t -= 101;
+                for(int j = 0; j < after[t].length; j++){
+                    if(!after[t][j].equals("E"))
+                        stack.pop();
+                }
+
+                int temp = stack.peek();
+                int y = map.get(before[t]).charAt(0) - 'A';
+                stack.push(gotoTable[temp][y]);
+                ans.add(t);
+
+                //打印分析过程 3
+//                System.out.print("     r"+(t+1));
+//                System.out.print("  "+ before[t] + "->");
+//                for(int k = 0; k < after[t].length; k++){
+//                    System.out.print(" " + after[t][k]);
+//                }
+//                System.out.println();
+
+            }else{
+//                System.out.println("接收");
+                break;
+            }
+        }
+
+    }
+
+    //输出结果
+    private static void output(){
+        Vector<String> s = new Vector<String >();
+        s.add("A");
+        int k = 0;
+        for(int i = ans.size()-1; i >= 0; i--){
+            int production = ans.get(i);
+            for(int j = 0; j < s.size(); j++){
+                char X = s.get(j).charAt(0);
+                if(X >= 'A' && X <= 'Z'){
+                    System.out.print(nonterminalSymbols[X-'A'] + " ");
+                }else{
+                    System.out.print(terminalSymbols[X-'a'] + " ");
+                }
+            }
+            System.out.println("=> ");
+            while(s.get(k).charAt(0) >= 'a' && s.get(k).charAt(0) <= 'z'){
+                k--;
+            }
+            s.remove(k);
+            for(int j = 0; j < after[production].length; j++){
+                if(!after[production][j].equals("E")){
+                    s.add(k,map.get(after[production][j]));
+                    k++;
+                }
+            }
+            k--;
+        }
+        for(int j = 0; j < s.size(); j++){
+            char X = s.get(j).charAt(0);
+            if(X >= 'A' && X <= 'Z'){
+                System.out.print(nonterminalSymbols[X-'A'] + " ");
+            }else{
+                System.out.print(terminalSymbols[X-'a'] + " ");
+            }
+        }
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        init();
+        //先词法分析
+        int len = prog.length();
+        i = 0;
+        w = "";
+        while(i <= len){
+            String code = scan();
+            w += code;
+            if(code.equals("$")){
+                break;
+            }
+        }
+        //打印w
+//        System.out.println(w+"\n");
+
+        //再用LL（1）法进行语法分析
+        LR1();
+
+//        for(int j =  0; j < ans.size(); j++){
+//            System.out.print((ans.get(j)+1) +  " : " + before[ans.get(j)] + "->");
+//            for(int k = 0; k < after[ans.get(j)].length; k++){
+//                System.out.print(" " + after[ans.get(j)][k]);
+//            }
+//            System.out.println();
+//        }
+
+        output();
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

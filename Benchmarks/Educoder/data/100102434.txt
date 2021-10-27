@@ -1,0 +1,30 @@
+package step3;
+
+import java.io.File;
+
+public class SearchFile {
+
+    public static void recursiveSearch(File file) {
+        File[] files = file.listFiles();
+        /********** Begin *********/
+        
+ for (int x=0;x< files.length;x++) {
+      if(files[x].isDirectory())//如果是文件夹那么进去继续访问
+            {
+                String result[] = files[x].list();
+                for (int i = 0; i < result.length; i++) {
+                    if(result[i].contains("Search"))
+                        System.out.println("src/step3/"+files[x].getName()+"/"+result[i]);
+                }
+
+            }else
+          if (files[x].getName().contains("Search")) {
+                //判断文件及文件夹名称中是否包含"Search"
+                System.out.println("src/step3/"+files[x].getName());
+            }
+        }
+
+
+        /********** End *********/
+    }
+}

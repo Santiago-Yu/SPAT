@@ -1,0 +1,90 @@
+package step2;
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat; 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Date; 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class DateException extends Exception{
+	private int year;
+	private int month;
+	private int day;
+	Integer[] arr = new Integer[] { 2,4,6,9,11 };
+ 
+	List<Integer> list = Arrays.asList(arr);
+
+	public DateException(String s){
+		super(s);
+	}	
+	public DateException(int year,int month,int day) throws DateException{
+		super("构造日期");
+		/*****Begin*****/
+        
+        boolean judge;
+        if ((year % 4 == 0 & year % 100 != 0) || year % 400 == 0)
+            judge = true;
+        else
+            judge = false;
+        if(year < 1900 || year > 2100)
+             {
+                 
+                 throw new DateException("年份必须在1900到2100之间");
+             }
+           
+        else if (judge == true & month == 2 & day > 29)
+        {
+            
+            throw new DateException("该月只有29天");
+        }
+        else if (judge == false & month == 2 & day > 28)
+        	throw new DateException("该月只有28天");
+        else if (day < 1 || day > 31)
+            throw new DateException("日期必须在1到31之间");
+        else if (month < 1 || month > 12)
+            throw new DateException("月份必须在1到12之间");
+            
+        else if (list.contains(month) & day > 30)
+        {
+          
+            throw new DateException("该月不能出现31天");
+        }
+            this.year = year;
+            this.month = month;
+            this.day = day;
+             
+            
+        
+		/******End******/
+	}
+    public static Date formatDate(String dateStr) throws ParseException{
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");  
+            Date date = sdf.parse(dateStr);    
+            return date;
+        }
+	
+	public Date getDate() throws ParseException{
+		Date date =null;
+		/*****Begin*****/
+        try{
+            
+            String dateStr = year + "-" + month + "-" + day;
+            date = formatDate(dateStr);
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
+            //将Date对象转化成字符串
+            System.out.println(sdf.format(date));
+         }   
+        catch(ParseException e){
+            System.out.println(e.toString()+":数据错误，无法转换成日期");
+        }catch(InputMismatchException e){
+            System.out.println(e.toString()+":请输入整数");
+        }
+		/******End******/		
+		return date;
+	}
+    
+}

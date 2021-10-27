@@ -1,0 +1,32 @@
+package step3;
+
+import java.util.Scanner;
+
+public class GcdAndGcm {
+	public static void main(String[] args) {
+		/********** Begin *********/
+		//键盘输入数据
+		Scanner sr=new Scanner(System.in);
+		int m=sr.nextInt();
+		int n=sr.nextInt();
+		int m1=m,n1=n;
+		if(m>n) {
+			int temp=m;
+			m=n;
+			n=temp;
+		}
+		int x,sum=1;
+		//do—while循环，辗转相除法
+		do {
+			x=n%m;
+			n=m;
+			m=x;
+		}while(x!=0);
+		sum=m1*n1/n;
+		System.out.println("最大公约数："+n);
+		System.out.println("最小公倍数："+sum);
+		//关掉输入流
+		sr.close();
+        /********** End *********/
+		}
+}

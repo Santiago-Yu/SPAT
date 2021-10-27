@@ -1,0 +1,46 @@
+package step1;
+import  java.lang.*;
+import  java.util.*;
+public class GetScores {
+
+	/********* Begin *********/
+    public int getLostScores(int[] nums){
+       //请在此补全你的代码
+    int  numslength=nums.length;
+    int[]  flagnums=new int[10001];
+    int  a=0;
+        //find out
+    for(int i=0;i<numslength;i++)
+    {
+      a=nums[i];
+      flagnums[a]=1;
+    }
+    long[] min=new long[3];
+    int  count=0;
+    for(int j=1;j<10001;j++)
+    {
+        if(flagnums[j]==0)
+        {
+         min[count]=(long)j;
+         count++;
+        }   
+    }
+    //quyu
+        long sum=0;
+        long tmp=0;
+    for(int k=2;k>=0;k--)
+    {
+        tmp=sum;
+       while(tmp!=0)
+       {
+         tmp=tmp/10;
+         min[k]=min[k]*10;
+       }
+        sum=min[k]+sum;
+    }
+     return (int)(sum%11+11)%11;
+	
+	}
+
+	/********* End *********/
+}

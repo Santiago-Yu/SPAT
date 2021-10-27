@@ -1,0 +1,41 @@
+package Q201;
+import java.util.*;
+public class Main {
+	public static void main(String[] args) {		
+		int[] b = new int[1000];
+		Scanner in = new Scanner (System.in);
+		int p = in.nextInt();
+		b[0] = p;
+		int j =0;
+		for(int i = 1;;i++) {
+			j = pan(b[i-1]);
+			if(j == 1) {
+				System.out.print("YES");
+				return;
+			}
+			for(int k = 0; k < i; k++) {
+				if(b[k] == j) {
+					System.out.print("NO");
+					return;
+				}
+			b[i] = j;
+			}
+		}
+	}
+	 static int pan(int a) {	
+		int temp;
+		int[] c = new int[1000];
+		temp = a;
+		int i = 0;
+		for(;temp != 0;i++) {
+			c[i] = temp%10;
+			temp/=10;
+		}
+		i--;
+		for(;i>=0;i--) {
+			temp+=c[i]*c[i];
+		}
+		return temp;
+		
+	}
+}

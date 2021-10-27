@@ -1,0 +1,65 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+
+		int count=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(area[i][j]=='o'){
+                    count++;
+                    isbarra(i,j,area);
+                    
+                }
+            }
+        }
+        return count;    
+		/********* End *********/	
+        
+	}
+    public boolean isbarra(int i,int j,char[][]a){
+        boolean A=false;
+        if(a[i][j]=='o'){
+            a[i][j]='x';
+            int b=j+1;
+            while(b<a[0].length){
+                if(isbarra(i,b,a)){
+                    b++;
+                    A=true;
+                }
+                else
+                    break;
+            }
+            int c=j-1;
+            while(c>=0){
+                if(!isbarra(i,c,a))
+                    break;
+                else{
+                    c--;
+                    A=true;
+                }
+            }
+            int d=i+1;
+            while(d<a.length){
+                if(!isbarra(d,j,a))
+                    break;
+                else{
+                    d++;
+                    A=true;
+                }
+            }
+            int e=i-1;
+            while(e>=0){
+                if(!isbarra(e,j,a))
+                    break;
+                else{
+                    e--;
+                    A=true;
+                }
+            }
+        }
+        return A;
+    }
+}

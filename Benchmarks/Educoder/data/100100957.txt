@@ -1,0 +1,66 @@
+package step1;
+
+import java.util.Scanner;
+
+public class ShapeTrouble {
+    public static void main(String[] args){
+        Scanner scanner = new Scanner(System.in);
+        double radius = scanner.nextDouble();
+        double length = scanner.nextDouble();
+        double width = scanner.nextDouble();
+        Circle circle = new Circle(radius);
+        Rectangle rectangle = new Rectangle(length, width);
+        System.out.println(circle.getAcreage());
+        System.out.print(rectangle.getAcreage());
+    }
+}
+
+/********** Begin *********/
+abstract class Shape {
+    protected abstract double getAcreage();    //抽象方法：计算面积
+}
+
+class Circle extends Shape{
+    double PI = 3.1415926;
+    private double radius;
+    public void setCircle( double radius ){
+		this.radius = radius;
+	}
+	public Circle(){
+		setCircle( 0.0 );
+	}
+	public Circle( double radius ){
+		setCircle( radius );
+	}
+    public void setradius( double radius ){
+        this.radius = radius;
+    }
+    protected double getAcreage(){
+        return PI*radius*radius;
+    } 
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+    public void setRectangle( double length, double width ){
+	    this.length = length;
+		this.width = width;
+	}
+	public Rectangle(){
+		setRectangle( 0.0,0.0 );
+	}
+	public Rectangle( double length, double width ){
+		setRectangle( length,width );
+	}
+    public void setlength( double length ){
+        this.length = length;
+    }
+    public void setwidth( double width ){
+        this.width = width;
+    }
+    protected double getAcreage(){
+        return length*width;  
+    }
+}
+/********** End *********/

@@ -1,0 +1,70 @@
+package step2;
+
+import java.util.List;
+
+public class Task {
+    
+    
+    int [] arr =  new int[0];
+    
+public long left(int x,int y){
+	long sum = 0;
+	for(int i=x;i<=y;i++){
+		sum+=arr[i]*(i-x+1);
+		
+	}
+	 sum = (long)(Math.floorMod(sum,1000000007));
+	return sum;
+}
+public long right(int x,int y){
+	long sum = 0;
+	for(int i=x;i<=y;i++){
+		sum+=arr[i]*(y-i+1);
+		
+	}
+	 sum = (long)(Math.floorMod(sum,1000000007));
+	return sum;
+}
+public void coo(int x,int y){
+	arr[x] = y;
+}
+   
+	public int solve(List<Integer> data, List<Operation> operations) {
+		/********* begin *********/
+		int i = 0;
+        long sum = 0;
+        int res = 0;
+        arr = new int[data.size()];
+        for(i = 0;i<data.size();i++)
+        {
+            arr[i] = data.get(i);
+           
+        }
+        for(i = 0;i<operations.size();i++){
+        	if(operations.get(i).op.equals("L")){
+                sum += left(operations.get(i).x,operations.get(i).y);
+                 
+            }
+               else if(operations.get(i).op.equals("R")){
+                sum += right(operations.get(i).x,operations.get(i).y);
+                   
+            }
+                       else if(operations.get(i).op.equals("C")){
+                       coo(operations.get(i).x,operations.get(i).y);
+                       }
+        	 sum = (long)(Math.floorMod(sum,1000000007));
+        }
+        res =(int)sum;
+            return res;
+        
+		
+		
+		/********* end *********/
+	}
+}
+
+class Operation {
+	String op;
+	int x;
+	int y;
+}

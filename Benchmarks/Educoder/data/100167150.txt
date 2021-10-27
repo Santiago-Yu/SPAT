@@ -1,0 +1,189 @@
+import java.util.Scanner;
+import java.lang.String;
+
+public class Java_LexAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+    private static String[] reservedWord = new String[]{"auto","break","case","char","const","continue","default","do","double",
+                                                    "else","enum","extern","float","for","goto","if","int","long",
+                                                    "register","return","short","signed","sizeof","static","struct","switch",
+                                                    "typedef","union","unsigned","void","volatile","while"};
+    private static String[] other = new String[]{"-","--","-=","->","!","!=","%","%=","&","&&","&=","(",")","*","*=",",",
+                                                    ".","/","/=",":",";","?","[","]","^","^=","{","|","||","|=","}","~",
+                                                    "+","++","+=","<","<<","<<=","<=","=","==",">",">=",">>",">>=","\""};
+    private static StringBuffer token = new StringBuffer();
+    private static int pProg = 0;
+    private static int count = 1;
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            String currentLine = sc.nextLine();
+            if (currentLine.contains("//")){
+                prog = prog.append(currentLine).append("\n");
+            }else{
+                prog = prog.append(currentLine);
+            }
+        }
+    }
+
+    private static void lexAnalysis(){
+
+        while (pProg<prog.length()){
+            token.delete(0,token.length());
+            while (prog.charAt(pProg)==' '||prog.charAt(pProg)=='\t'||prog.charAt(pProg)=='\n'){
+                pProg++;
+            }
+            if (isLetter(prog.charAt(pProg))){
+                token.append(prog.charAt(pProg));
+                pProg++;
+                while(isLetter((prog.charAt(pProg)))||isDigit(prog.charAt(pProg))){
+                    token.append(prog.charAt(pProg));
+                    if(pProg<prog.length()-1){
+                        pProg++;
+                    }else {
+                        break;
+                    }
+                }
+                if (pProg==prog.length()){
+                    System.out.print(count+": <"+token+","+reservedWordOrder(token)+">");
+                }else{
+                    System.out.println(count+": <"+token+","+reservedWordOrder(token)+">");
+                }
+                token.delete(0,token.length());
+                count++;
+            }else if(isDigit(prog.charAt(pProg))){
+                token.append(prog.charAt(pProg));
+                pProg++;
+                while(isDigit(prog.charAt(pProg))){
+                    token.append(prog.charAt(pProg));
+                    if(pProg<prog.length()-1){
+                        pProg++;
+                    }else {
+                        break;
+                    }
+                }
+                if (pProg==prog.length()){
+                    System.out.print(count+": <"+token+",80>");
+                }else{
+                    System.out.println(count+": <"+token+",80>");
+                }
+                token.delete(0,token.length());
+                count++;
+            }else {
+                token.append(prog.charAt(pProg));
+                pProg++;
+                StringBuffer stringBuffer = new StringBuffer();
+                while(!isDelimiter(token)&&!isDelimiter(stringBuffer.append(prog.charAt(pProg)))&&!isDigit(prog.charAt(pProg))&&!isLetter(prog.charAt(pProg))&&prog.charAt(pProg)!=' '){
+                    token.append(prog.charAt(pProg));
+                    stringBuffer.delete(0,stringBuffer.length());
+                    if(pProg<prog.length()-1){
+                        pProg++;
+                    }else {
+                        break;
+                    }
+                }
+                if (token.toString().equals("%")&&(prog.charAt(pProg)=='c'||prog.charAt(pProg)=='d')){
+                    token.append(prog.charAt(pProg));
+                    pProg++;
+                }
+                if (token.toString().equals("//")){
+                    while(prog.charAt(pProg)!='\n'){
+                        token.append(prog.charAt(pProg));
+                        pProg++;
+                    }
+                }else if (token.toString().equals("/*")){
+                    while(!(prog.charAt(pProg-2)=='*'&&prog.charAt(pProg-1)=='/')){
+                        token.append(prog.charAt(pProg));
+                        pProg++;
+                    }
+                }
+                //if(otherOrder(token)!=-1){
+                    if (pProg==prog.length()){
+                        System.out.print(count+": <"+token+","+otherOrder(token)+">");
+                    }else{
+                        System.out.println(count+": <"+token+","+otherOrder(token)+">");
+                    }
+                    token.delete(0,token.length());
+                    count++;
+                //}
+            }
+            //pProg++;
+        }
+
+    }
+
+    private static boolean isLetter(char c){
+        if ((c>='a'&&c<='z')||(c>='A'&&c<='Z')){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private static boolean isDigit(char c){
+        if (c>='0'&&c<='9'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private static int reservedWordOrder(StringBuffer token){
+        for(int i=0;i<32;i++){
+            String str = "";
+            str = token.toString();
+            if(str.equals(reservedWord[i])){
+                return i+1;
+            }
+        }
+        return 81;
+    }
+
+    private static int otherOrder(StringBuffer token){
+        for (int i=33; i<=78; i++){
+            String str = "";
+            str = token.toString();
+            if (str.equals(other[i-33])){
+                return i;
+            }
+        }
+        if (token.toString().equals("%d")||token.toString().equals("%c")){
+            return 81;
+        }
+        return 79;
+    }
+
+    private static boolean isDelimiter(StringBuffer token){
+        String[] delimiter = new String[]{"(",")",",",".",":",";","?","[","]","{","}","~","\""};
+        for (int i=0;i<delimiter.length;i++){
+            String str = "";
+            str = token.toString();
+            if (str.equals(delimiter[i])){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void analysis()
+    {
+        read_prog();
+        //System.out.println(prog);
+        lexAnalysis();
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+

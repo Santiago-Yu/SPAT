@@ -1,0 +1,287 @@
+import java.util.*;
+
+/**
+ * @program: CompileLab
+ * @description: LL Parser
+ * @author: WenYuan
+ * @create: 2019-05-12 10:27
+ **/
+
+public class Java_LLParserAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+
+    private final static List<String> productionList = new ArrayList<>();
+
+    private final static Map<String, Integer> llAnalysisMap = new HashMap<>();
+
+    private final static Set<String> nonTerminalSet = new HashSet<>();
+
+    private final static String inputProduction = "program -> compoundstmt\n" +
+            "stmt ->  ifstmt  |  whilestmt  |  assgstmt  |  compoundstmt\n" +
+            "compoundstmt ->  { stmts }\n" +
+            "stmts ->  stmt stmts   |   E\n" +
+            "ifstmt ->  if ( boolexpr ) then stmt else stmt\n" +
+            "whilestmt ->  while ( boolexpr ) stmt\n" +
+            "assgstmt ->  ID = arithexpr ;\n" +
+            "boolexpr  ->  arithexpr boolop arithexpr\n" +
+            "boolop ->   <  |  >  |  <=  |  >=  | ==\n" +
+            "arithexpr  ->  multexpr arithexprprime\n" +
+            "arithexprprime ->  + multexpr arithexprprime  |  - multexpr arithexprprime  |   E\n" +
+            "multexpr ->  simpleexpr  multexprprime\n" +
+            "multexprprime ->  * simpleexpr multexprprime  |  / simpleexpr multexprprime  |   E\n" +
+            "simpleexpr ->  ID  |  NUM  |  ( arithexpr )";
+
+
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine() + " \n ");
+        }
+    }
+
+
+    // add your method here!!
+
+    private static void analysisTest(String input) {
+        initProductionList(inputProduction);
+        initLLAnalysisMap();
+        initNonTerminalSet();
+
+        Deque<String> inputStack = new ArrayDeque<>();
+        Deque<ParserTree> localStack = new ArrayDeque<>();
+
+        String initSymbol = getInitSymbol();
+        ParserTree parserTree = new ParserTree(initSymbol);
+        localStack.addFirst(parserTree);
+        String[] inputs = input.split(" ");
+        for (String str : inputs) {
+            if (str != null && str.length() > 0)
+                inputStack.add(str);
+        }
+
+        localStack.addLast(new ParserTree("$"));
+        inputStack.addLast("$");
+
+
+        //P144预测分析算法
+        ParserTree X;
+        LinkedList<ParserTree> recoveryList = new LinkedList<>();
+        String key;
+        int line = 1;
+        while(!(X = localStack.pollFirst()).val.equals("$")) {//栈非空
+
+            if (inputStack.peekFirst().equals("\n")) {
+                line++;
+                inputStack.removeFirst();
+            }
+
+            String inputPeek = inputStack.peekFirst();
+            //当inputStack的栈顶为$结束符时，peek应返回E(空)
+            if (inputPeek.equals("$"))
+                inputPeek = "E";
+
+
+            if (X.val.equals(inputStack.peekFirst())) {
+                //相等时一起出栈
+                //localStack.removeFirst();
+                inputStack.removeFirst();
+                //System.out.println("same : " + X.val);
+            }else if (isTerminal(X.val)) {
+                error(line, X.val);
+                inputStack.addFirst(X.val);
+                localStack.addFirst(X);
+                while (!recoveryList.isEmpty()) {
+                    localStack.addFirst(recoveryList.pollFirst());
+                }
+            }else if (llAnalysisMap.containsKey(( key = X.val + "," + inputPeek))) {
+
+                int index = llAnalysisMap.get(key) - 1;
+                String production = productionList.get(index);
+                //对于产生式X -> Y1Y2Y3...Yk 先取到 Y1Y2Y3...Yk 划分出每个Yk
+                String[] Ys = production.split("->")[1].split(" ");
+                //将Yk,Yk-1,...,Y1压入栈中，Y1在栈顶
+                for (int i = Ys.length - 1; i >= 0; --i) {
+                    String Y = Ys[i];
+                    if (Y != null && Y.length() > 0) {
+                        ParserTree YTree = new ParserTree(Y);
+                        if (!Y.equals("E")) {
+                            localStack.addFirst(YTree);
+                        }
+                        if (X.children == null) {
+                            X.children = new LinkedList<>();
+                            X.children.addFirst(YTree);
+                        }else {
+                            X.children.addFirst(YTree);
+                        }
+                    }
+
+                }
+            }else {
+                recoveryList.addFirst(X);
+            }
+        }
+
+        outputParserTree(parserTree, 0);
+    }
+
+
+
+    private static void initProductionList(String input) {
+        productionList.clear();
+        String[] argPerLine = input.split("\n");
+        for (String str : argPerLine) {
+            String[] leftAndRight = str.split("->");
+            String left = leftAndRight[0];
+            String right = leftAndRight[1];
+            String[] allRight = right.split("\\|");
+            for (String ar : allRight) {
+                productionList.add(left + "->" + ar);
+            }
+        }
+    }
+
+    private static void initNonTerminalSet() {
+        nonTerminalSet.clear();
+        for (String key : llAnalysisMap.keySet()) {
+            String[] strings = key.split(",");
+            if (!nonTerminalSet.contains(strings[0]))
+                nonTerminalSet.add(strings[0]);
+        }
+    }
+
+
+    private static void initLLAnalysisMap() {
+        llAnalysisMap.clear();
+        llAnalysisMap.put("program,{", 1);
+        llAnalysisMap.put("stmt,{", 5);
+        llAnalysisMap.put("stmt,if", 2);
+        llAnalysisMap.put("stmt,while", 3);
+        llAnalysisMap.put("stmt,ID", 4);
+        llAnalysisMap.put("compoundstmt,{", 6);
+        llAnalysisMap.put("stmts,{", 7);
+        llAnalysisMap.put("stmts,}", 8);
+        llAnalysisMap.put("stmts,if", 7);
+        llAnalysisMap.put("stmts,while", 7);
+        llAnalysisMap.put("stmts,ID", 7);
+        llAnalysisMap.put("ifstmt,if", 9);
+        llAnalysisMap.put("whilestmt,while", 10);
+        llAnalysisMap.put("assgstmt,ID", 11);
+        llAnalysisMap.put("boolexpr,(", 12);
+        llAnalysisMap.put("boolexpr,ID", 12);
+        llAnalysisMap.put("boolexpr,NUM", 12);
+        llAnalysisMap.put("boolop,<", 13);
+        llAnalysisMap.put("boolop,>", 14);
+        llAnalysisMap.put("boolop,<=", 15);
+        llAnalysisMap.put("boolop,>=", 16);
+        llAnalysisMap.put("boolop,==", 17);
+        llAnalysisMap.put("arithexpr,(", 18);
+        llAnalysisMap.put("arithexpr,ID", 18);
+        llAnalysisMap.put("arithexpr,NUM", 18);
+        llAnalysisMap.put("arithexprprime,)", 21);
+        llAnalysisMap.put("arithexprprime,;", 21);
+        llAnalysisMap.put("arithexprprime,<", 21);
+        llAnalysisMap.put("arithexprprime,>", 21);
+        llAnalysisMap.put("arithexprprime,<=", 21);
+        llAnalysisMap.put("arithexprprime,>=", 21);
+        llAnalysisMap.put("arithexprprime,==", 21);
+        llAnalysisMap.put("arithexprprime,+", 19);
+        llAnalysisMap.put("arithexprprime,-", 20);
+        llAnalysisMap.put("multexpr,(", 22);
+        llAnalysisMap.put("multexpr,ID", 22);
+        llAnalysisMap.put("multexpr,NUM", 22);
+        llAnalysisMap.put("multexprprime,)", 25);
+        llAnalysisMap.put("multexprprime,;", 25);
+        llAnalysisMap.put("multexprprime,<", 25);
+        llAnalysisMap.put("multexprprime,>", 25);
+        llAnalysisMap.put("multexprprime,<=", 25);
+        llAnalysisMap.put("multexprprime,>=", 25);
+        llAnalysisMap.put("multexprprime,==", 25);
+        llAnalysisMap.put("multexprprime,+", 25);
+        llAnalysisMap.put("multexprprime,-", 25);
+        llAnalysisMap.put("multexprprime,*", 23);
+        llAnalysisMap.put("multexprprime,/", 24);
+        llAnalysisMap.put("simpleexpr,(", 28);
+        llAnalysisMap.put("simpleexpr,ID", 26);
+        llAnalysisMap.put("simpleexpr,NUM", 27);
+
+    }
+
+    static boolean outputFlag = false;
+
+    private static void outputParserTree(ParserTree root, int level) {
+        if (root == null) return;
+
+        if (outputFlag)
+            System.out.println();
+        else {
+            outputFlag = true;
+        }
+
+        for (int i = 0; i < level; ++i) {
+            System.out.print("\t");
+        }
+
+        System.out.print(root.val);
+
+        if (root.children == null) return;
+
+        for (ParserTree treeNode : root.children) {
+            outputParserTree(treeNode, level + 1);
+        }
+    }
+
+    private static void error(int line, String X) {
+        if (X.equals(";"))
+            line--;
+        System.out.println("语法错误,第" + line + "行,缺少\"" + X + "\"");
+    }
+
+    private static boolean isTerminal(String s) {
+        return !nonTerminalSet.contains(s);
+    }
+
+    private static boolean isNonTerminal(String s) {
+        return nonTerminalSet.contains(s);
+    }
+
+    private static String getInitSymbol() {
+        String[] first = productionList.get(0).split("->");
+//        String[] first = str.split("->");
+        return first[0].trim();
+    }
+
+
+
+
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        analysisTest(prog.toString());
+        //System.out.print(prog);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}
+class ParserTree {
+    String val;
+    LinkedList<ParserTree> children;
+    public ParserTree(String root) {
+        this.val = root;
+        children = null;
+    }
+}

@@ -1,0 +1,43 @@
+package step4;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Task {
+	
+	public void task() throws IOException{
+		/********* Begin *********/
+		FileReader fr=new FileReader("src/step4/input/input.txt");//定义将要读的文件
+		int len=0;
+		char[] cbuf=new char[1024];//每次读取数字的缓冲区
+		
+		FileWriter fw =new FileWriter("src/step4/output/output.txt");//定义将要写的文件
+		while((len=fr.read(cbuf))!=-1)
+		{
+			fw.write(cbuf,0,len);//将cbuf从0到len长度的数据添加到fw
+		}
+		fw.close();
+		fr.close();
+		
+		FileInputStream fs=new FileInputStream("src/step4/input/input.jpg");
+		
+		FileOutputStream fos =new FileOutputStream("src/step4/output/output.jpg");
+		int lens=0;
+		byte[] bys=new byte[1024];
+		while((len=fs.read(bys))!=-1)
+		{
+			fos.write(bys,0,lens);
+		}
+		fs.close();
+		fos.close();
+		
+		
+		
+		
+		/********* End *********/		
+	}
+}

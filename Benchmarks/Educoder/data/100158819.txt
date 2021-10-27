@@ -1,0 +1,36 @@
+package Q201;
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// write your code here
+        Scanner scanner = new Scanner(System.in);
+		int number = scanner.nextInt();
+		
+		while(true){
+			number = getNew(number);
+			if(number == 1){
+				System.out.print("YES");
+				break;
+			}
+			if(number == 89){
+				System.out.print("NO");
+                break;
+			}
+		}
+	}
+
+    public static  int getNew(int number){
+		//实现拆分
+		int sum = 0, tmp;
+		while(number > 0){
+			tmp = number % 10;
+			sum += tmp * tmp;
+			number /= 10;
+		}
+		return sum;
+
+	}
+
+}

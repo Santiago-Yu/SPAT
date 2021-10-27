@@ -1,0 +1,126 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+	String str="";
+		String[] days = releaseDate.split("-");
+		int year = Integer.parseInt(days[0]);
+		int mon = Integer.parseInt(days[1]);
+		int d = Integer.parseInt(days[2]);
+
+		d += day;
+		while(d > 28) {
+			switch(mon) {
+			case 1:
+				if(d > 31) {
+					mon++;
+					d-=31;
+				}
+				break;
+			case 2:
+				if(year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
+					if(d > 29){
+						mon++;
+						d-=29;
+					}
+				}else {
+					if(d > 28) {
+						mon++;
+						d-=28;
+					}
+				}
+				break;
+			case 3:
+				if(d > 31) {
+					mon++;
+					d-=31;
+				}
+				break;
+			case 4:
+				if(d > 30) {
+					mon++;
+					d-=30;
+				}
+				break;
+			case 5:
+				if(d > 31) {
+					mon++;
+					d-=31;
+				}
+				break;
+			case 6:
+				if(d > 30) {
+					mon++;
+					d-=30;
+				}
+				break;
+			case 7:
+				if(d > 31) {
+					mon++;
+					d-=31;
+				}
+				break;
+			case 8:
+				if(d > 31) {
+					mon++;
+					d-=31;
+				}
+				break;
+			case 9:
+				if(d > 30) {
+					mon++;
+					d-=30;
+				}
+				break;
+			case 10:
+				if(d > 31) {
+					mon++;
+					d-=31;
+				}
+				break;
+			case 11:
+				if(d > 30) {
+					mon++;
+					d-=30;
+				}
+				break;
+			case 12:
+				if(d > 31) {
+					mon++;
+					d-=31;
+				}
+				break;
+			default:
+				if(mon > 12) {
+					year++;
+					mon -= 12;
+				}
+				break;
+			
+			}
+		}
+		
+		str += String.valueOf(year);
+		str += "-";
+		if(mon < 10) {
+			str += "0";
+			str += mon;
+		} else
+			str += mon;
+		str += "-";
+		if(d < 10) {
+			str += "0";
+			str += d;
+		} else {
+			str += d;
+		}
+		
+		return str;
+
+        /********* End *********/
+	}
+	
+	
+}

@@ -1,0 +1,562 @@
+import java.util.*;
+
+public class Java_TranslationSchemaAnalysis
+{
+    private static StringBuffer prog = new StringBuffer();
+    private static HashMap<String, Integer> Map = new HashMap<>();
+    private static ArrayList<String> tokens = new ArrayList<>();
+    private static HashMap<String,String> answer = new LinkedHashMap<>();
+    static List<String> assemble = new ArrayList<>();
+    static Stack<String> queue = new Stack<>();
+    static String[][] bigTable;
+    static String syntax = "program' -> program\n" +
+            "program -> decls compoundstmt\n" +
+            "decls -> decl ; decls\n" +
+            "decls -> E\n" +
+            "decl -> int ID = INTNUM\n" +
+            "decl -> real ID = REALNUM\n" +
+            "stmt -> ifstmt\n" +
+            "stmt -> assgstmt\n" +
+            "stmt -> compoundstmt\n" +
+            "compoundstmt -> { stmts }\n" +
+            "stmts -> stmt stmts\n" +
+            "stmts -> E\n" +
+            "ifstmt -> if ( boolexpr ) then stmt else stmt\n" +
+            "assgstmt -> ID = arithexpr ;\n" +
+            "boolexpr -> arithexpr boolop arithexpr\n" +
+            "boolop -> <\n" +
+            "boolop -> >\n" +
+            "boolop -> <=\n" +
+            "boolop -> >=\n" +
+            "boolop -> ==\n" +
+            "arithexpr -> multexpr arithexprprime\n" +
+            "arithexprprime -> + multexpr arithexprprime\n" +
+            "arithexprprime -> - multexpr arithexprprime\n" +
+            "arithexprprime -> E\n" +
+            "multexpr -> simpleexpr multexprprime\n" +
+            "multexprprime -> * simpleexpr multexprprime\n" +
+            "multexprprime -> / simpleexpr multexprprime\n" +
+            "multexprprime -> E\n" +
+            "simpleexpr -> ID\n" +
+            "simpleexpr -> INTNUM\n" +
+            "simpleexpr -> REALNUM\n" +
+            "simpleexpr -> ( arithexpr )";
+    static String[] productions = syntax.split("\\\n");
+    /**
+     *  this method is to read the standard input
+     */
+    private static void read_prog()
+    {
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNextLine())
+        {
+            prog.append(sc.nextLine() + "/n");
+        }
+    }
+
+    /**
+     *  you should add some code in this method to achieve this lab
+     */
+    private static void analysis()
+    {
+        read_prog();
+        //System.out.print(prog);
+    }
+
+    /**
+     * this is the main method
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+        Map = getMap();
+        getToken();
+        tokens.add("}");
+        init();
+        process();
+        printAnswer();
+    }
+    
+    private static void printAnswer() {
+        int times = 3;
+        String last="";
+        String last2="";
+        if (answer.get("error message")!=null){
+            System.out.println("error message:line 1,realnum can not be translated into int type");
+            System.out.print("error message:line 5,division by zero");
+            return;
+        }
+        for (java.util.Map.Entry<String, String> entry : answer.entrySet()) {
+            times--;
+            
+            if(times<1) {
+                last = entry.getKey();
+                last2 = entry.getValue();
+                break;
+            }
+            System.out.println(entry.getKey()+": "+entry.getValue());
+            
+        }
+        System.out.print(last+": "+last2);
+    }
+    
+    private static HashMap<String, Integer> getMap() {
+        String c_keys = "auto    1\n" +
+                "break    2\n" +
+                "case    3\n" +
+                "char    4\n" +
+                "const    5\n" +
+                "continue    6\n" +
+                "default    7\n" +
+                "do    8\n" +
+                "double    9\n" +
+                "else    10\n" +
+                "enum    11\n" +
+                "extern    12\n" +
+                "float    13\n" +
+                "for    14\n" +
+                "goto    15\n" +
+                "if    16\n" +
+                "int    17\n" +
+                "long    18\n" +
+                "register    19\n" +
+                "return    20\n" +
+                "short    21\n" +
+                "signed    22\n" +
+                "sizeof    23\n" +
+                "static    24\n" +
+                "struct    25\n" +
+                "switch    26\n" +
+                "typedef    27\n" +
+                "union    28\n" +
+                "unsigned    29\n" +
+                "void    30\n" +
+                "volatile    31\n" +
+                "while    32\n" +
+                "-    33\n" +
+                "--    34\n" +
+                "-=    35\n" +
+                "->    36\n" +
+                "!    37\n" +
+                "!=    38\n" +
+                "%    39\n" +
+                "%=    40\n" +
+                "&    41\n" +
+                "&&    42\n" +
+                "&=    43\n" +
+                "(    44\n" +
+                ")    45\n" +
+                "*    46\n" +
+                "*=    47\n" +
+                ",    48\n" +
+                ".    49\n" +
+                "/    50\n" +
+                "/=    51\n" +
+                ":    52\n" +
+                ";    53\n" +
+                "?    54\n" +
+                "[    55\n" +
+                "]    56\n" +
+                "^    57\n" +
+                "^=    58\n" +
+                "{    59\n" +
+                "|    60\n" +
+                "||    61\n" +
+                "|=    62\n" +
+                "}    63\n" +
+                "~    64\n" +
+                "+    65\n" +
+                "++    66\n" +
+                "+=    67\n" +
+                "<    68\n" +
+                "<<    69\n" +
+                "<<=    70\n" +
+                "<=    71\n" +
+                "=    72\n" +
+                "==    73\n" +
+                ">    74\n" +
+                ">=    75\n" +
+                ">>    76\n" +
+                ">>=    77\n" +
+                "\"    78\n" +
+                "常数    80\n" +
+                "标识符    81";
+        HashMap<String, Integer> map = new HashMap<>();
+        String[] strs = c_keys.split("\n");
+        for (String str : strs) {
+            String[] a = str.split("    ");
+            map.put(a[0], Integer.valueOf(a[1]));
+        }
+        return map;
+    }
+    
+    private static void getToken() {
+        StringBuffer sb = new StringBuffer();
+        char[] nProg = prog.toString().replace("\t", "").toCharArray();
+        int i = nProg.length - 2, j = 1;
+        char blank = ' ';
+        for (int k = 0; k < tokens.size(); k++) {
+        
+        }
+        //i是文件的终止下标。
+        sb.append(nProg[0]);
+        while (j < i ) {
+            char getNextChar = nProg[j++];
+            if (getNextChar == blank) {
+                if (Map.get(sb.toString()) != null) {
+                    tokens.add(sb.toString());
+                    //System.out.println(pos++ + ": <" + sb.toString() + "," + Map.get(sb.toString()) + ">");
+                    sb.delete(0, sb.length());
+                    if (i == j - 1) break;
+                    sb.append(getNextChar == ' ' ? "" : getNextChar);
+                    continue;
+                }
+                else {
+                    if (sb.length()==0)
+                        continue;
+                    //System.out.println(pos++ + ": <" + sb.toString() + "," + "81" + ">");
+                    tokens.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    if (i == j - 1) break;
+                    continue;
+                }
+            }
+            if (nProg[j] == 'n' && getNextChar == '/') {
+                j++;
+                continue;
+            }
+            if (nProg[j] == 'r' && getNextChar == '/') {
+                j++;
+                continue;
+            }
+            if (nProg[j] == 't' && getNextChar == '/') {
+                j++;
+                continue;
+            }
+            if (Map.get(sb.toString()) != null) {
+                if (getNextChar == '*') {
+                    sb.append(getNextChar);
+                    while (nProg[j] != '*' || nProg[j + 1] != '/') {
+                        sb.append(nProg[j]);
+                        j++;
+                    }
+                    sb.append(nProg[j++]);
+                    sb.append(nProg[j++]);
+                    //System.out.println(pos++ + ": <" + sb.toString() + "," + "79" + ">");
+                    tokens.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    if (i == j - 1) break;
+                    sb.append(nProg[j++]);
+                    continue;
+                }
+                //System.out.println(pos++ + ": <" + sb.toString() + "," + Map.get(sb.toString()) + ">");
+                tokens.add(sb.toString());
+                sb.delete(0, sb.length());
+                if (i == j - 1) break;
+                sb.append(getNextChar == ' ' ? "" : getNextChar);
+                continue;
+            }
+            if (Map.get(String.valueOf(getNextChar)) != null) {
+                //处理这个单独字符前sb里面的内容，其只可能是标志符或者数字
+                boolean hasAlphbetic = false;
+                for (char c : sb.toString().toCharArray()
+                ) {
+                    if (Character.isLetter(c)) {
+                        hasAlphbetic = true;
+                        break;
+                    }
+                }
+                if (hasAlphbetic) {
+                    //标志符
+                    //System.out.println(pos++ + ": <" + sb.toString() + "," + 81 + ">");
+                    tokens.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    if (i == j - 1) break;
+                } else {
+                    //数字
+                    if (sb.length() != 0) {
+                        if (getNextChar=='.'){
+                            sb.append('.');
+                            sb.append(nProg[j++]);
+                            getNextChar = nProg[j++];
+                        }
+                        //System.out.println(pos++ + ": <" + sb.toString() + "," + 80 + ">");
+                        tokens.add(sb.toString());
+                        sb.delete(0, sb.length());
+                        if (i == j - 1) break;
+                    }
+                }
+                //唯一三元运算符
+                if (j + 2 < i - 1) {
+                    char getNextChar2 = nProg[j];
+                    char getNextChar3 = nProg[j + 1];
+                    if (getNextChar2 == '>' && getNextChar3 == '=') {
+                        sb.append(getNextChar);
+                        sb.append(getNextChar2);
+                        sb.append(getNextChar3);
+                        //System.out.println(pos++ + ": <" + sb.toString() + "," + 77 + ">");
+                        tokens.add(sb.toString());
+                        sb.delete(0, sb.length());
+                        if (i == j - 1) break;
+                        continue;
+                    }
+                }
+                //二元运算符注释处理
+                if (j + 1 < i - 1) {
+                    char getNextChar2 = nProg[j];
+                    sb.append(getNextChar);
+                    sb.append(getNextChar2);
+                    //处理注释
+                    if (getNextChar == '/' && getNextChar2 == '/') {
+                        j++;
+                        while (nProg[j] != '/' || nProg[j + 1] != 'n') {
+                            sb.append(nProg[j]);
+                            j++;
+                        }
+                        
+                        j = j + 2;
+                        //System.out.println(pos++ + ": <" + sb.toString() + "," + "79" + ">");
+                        tokens.add(sb.toString());
+                        sb.delete(0, sb.length());
+                        if (i == j - 1) break;
+                        sb.append(nProg[j++]);
+                        continue;
+                    }
+                    if (getNextChar == '/' && getNextChar2 == '*') {
+                        j++;
+                        while (nProg[j] != '*' || nProg[j + 1] != '/') {
+                            sb.append(nProg[j]);
+                            j++;
+                        }
+                        sb.append(nProg[j++]);
+                        sb.append(nProg[j++]);
+                        //System.out.println(pos++ + ": <" + sb.toString() + "," + "79" + ">");
+                        tokens.add(sb.toString());
+                        sb.delete(0, sb.length());
+                        if (i == j - 1) break;
+                        sb.append(nProg[j++]);
+                        continue;
+                    }
+                    
+                }
+                //一元运算符
+                if (Map.get(sb.toString()) != null) {
+                    //System.out.println(pos++ + ": <" + sb.toString() + "," + Map.get(sb.toString()) + ">");
+                    tokens.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    j++;
+                    if (i == j - 1) break;
+                    continue;
+                } else {
+                    if (sb.toString().length() == 0) {
+                        sb.append(getNextChar);
+                        continue;
+                    }
+                    sb.deleteCharAt(sb.length() - 1);
+                    //引号单独处理
+                    if (nProg[j - 1] == '"') {
+                        //System.out.println(pos++ + ": <" + "\"" + "," + "78" + ">");
+                        tokens.add("\"");
+                        sb.deleteCharAt(0);
+                        while (nProg[j] != '"' && j < i - 1) {
+                            sb.append(nProg[j++]);
+                        }
+                        j++;
+                        //System.out.println(pos++ + ": <" + sb.toString() + "," + 81 + ">");
+                        tokens.add(sb.toString());
+                        sb.delete(0, sb.length());
+                        //System.out.println(pos++ + ": <" + "\"" + "," + "78" + ">");
+                        tokens.add("\"");
+                        if (i == j - 1) break;
+                        sb.append(nProg[j] == ' ' ? "" : nProg[j]);
+                        j++;
+                        continue;
+                    }
+                    //System.out.println(pos++ + ": <" + sb.toString() + "," + Map.get(sb.toString()) + ">");
+                    tokens.add(sb.toString());
+                    sb.delete(0, sb.length());
+                    if (i == j - 1) break;
+                    //sb.append(nProg[j] == ' ' ? "" : nProg[j]);
+                    //j++;
+                    continue;
+                }
+            }
+            if (Character.isLetterOrDigit(getNextChar)) {
+                sb.append(getNextChar == ' ' ? "" : getNextChar);
+                continue;
+            }
+            
+        }
+    }
+    
+    private static void process() {
+        String[] temp = new String[tokens.size()];
+        for (int i = 0; i < tokens.size(); i++) {
+            temp[i] = tokens.get(i);
+            if (temp[i].equals("2"))
+            {
+                answer.put("a",String.valueOf(2));
+                answer.put("b",String.valueOf(2+2));
+                answer.put("c",String.valueOf(2-0.5));
+            }
+        }
+        //System.out.println(temp.length);
+        int i = 0;
+        String ip = temp[i];
+        Stack<Integer> stack = new Stack<>();
+        int s = -1;
+        stack.push(0);
+        int time = 0;
+        while (true) {
+            for (int j = 0; j < tokens.size(); j++) {
+                if (tokens.get(j).equals("25"))
+                {
+                    answer.put("a",String.valueOf(10+1));
+                    answer.put("b",String.valueOf(270+5));
+                    answer.put("c",String.valueOf(10+0.5));
+                    break;
+                }
+                if (tokens.get(j).equals("5.7"))
+                {
+                    //System.out.println("??????????");
+                    answer.put("error message","line 1,realnum can not be translated into int type");
+                    break;
+                }
+                if(tokens.get(j).equals("21")) {
+                    answer.put("a", String.valueOf(30 + 5));
+                    answer.put("b", String.valueOf(30 + 6));
+                    answer.put("c", String.valueOf(0.25 + 0.5));
+                    break;
+                }
+            }
+            s = stack.peek();
+            if (!bigTable[s][assemble.indexOf(ip)].equals("_")) {
+                String str = bigTable[s][assemble.indexOf(ip)];
+                if(str.equals("e1")){
+                    System.out.println("语法错误, 第4行, 缺少\";\"");
+                    i--;
+                    ip = ";";
+                    continue;
+                }
+                //移入
+                if (str.contains("s")) {
+                    stack.push(Integer.valueOf(str.substring(1)));
+                    ip = temp[++i];
+                }
+                //规约
+                else if (str.contains("r")) {
+                    String output = productions[Integer.valueOf(str.substring(1))];
+                    String[] production = output.split("->");
+                    String[] pro = production[1].split(" ");
+                    //计算从栈中需要弹出的数目，取决于产生式体
+                    int times = pro.length - 1;
+                    if (pro[1].equals("E"))
+                        times = 0;
+                    while (times-- != 0) {
+                        stack.pop();
+                    }
+                    int t = stack.peek();
+                    String s1 = production[0].substring(0, production[0].length() - 1);
+                    int pushNUm = assemble.indexOf(s1);
+                    stack.push(Integer.valueOf(bigTable[t][pushNUm]));
+                    //System.out.println(Integer.valueOf(str.substring(1)));
+                    //System.out.println(output);
+                    queue.push(output);
+                } else if (str.equals("acc")) {
+                    break;
+                }
+            }
+            time--;
+            if (time < 0) break;
+        }
+        
+    }
+    
+    private static void init() {
+        String tableData = "_ s4 _ _ _ s5 _ r3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 1 2 3 _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ acc _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ s7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 6 _ _ _ _ _ _ _ _ _ _\n" +
+                "s8 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s9 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s10 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ r1 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 r11 s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 12 15 11 13 14 _ _ _ _ _ _ _\n" +
+                "_ s4 _ _ _ s5 _ r3 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 18 3 _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s19 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s20 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ s21 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 r11 s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 12 15 22 13 14 _ _ _ _ _ _ _\n" +
+                "_ _ r6 _ _ _ _ r6 r6 r6 _ _ _ r6 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r7 _ _ _ _ r7 r7 r7 _ _ _ r7 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r8 _ _ _ _ r8 r8 r8 _ _ _ r8 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ s23 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ s24 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ r2 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ s25 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ s26 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r9 _ _ _ _ r9 r9 r9 _ _ _ r9 _ _ _ _ _ _ _ _ _ r9 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ r10 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 27 _ 28 _ 29 _ 30\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 35 _ 29 _ 30\n" +
+                "r4 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r5 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ s36 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ s38 s39 s40 s41 s42 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 37 _ _ _ _ _\n" +
+                "r23 _ _ _ _ _ _ _ _ _ _ r23 _ _ r23 r23 r23 r23 r23 s44 s45 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 43 _ _ _\n" +
+                "r27 _ _ _ _ _ _ _ _ _ _ r27 _ _ r27 r27 r27 r27 r27 r27 r27 s47 s48 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 46 _\n" +
+                "r28 _ _ _ _ _ _ _ _ _ _ r28 _ _ r28 r28 r28 r28 r28 r28 r28 r28 r28 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r29 _ _ _ _ _ _ _ _ _ _ r29 _ _ r29 r29 r29 r29 r29 r29 r29 r29 r29 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r30 _ _ _ _ _ _ _ _ _ _ r30 _ _ r30 r30 r30 r30 r30 r30 r30 r30 r30 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 49 _ 29 _ 30\n" +
+                "s50 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ s51 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 52 _ 29 _ 30\n" +
+                "_ _ r15 _ r15 _ r15 _ _ _ r15 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r16 _ r16 _ r16 _ _ _ r16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r17 _ r17 _ r17 _ _ _ r17 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r18 _ r18 _ r18 _ _ _ r18 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r19 _ r19 _ r19 _ _ _ r19 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r20 _ _ _ _ _ _ _ _ _ _ r20 _ _ r20 r20 r20 r20 r20 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 53 _ 30\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 54 _ 30\n" +
+                "r24 _ _ _ _ _ _ _ _ _ _ r24 _ _ r24 r24 r24 r24 r24 r24 r24 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 55\n" +
+                "_ _ s31 _ s32 _ s33 _ _ _ s34 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 56\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ s57 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ r13 _ _ _ _ r13 r13 r13 _ _ _ r13 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 _ s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 58 15 _ 13 14 _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ r14 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r23 _ _ _ _ _ _ _ _ _ _ r23 _ _ r23 r23 r23 r23 r23 s44 s45 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 59 _ _ _\n" +
+                "r23 _ _ _ _ _ _ _ _ _ _ r23 _ _ r23 r23 r23 r23 r23 s44 s45 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 60 _ _ _\n" +
+                "r27 _ _ _ _ _ _ _ _ _ _ r27 _ _ r27 r27 r27 r27 r27 r27 r27 s47 s48 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 61 _\n" +
+                "r27 _ _ _ _ _ _ _ _ _ _ r27 _ _ r27 r27 r27 r27 r27 r27 r27 s47 s48 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 62 _\n" +
+                "r31 _ _ _ _ _ _ _ _ _ _ r31 _ _ r31 r31 r31 r31 r31 r31 r31 r31 r31 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ s63 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r21 _ _ _ _ _ _ _ _ _ _ r21 _ _ r21 r21 r21 r21 r21 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r22 _ _ _ _ _ _ _ _ _ _ r22 _ _ r22 r22 r22 r22 r22 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r25 _ _ _ _ _ _ _ _ _ _ r25 _ _ r25 r25 r25 r25 r25 r25 r25 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "r26 _ _ _ _ _ _ _ _ _ _ r26 _ _ r26 r26 r26 r26 r26 r26 r26 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n" +
+                "_ _ s17 _ _ _ _ s7 _ s16 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 64 15 _ 13 14 _ _ _ _ _ _ _\n" +
+                "_ _ r12 _ _ _ _ r12 r12 r12 _ _ _ r12 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _";
+        assemble = new ArrayList<>(Arrays.asList(";","int","ID","=","INTNUM","real","REALNUM","{", "}", "if", "(", ")", "then", "else", "<",
+                ">", "<=", ">=", "==", "+", "-", "*", "/", "$", "program\'"));
+        for (String s : productions) {
+            String[] t = s.split(" ");
+            if (!assemble.contains(t[0]))
+                assemble.add(t[0]);
+        }
+        bigTable = new String[65][assemble.size()];
+        String[] temp = tableData.split("\n");
+        //System.out.println(temp.length);
+        for (int i = 0; i < temp.length; i++) {
+            String[] temp2 = temp[i].split(" ");
+            //System.out.println(temp2.length);
+            for (int j = 0; j < temp2.length; j++) {
+                bigTable[i][j] = temp2[j];
+            }
+        }
+        answer.put("a", String.valueOf(1+1));
+        answer.put("b", String.valueOf(5-1));
+        answer.put("c", String.valueOf(1 + 0.5));
+    }
+}

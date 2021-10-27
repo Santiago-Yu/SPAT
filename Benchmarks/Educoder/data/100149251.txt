@@ -1,0 +1,50 @@
+package step2;
+
+public class Task {
+    
+	public int virusArea(int n,int m,char[][] area){
+		/********* Begin *********/
+		int num = 0, i, j, k, x, y;
+		final class node {
+			public int x, y;
+			public node(int x, int y) {
+				this.x = x;
+				this.y = y;
+			}
+		}
+		for (i = 0; i < n; ++i) 
+			for (j = 0; j < m; ++j) {
+				if (area[i][j] == 'o') {
+					++num;
+                    k = 0;	x = i;	y = j;
+					node[] S = new node[m * n];
+					S[k++] = new node(x, y);
+					area[x][y] = 'x';
+					while (k > 0) {
+						if (x + 1 < n && area[x + 1][y] == 'o') {
+							S[k++] = new node(x + 1, y);
+							area[x + 1][y] = 'x';
+						}
+						if (x - 1 >= 0 && area[x - 1][y] == 'o') {
+							S[k++] = new node(x - 1, y);
+							area[x - 1][y] = 'x';
+						}
+						if (y + 1 < m && area[x][y + 1] == 'o') {
+							S[k++] = new node(x, y + 1);
+							area[x][y + 1] = 'x';
+						}
+						if (y - 1 >= 0 && area[x][y - 1] == 'o') {
+							S[k++] = new node(x, y - 1);
+							area[x][y - 1] = 'x';
+						}
+						node nd = S[--k];
+						x = nd.x;	y = nd.y; 
+					}
+				}
+			}
+		
+		return num;
+		
+		/********* End *********/	
+	}
+}

@@ -1,0 +1,21 @@
+package step1;
+
+public class Task {
+
+	
+	public int getSum(int num1, int num2) {
+		/********** BEGIN **********/
+		int mark=0;
+        for (int i = num1; i <= num2; i++) {
+			String temp = String.valueOf(i);
+			for (int j = 0; j < temp.length(); j++) {
+				String tempmark = temp.substring(j, j+1);
+				int a = Integer.parseInt(tempmark);
+				mark+= a;
+			}
+		}
+		return mark;
+		
+		/********** END **********/
+	}
+}

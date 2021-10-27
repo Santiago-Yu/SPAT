@@ -1,0 +1,389 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+public class Java_LexAnalysis {
+    private static StringBuffer prog = new StringBuffer();
+    private static StringBuffer prog0 = new StringBuffer();
+    private static List<String> reservedWord = new ArrayList<>(Arrays.asList("auto", "break", "case", "char", "const", "continue", "default", "do", "double", "else", "enum", "extern", "float", "for", "goto", "if", "int", "long", "register", "return", "short", "signed", "sizeof", "static", "struct", "switch", "typedef", "union", "unsigned", "void", "volatile", "while"));
+    private static List<String> symbol = new ArrayList<>(Arrays.asList("-", "--", "-=", "->", "!", "!=", "%", "%=", "&", "&&", "&=", "(", ")", "*", "*=", ",", ".", "/", "/=", ":", ";", "?", "[", "]", "^", "^=", "{", "|", "||", "|=", "}", "~", "+", "++", "+=", "<", "<<", "<<=", "<=", "=", "==", ">", ">=", ">>", ">>=", "\""));
+
+    /**
+     * this method is to read the standard input
+     */
+    private static void read_prog() {
+        Scanner sc = new Scanner(System.in);
+        String dd = new String();
+        while (sc.hasNextLine()) {
+            dd = sc.nextLine();
+            prog.append(dd);
+            prog.append("\n");
+            prog0.append(dd);
+            prog0.append("\n");
+        }
+//        int i = 0;
+//        while (i < 1) {
+//            dd = sc.nextLine();
+//            prog.append(dd);
+//            prog.append("\n");
+//            prog0.append(dd);
+//            prog0.append("\n");
+//            i++;
+//        }
+    }
+
+
+    // add your method here!!
+    private static boolean notSymbol(char c) {
+        return Character.isLetterOrDigit(c) || (c == ' ') || (c == '\t') || (c == '_');
+    }
+
+    private static boolean isSpace(char c) {
+        return (c == ' ') || (c == '\t');
+    }
+
+    private static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
+    }
+
+    private static int numOfFreedom(String s) {
+        int length = s.length();
+        int cnt = 0;
+        for (int i = 0; i < length; i++) {
+            if (s.charAt(i) == '\n') {
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+
+    /**
+     * you should add some code in this method to achieve this lab
+     */
+    private static void analysis() {
+        read_prog();
+        prog.append(' ');
+        prog.insert(0, ' ');
+        prog0.append(' ');
+        prog0.insert(0, ' ');
+//        System.out.println(prog);
+        List<String> lexicon = new ArrayList<>();
+        List<String> token = new ArrayList<>();
+        List<String> slashSlashComments = new ArrayList<>();
+        List<String> slashStarComments = new ArrayList<>();
+        int lexiconStart = 0, lexiconEnd = 0, lexiconStart0 = 0, lexiconEnd0 = 0, index0, commentEnd, sSlashcomment = 0, sStarcomment = 0, freedomCnt;
+        String subString;
+        char c, c1, c2, d, d1;
+
+        for (int i = 0; i < prog.length()-1; i++) {
+            c = prog.charAt(i);
+            c1 = prog.charAt(i+1);
+            if(c=='*'&&c1=='/'){
+                prog.insert(i+2, '\n');
+            }
+            if(c==';'){
+                prog.insert(i+1, '\n');
+            }
+            if (!notSymbol(c)) {
+                prog.insert(i + 1, ' ');
+                prog.insert(i, ' ');
+                i += 2;
+            }
+        }
+        for(int i=0; i<prog0.length()-1; i++){
+            c = prog0.charAt(i);
+            c1 = prog0.charAt(i+1);
+            if(c=='*'&&c1=='/'){
+                prog0.insert(i+2, '\n');
+            }
+            if(c==';'){
+                prog0.insert(i+1, '\n');
+            }
+        }
+        int length_prog0 = prog0.length() - 1;
+        int length_prog = prog.length() - 1;
+        for (int i = 0; i < length_prog0; i++) {
+            d = prog0.charAt(i);
+            d1 = prog0.charAt(i + 1);
+            if (d == '/' && d1 == '/') {
+                commentEnd = prog0.indexOf("\n", i + 1);
+                slashSlashComments.add(prog0.substring(i, commentEnd));
+            }
+            if (d == '/' && d1 == '*') {
+                commentEnd = prog0.indexOf("*/\n", i + 1);
+                slashStarComments.add(prog0.substring(i, commentEnd + 2));
+            }
+        }
+        for (int i = 0; i < length_prog; i++) {
+            c = prog.charAt(i);
+            c1 = prog.charAt(i + 1);
+            if ((isSpace(c) || !notSymbol(c)) && (!isSpace(c1))) {
+                lexiconStart = i + 1;
+            }
+            if ((isSpace(c1) || !notSymbol(c1)) && (!isSpace(c))) {
+                lexiconEnd = i + 1;
+            }
+            if ((lexiconEnd > lexiconStart) && (lexiconStart != lexiconStart0) && (lexiconEnd != lexiconEnd0)) {
+                lexiconStart0 = lexiconStart;
+                lexiconEnd0 = lexiconEnd;
+                subString = prog.substring(lexiconStart, lexiconEnd);
+                lexicon.add(subString);
+            }
+        }
+//        System.out.println(lexicon);
+
+
+        lexicon.add("   ");
+        lexicon.add("   ");
+        length_prog = lexicon.size() - 2;
+        for (int i = 0; i < length_prog; i++) {
+            subString = "";
+            if (lexicon.get(i).length() == 1) {
+                c = lexicon.get(i).charAt(0);
+                c1 = lexicon.get(i + 1).charAt(0);
+                c2 = lexicon.get(i + 2).charAt(0);
+                switch (c) {
+                    case '-':
+                        if (c1 == c || c1 == '=' || c1 == '>') {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '!':
+                        if (c1 == '=') {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '%':
+                        if (c1 == '=' || c1 == 'd' || c1 == 'f' || c1 == 's' || c1 == 'c' || c1 == 'l' || c1 == 'o' || c1 == 'x' || c1 == 'u' || c1 == 'e' || c1 == 'g') {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '&':
+                        if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '*':
+                        if (c1 == '=') {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '/':
+                        if (c1 == '=') {
+                            subString = subString + c + c1;
+                            i++;
+                        } else if (c1 == '/') {
+                            subString = slashSlashComments.get(sSlashcomment);
+//                            System.out.println(subString);
+                            sSlashcomment++;
+                            for (; i < length_prog; i++) {
+                                if (lexicon.get(i).length() == 1) {
+                                    c = lexicon.get(i).charAt(0);
+                                    if (c == '\n') {
+                                        break;
+                                    }
+                                }
+                            }
+                        } else if (c1 == '*') {
+                            subString = slashStarComments.get(sStarcomment);
+                            sStarcomment++;
+                            freedomCnt = 0;
+                            for (; i < length_prog; i++) {
+                                if (lexicon.get(i).length() == 1) {
+                                    c = lexicon.get(i).charAt(0);
+                                    if (c == '\n') {
+
+//                                        System.out.println("dd"+freedomCnt+' '+numOfFreedom(subString));
+                                        if(freedomCnt == numOfFreedom(subString)){
+
+                                            break;
+                                        }
+                                        freedomCnt++;
+                                    }
+                                }
+                            }
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '^':
+                        if (c1 == '=') {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '|':
+                        if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '+':
+                        if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '=':
+                        if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '<':
+                        if (c1 == '<' && c2 == '=') {
+                            subString = "<<=";
+                            i += 2;
+                        } else if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    case '>':
+                        if (c1 == '>' && c2 == '=') {
+                            subString = ">>=";
+                            i += 2;
+                        } else if (c1 == '=' || c1 == c) {
+                            subString = subString + c + c1;
+                            i++;
+                        } else {
+                            subString = subString + c;
+                        }
+                        break;
+                    default:
+                        token.add(lexicon.get(i));
+                        continue;
+                }
+//                System.out.println(subString);
+                token.add(subString);
+                continue;
+            }
+//            System.out.println(lexicon.get(i));
+            token.add(lexicon.get(i));
+        }
+
+        length_prog = token.size() - 2;
+        int cnt = 0;
+        for (int i = 0; i < length_prog; i++) {
+            subString = token.get(i);
+            index0 = reservedWord.indexOf(subString) + 1;
+            if (index0 != 0) {
+                System.out.println((cnt + 1) + ": <" + subString + ',' + index0 + '>');
+                cnt++;
+                continue;
+            }
+            index0 = symbol.indexOf(subString) + 1;
+            if (index0 != 0) {
+                System.out.println((cnt + 1) + ": <" + subString + ',' + (index0 + 32) + '>');
+                cnt++;
+                continue;
+            }
+            if (subString.indexOf("//") == 0) {
+                System.out.println((cnt + 1) + ": <" + subString + ',' + 79 + '>');
+                cnt++;
+                continue;
+            }
+            if (subString.indexOf("/*") == 0) {
+                System.out.println((cnt + 1) + ": <" + subString + ',' + 79 + '>');
+                cnt++;
+                continue;
+            }
+            if (subString.length() != 0) {
+                if (isInteger(subString)) {
+                    System.out.println((cnt + 1) + ": <" + subString + ',' + 80 + '>');
+                    cnt++;
+                    continue;
+                }
+//                if(subString.charAt(0)=='\n'||subString.charAt(0)=='\r'){
+//                    continue;
+//                }
+                if (subString.charAt(0) == '\n') {
+                    continue;
+                }
+                System.out.println((cnt + 1) + ": <" + subString + ',' + 81 + '>');
+                cnt++;
+                continue;
+            }
+        }
+        for (int i = length_prog; i < length_prog + 1; i++) {
+            subString = token.get(i);
+            index0 = reservedWord.indexOf(subString) + 1;
+            if (index0 != 0) {
+                System.out.print((cnt + 1) + ": <" + subString + ',' + index0 + '>');
+                cnt++;
+                continue;
+            }
+            index0 = symbol.indexOf(subString) + 1;
+            if (index0 != 0) {
+                System.out.print((cnt + 1) + ": <" + subString + ',' + (index0 + 32) + '>');
+                cnt++;
+                continue;
+            }
+            if (subString.indexOf("//") == 0) {
+                System.out.print((cnt + 1) + ": <" + subString + ',' + 79 + '>');
+                cnt++;
+                continue;
+            }
+            if (subString.indexOf("/*") == 0) {
+                System.out.print((cnt + 1) + ": <" + subString + ',' + 79 + '>');
+                cnt++;
+                continue;
+            }
+            if ((subString.length() != 0)) {
+                if (isInteger(subString)) {
+                    System.out.print((cnt + 1) + ": <" + subString + ',' + 80 + '>');
+                    cnt++;
+                    continue;
+                }
+//                if(subString.charAt(0)=='\n'||subString.charAt(0)=='\r'){
+//                    continue;
+//                }
+                if (subString.charAt(0) == '\n') {
+                    //cnt++;
+                    continue;
+                }
+                System.out.print((cnt + 1) + ": <" + subString + ',' + 81 + '>');
+                cnt++;
+                continue;
+            }
+        }
+    }
+
+    /**
+     * this is the main method
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+        analysis();
+    }
+}

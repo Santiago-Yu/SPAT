@@ -1,0 +1,83 @@
+package step1;
+import java.util.List;
+public class Task {
+
+    public String solver(String s,int p,List<Operation> ops) {
+        /**********   Begin  **********/
+        StringBuffer sb = new StringBuffer(s);
+        for (int i = 0; i < ops.size(); i++) {
+            switch (ops.get(i).t){
+                case "I":
+                    sb=insert(sb,p,ops.get(i).s);
+                    p = right(sb,p,ops.get(i).s.length());
+                    break;
+                case "B":
+                    sb=backspace(sb,p,ops.get(i).l);
+                    p = left(sb,p,ops.get(i).l);
+                    break;
+                case "D":
+                    sb=delete(sb,p,ops.get(i).l);
+                    break;
+                case "L":
+                    p = left(sb,p,ops.get(i).l);
+                    break;
+                case "R":
+                    p = right(sb,p,ops.get(i).l);
+                    break;
+            }
+        }
+
+        return sb.toString();
+        /**********   End  **********/
+    }
+
+    static private StringBuffer insert(StringBuffer sb,int p,String str){
+        sb.insert(p,str);
+        return sb;
+    }
+
+    static private StringBuffer backspace(StringBuffer sb,int p, int n){
+        if (n >= p){
+            return sb.replace(0,p,"");
+        }
+        else {
+            return sb.replace(p-n,p,"");
+        }
+    }
+
+    static private StringBuffer delete(StringBuffer s,int p,int n){
+        if (n>=s.length()-p){
+            return s.replace(p,s.length(),"");
+        }
+        else {
+            return s.replace(p,p+n,"");
+        }
+    }
+
+    static private int left(StringBuffer s,int p,int n){
+        if (p-n<=0){
+            return 0;
+        }
+        else {
+            return p-n;
+        }
+    }
+
+    static private int right(StringBuffer s,int p,int n){
+        if (p+n>=s.length()){
+            return s.length();
+        }
+        else {
+            return p+n;
+        }
+    }
+    
+
+
+    static class Operation {
+        String t;
+        String s;
+        int l;
+    }
+}
+

@@ -1,0 +1,77 @@
+package step3;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+     /*File []current;
+	public void showDirStructure(File file)	{
+		System.out.println("+--"+file.getName());
+        current=file.listFiles();
+        String d="  "+"+--";
+        String r="  "+"--";
+        for(int i=0;i<current.length;i++){
+            if(current[i].isDirectory()){
+                System.out.println(d+current[i].getName());
+                show(current[i],d,r);
+            }else{
+                if(current[i].getName().endsWith(".jpg")||current[i].getName().endsWith(".png")||current[i].getName().endsWith(".bmp")){
+                    System.out.println(r+current[i].getName());
+                }
+            }
+        }
+
+	}
+	
+    public void show(File file,String d,String r){
+        
+        File []t=file.listFiles();
+        int dt=1;
+        int rt=1;
+        String dstr=d;
+        String rstr=r;
+     
+        for(int j=0;j<t.length;j++){
+         if(t[j].isDirectory()){
+             if(dt==1){
+                dstr="  "+dstr;
+                dt=0;
+             }
+             System.out.println(dstr+t[j].getName());
+             show(t[j],dstr,"  "+rstr); 
+         }else{
+             if(rt==1){
+                rstr="  "+rstr;
+                rt=0;
+             }
+            if(t[j].getName().endsWith(".jpg")||t[j].getName().endsWith(".png")||t[j].getName().endsWith(".bmp")){
+                System.out.println(rstr+t[j].getName());
+            }
+         }
+        }
+    }*/
+     public void showDirStructure(File file)    {
+        System.out.println("+--" + file.getName());
+        showDirTree(file," ");
+    }
+    public static void showDirTree(File dir,String interval){
+        File[] files = dir.listFiles();
+        interval += " ";
+        for (File file : files) {
+            if(!file.isDirectory()){
+                if(file.getName().endsWith(".jpg")||file.getName().endsWith(".png")||file.getName().endsWith(".bmp"))
+                {
+                    System.out.println(interval + "--" +  file.getName());
+                }
+            }else{
+                System.out.println(interval + "+--" +  file.getName());
+                showDirTree(file,interval + " ");
+            }
+        }
+    }
+    
+    
+	
+	/********** END **********/
+}

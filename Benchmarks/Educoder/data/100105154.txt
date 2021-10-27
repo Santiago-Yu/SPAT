@@ -1,0 +1,25 @@
+package step3;
+import java.util.Scanner;
+public class Reverse {
+    public static String start(String data) {
+    	String[] ss = data.split(" ");
+    	  String s1 ="";
+    	  for (int i = 0; i < ss.length; i++) {
+    	   String s2 = new StringBuffer(ss[i]).reverse().toString();
+       	   if ("".equals(s1)) {
+       	    s1 = s2;}
+       	   else if(i==ss.length-1) {
+       	    s1=s1+" "+s2+" ";}
+       	   else {
+       		s1=s1+" "+s2; 
+       	   }
+    	  }
+    	  return s1;
+    	 }
+    public static void main(String[] args) {
+    	Scanner scanner = new Scanner(System.in);
+    	String str=scanner.nextLine();
+    	str=start(str);
+    	System.out.println(str);
+    }
+}

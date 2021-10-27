@@ -1,0 +1,62 @@
+package Q102;
+import java.util.Scanner;
+public class Main {
+	int five = 0;// 店内五元零钱
+	int ten = 0;// 店内十元零钱
+	int twenty = 0;// 店内二十元零钱
+	int temp;
+
+	public boolean change(int i) {
+		this.temp = i - 5;
+		if (temp == 0) { // 收了五元
+			five += 5;
+		} else if (temp == 5) { // 收了十元
+			if (five >= 5) {
+				five -= 5;// 出一张五元
+				ten += 10;// 收一张十元
+			} else {
+				return false;
+			}
+		} else if (temp == 15) { // 收了二十元
+			if (five >= 5 && ten >= 10) {
+				five -= 5;// 出一张五元
+				ten -= 10;// 出一张十元
+				twenty += 20;// 收一张二十元
+			} else if (five >= 15 && ten < 10) {
+				five -= 15;// 出三张五元
+				twenty += 20;// 收一张二十元
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static void main(String[] args) {
+		int number[] = new int[100];
+		Main first = new Main();//实例化
+		Scanner sc = new Scanner(System.in);
+		int i = 0;
+		boolean flag=true;
+		while(sc.hasNextInt()) {
+			number[i]=sc.nextInt();
+			i++;
+		 }
+		
+		for(int j = 0;j < i;j++) {
+			flag = first.change(number[j]);
+			if(flag==true) {
+				;
+			}else if(flag==false){
+				break;
+			}
+		}
+		
+		if(flag==true) {
+			System.out.print(flag);
+		}else {
+			System.out.print(flag);
+		}
+
+	}
+}

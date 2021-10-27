@@ -1,0 +1,28 @@
+package Q302;
+import java.util.Scanner;
+public class Main {
+
+	public static void main(String[] args) {
+		int n;
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		double[][] dp = new double[101][101];
+		dp[0][0] = 1.000000000000;
+		for(int i = 1; i <= n; i++) {
+			for(int j = i; j <= 6*i; j++) {
+				for(int k = 1; k <= 6; k++) {
+					if(j-k>=0)
+					dp[i][j]+=dp[i-1][j-k]*0.1666666666667;
+				}
+			}
+		}
+		String result;
+		for(int i = n; i < 6*n; i++) {
+			result = String.format("%.6f",dp[n][i]);
+			System.out.println(i+" "+result);
+		}
+		result = String.format("%.6f",dp[n][6*n]);
+		System.out.print(6*n+" "+result);
+	}
+
+}

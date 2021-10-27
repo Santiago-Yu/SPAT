@@ -1,0 +1,40 @@
+package step2;
+
+import java.io.File;
+
+public class Task {
+	
+	/********** BEGIN **********/
+	public void showDirStructure(File file)	{
+		if(file.isDirectory())
+        {
+            System.out.println("+--"+file.getName());
+        }
+        int deep=2;
+        Haha(file,deep);
+	}
+    public static void Haha(File file,int deep)
+    {
+        File files[]=file.listFiles();
+        for(int i=0;i<files.length;i++)
+        {
+         if(files[i].isDirectory())
+         {   for (int j = 0; j < deep; j++)//输出空格
+             System.out.print(" ");
+             System.out.println("+--"+files[i].getName());
+             
+             Haha(files[i],deep+2);
+               
+         }
+            else
+            {   for (int j = 0;j<deep; j++)//输出空格
+                    System.out.print(" ");
+                System.out.println("--"+files[i].getName());
+            }
+        }   
+    }   
+	
+
+
+	/********** END **********/
+}

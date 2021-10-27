@@ -1,0 +1,53 @@
+package step2;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		int area = length * width;
+		List<Integer> list = new ArrayList<>();
+		for(int i = 1; i <= area; i++) {
+			if((area % i == 0) && (length % i == 0) && (width % i == 0)) {
+				list.add(i*i);
+			}
+		}
+		
+		//System.out.println(list);
+		//可能的小正方形的面积
+		int max = 0;
+		List<Integer> canBorder = new ArrayList<>(); 
+		for(int i = 0; i < list.size(); i++) {
+			
+			double number = Math.pow(list.get(i), 0.5); 
+			//System.out.println(number);
+			if(number % 2 == 0 || number % 1 == 0) {
+				canBorder.add((int)number);
+			}
+		}
+		
+		//System.out.println(canBorder); //可能的边长
+		if(canBorder.size() == 1) {
+			max = canBorder.get(0);
+			//System.out.println(canBorder.get(0));
+		}else {
+			Collections.sort(canBorder);
+			max = canBorder.get(canBorder.size() - 1);
+		}
+		System.out.println(max);
+		System.out.println(area / (max * max));
+		
+		
+		
+		
+		
+		
+		/********** END **********/
+	}
+}

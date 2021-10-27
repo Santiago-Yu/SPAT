@@ -1,0 +1,93 @@
+package step4;
+
+public class Task {
+	
+	public String getDate(String releaseDate,int day){
+		/********* Begin *********/
+		String riqi = releaseDate;
+
+		String fenge[] = riqi.split("-");
+
+		int yuefen[] = {31,28,31,30,31,30,31,31,30,31,30,31};
+
+		int year = Integer.valueOf(fenge[0]);
+
+		int m = Integer.valueOf(fenge[1]);
+
+		int d = Integer.valueOf(fenge[2]);
+
+		int days = 0;
+
+		days = d + day;
+
+		for(int i=m-1;;i++){
+
+			if(year%400==0||(year%100!=0&&year%4==0)){
+
+				yuefen[1] = 29;
+
+			}else{
+
+				yuefen[1] = 28;
+
+			}
+
+			if(days <= yuefen[i%12]){
+
+				m = i%12+1;
+
+				days = days;
+
+				break;
+
+			}else{
+
+				days = days - yuefen[i%12];
+
+				if(i%12==11){
+
+					year = year + 1;
+
+				}
+
+			}
+
+		}
+
+		String mz = "";
+
+		String dz = "";
+
+		mz = "" + m;
+
+		if(m<10){
+
+			mz = ""+0+mz;
+
+		}
+
+		dz = "" + days;
+
+		if(days<10){
+
+			dz = ""+0+days;
+
+		}
+
+		return year+"-"+mz+"-"+dz;
+
+
+
+
+
+
+
+
+
+
+
+        /********* End *********/
+	}
+	
+	
+}

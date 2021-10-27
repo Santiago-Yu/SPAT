@@ -1,0 +1,38 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread fei=new MyThread();
+        System.out.println("子线程计算结果为："+fei.fibonacci(num));
+		
+		
+	}
+}
+
+
+class MyThread     {
+
+    public int fibonacci(int n){
+        int result[]={0,1};
+        if(n<2){
+            return result[n];}
+        int f0=0;
+        int f1=1;
+        int f2=0;
+        for(int i=1;i<n;i++)
+        {
+            f2=f1+f0;
+            f0=f1;
+            f1=f2;
+        }
+        return f1;
+    }
+	
+	
+
+}

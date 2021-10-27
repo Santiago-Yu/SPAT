@@ -1,0 +1,27 @@
+package step3;
+
+import java.util.Scanner;
+public class Number_Judge {
+		public static void main(String[] args) {
+			Scanner scan1=new Scanner(System.in);
+			/******Begin******/
+           int num = scan1.nextInt();
+           if(num%2==0){System.out.printf("偶数");}
+           else {
+               if(isPrime(num)){
+                   System.out.printf("素数");}
+               else{System.out.printf("奇数");}
+           }
+        }
+            public static boolean isPrime(int num){
+                boolean isprime=true;
+                int len=num/2;
+               for(int i=2;i<len;i++){
+                  if(num%i==0){
+                      isprime=false;
+ 				      break;}
+               }
+                return isprime;
+			/******End******/
+		}
+}

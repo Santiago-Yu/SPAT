@@ -1,0 +1,154 @@
+
+
+import java.io.*;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.csvreader.CsvReader;
+import com.csvreader.CsvWriter;
+
+public class Task {
+
+    public static void main(String[] args) throws IOException {
+        //读取文件内容至list集合中
+        List<User> userlist = getUserTagsFromCsv("src/step1/user_tag.csv");
+        List<String> txList = getTongXian("src/step1/user_recommand.csv");
+        List<String> data = new ArrayList<>();
+        for (User user : userlist) {
+            List<String> userTags = user.getTags();
+            Set<String> rec = new HashSet<String>();
+            for(String userTag : userTags) {
+                rec.add(userTag);
+            }
+            for(String txTags : txList) {
+                int count = 0;
+                for(String userTag : userTags) {
+                    if(txTags.contains(userTag))
+                        count++;
+                }
+                if(count > 0) {
+                    for(String tag : txTags.split(",")) {
+                        rec.add(tag);
+                    }
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            for(String tag : rec) {
+                if(sb.length() != 0)
+                    sb.append(",");
+                sb.append(tag);
+            }
+            data.add(sb.toString());
+        }
+        //将数据写到user_recommand.csv中
+        writeCsvFile("src/step1/user_recommand.csv",data);
+    }
+
+    public static List<String> getTongXian(String path){
+        List<String> list = new ArrayList<String>();
+        try {
+            // 创建CSV读对象
+           CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读这行的第一列
+                String tagName = csvReader.get(1);    //标签名
+                list.add(tagName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    /**
+     * 读取user_tag文件信息至list集合中
+     * 
+     * @param path
+     *            文件路径
+     * @return 用户的集合
+     * @throws IOException
+     */
+    public static List<User> getUserTagsFromCsv(String path) throws IOException {
+        // 创建创建用户集合并读取文件数据
+        List<User> userList = new ArrayList<>();
+        try {
+            // 创建CSV读对象
+           CsvReader csvReader = new CsvReader(new FileInputStream(new File(path)),Charset.forName("UTF-8"));
+            // 读表头
+            csvReader.readHeaders();
+            while (csvReader.readRecord()) {
+                // 读一整行
+                // 读这行的第一列
+                String id = csvReader.get(0);        //读id
+                String tagName = csvReader.get(1);    //标签名
+                String[] tagItems = tagName.split(",");
+                List<String> tags = new ArrayList<>();
+                User user = new User();
+                user.setUserId(Integer.valueOf(id));
+                for (int j = 0; j < tagItems.length; j++) {
+                    tags.add(tagItems[j]);
+                }
+                user.setTags(tags);
+                userList.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userList;
+    }
+
+    
+
+    /**
+     * 写结果文件
+     * 
+     * @param filePath 文件路径
+     * @param data 要写入的数据
+     * @throws IOException
+     */
+    public static void writeCsvFile(String filePath, List<String> data) throws IOException {
+        // 创建CSV写对象
+        CsvWriter csvWriter = new CsvWriter(filePath, ',', Charset.forName("UTF-8"));
+        // CsvWriter csvWriter = new CsvWriter(filePath);
+        // 写表头
+        String[] headers = {"id","recommand_tags"};
+        csvWriter.writeRecord(headers);
+        //循环写数据
+       
+        int id = 1;
+        for (String tag : data) {
+            String[] content = {id++ +"", tag};
+            csvWriter.writeRecord(content);
+        }
+        csvWriter.close();
+    }
+}
+
+// 用户
+class User {
+    private int userId;
+    private List<String> tags;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+    
+    public List<String> getTags() {
+        return tags;
+    }
+    
+    public void setTags(List<String> tags){
+        this.tags = tags;
+    }
+}

@@ -1,0 +1,35 @@
+package step3;
+
+import java.util.Scanner;
+
+public class HelloWorld {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int max=0;
+        float sum=0;
+		int[] scores = new int[sc.nextInt()];
+		
+		for(int i = 0 ; i< scores.length;i++){
+			scores[i] = sc.nextInt();
+		}
+		/********** Begin **********/
+		//在这里计算数组scores的平均值和最大值
+		for(int i=0;i<scores.length;i++){
+            for(int j=1;j<scores.length;j++){
+            if(scores[i]>scores[j] && scores[i]>=max){
+            max=scores[i];
+            }
+}
+            sum+=scores[i];
+        }
+		int b=scores.length;
+		float a=sum/b;
+		System.out.println("平均值："+a );
+		System.out.println("最大值："+max );
+
+		/********** End **********/
+	}
+}
+
+		
+		

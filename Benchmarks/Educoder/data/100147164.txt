@@ -1,0 +1,44 @@
+package step2;
+
+public class BestTeam {
+
+	/********* Begin *********/
+
+    public Long getBestTeam(int numbers, int[] abilities, int selectedNum, int distance){
+         int n =numbers;
+        int[] ai = new int[n+1];
+
+       int[] num2 = abilities;
+        for(int i = 1;i <= n;i++)
+            //ai[i]表示学生的能力值
+            ai[i] = num2[i];
+
+        int k = selectedNum;//选取k个学生
+        int d = distance;//编号之差不超过d
+
+        //求最大乘积的时候，每一步需要求最大正积和最小负积
+        //因为如果某学生的能力值为负数，乘以前面求得的最小负积，结果才是最大乘积
+        //最后算的数据比较大，需要用long
+        // max[k][h]表示 : 当选中了h个学生，并且以第k个学生为结尾，所产生的最大乘积；
+        // min[k][h]表示 : 当选中了h个学生，并且以第k个学生为结尾，所产生的最小乘积；
+        long[][] max =  new long[n+1][k+1];
+        long[][] min =  new long[n+1][k+1];
+        long res = Integer.MIN_VALUE;
+        for(int last = 1;last<= n;last++){
+            //初始化h=1的情况，只选中1个人的情况
+            max[last][1] = ai[last];
+            min[last][1] = ai[last];
+            //h>1的情况，选中人数从2开始
+            for(int h = 2;h <= k;h++){
+                for(int left = last-1; left>0 && last-left<=d;left--){
+                    max[last][h] = Math.max(max[last][h],Math.max(max[left][h-1]*ai[last],min[left][h-1]*ai[last]));
+                    min[last][h] = Math.min(min[last][h],Math.min(max[left][h-1]*ai[last],min[left][h-1]*ai[last]));
+                }
+            }
+            res = Math.max(res, max[last][k]);
+        } 
+        return res;
+
+	/********* End *********/
+}
+}

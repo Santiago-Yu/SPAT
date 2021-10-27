@@ -1,0 +1,28 @@
+package step1;
+
+public class Task {
+	 public  int[] dailyTemps(Integer[] temps){
+        /********** BEGIN **********/
+        int l=temps.length;
+        int[] arr = new int[l];
+        for(int i=0;i<l-1;i++){
+            int sum=0;
+            boolean f=false;
+            for (int j=i;j<l;j++){
+                if(temps[j]<=temps[i]){
+                    sum++;
+                }else if(temps[j]>temps[i]){
+                    f=true;
+                    break;
+                }
+            }
+            if(f==true){
+                arr[i]=sum;
+            }else if(f==false){
+                arr[i]=0;
+            }
+        }
+        return arr;
+        /********** END **********/
+    }
+}

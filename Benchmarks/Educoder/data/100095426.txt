@@ -1,0 +1,41 @@
+package step4;
+import java.util.Scanner;
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		int[] pingnian={31,28,31,30,31,30,31,31,30,31,30,31};
+		int[] runnian={31,29,31,30,31,30,31,31,30,31,30,31};
+		int sum=day;
+		if((year%4==0&&year%100!=0)||year%400==0)
+		{
+			for(int i=month-1;i<12;i++)
+			{
+				runnian[i]=0;
+			}
+			for(int j=0;j<12;j++)
+			{
+				sum=sum+runnian[j];
+			}
+		}
+		else
+		{
+			for(int i=month-1;i<12;i++)
+			{
+				pingnian[i]=0;
+			}
+			for(int j=0;j<12;j++)
+			{
+				sum=sum+pingnian[j];
+			}
+		}
+		System.out.print(sum);
+	}
+	public static void main(String[] args)
+	{
+		Scanner scanner=new Scanner(System.in);
+		int year=scanner.nextInt();
+		int month=scanner.nextInt();
+		int day=scanner.nextInt();
+		DayCount daycount=new DayCount();
+		daycount.dayCount(year, month, day);
+	}
+}

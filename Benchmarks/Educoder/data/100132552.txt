@@ -1,0 +1,38 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int length = sc.nextInt();	//长
+		int width = sc.nextInt();	//宽
+		/********** BEGIN **********/
+		Task task = new Task();
+        task.sumNum(length,width);	
+		/********** END **********/
+	}
+    	
+    public void sumNum(int length,int width) {
+		int side = maxCommonDivisor(length,width);
+		int v = length*width;
+		int num = v/(side*side);
+		System.out.println(side);
+		System.out.println(num);
+	}
+	
+	public int maxCommonDivisor(int m, int n) {
+		if (m < n) {
+			int temp = m;
+			m = n;
+			n = temp;
+		}
+		if (m % n == 0) {
+			return n;
+		} else {
+			return maxCommonDivisor(n, m % n);
+		}
+	}
+    
+    
+}

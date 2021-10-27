@@ -1,0 +1,36 @@
+package step3;
+
+import java.util.*;
+
+public class Task {
+
+	public static void matrixSum(int[][] arr){
+		/********** BEGIN **********/
+		int sum1 = 0;// 存两条对角线的和
+		for (int i = 0; i < arr.length; i++) {
+			for (int j = 0; j < arr.length; j++) {
+				if (i == j)
+				sum1 = sum1 + arr[i][j];
+			}
+		}
+		System.out.println(sum1);
+		/********** END **********/
+	}
+
+	public static void main(String args[]) {
+
+		Scanner input = new Scanner(System.in);
+		int n = input.nextInt();
+		int num[][] = new int[n][n];
+
+		int sum1 = 0;// 存两条对角线的和
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				num[i][j] = input.nextInt();
+			}
+
+		}
+		matrixSum(num);
+		/********** END **********/
+	}	
+}

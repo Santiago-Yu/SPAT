@@ -1,0 +1,48 @@
+package step3;
+
+public class Task {
+
+    public int concaveValley(Integer[] arr){
+        /********* Begin *********/
+        int res=0;
+        int count=0;
+        boolean asend=false;
+        boolean desended=false;//"上升中"和"已开始下降"
+        for(int i=1;i<arr.length;i++){//遍历
+            if(arr[i]<arr[i-1]){//如果比前一个小
+                desended=true;//那就肯定已经开始下降
+               if(!asend){//如果不是上升中,那就count+1;
+                   count++;
+               }
+               else{//否则代表越到了下一个 valley,
+                   count++;//先把前面的统计
+                   res=Math.max(res,count);
+                   count=1;//接下来是一个 valley 的开始
+                   asend=false;
+                   desended= true;
+               }
+            }
+            else if(arr[i]==arr[i-1]){
+                if(desended){
+                    count++;
+                    res=Math.max(res,count);
+                    asend=true;
+                    desended=false;
+                    count=0;
+                }
+            }
+            else{
+                asend=true;
+                if(desended){
+                    count++;
+                }
+            }
+        }
+        if( arr.length>=2 && desended && (arr[arr.length-1]<arr[arr.length-2] || (asend && arr[arr.length-1]>arr[arr.length-2]))){
+            count++;
+        }
+        res=Math.max(res,count);
+        return res;
+        /********* End *********/
+    } 
+}

@@ -1,0 +1,48 @@
+package step2;
+
+import java.util.Scanner;
+
+public class Task {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int num = sc.nextInt();
+		MyThread myThread = new MyThread(num);
+        myThread.start();
+        while(myThread.getIsOver() == false){
+            
+        }
+		System.out.println("子线程计算结果为：" + myThread.getResult());
+		
+	}
+}
+
+
+class MyThread extends Thread    {
+	
+	private int num;
+    private int result;
+    private boolean isOver;
+    public boolean getIsOver(){
+        return isOver;
+    }
+    public int getResult(){
+        return result;
+    }
+    public MyThread(int num){
+        this.num = num;
+    }
+    public void run(){
+		result = f(num);
+        isOver = true;
+    }
+    private int f(int num){
+        if(num == 1){
+            return 1;
+        }
+        else if(num == 2){
+            return 1;
+        }
+        return f(num - 1) + f(num - 2);
+    }
+}

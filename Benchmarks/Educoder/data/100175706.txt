@@ -1,0 +1,48 @@
+package step4;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class HelloWorld {
+	
+	
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		//动态创建数组
+		int[] scores = new int[sc.nextInt()];
+		for(int i = 0 ; i< scores.length ; i++){
+			scores[i] = sc.nextInt();
+		}
+		/********** Begin **********/
+		
+		
+for (int i = 0; i < scores.length; i++) {
+	for(int j =i+1;j<scores.length;j++)
+    if(scores[i] < scores[j]){    //求最大值
+    int temp;
+	temp= scores[i];
+	scores[i] = scores[j];
+	scores[j]=temp;
+
+    }
+}
+for(int i=0;i<scores.length;i++){
+	if(i==0)
+	System.out.print("[");
+	System.out.print(scores[i]);
+	if(i!=scores.length-1)
+	System.out.print(", ");
+	if(i==scores.length-1)
+	System.out.print("]");
+}
+System.out.println();
+
+		
+		
+		
+		
+		
+		
+		/********** End **********/
+	}
+}

@@ -1,0 +1,51 @@
+package step3;
+
+public class HelloWorld {
+
+	public void judge(String fileName,String email){
+    if(Namebd(fileName))
+        System.out.println("Java文件名正确");
+        else System.out.println("Java文件名无效");
+       if(Emeall(email)) System.out.println("邮箱名正确");
+        else System.out.println("邮箱名无效");
+        
+		
+	}
+ private static boolean Namebd(String Name)
+    {
+      
+        int b=0;
+        
+        
+        
+         if(Name.length()<=5) return false;
+        else if(Name.lastIndexOf(".java")!=Name.length()-5) return false;
+        else return true;
+    }
+    private static boolean Emeall(String emeall)
+    {
+      
+        int b=0,a=0;
+        String lo=new String(emeall);
+        String ko=new String(emeall);
+        int c=0,d=0;
+         while(lo.indexOf(".")!=-1)
+        {
+             if(b==0) d=lo.indexOf(".");
+            lo=lo.substring(lo.indexOf(".")+1);
+            b++;
+        }
+        while(ko.indexOf("@")!=-1)
+        {  
+            if(a==0) c=ko.indexOf("@");
+            ko=ko.substring(ko.indexOf("@")+1);
+            a++;
+            
+        }
+        if(a!=1||b!=1)  return false;       
+        else if(c>d) return false;
+        else return true;
+    }
+	
+	
+}

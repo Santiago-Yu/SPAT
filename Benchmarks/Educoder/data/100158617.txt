@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+#include<cstring>
+using namespace std;
+int main()
+{
+	int i,j;int sum=1;
+	char a[100];char b[100];int c[10];
+	scanf("%s",a);scanf("%s",b);
+	int la,lb;int l;
+	int sta,stb,eh;
+	la=strlen(a);lb=strlen(b);l=la<lb?la:lb;
+	for(;l>0;l--)
+    {
+    	for(sta=0;sta<la;sta++)
+        {
+        	for(stb=0;stb<lb;stb++)
+        	{for(eh=0;eh<l;eh++)
+        	{
+        		if(a[sta+eh]!=b[stb+eh])break;
+				 
+			 } 
+			 if(eh==l)
+			 {printf("%d",l);
+			 return 0;
+			 }
+        	}
+     	}
+    }
+	if(l==0)
+	printf("0");
+	return 0; 
+}

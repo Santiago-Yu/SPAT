@@ -1,0 +1,52 @@
+package step1;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+public class Task {
+	
+	public void sort(Integer[] arr){
+		/********* Begin *********/
+
+		Integer[] arr2=new Integer[arr.length];
+        for (int i = 0; i <arr.length; i++) {
+            arr2[i]=arr[i];
+        }
+        List<Integer> list= Arrays.asList(arr2);
+        Collections.sort(list);
+        for (int i = 0; i < arr2.length; i++) {
+            arr2[i]=list.get(i);
+        }
+        if(Arrays.equals(arr,arr2)){
+            for (int k = 0; k < arr.length; k++) {
+                System.out.print(arr[k]+" ");
+            }
+            System.out.println();
+        }
+        while (!Arrays.equals(arr,arr2)) {
+            Integer tmp;
+            for (int i = 0; i < arr.length-1; i++) {
+                if(arr[i]>arr[i+1]){
+                    tmp=arr[i+1];
+                    arr[i+1]=arr[i];
+                    arr[i]=tmp;
+                    for (int k = 0; k < arr.length; k++) {
+                        System.out.print(arr[k]+" ");
+                    }
+                    System.out.println();
+                }
+            }
+            for (int i = arr.length-1; i>0; i--) {
+                if(arr[i]<arr[i-1]){
+                    tmp=arr[i-1];
+                    arr[i-1]=arr[i];
+                    arr[i]=tmp;
+                    for (int k = 0; k < arr.length; k++) {
+                        System.out.print(arr[k]+" ");
+                    }
+                    System.out.println();
+                }
+            }
+        }
+		/********* End *********/
+	}
+}

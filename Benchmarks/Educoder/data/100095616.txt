@@ -1,0 +1,29 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+        int sum =0;
+    	  int[] pingnian =  {31,28,31,30,31,30,31,31,30,31,30,31};
+    	  int[] runnian =   {31,29,31,30,31,30,31,31,30,31,30,31};
+    	  if(year %4 == 0  && year%100 !=0)
+    	  {
+    		  for(int i =0;i<month-1;i++)
+    		  {
+    			  sum += runnian[i];
+    		  }
+    		  sum += day;
+    	  }else
+    	  {
+    		  for(int i =0;i<month-1;i++)
+    		  {
+    			  sum += pingnian[i];
+    		  }
+    		  sum += day;
+    	  }
+    		    System.out.print(sum);
+
+
+		/********** End *********/
+	}
+}

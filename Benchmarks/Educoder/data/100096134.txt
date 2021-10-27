@@ -1,0 +1,42 @@
+package step2;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class MarkStatistics {
+     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] class1Grade = new int[5];
+        int[] class2Grade = new int[5];
+        int[] gradeCount = new int[class1Grade.length + class2Grade.length];
+        /********** Begin *********/
+        for (int i = 0; i < 5; i++) {
+            int numCandy = scanner.nextInt(); //用于读取下一个数据，即每个小朋友想要的糖果
+			// 请在此处补全循环代码
+			class1Grade[i] = numCandy;
+        }    
+        for (int i = 0; i < 5; i++) {
+            int numCandy = scanner.nextInt(); //用于读取下一个数据，即每个小朋友想要的糖果
+			// 请在此处补全循环代码
+			class2Grade[i] = numCandy;
+        }    
+        System.arraycopy(class1Grade, 0, gradeCount, 0, class1Grade.length);    //将array1复制进array3，此时array3为{1, 2, 3}
+        System.arraycopy(class2Grade, 0, gradeCount, class1Grade.length, class2Grade.length);    
+        
+        for(int i=0;i<gradeCount.length-1;i++)
+        	for(int j=0;j<gradeCount.length-i-1;j++) {
+        		if(gradeCount[j]>gradeCount[j+1]) {
+        			int temp = gradeCount[j];
+        			gradeCount[j]= gradeCount[j+1];
+        			gradeCount[j+1]=temp;
+        		}
+        	}
+        /********** End *********/
+        for (int i = 0; i < gradeCount.length; i++) {
+            System.out.print(gradeCount[i]);
+            if (i != gradeCount.length - 1) {
+                System.out.print(' ');
+            }
+        }
+    }
+}

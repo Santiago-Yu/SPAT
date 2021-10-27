@@ -1,0 +1,15 @@
+package step1;
+
+public class Task {
+	public String inversion(String str){
+		char[] s = str.toCharArray();
+	    int n = s.length - 1;
+	    int half = n / 2;
+	    for (int i = 0; i <= half; i++) {
+	        char temp = s[i];
+	        s[i] = s[n - i];
+	        s[n - i] = temp;
+	    }
+	    return new String(s);
+    }
+}

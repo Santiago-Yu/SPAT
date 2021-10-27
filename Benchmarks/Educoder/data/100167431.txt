@@ -1,0 +1,62 @@
+package jdbc;
+
+import java.sql.*;
+
+public class jdbcTransaction {
+
+    public static void transaction(){
+        try {
+            Class.forName("com.mysql.jdbc.Driver" );
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        /**********  Begin   **********/
+        String url = "jdbc:mysql://localhost:3306/mysql_db";
+        //连接数据库并开启事务
+        try {
+        conn = DriverManager.getConnection (url,"root","123123" );
+		conn.setAutoCommit(false);
+		ps = conn.prepareStatement("insert into student values(4,'赵六','女',21)");
+        ps.executeUpdate();
+        conn.commit();
+        ps = conn.prepareStatement("insert intu student values(4,'赵六','女',21)");
+		ps.executeUpdate();
+		conn.commit();
+            
+        ps = conn.prepareStatement("select * from student where id=4");
+        ResultSet resultSet = ps.executeQuery();
+        while (resultSet.next()) {
+            int id = resultSet.getInt(1);
+            String name = resultSet.getString("name");
+            String sex = resultSet.getString("sex");
+            int age = resultSet.getInt("age");
+            System.out.println(id + " " + name + " " + sex + " " + age);
+        }
+		
+
+        } catch (SQLException e) {
+            try {
+                //事务回滚
+                conn.rollback();
+
+
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        /**********  End   **********/
+        finally {
+            try {
+                if(ps!=null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+}

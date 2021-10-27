@@ -1,0 +1,156 @@
+package step4;
+
+import java.io.File;
+import java.io.FileFilter;
+
+public class Task {
+	
+	/********** Bgin **********/
+	public void showDirStructure(File file)	{
+		
+System.out.println("+--"+file.getName());
+      
+       // File dir = new File(file);
+   /*       FileFilter filter = filex -> {
+      if (filex.isFile()) {
+        String fileName = filex.getName().toLowerCase();
+        if (fileName.endsWith(".docx")) {
+          return false;
+        }
+      }
+      return true;
+    };
+        */
+
+
+  /*  for (File f : list) {
+      if (f.isFile()) {
+        System.out.println(f.getPath() + "  (File)");
+      } else if (f.isDirectory()) {
+        System.out.println(f.getPath() + "  (Directory)");
+      }*/
+        
+      
+        
+         File[] list =file.listFiles();
+        
+       // File files[]=file.listFiles(filter);
+        
+        for (File filea:list)
+        {
+            boolean isDir=filea.isDirectory();
+        if(isDir==true)
+        {
+            
+            System.out.println("  +--"+filea.getName());
+             
+            FileFilter filter1 = filex1 -> {
+      if (filex1.isFile()) {
+        String fileName = filex1.getName().toLowerCase();
+        if (fileName.endsWith(".txt")||fileName.endsWith(".docx")) {
+          return false;
+        }
+      }
+      return true;
+    };
+            
+            
+            
+            File files1[]=filea.listFiles(filter1);
+            
+            
+            for(File filea1:files1)
+             {
+               boolean isDir1=filea1.isDirectory();
+               if(isDir1==true)
+               {
+               System.out.println("    +--"+filea1.getName());
+                   
+                   FileFilter filter2 = filex2 -> {
+      if (filex2.isFile()) {
+        String fileName = filex2.getName().toLowerCase();
+        if (fileName.endsWith(".txt")||fileName.endsWith(".docx")) {
+          return false;
+        }
+      }
+      return true;
+    };
+                   
+                   File files2[]=filea1.listFiles(filter2);
+            
+            for(File filea2:files2)
+             {
+               boolean isDir2=filea2.isDirectory();
+               if(isDir2==true)
+               {
+               System.out.println("      +--"+filea2.getName());
+                   
+                   FileFilter filter3 = filex3 -> {
+      if (filex3.isFile()) {
+        String fileName = filex3.getName().toLowerCase();
+        if (fileName.endsWith(".txt")||fileName.endsWith(".docx")) {
+          return false;
+        }
+      }
+      return true;
+    };
+                   
+                   File files3[]=filea2.listFiles(filter3);
+            
+            for(File filea3:files3)
+             {
+               boolean isDir3=filea3.isDirectory();
+               if(isDir3==true)
+               {
+               System.out.println("        +--"+filea3.getName());
+                   
+                   FileFilter filter4 = filex4 -> {
+      if (filex4.isFile()) {
+        String fileName = filex4.getName().toLowerCase();
+        if (fileName.endsWith(".txt")||fileName.endsWith(".docx")) {
+          return false;
+        }
+      }
+      return true;
+    };
+                  
+                   File files4[]=filea3.listFiles(filter4);
+            
+            for(File filea4:files4)
+             {
+               boolean isDir4=filea4.isDirectory();
+               if(isDir4==true)
+               {
+               System.out.println("          +--"+filea4.getName());
+                  
+      
+                  
+               }
+                else System.out.println("          --"+filea4.getName());
+             }
+                  
+               }
+                else System.out.println("        --"+filea3.getName());
+             }
+                  
+               }
+                else System.out.println("      --"+filea2.getName());
+             }
+                   
+               }
+                else System.out.println("    --"+filea1.getName());
+             }
+             
+             
+        } 
+          else  System.out.println("  --"+filea.getName());/********** End **********/
+        }
+        
+    
+
+
+	}
+	
+
+	
+}

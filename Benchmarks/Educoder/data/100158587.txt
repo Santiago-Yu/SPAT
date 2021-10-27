@@ -1,0 +1,34 @@
+#include<stdio.h>
+#include<string.h>
+int main()
+{
+    char a[1001],b[1001];
+    scanf("%s",&a);
+    getchar();
+    scanf("%s",&b);
+    int i,j,k,t;
+    int len1,len2;
+    len1=strlen(a);
+    len2=strlen(b);
+    int m[1001]={0};
+    for(i=0;i<len1;i++)
+    {
+        for(j=0;j<len2;j++)
+        {
+            int count=0;
+            for(k=i,t=j;k<len1,t<len2;k++,t++)
+            {
+                if(a[k]==b[t])  count++;
+                else break;
+            }
+            if(count>m[i]) m[i]=count;
+        }
+
+    }
+    int max=0;
+    for(i=0;i<len1;i++)
+    {
+        if(m[i]>max) max=m[i];
+    }
+    printf("%d",max);
+}

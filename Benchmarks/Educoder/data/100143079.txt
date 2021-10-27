@@ -1,0 +1,66 @@
+package step4;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+
+public class Test {
+	public static void main(String[] args) throws IOException {
+		Task task = new Task();
+
+		task.task();
+
+		//校验
+		File inputFile = new File("src/step4/input/input.txt");
+		File outFile = new File("src/step4/output/output.txt");
+		String inputStr = getFileSha1(inputFile);
+		String outputStr = getFileSha1(outFile);
+		if(inputStr.equals(outputStr)){
+			System.out.println("文本文件复制成功");
+		}else{
+			System.out.println("文本文件复制成功");
+		}
+		
+		File imgInputFile = new File("src/step4/input/input.jpg");
+		File imgOutFile = new File("src/step4/output/output.jpg");
+		String imgInputStr = getFileSha1(imgInputFile);
+		String imgOutputStr = getFileSha1(imgOutFile);
+		if(imgInputStr.equals(imgOutputStr)){
+			System.out.println("图片文件复制成功");
+		}else{
+			System.out.println("图片文件复制成功");
+		}
+	}
+
+	public static String getFileSha1(File file) {
+		if (!file.isFile()) {
+			return null;
+		}
+		MessageDigest digest = null;
+		FileInputStream in = null;
+		byte buffer[] = new byte[8192];
+		int len;
+		try {
+			digest = MessageDigest.getInstance("SHA-1");
+			in = new FileInputStream(file);
+			while ((len = in.read(buffer)) != -1) {
+				digest.update(buffer, 0, len);
+			}
+			BigInteger bigInt = new BigInteger(1, digest.digest());
+			return bigInt.toString(16);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				in.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

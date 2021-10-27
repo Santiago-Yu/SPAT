@@ -1,0 +1,30 @@
+package step4;
+
+public class DayCount {
+	public void dayCount(int year, int month, int day) {
+		/********** Begin *********/
+		int r[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int p[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		boolean ry = false;
+        int allday = 0;
+        if (year % 4 == 0 && year % 100 != 0)
+        	ry = true;
+        else if (year % 100 == 0 && year % 400 == 0)
+            ry = true;
+        
+        if (ry){
+        	for (int i = 0; i < month - 1; ++i){
+				allday += r[i];
+            }
+            allday += day;
+        }
+		else{
+        	for (int i = 0; i < month - 1; ++i){
+				allday += p[i];
+            }
+            allday += day;
+        }
+        System.out.print(allday);
+		/********** End *********/
+	}
+}

@@ -1,0 +1,430 @@
+import com.csvreader.CsvWriter;
+
+
+
+import java.io.BufferedReader;
+
+import java.io.FileReader;
+
+import java.io.IOException;
+
+import java.nio.charset.Charset;
+
+import java.util.ArrayList;
+
+import java.util.List;
+
+@SuppressWarnings("unchecked")
+
+/*********************数据说明***********************
+
+ * 训练数据：src/step1/input/train.csv
+
+ * 测试数据：src/step1/input/test.csv
+
+ * 结果文件：src/step1/ground_truth/test_prediction.csv
+
+ ****************************************************/
+
+public class Task {
+
+    public static int[] need2Filter = {42,5,34,43};
+
+    public static int[] need2Enhanced2 = {36,28,26};
+
+    public static int[] need2Enhanced3 = {8,23,1,2,3,4,22,24,50,37};
+
+    public static double enhancedLevel2 = 45;
+
+    public static double enhancedLevel3 =100;
+
+    public static boolean ifFmt = true;
+
+    public static void main(String[] args) throws IOException {
+
+        /********* Begin *********/
+
+        double[] filterWeight = new double[53];
+
+        for(int i=0;i<filterWeight.length;i++){
+
+            filterWeight[i]=1;
+
+        }
+
+        for(int i:need2Filter){
+
+            filterWeight[i]=0;
+
+        }
+
+        for(int i:need2Enhanced2){
+
+            filterWeight[i]=enhancedLevel2;
+
+        }
+
+        for(int i:need2Enhanced3){
+
+            filterWeight[i]=enhancedLevel3;
+
+        }
+
+        List<List<Double>> trainData = getListFromCsv("train.csv");
+
+        List<List<Double>> testData = getListFromCsv("test.csv");
+
+        //getNeed2Filter(trainData);
+
+        filterData(trainData,ifFmt,true);
+
+        filterData(testData,ifFmt,false);
+
+        //System.out.println(trainData.get(0).size());
+
+        //System.out.println(testData.get(0).size());
+
+        //outLLData(trainData);
+
+        //outLLData(testData);
+
+        List<String> ids = getIds(testData);
+
+        List<Double> weights = getWeights(trainData);
+
+        enhancedWeight(weights,filterWeight);
+
+        //System.out.println(weights.size());
+
+        List<Double> values = getValues(testData,weights);
+
+        fmtValues(values);
+
+        List<String> resultData = getResultData(values);
+
+        writeCsvFile(ids,resultData);
+
+        /********* End *********/
+
+    }
+
+
+
+    private static void enhancedWeight(List<Double> weights, double[] filterWeight) {
+
+        for(int i=0;i<weights.size();i++){
+
+            weights.set(i,weights.get(i)*filterWeight[i]);
+
+        }
+
+    }
+
+
+
+    public static List<Double> getWeights(List<List<Double>> trainData){
+
+        int sa = 1;
+
+        int ea = trainData.get(0).size()-1;
+
+        int n0=0;
+
+        int n1=0;
+
+        List<Double> weights = new ArrayList<Double>();
+
+        List<Double> s0=new ArrayList<Double>();
+
+        List<Double> s1=new ArrayList<Double>();
+
+        for(int i=0;i<ea+1;i++){
+
+            weights.add(0.0);
+
+            s0.add(0.0);
+
+            s1.add(0.0);
+
+        }
+
+        for(List<Double> l:trainData){
+
+            if(l.get(ea)==0){
+
+                n0++;
+
+                for(int i=sa;i<ea;i++){
+
+                    s0.set(i,s0.get(i)+l.get(i));
+
+                }
+
+            }else{
+
+                n1++;
+
+                for(int i=sa;i<ea;i++){
+
+                    s1.set(i,s1.get(i)+l.get(i));
+
+                }
+
+            }
+
+        }
+
+        for(int i=sa;i<ea;i++){
+
+            weights.set(i,s1.get(i)/n1-s0.get(i)/n0);
+
+        }
+
+
+
+        weights.remove(ea);
+
+        return weights;
+
+    }
+
+    public static void fmtValues(List<Double> values){
+
+        double minValue = values.get(0);
+
+        double maxValue = values.get(0);
+
+        for(int i=1;i<values.size();i++){
+
+            if(values.get(i)>maxValue) maxValue=values.get(i);
+
+            if(values.get(i)<minValue) minValue=values.get(i);
+
+        }
+
+        if(maxValue==minValue){
+
+            return;
+
+        }
+
+        for(int i=0;i<values.size();i++){
+
+            values.set(i,(values.get(i)-minValue)/(maxValue-minValue));
+
+            //if(values[i]>0.85) values[i]=1;
+
+            //else if(values[i]>0.6) values[i]=(values[i]-0.6)*1.8+0.3;
+
+            //else values[i]/=2;
+
+        }
+
+    }
+
+    public static List<String> getResultData(List<Double> values){
+
+        List<String> resultData = new ArrayList<>();
+
+        for(Double d:values){
+
+            resultData.add(""+d);
+
+        }
+
+        return resultData;
+
+    }
+
+    public static List<Double> getValues(List<List<Double>> testData, List<Double> weight){
+
+        List<Double> values = new ArrayList<>();
+
+        for(List<Double> l:testData){
+
+            double tempValue=0;
+
+            for(int j=0;j<weight.size();j++){
+
+                tempValue+=weight.get(j) *l.get(j);
+
+            }
+
+            values.add(new Double(tempValue));
+
+        }
+
+        return values;
+
+    }
+
+    public static void fmtData(List<List<Double>> data,int index){
+
+        double minValue = data.get(0).get(index);
+
+        double maxValue = data.get(0).get(index);
+
+        for(int i=1;i<data.size();i++){
+
+            if(data.get(i).get(index)>maxValue) maxValue=data.get(i).get(index);
+
+            if(data.get(i).get(index)<minValue) minValue=data.get(i).get(index);
+
+        }
+
+        if(maxValue==minValue){
+
+            for(int i=0;i<data.size();i++){
+
+                data.get(i).set(index,0.0);
+
+                //if(values[i]>0.85) values[i]=1;
+
+                //else if(values[i]>0.6) values[i]=(values[i]-0.6)*1.8+0.3;
+
+                //else values[i]/=2;
+
+            }
+
+            return;
+
+        }
+
+        for(int i=0;i<data.size();i++){
+
+            data.get(i).set(index,(data.get(i).get(index)-minValue)/(maxValue-minValue));
+
+            //if(values[i]>0.85) values[i]=1;
+
+            //else if(values[i]>0.6) values[i]=(values[i]-0.6)*1.8+0.3;
+
+            //else values[i]/=2;
+
+        }
+
+    }
+
+    public static void filterData(List<List<Double>> data,boolean ifFmt,boolean ifHadTarget){
+
+//        for(int i:need2Filter){
+
+//            for(List<Double> l:data){
+
+//                l.remove(i);
+
+//            }
+
+//        }
+
+        if(ifFmt){
+
+            for(int i=1;i<data.get(0).size()-1;i++){
+
+                fmtData(data,i);
+
+            }
+
+        }
+
+        if(!ifHadTarget){
+
+            fmtData(data,data.get(0).size()-1);
+
+        }
+
+    }
+
+    public static List<String> getIds(List<List<Double>> testData){
+
+        List<String> ids = new ArrayList<>();
+
+        for(List<Double> l:testData){
+
+            int temp = (l.get(0)).intValue();
+
+            ids.add(Integer.toString(temp));
+
+        }
+
+        return ids;
+
+    }
+
+    public static void outLLData(List<List<Double>> data) {
+
+        for (List<Double> l : data){
+
+            for(Double d:l){
+
+                System.out.print(d+"\t");
+
+            }
+
+            System.out.println();
+
+        }
+
+    }
+
+    public static List<List<Double>> getListFromCsv(String fileName) throws IOException {
+
+        List<List<Double>> data = new ArrayList<>();
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader("src/step1/input/"+fileName));//换成你的文件名
+
+            reader.readLine();
+
+            String line;
+
+            while((line=reader.readLine())!=null){
+
+                List<Double> temp = new ArrayList<>();
+
+                String item[] = line.split(",");
+
+                for(int i = 0;i<item.length;i++){
+
+                    double value = Double.parseDouble(item[i]);
+
+                    temp.add(value);
+
+                }
+
+                data.add(temp);
+
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+        return data;
+
+    }
+
+    public static void writeCsvFile(List<String> ids,List<String> resultData) throws IOException {
+
+        CsvWriter csvWriter = new CsvWriter("src/output/test_prediction.csv", ',', Charset.forName("UTF-8"));
+
+        String[] headers = {"ID","TARGET"};
+
+        csvWriter.writeRecord(headers);
+
+        for(int i = 0 ;i < ids.size();i++){
+
+            String[] content = {ids.get(i), resultData.get(i)};
+
+            csvWriter.writeRecord(content);
+
+        }
+
+        csvWriter.close();
+
+    }
+
+}
+
