@@ -27,6 +27,7 @@ public class RuleSelector {
 	static final int SwitchEqualSides = 14;
 	static final int SwitchStringEqual = 15;
 	static final int PrePostFixExpressionDividing = 16;
+	static final int Case2IfElse = 17;
 	
 	static final int ReverseIfElse_Wrongly= -3;
 	static final int For2While_Wrongly=-1;
@@ -79,7 +80,8 @@ public class RuleSelector {
 			return new LocalVariableRenaming_Wrongly(cu_, document_, outputDirPath_);
 		case IfDividing:
 			return new If_Dividing(cu_, document_, outputDirPath_);
-			
+		case Case2IfElse:
+			return new Case2IfElse(cu_, document_, outputDirPath_);
 			
 			
 		default:

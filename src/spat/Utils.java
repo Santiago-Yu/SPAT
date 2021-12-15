@@ -279,7 +279,8 @@ public class Utils {
 	public static String sublizeOutput(String filePath, String dirPath, String outputdir) {
 		// TODO Auto-generated method stub
 		int ender = dirPath.length();
-		String newDirPath = outputdir + filePath.substring(ender);
+		String [] parts = filePath.split("\\\\");
+		String newDirPath = outputdir + parts[parts.length-1];
 		//mkfatherdir(newDirPath);
 		return newDirPath;
 	}
