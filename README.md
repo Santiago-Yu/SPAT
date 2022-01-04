@@ -90,15 +90,15 @@ This dataset is used to train the Neural Probabilistic Language Model (see below
 	https://github.com/chiaminchuang/A-Neural-Probabilistic-Language-Model
 2. Code2vec
 	https://github.com/tech-srl/code2vec
-3. DeepCom
-	https://github.com/xing-hu/DeepCom
-4. Hybrid-DeepCom
+3. DeepCom and Hybrid-DeepCom
 	https://github.com/xing-hu/EMSE-DeepCom
-5. ASTNN
+4. The dataset of DeepCom
+	https://github.com/xing-hu/DeepCom
+6. ASTNN
 	https://github.com/zhangj111/astnn
-6. TBCCD
+5. TBCCD
 	https://github.com/yh1105/datasetforTBCCD
-7. Jobfuscate
+6. Jobfuscate
 	https://www.duckware.com/jobfuscate/index.html
 
 
