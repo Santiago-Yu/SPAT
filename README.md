@@ -104,6 +104,6 @@ This dataset is used to train the Neural Probabilistic Language Model (see below
 
 ## Papers
 
-Shiwen Yu, Ting Wang, Ji Wang, "Data Augmentation by Program Transformation." Journal of Systems and Software (2022). (under JSS open science)
+Shiwen Yu, Ting Wang, Ji Wang, "Data Augmentation by Program Transformation." Journal of Systems and Software (JSS 2022). (under JSS open science)
 
 Deze Wang, Zhouyang Jia, Shanshan Li, Yue Yu, Yun Xiong, Wei Dong, Xiangke Liao, “Bridging Pre-trained Models and Downstream Tasks for Source Code Understanding.” 44th International Conference on Software Engineering (ICSE 2022)
