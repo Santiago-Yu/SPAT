@@ -25,7 +25,7 @@ For example,
 ```consolo
 java -jar SPAT.jar 5 .\Benchmarks\9133\Original .\Benchmarks\9133\transformed\_5 C:\Program Files\Java\jre1.8.0_221\lib\rt.jar
 ```
-This command will transform all java files under the ".\Benchmarks\9133\Original" path by the transformation rule 5 "ConditionalExp2SingleIF" to the path ".\Benchmarks\9133\_5". The only dependency is the rt.jar (java runtime). 
+This command will transform all java files under the ".\Benchmarks\9133\Original" path by the transformation rule 5 "ConditionalExp2SingleIF" to the path ".\Benchmarks\9133\\_5". The only dependency is the rt.jar (java runtime). 
 
 
 ## Supported Transformations
