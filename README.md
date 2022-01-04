@@ -1,7 +1,7 @@
 # SPAT
-Semantic-and-Naturalness Preserving Auto Transformation
+Semantic-and-Naturalness Preserving Auto Transformation. This tool is a source-to-source transformation tool that can deal with partial code snippets (programs without dependency information). The transformed code will be semantic-equivalent to the original ones, as well as syntax-naturalness-preserving.
 
-This project is developed in "Eclipse IDE for RCP and RAP Developers". If you want to play with the code, please use the same IDE. 
+This project is developed in "Eclipse IDE for RCP and RAP Developers". If you want to play with the code, please use the same IDE. Starting with the "src/spat/RuleSelector.java" will bring you a nice view of the whole project.
 
 We have produced a runnable jar file already in "artifacts". 
 
@@ -21,6 +21,11 @@ java -jar SPAT.jar [RuleId] [RootDir] [OutputDir] [PathofJre] \& [PathofotherDep
 
 *[PathofotherDependentJar]* is optional, one can use it to specify additional dependent libraries.
 
+For example, 
+```consolo
+java -jar SPAT.jar 5 .\Benchmarks\9133\Original .\Benchmarks\9133\transformed\_5 C:\Program Files\Java\jre1.8.0_221\lib\rt.jar
+```
+This command will transform all java files under the ".\Benchmarks\9133\Original" path by the transformation rule 5 "ConditionalExp2SingleIF" to the path ".\Benchmarks\9133\_5". The only dependency is the rt.jar (java runtime). 
 
 
 ## Supported Transformations
@@ -65,11 +70,7 @@ Change the Switch-Case statements into If-Else statements.
 
 
 
-
-
-
-
-### Benchmarks
+## Datasets
 
 ##### Educoder
 
@@ -78,3 +79,31 @@ The Educoder code clone dataset. In the "records.txt" file, each record is a tri
 ##### 9133 benchmark
 
 The 9133 benchmark is selected from BCB benchmark, we use the 9133 instances to evaluate the syntax naturalness, applicability, and  speed of each transformation rule.
+
+##### Java Corpus
+
+This dataset is used to train the Neural Probabilistic Language Model (see below). 
+
+## Links to relevant repositories
+
+1. The Neural Probabilistic Language Model 
+	https://github.com/chiaminchuang/A-Neural-Probabilistic-Language-Model
+2. Code2vec
+	https://github.com/tech-srl/code2vec
+3. DeepCom
+	https://github.com/xing-hu/DeepCom
+4. Hybrid-DeepCom
+	https://github.com/xing-hu/EMSE-DeepCom
+5. ASTNN
+	https://github.com/zhangj111/astnn
+6. TBCCD
+	https://github.com/yh1105/datasetforTBCCD
+7. Jobfuscate
+	https://www.duckware.com/jobfuscate/index.html
+
+
+## Papers
+
+Shiwen Yu, Ting Wang, Ji Wang, "Data Augmentation by Program Transformation." Journal of Systems and Software (2022). (under JSS open science)
+
+Deze Wang, Zhouyang Jia, Shanshan Li, Yue Yu, Yun Xiong, Wei Dong, Xiangke Liao, “Bridging Pre-trained Models and Downstream Tasks for Source Code Understanding.” 44th International Conference on Software Engineering (ICSE 2022)
