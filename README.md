@@ -1,6 +1,8 @@
 # SPAT
 Semantic-and-Naturalness Preserving Auto Transformation. This tool is a source-to-source transformation tool that can deal with partial code snippets (programs without dependency information). The transformed code will be semantic-equivalent to the original ones, as well as syntax-naturalness-preserving.
 
+We have currently verified it on Windows10.
+
 This project is developed in "Eclipse IDE for RCP and RAP Developers". If you want to play with the code, please use the same IDE. Starting with the "src/spat/RuleSelector.java" will bring you a nice view of the whole project.
 
 We have produced a runnable jar file already in "artifacts". 
@@ -23,7 +25,7 @@ java -jar SPAT.jar [RuleId] [RootDir] [OutputDir] [PathofJre] \& [PathofotherDep
 
 For example, 
 ```consolo
-java -jar SPAT.jar 5 .\Benchmarks\9133\Original .\Benchmarks\9133\transformed\_5 C:\Program Files\Java\jre1.8.0_221\lib\rt.jar
+java -jar .\artifacts\SPAT.jar 5 .\Benchmarks\9133\Original .\Benchmarks\9133\transformed\_5 C:\Program Files\Java\jre1.8.0_221\lib\rt.jar
 ```
 This command will transform all java files under the ".\Benchmarks\9133\Original" path by the transformation rule 5 "ConditionalExp2SingleIF" to the path ".\Benchmarks\9133\\_5". The only dependency is the rt.jar (java runtime). 
 
